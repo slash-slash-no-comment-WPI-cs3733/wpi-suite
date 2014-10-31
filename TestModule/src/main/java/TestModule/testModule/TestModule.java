@@ -1,4 +1,4 @@
-package testModulePackage.main.java.testModulePackage;
+package testModule;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -32,8 +32,8 @@ public class TestModule implements IJanewayModule {
 		// Setup button panel
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout());
+		buttonPanel.add(new JButton("Button 0"));
 		buttonPanel.add(new JButton("Button 1"));
-		buttonPanel.add(new JButton("Button 2"));
 		
 		// Setup the main panel
 		JPanel mainPanel = new JPanel();
