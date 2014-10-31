@@ -1,4 +1,4 @@
-package testModulePackage;
+package testModulePackage.main.java.testModulePackage;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
