@@ -1,1 +1,1 @@
-module_class testModule.TestModule
+module_class TestModule.testModule.TestModule
