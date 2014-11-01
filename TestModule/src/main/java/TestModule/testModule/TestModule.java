@@ -16,7 +16,7 @@ import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
 
 
 /**
- * A dummy module to demonstrate the Janeway client
+ * A test module to test if I can add a module
  *
  */
 public class TestModule implements IJanewayModule {
@@ -25,22 +25,28 @@ public class TestModule implements IJanewayModule {
 	private ArrayList<JanewayTabModel> tabs;
 	
 	/**
-	 * Construct a new DummyModule for demonstration purposes
+	 * Construct a new TestModule for test purposes
 	 */
 	public TestModule() {
 		
 		// Setup button panel
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout());
-		buttonPanel.add(new JButton("Button 0"));
-		buttonPanel.add(new JButton("Button 1"));
+		JButton button0 = new JButton("Button 0");
+		JButton button1 = new JButton("Button 1");
 		
 		// Setup the main panel
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout());
 		mainPanel.add(new JLabel("//no comment"), BorderLayout.PAGE_START);
-		mainPanel.add(new JTextField(), BorderLayout.CENTER);
-		mainPanel.add(new JTextField(), BorderLayout.CENTER);
+		JTextField text = new JTextField();
+		mainPanel.add(text, BorderLayout.CENTER);
+		
+		// Add listeners to the buttons
+		button0.addActionListener(new TestListener("You pushed button 0", text));
+		buttonPanel.add(button0);
+		button1.addActionListener(new TestListener("You pushed button 1", text));
+		buttonPanel.add(button1);
 		
 		tabs = new ArrayList<JanewayTabModel>();
 		JanewayTabModel tab = new JanewayTabModel("//no comment", new ImageIcon(), buttonPanel, mainPanel);
