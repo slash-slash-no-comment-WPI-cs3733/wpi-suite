@@ -1,1 +1,0 @@
-module_class TestModule.testModule.TestModule

@@ -1,4 +1,4 @@
-package TestModule.testModule;
+package ButtonModule.buttonModule;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -19,15 +19,15 @@ import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
  * A test module to test if I can add a module
  *
  */
-public class TestModule implements IJanewayModule {
+public class ButtonModule implements IJanewayModule {
 	
 	/** The tabs used by this module */
 	private ArrayList<JanewayTabModel> tabs;
 	
 	/**
-	 * Construct a new TestModule for test purposes
+	 * Construct a new ButtonModule for test purposes
 	 */
-	public TestModule() {
+	public ButtonModule() {
 		
 		// Setup button panel
 		JPanel buttonPanel = new JPanel();
