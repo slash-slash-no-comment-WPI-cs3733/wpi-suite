@@ -35,6 +35,9 @@ public class ButtonModule implements IJanewayModule {
 		JButton button0 = new JButton("Button 0");
 		JButton button1 = new JButton("Button 1");
 		
+		JButton jonButton = new JButton("Jon");
+		buttonPanel.add(jonButton);
+		
 		// Setup the main panel
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout());
