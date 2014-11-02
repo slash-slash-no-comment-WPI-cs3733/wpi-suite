@@ -1,3 +1,7 @@
+/**
+ * @author Jon Sorrells
+ */
+
 package ButtonModule.buttonModule;
 
 import java.awt.BorderLayout;
