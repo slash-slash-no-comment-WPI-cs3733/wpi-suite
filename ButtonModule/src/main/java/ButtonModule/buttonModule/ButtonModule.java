@@ -52,7 +52,7 @@ public class ButtonModule implements IJanewayModule {
 		buttonPanel.add(button0);
 		button1.addActionListener(new TestListener("You pushed button 1", text));
 		buttonPanel.add(button1);
-		buttonJoseph.addActionListener(new TestListener("Blackman", text));
+		josephButton.addActionListener(new TestListener("Blackman", text));
 		butonPanel.add(buttonJoseph);
 		
 		tabs = new ArrayList<JanewayTabModel>();
