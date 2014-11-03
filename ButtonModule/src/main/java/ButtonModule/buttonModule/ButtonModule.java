@@ -42,6 +42,8 @@ public class ButtonModule implements IJanewayModule {
 		
 		JButton jonButton = new JButton("Jon");
 		
+		JButton sameeButton = new JButton("Samee!");
+		
 		// Setup the main panel
 		JPanel mainPanel = new JPanel();
 		mainPanel.setLayout(new BorderLayout());
@@ -54,6 +56,8 @@ public class ButtonModule implements IJanewayModule {
 		buttonPanel.add(button0);
 		button1.addActionListener(new TestListener("You pushed button 1", text));
 		buttonPanel.add(button1);
+		sameeButton.addActionListener(new TestListener("Boo!", text));
+		buttonPanel.add(sameeButton);
 		
 		//Teammember buttons
 		jonButton.addActionListener(new TestListener("You pushed the Jon button", text));
