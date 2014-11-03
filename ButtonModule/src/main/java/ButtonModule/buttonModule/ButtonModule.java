@@ -52,8 +52,8 @@ public class ButtonModule implements IJanewayModule {
 		buttonPanel.add(button0);
 		button1.addActionListener(new TestListener("You pushed button 1", text));
 		buttonPanel.add(button1);
-		josephButton.addActionListener(new TestListener("Blackman", text));
-		butonPanel.add(buttonJoseph);
+		buttonJoseph.addActionListener(new TestListener("Blackman", text));
+		buttonPanel.add(buttonJoseph);
 		
 		tabs = new ArrayList<JanewayTabModel>();
 		JanewayTabModel tab = new JanewayTabModel("//no comment", new ImageIcon(), buttonPanel, mainPanel);
