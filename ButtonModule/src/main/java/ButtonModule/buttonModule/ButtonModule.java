@@ -38,6 +38,7 @@ public class ButtonModule implements IJanewayModule {
 		buttonPanel.setLayout(new FlowLayout());
 		JButton button0 = new JButton("Button 0");
 		JButton button1 = new JButton("Button 1");
+		JButton bethButton = new JButton("Beth");
 		
 		// Setup the main panel
 		JPanel mainPanel = new JPanel();
@@ -51,6 +52,8 @@ public class ButtonModule implements IJanewayModule {
 		buttonPanel.add(button0);
 		button1.addActionListener(new TestListener("You pushed button 1", text));
 		buttonPanel.add(button1);
+		bethButton.addActionListener(new TestListener("You pushed the Beth button!", text));
+		buttonPanel.add(bethButton);
 		
 		tabs = new ArrayList<JanewayTabModel>();
 		JanewayTabModel tab = new JanewayTabModel("//no comment", new ImageIcon(), buttonPanel, mainPanel);
