@@ -36,8 +36,6 @@ public class ButtonModule implements IJanewayModule {
 		// Setup button panel
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setLayout(new FlowLayout());
-		JButton button0 = new JButton("Button 0");
-		JButton button1 = new JButton("Button 1");
 
 		//Setup teammember's buttons
 		JButton bethButton = new JButton("Beth");		
@@ -53,12 +51,6 @@ public class ButtonModule implements IJanewayModule {
 		mainPanel.add(new JLabel("//no comment"), BorderLayout.PAGE_START);
 		JTextField text = new JTextField();
 		mainPanel.add(text, BorderLayout.CENTER);
-		
-		// Add listeners to the buttons
-		button0.addActionListener(new TestListener("You pushed button 0", text));
-		buttonPanel.add(button0);
-		button1.addActionListener(new TestListener("You pushed button 1", text));
-		buttonPanel.add(button1);
 		
 		//Teammember buttons' listeners
 		sameeButton.addActionListener(new TestListener("Boo!", text));
