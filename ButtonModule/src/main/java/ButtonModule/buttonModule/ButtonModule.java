@@ -67,7 +67,7 @@ public class ButtonModule implements IJanewayModule {
 		samButton.addActionListener(new TestListener("Nobody expects the Dialog Box!", text));
 		buttonPanel.add(samButton);
 		thaneButton.addActionListener(new TestListener("Thane has a button.", text));
-		
+		buttonPanel.add(thaneButton);
 		tabs = new ArrayList<JanewayTabModel>();
 		JanewayTabModel tab = new JanewayTabModel("//no comment", new ImageIcon(), buttonPanel, mainPanel);
 		tabs.add(tab);
