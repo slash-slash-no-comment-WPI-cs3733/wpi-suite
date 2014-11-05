@@ -1,5 +1,5 @@
 package taskManager.model;
 
-public interface IWorkflow {
+public interface IModel {
 
 }

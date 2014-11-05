@@ -1,6 +1,6 @@
 package taskManager.model;
 
-public class Workflow implements IWorkflow {
+public class Workflow implements IModel {
 
 	public Workflow() {
 		// TODO Auto-generated constructor stub
