@@ -145,6 +145,10 @@ public class TaskModel implements IModel {
 	 *            the estimatedEffort to set
 	 */
 	public void setEstimatedEffort(int estimatedEffort) {
+		if (estimatedEffort <= 0) {
+			throw new IllegalArgumentException(
+					"estimatedEffort must be positive");
+		}
 		this.estimatedEffort = estimatedEffort;
 	}
 
@@ -160,6 +164,10 @@ public class TaskModel implements IModel {
 	 *            the actualEffort to set
 	 */
 	public void setActualEffort(int actualEffort) {
+		if (actualEffort < 0) {
+			throw new IllegalArgumentException(
+					"actualEffort must be non-negative");
+		}
 		this.actualEffort = actualEffort;
 	}
 
