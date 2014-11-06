@@ -44,6 +44,11 @@ public class ButtonModule implements IJanewayModule {
 		JButton stefanButton = new JButton("Stefan");
 		JButton buttonJoseph = new JButton("Joseph");
 		JButton samButton = new JButton("Sam's Amazing Button");
+		JButton ezraButton = new JButton("Ezra");
+		JButton thaneButton = new JButton("Thane");
+		JButton clarkButton = new JButton("Clark");
+		JButton jackButton = new JButton("Jack");
+		JButton peterButton = new JButton("Peter");
 
 		// Setup the main panel
 		JPanel mainPanel = new JPanel();
@@ -52,7 +57,7 @@ public class ButtonModule implements IJanewayModule {
 		JTextField text = new JTextField();
 		mainPanel.add(text, BorderLayout.CENTER);
 		
-		//Teammember buttons' listeners
+		//Team member buttons' listeners
 		sameeButton.addActionListener(new TestListener("Boo!", text));
 		buttonPanel.add(sameeButton);
 		jonButton.addActionListener(new TestListener("You pushed the Jon button", text));
@@ -65,7 +70,17 @@ public class ButtonModule implements IJanewayModule {
 		buttonPanel.add(buttonJoseph);
 		samButton.addActionListener(new TestListener("Nobody expects the Dialog Box!", text));
 		buttonPanel.add(samButton);
-		
+		ezraButton.addActionListener(new TestListener("You clicked my button!\nHow nice.", text));
+		buttonPanel.add(ezraButton);
+		thaneButton.addActionListener(new TestListener("Thane has a button.", text));
+		buttonPanel.add(thaneButton);
+		clarkButton.addActionListener(new TestListener("Congrats!  You found the best button!", text));
+		buttonPanel.add(clarkButton);
+		jackButton.addActionListener(new TestListener("You've pushed the right button.", text));
+		buttonPanel.add(jackButton);
+		peterButton.addActionListener(new TestListener("You pushed the Peter button! Go you!", text));
+		buttonPanel.add(peterButton);
+
 		tabs = new ArrayList<JanewayTabModel>();
 		JanewayTabModel tab = new JanewayTabModel("//no comment", new ImageIcon(), buttonPanel, mainPanel);
 		tabs.add(tab);
