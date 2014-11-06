@@ -1,8 +1,8 @@
 package taskManager.model;
 
-public class Task implements IModel {
+public class StageModel implements IModel {
 
-	public Task() {
+	public StageModel() {
 		// TODO Auto-generated constructor stub
 	}
 
