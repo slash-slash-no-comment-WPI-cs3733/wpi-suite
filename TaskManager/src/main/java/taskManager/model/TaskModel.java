@@ -11,7 +11,9 @@ package taskManager.model;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
@@ -42,7 +44,7 @@ public class TaskModel implements IModel {
 	private StageModel status;
 
 	// List of users assigned to this task
-	private List<User> assigned;
+	private final Set<User> assigned;
 
 	// Due-date timestamp
 	private Date dueDate;
@@ -54,19 +56,20 @@ public class TaskModel implements IModel {
 	private int actualEffort;
 
 	// Actions and comments relevant to task
-	private List<ActivityModel> activities;
+	private final List<ActivityModel> activities;
 
 	// Associated requirement that this task corresponds to
 	private Requirement req;
 
 	/**
 	 * Constructor assigns title and task id
+	 * 
 	 * @param title
 	 */
 	public TaskModel(String title) {
 		this.title = title;
 		id = idCount++;
-		assigned = new ArrayList<User>();
+		assigned = new HashSet<User>();
 		activities = new ArrayList<ActivityModel>();
 	}
 
@@ -178,19 +181,18 @@ public class TaskModel implements IModel {
 	/**
 	 * @return the assigned users
 	 */
-	public List<User> getAssigned() {
+	public Set<User> getAssigned() {
 		return assigned;
 	}
 
 	/**
 	 * Adds user to assigned list
 	 * 
-	 * @param user new user to be added
+	 * @param user
+	 *            new user to be added
 	 */
 	public void addAssigned(User user) {
-		if (!assigned.contains(user)) {
-			assigned.add(user);
-		}
+		assigned.add(user);
 	}
 
 	/**
