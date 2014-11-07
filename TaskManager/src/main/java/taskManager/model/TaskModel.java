@@ -15,6 +15,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import edu.wpi.cs.wpisuitetng.Permission;
+import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
+import edu.wpi.cs.wpisuitetng.modules.Model;
+import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 
@@ -25,7 +29,7 @@ import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
  * @version Nov 6, 2014
  */
 
-public class TaskModel implements IModel {
+public class TaskModel extends AbstractModel {
 
 	// Static ID counter; incremented each time task is created. Rollover can be
 	// safely ignored.
@@ -147,7 +151,7 @@ public class TaskModel implements IModel {
 	public void setEstimatedEffort(int estimatedEffort) {
 		if (estimatedEffort <= 0) {
 			throw new IllegalArgumentException(
-					"estimatedEffort must be positive");
+					"estimatedEffort must be non-negative");
 		}
 		this.estimatedEffort = estimatedEffort;
 	}
@@ -164,7 +168,7 @@ public class TaskModel implements IModel {
 	 *            the actualEffort to set
 	 */
 	public void setActualEffort(int actualEffort) {
-		if (actualEffort < 0) {
+		if (actualEffort <= 0) {
 			throw new IllegalArgumentException(
 					"actualEffort must be non-negative");
 		}
@@ -227,6 +231,57 @@ public class TaskModel implements IModel {
 	 */
 	public void addActivity(ActivityModel activity) {
 		activities.add(activity);
+	}
+
+	
+	
+	
+	@Override
+	public void save() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String toJson() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Boolean identify(Object o) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Permission getPermission(User u) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setPermission(Permission p, User u) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Project getProject() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setProject(Project p) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

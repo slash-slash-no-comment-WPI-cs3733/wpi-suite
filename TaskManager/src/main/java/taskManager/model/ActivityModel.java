@@ -10,6 +10,7 @@ package taskManager.model;
 
 import java.util.Date;
 
+import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
@@ -18,7 +19,7 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.User;
  * @author Sam Khalandovsky
  * @version Nov 6, 2014
  */
-public class ActivityModel implements IModel {
+public class ActivityModel extends AbstractModel {
 
 	// Static ID counter; incremented each time task is created. Rollover can be
 	// safely ignored.
@@ -78,6 +79,30 @@ public class ActivityModel implements IModel {
 	 */
 	public User getActor() {
 		return actor;
+	}
+
+	@Override
+	public void save() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String toJson() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Boolean identify(Object o) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
