@@ -8,19 +8,33 @@
  *******************************************************************************/
 package taskManager.controller;
 
+import java.util.List;
+
+import taskManager.model.StageModel;
+import taskManager.model.WorkflowModel;
+import taskManager.view.IWorkflowView;
+
 /**
- * Description
+ * Description A controller for the workflow view
  *
- * @author
+ * @author Jon Sorrells
  */
 public class WorkflowController {
 
-	/**
-	 * Description
-	 *
-	 */
-	public WorkflowController() {
-		// TODO Auto-generated constructor stub
+	private final IWorkflowView view;
+	private final WorkflowModel model;
+
+	public WorkflowController(IWorkflowView view, WorkflowModel model) {
+		this.view = view;
+		this.model = model;
+		
+		// get all the stages in this workflow
+		List<StageModel> stages = this.model.getStages();
+		// and add them all to the view
+		for(StageModel stage : stages){
+			// TODO
+			// this.view.addStageView(stage.getName());
+		}
 	}
 
 }
