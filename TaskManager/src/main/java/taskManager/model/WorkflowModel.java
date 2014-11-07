@@ -1,102 +1,118 @@
 package taskManager.model;
 
-import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
-import edu.wpi.cs.wpisuitetng.modules.core.models.User;
-import edu.wpi.cs.wpisuitetng.modules.core.models.UserSerializer;
-
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
+import edu.wpi.cs.wpisuitetng.modules.core.models.User;
+import edu.wpi.cs.wpisuitetng.modules.core.models.UserSerializer;
 
 public class WorkflowModel extends AbstractModel {
 	List<StageModel> stagesList;
-	private static int idCount = 0;
-	private final int id;
 	String name;
-	
+
 	public WorkflowModel() {
 		stagesList = new ArrayList<StageModel>();
-		id = idCount++;
 		// TODO Add default stages
 	}
-	
+
 	/**
-	 * Moves a stage currently in the WorkFlowModel to the given position on it's list.
-	 * @param s Stage to be moved.
-	 * @param index Target location in the list
+	 * Moves a stage currently in the WorkFlowModel to the given position on its
+	 * list.
 	 * 
+	 * @param s
+	 *            Stage to be moved.
+	 * @param index
+	 *            Target location in the list
+	 *
 	 */
 	public void moveStage(int index, StageModel s) {
-		if(!stagesList.contains(s)) {
-			throw new IllegalArgumentException("Stage being moved must already be in the workflow.");
+		if (!stagesList.contains(s)) {
+			throw new IllegalArgumentException(
+					"Stage being moved must already be in the workflow.");
 		}
-		if(stagesList.size() <= index) {
+		if (stagesList.size() <= index) {
 			index = stagesList.size();
+		}
+		if (index < 0) {
+			index = 0;
 		}
 		stagesList.remove(s);
 		stagesList.add(index, s);
 		return;
 	}
-	
+
 	/**
-	 * Adds a stage to the end of the WorkFlowModel 
-	 * @param s Stage to be added.
+	 * Adds a stage to index items from the beginning of the WorkFlowModel Stage
+	 * is added to the end of the current list.
+	 * 
+	 * @param StageModel
+	 *            newStage Stage to be added.
 	 */
-	public void addStage(StageModel s) {
-		addStage(stagesList.size(), s);
+	public synchronized void addStage(StageModel newStage) {
+		addStage(stagesList.size(), newStage);
 	}
-	
+
 	/**
-	 * Adds a stage to index items from the beginning of the WorkFlowModel 
-	 * @param s Stage to be added.
+	 * Adds a stage to index items from the beginning of the WorkFlowModel
+	 * 
+	 * @param int index Index in the list of stages where we are adding the new
+	 *        stage.
+	 * @param StageModel
+	 *            newStage Stage to be added.
 	 */
-	public void addStage(int index, StageModel s) {
-		stagesList.add(index, s);
+	public synchronized void addStage(int index, StageModel newStage) {
+		for (StageModel stage : stagesList) {
+			if (stage.getID().equals(newStage.getID())) {
+				newStage.setID(newStage.getID() + '#');
+				addStage(index, newStage);
+				break;
+			}
+		}
+		stagesList.add(index, newStage);
 	}
+
 	/**
 	 * Gets a list of the stages in this workflow.
+	 * 
 	 * @return the list of stages
 	 */
 	public List<StageModel> getStages() {
 		return stagesList;
 	}
-	
+
 	@Override
 	public void save() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void delete() {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
-    /**
-     * Serializes this Workflow model into a JSON string.
-     * 
-     * @return the JSON representation of this User
-     */
+
+	/**
+	 * Serializes this Workflow model into a JSON string.
+	 *
+	 * @return the JSON representation of this User
+	 */
 	@Override
-    public String toJson() {
-        String json;
-        Gson gson = new GsonBuilder().registerTypeAdapter(User.class, new UserSerializer()).create();
-        json = gson.toJson(this, User.class);
-
-        return json;
-    }
-
+	public String toJson() {
+		Gson gson = new GsonBuilder().registerTypeAdapter(WorkflowModel.class,
+				new UserSerializer()).create();
+		return gson.toJson(this, User.class);
+	}
 
 	@Override
 	public Boolean identify(Object o) {
-		if(o instanceof WorkflowModel) {
-			return true;
-		} else {
-			return false;
+		if (o instanceof WorkflowModel) {
+			return ((WorkflowModel) o).name == name;
 		}
+		return false;
 	}
 }
