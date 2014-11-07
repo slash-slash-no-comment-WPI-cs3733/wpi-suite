@@ -51,7 +51,7 @@ public class JanewayModule implements IJanewayModule {
 
         // add keyboard shortcuts to defects tab
         String osName = System.getProperty("os.name").toLowerCase();
-        registerKeyboardShortcuts(mainTabController, tab, osName);
+//        registerKeyboardShortcuts(mainTabController, tab, osName);
     }
 
     /**
