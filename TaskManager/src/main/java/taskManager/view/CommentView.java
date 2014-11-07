@@ -1,5 +1,9 @@
 package taskManager.view;
 
+/*
+ * @author 
+ */
+
 import java.awt.LayoutManager;
 
 import javax.swing.JPanel;
@@ -28,6 +32,11 @@ public class CommentView extends JPanel {
 	public CommentView(LayoutManager arg0, boolean arg1) {
 		super(arg0, arg1);
 		// TODO Auto-generated constructor stub
+	}
+	
+	@Override
+	public String getName(){
+		return this.getName();
 	}
 
 }
