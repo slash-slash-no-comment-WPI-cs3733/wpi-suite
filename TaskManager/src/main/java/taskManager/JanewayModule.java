@@ -6,14 +6,16 @@ package taskManager;
 
 import java.awt.FlowLayout;
 import java.util.ArrayList;
-
-import taskManager.view.WorkflowView;
-
-import javax.swing.*;
-
 import java.util.List;
 
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JPanel;
 
+import taskManager.controller.WorkflowController;
+import taskManager.model.StageModel;
+import taskManager.model.WorkflowModel;
+import taskManager.view.WorkflowView;
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
 import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
 
@@ -33,7 +35,19 @@ public class JanewayModule implements IJanewayModule {
 	public JanewayModule() {
 		
 		//creates the workflow view
-		JPanel wfv = new WorkflowView();
+		WorkflowView wfv = new WorkflowView();
+
+		// create a new workflow model
+		WorkflowModel wfm = new WorkflowModel();
+		// give it the default stages
+		new StageModel(wfm, "Backlog", false);
+		new StageModel(wfm, "In Progress", false);
+		new StageModel(wfm, "Review", false);
+		new StageModel(wfm, "To Merge", false);
+		new StageModel(wfm, "Merged", false);
+
+		// create the controller for the view
+		wfv.setController(new WorkflowController(wfv, wfm));
 		
 		//creates the menu view
 		JPanel menu = new JPanel(); //in the future, Samee's menu needs to go here

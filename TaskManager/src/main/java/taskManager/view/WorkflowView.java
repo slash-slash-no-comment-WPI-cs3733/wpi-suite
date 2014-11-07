@@ -3,10 +3,17 @@ package taskManager.view;
 /*
  * @author Beth Martino
  */
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
+import taskManager.controller.WorkflowController;
 
 public class WorkflowView extends JPanel implements IWorkflowView{
 
@@ -15,15 +22,12 @@ public class WorkflowView extends JPanel implements IWorkflowView{
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private WorkflowController controller;
+
 	public WorkflowView() {
 		
 		//arranges the stages horizontally and evenly spaced
 		this.setLayout(new FlowLayout());
-		
-		this.addStageView("Backlog");
-		this.addStageView("In Progress");
-		this.addStageView("Review");
-		this.addStageView("To Merge");
 		
 	}
 	
@@ -59,6 +63,8 @@ public class WorkflowView extends JPanel implements IWorkflowView{
 		return this.getName();
 	}
 
-	
+	public void setController(WorkflowController controller) {
+		this.controller = controller;
+	}
 
 }
