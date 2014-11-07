@@ -22,7 +22,7 @@ public class WorkflowModel extends AbstractModel {
 	/**
 	 * Moves a stage currently in the WorkFlowModel to the given position on its
 	 * list.
-	 * 
+	 *
 	 * @param s
 	 *            Stage to be moved.
 	 * @param index
@@ -48,7 +48,7 @@ public class WorkflowModel extends AbstractModel {
 	/**
 	 * Adds a stage to index items from the beginning of the WorkFlowModel Stage
 	 * is added to the end of the current list.
-	 * 
+	 *
 	 * @param StageModel
 	 *            newStage Stage to be added.
 	 */
@@ -58,7 +58,7 @@ public class WorkflowModel extends AbstractModel {
 
 	/**
 	 * Adds a stage to index items from the beginning of the WorkFlowModel
-	 * 
+	 *
 	 * @param int index Index in the list of stages where we are adding the new
 	 *        stage.
 	 * @param StageModel
@@ -69,7 +69,7 @@ public class WorkflowModel extends AbstractModel {
 			if (stage.getID().equals(newStage.getID())) {
 				newStage.setID(newStage.getID() + '#');
 				addStage(index, newStage);
-				break;
+				return;
 			}
 		}
 		stagesList.add(index, newStage);
@@ -77,7 +77,7 @@ public class WorkflowModel extends AbstractModel {
 
 	/**
 	 * Gets a list of the stages in this workflow.
-	 * 
+	 *
 	 * @return the list of stages
 	 */
 	public List<StageModel> getStages() {

@@ -83,7 +83,7 @@ public class TaskModel extends AbstractModel {
 	}
 
 	/**
-	 * @return the id
+	 * @return the internal id
 	 */
 	public String getID() {
 		return id;
@@ -91,7 +91,7 @@ public class TaskModel extends AbstractModel {
 
 	/**
 	 * @param id
-	 *            the id to set
+	 *            set the internal id
 	 */
 	public void setID(String id) {
 		this.id = id;
