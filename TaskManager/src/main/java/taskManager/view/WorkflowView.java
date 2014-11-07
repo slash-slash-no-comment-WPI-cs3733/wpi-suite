@@ -32,7 +32,7 @@ public class WorkflowView extends JPanel implements IWorkflowView{
 	 * creates a new scroll panel to house the stage view object 
 	 * sets the size and border
 	 */
-	private void addStageView(String name){
+	public void addStageView(String name){
 		
 		//creates the container for both the label and the scroll
 		JPanel block = new JPanel();

@@ -39,7 +39,7 @@ public class StageView extends JPanel implements IStageView {
 	 * @param data for new task view
 	 * will be entered by the user
 	 */
-	private void addTaskView(String name){
+	public void addTaskView(String name){
 		this.add(new TaskView(name));
 	}
 	
