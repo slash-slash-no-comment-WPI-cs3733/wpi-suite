@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2012-2014 -- WPI Suite
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
+
 package taskManager.model;
 
 import java.util.ArrayList;
@@ -8,9 +17,13 @@ import com.google.gson.Gson;
 import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
 
 /**
- * Description
+ * One stage in development for the process. Stages are saved per
+ * {@link WorkflowModel Workflow}, and contain a number of {@link TaskModel
+ * Tasks}.
  *
- * @author joe
+ * @author Joseph Blackman
+ * @author Sam Khalandovsky
+ * @author Ezra
  * @version Nov 6, 2014
  */
 public class StageModel extends AbstractModel {

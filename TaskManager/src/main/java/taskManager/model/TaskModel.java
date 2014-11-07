@@ -20,9 +20,12 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 
 /**
- * Stores data of each task in the workflow
+ * Stores data of each task in the workflow. Tasks are saved per
+ * {@link StageModel Stage}.
  *
  * @author Sam Khalandovsky
+ * @author Joseph Blackman
+ * @author Ezra
  * @version Nov 6, 2014
  */
 
