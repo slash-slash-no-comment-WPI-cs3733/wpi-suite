@@ -17,6 +17,7 @@ import java.util.Set;
 
 import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
+import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 
 /**
  * Stores data of each task in the workflow
@@ -53,6 +54,9 @@ public class TaskModel extends AbstractModel {
 
 	// Actions and comments relevant to task
 	private final List<ActivityModel> activities;
+
+	// Associated requirement that this task corresponds to
+	private Requirement req;
 
 	/**
 	 * Constructor assigns title and task id
@@ -178,6 +182,21 @@ public class TaskModel extends AbstractModel {
 					"actualEffort must be non-negative");
 		}
 		this.actualEffort = actualEffort;
+	}
+
+	/**
+	 * @return the requirement
+	 */
+	public Requirement getReq() {
+		return req;
+	}
+
+	/**
+	 * @param req
+	 *            the requirement to set
+	 */
+	public void setReq(Requirement req) {
+		this.req = req;
 	}
 
 	/**
