@@ -4,39 +4,31 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
+import javax.swing.JPanel;
 
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
 import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
-import taskManager.controller.*;
-import taskManager.view.*;
+
 
 /**
  * The JanewayModule for our task manager
  *
  */
 public class JanewayModule implements IJanewayModule {
-
+	
 	/** The tabs used by this module */
 	private ArrayList<JanewayTabModel> tabs;
-	public final IController workflowController;
-	public IController toolbarController;
-
+	
 	/**
-	 * Construct the main and toolbar panels
+	 * Construct a blank tab
 	 */
 	public JanewayModule() {
-		// Create the controllers
-		workflowController = new Controller(); // WorkflowController();
-		toolbarController = new Controller(); // ToolbarController();
-
-		// Create the panels
-		// mainPanel is the entire window - toolbar
-		WorkflowView mainPanel = new WorkflowView(workflowController);
-		ToolbarView toolbarPanel = new ToolbarView(toolbarController);
-
+		
+		JPanel buttonPanel = new JPanel();
+		JPanel mainPanel = new JPanel();
+		
 		tabs = new ArrayList<JanewayTabModel>();
-		JanewayTabModel tab = new JanewayTabModel("Task Manager",
-				new ImageIcon(), toolbarPanel, mainPanel);
+		JanewayTabModel tab = new JanewayTabModel("Task Manager", new ImageIcon(), mainPanel, buttonPanel);
 		tabs.add(tab);
 	}
 

@@ -1,7 +1,6 @@
 package taskManager.view;
 
 import java.awt.LayoutManager;
-import taskManager.controller.*;
 
 import javax.swing.JPanel;
 
@@ -12,7 +11,7 @@ public class WorkflowView extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public WorkflowView(IController controller) {
+	public WorkflowView() {
 		// TODO Auto-generated constructor stub
 	}
 
