@@ -1,0 +1,8 @@
+
+dependencies{
+	compile 'com.google.code.gson:gson:2.2.2'
+	
+	compile project(':Network')
+	compile project(':WPISuite-Interfaces')
+	compile project(':JanewayAPI')
+}
