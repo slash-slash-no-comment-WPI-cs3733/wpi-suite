@@ -1,10 +1,18 @@
 package taskManager;
 
+/**
+ * @author Beth Martino
+ */
+
+import java.awt.FlowLayout;
 import java.util.ArrayList;
+
+import taskManager.view.WorkflowView;
+
+import javax.swing.*;
+
 import java.util.List;
 
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
 
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
 import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
@@ -24,11 +32,43 @@ public class JanewayModule implements IJanewayModule {
 	 */
 	public JanewayModule() {
 		
-		JPanel buttonPanel = new JPanel();
-		JPanel mainPanel = new JPanel();
+		//creates the workflow view
+		JPanel wfv = new WorkflowView();
 		
+		//creates the menu view
+		JPanel menu = new JPanel(); //in the future, Samee's menu needs to go here
+		menu.setLayout(new FlowLayout());
+
+		//Setup teammember's buttons for now, it will be Samee's menu
+		JButton bethButton = new JButton("Beth");		
+		JButton jonButton = new JButton("Jon");
+		JButton sameeButton = new JButton("Samee!");
+		JButton stefanButton = new JButton("Stefan");
+		JButton buttonJoseph = new JButton("Joseph");
+		JButton samButton = new JButton("Sam's Amazing Button");
+		JButton ezraButton = new JButton("Ezra");
+		JButton thaneButton = new JButton("Thane");
+		JButton clarkButton = new JButton("Clark");
+		JButton jackButton = new JButton("Jack");
+		JButton peterButton = new JButton("Peter");
+		JButton tylerButton = new JButton("Tyler");
+		menu.add(sameeButton);
+		menu.add(jonButton);
+		menu.add(bethButton);
+		menu.add(stefanButton);
+		menu.add(buttonJoseph);
+		menu.add(samButton);
+		menu.add(ezraButton);
+		menu.add(thaneButton);
+		menu.add(clarkButton);
+		menu.add(jackButton);
+		menu.add(peterButton);
+		menu.add(tylerButton);
+		
+		//this adds the menu and the main panel to the pre-configured janeway module view. 
+		//It uses the spring layout
 		tabs = new ArrayList<JanewayTabModel>();
-		JanewayTabModel tab = new JanewayTabModel("Task Manager", new ImageIcon(), mainPanel, buttonPanel);
+		JanewayTabModel tab = new JanewayTabModel("Task Manager", new ImageIcon(), menu,wfv);
 		tabs.add(tab);
 	}
 
