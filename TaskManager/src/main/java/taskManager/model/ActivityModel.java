@@ -14,19 +14,13 @@ import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
- * Description
+ * Description Activities represent changes to a Task and comments users have
+ * written about a Task.
  *
  * @author Sam Khalandovsky
  * @version Nov 6, 2014
  */
 public class ActivityModel extends AbstractModel {
-
-	// Static ID counter; incremented each time task is created. Rollover can be
-	// safely ignored.
-	private static int idCount = 0;
-
-	// Unique identifier
-	private final int id;
 
 	// Date of creation
 	private final Date dateCreated;
@@ -55,7 +49,6 @@ public class ActivityModel extends AbstractModel {
 	public ActivityModel(String description, User actor) {
 		this.description = description;
 		this.actor = actor;
-		id = idCount++;
 		dateCreated = new Date(); // set date to time ActivityModel was
 									// instantiated
 	}
@@ -84,13 +77,13 @@ public class ActivityModel extends AbstractModel {
 	@Override
 	public void save() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void delete() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
