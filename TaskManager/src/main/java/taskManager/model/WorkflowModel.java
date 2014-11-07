@@ -69,7 +69,7 @@ public class WorkflowModel extends AbstractModel {
 	 * @param StageModel
 	 *            newStage Stage to be added.
 	 */
-	public synchronized void addStage(StageModel newStage) {
+	public void addStage(StageModel newStage) {
 		addStage(stagesList.size(), newStage);
 	}
 
@@ -81,7 +81,7 @@ public class WorkflowModel extends AbstractModel {
 	 * @param StageModel
 	 *            newStage Stage to be added.
 	 */
-	public synchronized void addStage(int index, StageModel newStage) {
+	public void addStage(int index, StageModel newStage) {
 		for (StageModel stage : stagesList) {
 			if (stage.getID().equals(newStage.getID())) {
 				newStage.setID(newStage.getID() + '#');
