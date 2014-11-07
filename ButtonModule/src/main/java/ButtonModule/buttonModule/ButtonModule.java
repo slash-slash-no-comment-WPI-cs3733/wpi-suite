@@ -49,6 +49,7 @@ public class ButtonModule implements IJanewayModule {
 		JButton clarkButton = new JButton("Clark");
 		JButton jackButton = new JButton("Jack");
 		JButton peterButton = new JButton("Peter");
+		JButton tylerButton = new JButton("Tyler");
 
 		// Setup the main panel
 		JPanel mainPanel = new JPanel();
@@ -80,6 +81,8 @@ public class ButtonModule implements IJanewayModule {
 		buttonPanel.add(jackButton);
 		peterButton.addActionListener(new TestListener("You pushed the Peter button! Go you!", text));
 		buttonPanel.add(peterButton);
+		tylerButton.addActionListener(new TestListener("Congrats, you pushed the Tyler button", text));
+		buttonPanel.add(tylerButton);
 
 		tabs = new ArrayList<JanewayTabModel>();
 		JanewayTabModel tab = new JanewayTabModel("//no comment", new ImageIcon(), buttonPanel, mainPanel);
