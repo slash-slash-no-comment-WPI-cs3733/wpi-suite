@@ -25,28 +25,29 @@ import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
  *
  * @author Sam Khalandovsky
  * @author Joseph Blackman
- * @author Ezra
+ * @author Ezra Davis
  * @version Nov 6, 2014
  */
 
 public class TaskModel extends AbstractModel {
 
-	// Task title
-	private String title;
+	// Task name
+	private String name;
 
-	// Internal task title, unique.
+	// Internal task name, unique.
 	private String id;
 
 	// Task description
 	private String description;
 
-	// Current stage that task belongs to
-	private StageModel status;
+	// Current stage that task belongs to. This is not a link to the StageModel
+	// itself, since that would serialize poorly.
+	private String stage;
 
 	// List of users assigned to this task
 	private final Set<User> assigned;
 
-	// Due-date timestamp
+	// Due date timestamp
 	private Date dueDate;
 
 	// Estimated effort required for completion
@@ -62,31 +63,45 @@ public class TaskModel extends AbstractModel {
 	private Requirement req;
 
 	/**
-	 * Constructor assigns title and task id
+	 * Constructor assigns name, task id, and stage.
 	 *
-	 * @param title
+	 * @param name
+	 *            name of the new task
+	 * @param stage
+	 *            stage that it enters in
+	 * @param workflow
 	 */
-	public TaskModel(String title, StageModel stage) {
-		this.title = title;
-		this.id = title;
+	public TaskModel(String name, String stage, WorkflowModel workflow) {
+		this.name = name;
+		id = name;
 		assigned = new HashSet<User>();
 		activities = new ArrayList<ActivityModel>();
-		stage.addTask(this);
+		workflow.addTask(this, stage);
 	}
 
 	/**
-	 * @return the title
+	 * Blank constructor Necessary for creating dummy objects when querying
+	 * database
 	 */
-	public String getTitle() {
-		return title;
+	public TaskModel() {
+		assigned = null;
+		activities = null;
 	}
 
 	/**
-	 * @param title
-	 *            the title to set
+	 * @return the name
 	 */
-	public void setTitle(String title) {
-		this.title = title;
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name
+	 *            Change the name of the task. Does not change the internal
+	 *            name.
+	 */
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	/**
@@ -120,18 +135,19 @@ public class TaskModel extends AbstractModel {
 	}
 
 	/**
-	 * @return the status
+	 * @return the current stage
 	 */
-	public StageModel getStatus() {
-		return status;
+	public String getStage() {
+		return stage;
 	}
 
 	/**
-	 * @param status
-	 *            the status to set
+	 * @param stage
+	 *            Change the current task stage. This is only a duplicate, and
+	 *            the stage that the task belongs to should be updated too.
 	 */
-	public void setStatus(StageModel status) {
-		this.status = status;
+	public void setStage(String stage) {
+		this.stage = stage;
 	}
 
 	/**
@@ -261,11 +277,24 @@ public class TaskModel extends AbstractModel {
 		return null;
 	}
 
+	/**
+	 * Static method for deserializing object from JSON
+	 *
+	 * @param serialized
+	 *            JSON string
+	 * @return the deserialized TaskModel
+	 */
+	public static TaskModel fromJson(String serialized) {
+		// TODO
+		return null;
+	}
+
 	@Override
 	public Boolean identify(Object o) {
+		boolean identify = false;
 		if (o instanceof TaskModel) {
-			return ((TaskModel) o).getID() == this.getID();
+			identify = ((TaskModel) o).id.equals(id);
 		}
-		return false;
+		return identify;
 	}
 }
