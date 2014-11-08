@@ -1,10 +1,9 @@
 package taskManager;
 
 /**
- * @author Beth Martino
+ * @author Samee Swartz
  */
 
-import java.awt.FlowLayout;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,12 +16,12 @@ import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
 import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
 
 /**
- * The JanewayModule for our task manager
+ * The JanewayModule for the task manager
  *
  */
 public class JanewayModule implements IJanewayModule {
 
-	/** The tabs used by this module */
+	// The tabs used by this module
 	private ArrayList<JanewayTabModel> tabs;
 	public final IController workflowController;
 	public IController toolbarController;
@@ -33,12 +32,12 @@ public class JanewayModule implements IJanewayModule {
 	public JanewayModule() {
 
 		// Create the controllers
-		workflowController = new Controller(); // WorkflowController();
-		toolbarController = new Controller(); // ToolbarController();
+		workflowController = new Controller(); // TODO: Update the Controllers
+		toolbarController = new Controller(); // TODO: Update the Controllers
 
 		// Create the panels
-		// mainPanel is the entire window - toolbar
-		WorkflowView mainPanel = new WorkflowView();//workflowController);
+		WorkflowView mainPanel = new WorkflowView(); // TODO: Update the
+														// Controllers
 		ToolbarView toolbarPanel = new ToolbarView(toolbarController);
 
 		tabs = new ArrayList<JanewayTabModel>();
