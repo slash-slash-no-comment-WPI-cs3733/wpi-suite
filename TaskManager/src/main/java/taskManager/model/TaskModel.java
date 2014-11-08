@@ -80,6 +80,15 @@ public class TaskModel extends AbstractModel {
 	}
 
 	/**
+	 * Blank constructor Necessary for creating dummy objects when querying
+	 * database
+	 */
+	public TaskModel() {
+		assigned = null;
+		activities = null;
+	}
+
+	/**
 	 * @return the name
 	 */
 	public String getName() {
@@ -265,6 +274,18 @@ public class TaskModel extends AbstractModel {
 	@Override
 	public String toJson() {
 		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
+	 * Static method for deserializing object from JSON
+	 *
+	 * @param serialized
+	 *            JSON string
+	 * @return the deserialized TaskModel
+	 */
+	public static TaskModel fromJson(String serialized) {
+		// TODO
 		return null;
 	}
 
