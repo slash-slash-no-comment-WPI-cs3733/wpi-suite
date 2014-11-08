@@ -7,19 +7,20 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 import javax.swing.JLabel;
+import javax.swing.JToolBar;
 import java.awt.Font;
 
 import taskManager.controller.*;
 
-import edu.wpi.cs.wpisuitetng.janeway.gui.container.toolbar.DefaultToolbarView;
-import edu.wpi.cs.wpisuitetng.janeway.gui.container.toolbar.ToolbarGroupView;
-import edu.wpi.cs.wpisuitetng.janeway.gui.widgets.JPlaceholderTextField;
+//import edu.wpi.cs.wpisuitetng.janeway.gui.container.toolbar.DefaultToolbarView;
+//import edu.wpi.cs.wpisuitetng.janeway.gui.container.toolbar.ToolbarGroupView;
+//import edu.wpi.cs.wpisuitetng.janeway.gui.widgets.JPlaceholderTextField;
 
 /**
  * The Task Managers tab's toolbar panel.
  */
 @SuppressWarnings("serial")
-public class ToolbarView extends DefaultToolbarView {
+public class ToolbarView extends JToolBar implements IToolbarView {
 
 	private JButton createTask;
 	private JButton manageUsers;
@@ -60,16 +61,17 @@ public class ToolbarView extends DefaultToolbarView {
 		// Calculate the width of the toolbar
 		Double toolbarGroupWidth = createTask.getPreferredSize().getWidth()
 				+ manageStages.getPreferredSize().getWidth()
-				+ manageUsers.getPreferredSize().getWidth() +
-				+ statistics.getPreferredSize().getWidth() + 90; // margin
-		
-		Double projectLoc = (toolbarGroupWidth-projectName.getPreferredSize().getWidth())/2;
+				+ manageUsers.getPreferredSize().getWidth()
+				+ +statistics.getPreferredSize().getWidth() + 90; // margin
+
+		Double projectLoc = (toolbarGroupWidth - projectName.getPreferredSize()
+				.getWidth()) / 2;
 
 		// Configure the layout of the buttons on the content panel
 		layout.putConstraint(SpringLayout.NORTH, projectName, 20,
 				SpringLayout.NORTH, content);
-		layout.putConstraint(SpringLayout.WEST, projectName, projectLoc.intValue(),
-				SpringLayout.WEST, content);
+		layout.putConstraint(SpringLayout.WEST, projectName,
+				projectLoc.intValue(), SpringLayout.WEST, content);
 		layout.putConstraint(SpringLayout.NORTH, createTask, 15,
 				SpringLayout.SOUTH, projectName);
 		layout.putConstraint(SpringLayout.WEST, createTask, 15,
@@ -95,9 +97,13 @@ public class ToolbarView extends DefaultToolbarView {
 		content.add(statistics);
 
 		// Construct a new toolbar group to be added to the end of the toolbar
-		ToolbarGroupView toolbarGroup = new ToolbarGroupView("", content);
+		// ToolbarGroupView toolbarGroup = new ToolbarGroupView("", content);
+		// toolbarGroup.setPreferredWidth(toolbarGroupWidth.intValue());
+		add(content);
+	}
 
-		toolbarGroup.setPreferredWidth(toolbarGroupWidth.intValue());
-		addGroup(toolbarGroup);
+	@Override
+	public String getName() {
+		return this.getName();
 	}
 }
