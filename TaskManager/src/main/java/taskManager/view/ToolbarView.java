@@ -3,17 +3,16 @@
  */
 package taskManager.view;
 
+import java.awt.Font;
+import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
-import javax.swing.JLabel;
-import java.awt.Font;
-
-import taskManager.controller.*;
 
 import edu.wpi.cs.wpisuitetng.janeway.gui.container.toolbar.DefaultToolbarView;
 import edu.wpi.cs.wpisuitetng.janeway.gui.container.toolbar.ToolbarGroupView;
-import edu.wpi.cs.wpisuitetng.janeway.gui.widgets.JPlaceholderTextField;
 
 /**
  * The Task Managers tab's toolbar panel.
@@ -33,7 +32,7 @@ public class ToolbarView extends DefaultToolbarView {
 	 * @param tabController
 	 *            The MainTabController this view should open tabs with
 	 */
-	public ToolbarView(IController toolbarController) {
+	public ToolbarView(ActionListener toolbarController) {
 
 		// Construct the content panel
 		JPanel content = new JPanel();
