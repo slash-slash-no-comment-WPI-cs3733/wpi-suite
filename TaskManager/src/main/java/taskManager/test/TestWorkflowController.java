@@ -8,13 +8,11 @@
  *******************************************************************************/
 package taskManager.test;
 
-import static org.junit.Assert.assertEquals;
+import javax.swing.JFrame;
 
-import java.awt.Component;
-
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
+import org.fest.swing.core.Robot;
+import org.fest.swing.fixture.FrameFixture;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -34,45 +32,44 @@ public class TestWorkflowController {
 			"last" };
 	private WorkflowView wfv;
 	private WorkflowModel wfm;
+	private FrameFixture fixture;
+	private Robot robot;
 
 	@Before
-	public void setup() {
-		// creates a workflow view
+	public void setup() { 
+		// creates a workflow view 
 		wfv = new WorkflowView();
 
 		// create a new workflow model
-		wfm = new WorkflowModel();
-		// give it the stages
-		for (String name : stageNames) {
+		wfm = new WorkflowModel(); 
+		// give it the stages 
+		for (String name : stageNames) { 
 			new StageModel(wfm, name, false);
 		}
 
-		// create the controller for the view
+		// create controller for view
 		wfv.setController(new WorkflowController(wfv, wfm));
+
+		JFrame frame = new JFrame();
+		frame.add(wfv);
+
+		fixture = new FrameFixture(frame);
+
+		fixture.show();
 	}
 
-	/**
-	 * I need to look into other ways to test this
-	 *
-	 */
 	@Test
-	public void testStageNames() {
-		int i = 0;
-		Component[] stagePanels = wfv.getComponents();
-		for (Component panel : stagePanels) {
-			if (panel instanceof JPanel) {
-				Component[] components = ((JPanel) panel).getComponents();
-				for (Component thing : components) {
-					if (thing instanceof JPanel) {
-						Component[] stuff = ((JPanel) thing).getComponents();
-						for (Component blah : stuff) {
-							assertEquals(((JLabel) blah).getText(),
-									stageNames[i++]);
-						}
-					}
-				}
-			}
-		}
+	public void test() {
+
+		fixture.requireVisible();
+		fixture.panel("test2");
+		// fixture.label("test").requireText("first");
 	}
+
+	@After
+	public void cleanup() {
+		// fixture.cleanUp();
+	}
+
 
 }

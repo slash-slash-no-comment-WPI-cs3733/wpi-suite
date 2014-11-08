@@ -46,6 +46,7 @@ public class WorkflowView extends JPanel implements IWorkflowView{
 		JPanel label = new JPanel();
 		label.setPreferredSize(new Dimension(175,25));
 		label.add(new JLabel(name));
+		label.setName("test");
 		block.add(label);
 		
 		//creates the scroll containing the stage view and adds it to the block
@@ -60,7 +61,7 @@ public class WorkflowView extends JPanel implements IWorkflowView{
 	
 	@Override
 	public String getName(){
-		return this.getName();
+		return super.getName();
 	}
 
 	public void setController(WorkflowController controller) {
