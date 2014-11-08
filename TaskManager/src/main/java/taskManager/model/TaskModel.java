@@ -25,7 +25,7 @@ import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
  *
  * @author Sam Khalandovsky
  * @author Joseph Blackman
- * @author Ezra
+ * @author Ezra Davis
  * @version Nov 6, 2014
  */
 
@@ -47,7 +47,7 @@ public class TaskModel extends AbstractModel {
 	// List of users assigned to this task
 	private final Set<User> assigned;
 
-	// Due-date timestamp
+	// Due date timestamp
 	private Date dueDate;
 
 	// Estimated effort required for completion
@@ -65,15 +65,15 @@ public class TaskModel extends AbstractModel {
 	/**
 	 * Constructor assigns name, task id, and stage.
 	 *
-	 * @param String
-	 *            name name of the new task
-	 * @param String
-	 *            stage stage that it enters in
+	 * @param name
+	 *            name of the new task
+	 * @param stage
+	 *            stage that it enters in
 	 * @param workflow
 	 */
 	public TaskModel(String name, String stage, WorkflowModel workflow) {
 		this.name = name;
-		this.id = name;
+		id = name;
 		assigned = new HashSet<User>();
 		activities = new ArrayList<ActivityModel>();
 		workflow.addTask(this, stage);
@@ -270,9 +270,10 @@ public class TaskModel extends AbstractModel {
 
 	@Override
 	public Boolean identify(Object o) {
+		boolean identify = false;
 		if (o instanceof TaskModel) {
-			return ((TaskModel) o).getID() == this.getID();
+			identify = ((TaskModel) o).id.equals(id);
 		}
-		return false;
+		return identify;
 	}
 }

@@ -23,7 +23,7 @@ import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
  *
  * @author Joseph Blackman
  * @author Sam Khalandovsky
- * @author Ezra
+ * @author Ezra Davis
  * @version Nov 6, 2014
  */
 public class StageModel extends AbstractModel {
@@ -66,7 +66,7 @@ public class StageModel extends AbstractModel {
 	 */
 	public StageModel(WorkflowModel workflow, String name, boolean removable) {
 		this.name = name;
-		this.id = name;
+		id = name;
 		this.removable = removable;
 		taskList = new ArrayList<TaskModel>();
 		workflow.addStage(this);
@@ -101,7 +101,7 @@ public class StageModel extends AbstractModel {
 	public StageModel(WorkflowModel workflow, String name, int index,
 			boolean removable) {
 		this.name = name;
-		this.id = name;
+		id = name;
 		this.removable = removable;
 		taskList = new ArrayList<TaskModel>();
 		workflow.addStage(this, index);
@@ -144,6 +144,7 @@ public class StageModel extends AbstractModel {
 	 *
 	 * @param task
 	 *            The task to look for
+	 * 
 	 * @return If the stage contains the task
 	 */
 	public boolean containsTask(TaskModel task) {
@@ -155,15 +156,18 @@ public class StageModel extends AbstractModel {
 	 *
 	 * @param id
 	 *            The id of the task to look for
+	 * 
 	 * @return If the stage contains the task
 	 */
 	public boolean containsTaskID(String id) {
+		boolean containsTaskID = false;
 		for (TaskModel existingTask : taskList) {
 			if (existingTask.getID().equals(id)) {
-				return true;
+				containsTaskID = true;
+				break;
 			}
 		}
-		return false;
+		return containsTaskID;
 	}
 
 	/**
@@ -171,6 +175,7 @@ public class StageModel extends AbstractModel {
 	 *
 	 * @param name
 	 *            The name of the task to look for
+	 * 
 	 * @return The number of different tasks by that name in the stage.
 	 */
 	public int containsTaskName(String name) {
@@ -215,11 +220,12 @@ public class StageModel extends AbstractModel {
 	 *
 	 * @param taskName
 	 *            The name of the task to search for.
+	 * 
 	 * @return The removed task, null if no task removed.
 	 */
 	public TaskModel removeTaskByName(String taskName) {
 		int count = 0;
-		List<TaskModel> possibleTasks = new ArrayList<TaskModel>();
+		final List<TaskModel> possibleTasks = new ArrayList<TaskModel>();
 		for (TaskModel existingTask : taskList) {
 			if (existingTask.getName().equals(taskName)) {
 				count++;
@@ -250,16 +256,19 @@ public class StageModel extends AbstractModel {
 	 *
 	 * @param id
 	 *            The id of the task to remove.
+	 * 
 	 * @return The removed task, null if no task removed.
 	 */
 	public TaskModel removeTaskByID(String id) {
+		TaskModel removedTask = null;
 		for (TaskModel existingTask : taskList) {
 			if (existingTask.getID().equals(id)) {
 				taskList.remove(existingTask);
-				return existingTask; // TODO: Does this work correctly?
+				removedTask = existingTask;
+				break;
 			}
 		}
-		return null;
+		return removedTask;
 		// TODO: Log task non-existence, claim success?
 	}
 
@@ -269,28 +278,22 @@ public class StageModel extends AbstractModel {
 	 *
 	 * @param task
 	 *            The task to add
+	 * 
 	 * @return The removed task, null if no task removed.
 	 */
 	public TaskModel removeTask(TaskModel task) {
 		if (taskList.contains(task)) {
 			taskList.remove(task);
-			return task;
-		} else {
-			// TODO: Log task non-existence, claim success?
-			return null;
 		}
+		return task;
 	}
 
 	@Override
 	public void save() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void delete() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -303,10 +306,11 @@ public class StageModel extends AbstractModel {
 	 */
 	@Override
 	public Boolean identify(Object o) {
+		boolean identify = false;
 		if (o instanceof StageModel) {
-			return ((StageModel) o).getID() == this.getID();
+			identify = ((StageModel) o).id.equals(id);
 		}
-		return false;
+		return identify;
 	}
 
 }

@@ -24,13 +24,16 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.UserSerializer;
  *
  * @author Joseph Blackman
  * @author Sam Khalandovsky
- * @author Ezra
+ * @author Ezra Davis
  * @version Nov 6, 2014
  */
 public class WorkflowModel extends AbstractModel {
 	List<StageModel> stagesList;
 	String name;
 
+	/**
+	 * Constructor for WorkflowModel.
+	 */
 	public WorkflowModel() {
 		stagesList = new ArrayList<StageModel>();
 		// TODO Add default stages
@@ -66,8 +69,8 @@ public class WorkflowModel extends AbstractModel {
 	 * Adds a stage to index items from the beginning of the WorkFlowModel Stage
 	 * is added to the end of the current list.
 	 *
-	 * @param StageModel
-	 *            newStage Stage to be added.
+	 * @param newStage
+	 *            Stage to be added.
 	 */
 	public void addStage(StageModel newStage) {
 		addStage(newStage, stagesList.size());
@@ -76,19 +79,23 @@ public class WorkflowModel extends AbstractModel {
 	/**
 	 * Adds a stage to index items from the beginning of the WorkFlowModel
 	 *
-	 * @param int index Index in the list of stages where we are adding the new
-	 *        stage.
-	 * @param StageModel
-	 *            newStage Stage to be added.
+	 * @param newStage
+	 *            Stage to be added.
+	 * @param index
+	 *            Index in the list of stages where we are adding the new stage.
 	 */
 	public void addStage(StageModel newStage, int index) {
-		for (StageModel stage : stagesList) {
-			if (stage.getID().equals(newStage.getID())) {
-				newStage.setID(newStage.getID() + '#');
-				addStage(newStage, index);
-				return;
+		boolean isDuplicate;
+		do {
+			isDuplicate = false;
+			for (StageModel stage : stagesList) {
+				if (stage.getID().equals(newStage.getID())) {
+					newStage.setID(newStage.getID() + '#');
+					isDuplicate = true;
+					break;
+				}
 			}
-		}
+		} while (isDuplicate);
 		stagesList.add(index, newStage);
 	}
 
@@ -98,6 +105,7 @@ public class WorkflowModel extends AbstractModel {
 	 *
 	 * @param task
 	 *            the task to add
+	 * 
 	 * @return error code, 1 on stage non-existence.
 	 */
 	public int addTask(TaskModel task) {
@@ -111,6 +119,7 @@ public class WorkflowModel extends AbstractModel {
 	 *            The new task to add
 	 * @param stage
 	 *            The stage to add the task to
+	 * 
 	 * @return error code, 1 on stage non-existence.
 	 */
 	public int addTask(TaskModel task, StageModel stage) {
@@ -132,7 +141,7 @@ public class WorkflowModel extends AbstractModel {
 					break;
 				}
 			}
-		} while (isDuplicate == true);
+		} while (isDuplicate);
 		// Our task should now have a unique internal ID.
 		stage.addTask(task);
 		task.setStage(stage.getName());
@@ -146,6 +155,7 @@ public class WorkflowModel extends AbstractModel {
 	 *            The new task to add
 	 * @param stage
 	 *            The stage to add the task to
+	 * 
 	 * @return error code, 1 on stage non-existence.
 	 */
 	public int addTask(TaskModel task, String stage) {
@@ -158,6 +168,20 @@ public class WorkflowModel extends AbstractModel {
 		// TODO: Log stage non-existence.
 	}
 
+	/**
+	 * Move a task from one stage to another by using the IDs of the task and
+	 * stages
+	 *
+	 * @param task
+	 *            The ID of the task to move
+	 * @param fromStage
+	 *            The ID of the stage moving from
+	 * @param toStage
+	 *            The ID of the stage moving to
+	 * 
+	 * @return int error code, 1: task not found, 2: From stage not found, 3: To
+	 *         stage not found.
+	 */
 	public int moveTaskByID(String task, String fromStage, String toStage) {
 		StageModel fromStageObject = null;
 		StageModel toStageObject = null;
@@ -177,7 +201,7 @@ public class WorkflowModel extends AbstractModel {
 			// TODO: Log from stage non-existence
 			return 2;
 		}
-		TaskModel taskObject = null;
+		final TaskModel taskObject = null;
 		if (!fromStageObject.containsTaskID(task)) {
 			// TODO: Log task non-existence
 			return 1;
@@ -187,26 +211,51 @@ public class WorkflowModel extends AbstractModel {
 		return 0;
 	}
 
+	/**
+	 * Method moveTaskByName.
+	 * 
+	 * @param task
+	 *            String
+	 * @param fromStage
+	 *            String
+	 * @param toStage
+	 *            String
+	 * @return int
+	 */
 	public int moveTaskByName(String task, String fromStage, String toStage) {
-		// TODO: Implement. Tasks may be duplicate.
+		// TODO: Implement. Tasks may have duplicate names, stages will not.
 		return -1;
 	}
 
-	public int moveTask(TaskModel task, StageModel from, StageModel to) {
-		if (!stagesList.contains(to)) {
+	/**
+	 * Move a task from one stage to another by using object references to the
+	 * task and stages
+	 *
+	 * @param task
+	 *            The task to move
+	 * @param fromStage
+	 *            The stage moving from
+	 * @param toStage
+	 *            The stage moving to
+	 * 
+	 * @return int error code, 1: task not found, 2: From stage not found, 3: To
+	 *         stage not found.
+	 */
+	public int moveTask(TaskModel task, StageModel fromStage, StageModel toStage) {
+		if (!stagesList.contains(toStage)) {
 			// TODO: Log to stage non-existence
-			addStage(to);
+			addStage(toStage);
 		}
-		if (!stagesList.contains(from)) {
+		if (!stagesList.contains(fromStage)) {
 			// TODO: Log from stage non-existence
 			return 2;
 		}
-		if (!from.containsTask(task)) {
+		if (!fromStage.containsTask(task)) {
 			// TODO: Log task non-existence
 			return 1;
 		}
-		to.addTask(task); // TODO: Check for duplicate on addition?
-		from.removeTask(task);
+		toStage.addTask(task); // TODO: Check for duplicate on addition?
+		fromStage.removeTask(task);
 		return 0;
 	}
 
@@ -238,8 +287,8 @@ public class WorkflowModel extends AbstractModel {
 	 */
 	@Override
 	public String toJson() {
-		Gson gson = new GsonBuilder().registerTypeAdapter(WorkflowModel.class,
-				new UserSerializer()).create();
+		final Gson gson = new GsonBuilder().registerTypeAdapter(
+				WorkflowModel.class, new UserSerializer()).create();
 		return gson.toJson(this, User.class);
 	}
 
@@ -252,9 +301,10 @@ public class WorkflowModel extends AbstractModel {
 	 */
 	@Override
 	public Boolean identify(Object o) {
+		boolean identify = false;
 		if (o instanceof WorkflowModel) {
-			return ((WorkflowModel) o).name == name;
+			identify = ((WorkflowModel) o).name.equals(name);
 		}
-		return false;
+		return identify;
 	}
 }
