@@ -10,7 +10,6 @@ package taskManager.test;
 
 import javax.swing.JFrame;
 
-import org.fest.swing.core.Robot;
 import org.fest.swing.fixture.FrameFixture;
 import org.junit.After;
 import org.junit.Before;
@@ -33,7 +32,6 @@ public class TestWorkflowController {
 	private WorkflowView wfv;
 	private WorkflowModel wfm;
 	private FrameFixture fixture;
-	private Robot robot;
 
 	@Before
 	public void setup() { 
@@ -59,11 +57,16 @@ public class TestWorkflowController {
 	}
 
 	@Test
-	public void test() {
+	public void testStageNames() {
 
+		// make sure it is visible
 		fixture.requireVisible();
-		fixture.panel("test2");
-		// fixture.label("test").requireText("first");
+
+		// make sure the correct stages exist and were added in the correct
+		// order
+		for (int i = 0; i < 4; i++) {
+			fixture.label("stage_label" + i).requireText(stageNames[i]);
+		}
 	}
 
 	@After
