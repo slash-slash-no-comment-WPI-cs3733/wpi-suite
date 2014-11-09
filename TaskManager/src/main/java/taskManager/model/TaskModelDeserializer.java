@@ -82,7 +82,7 @@ public class TaskModelDeserializer implements JsonDeserializer<TaskModel> {
 			activities.add(ActivityModel.fromJson(activity));
 		}
 		// TODO: Add Requirement
-		final TaskModel inflated = new TaskModel(name, stage, workflow);
+		final TaskModel inflated = new TaskModel(name, stage);
 		inflated.setEstimatedEffort(estimatedEffort);
 		inflated.setActualEffort(actualEffort);
 		// TODO: finish adding in bits of task model here.

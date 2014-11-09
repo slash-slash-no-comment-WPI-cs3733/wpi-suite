@@ -48,9 +48,6 @@ public class TaskModel extends AbstractModel {
 	// Task description
 	private String description;
 
-	// Workflow this task is a part of. This should never change.
-	private final WorkflowModel workflow;
-
 	// Current stage that task belongs to. This will not be serialized.
 	private StageModel stage;
 
@@ -81,17 +78,14 @@ public class TaskModel extends AbstractModel {
 	 *            name of the new task
 	 * @param stage
 	 *            stage that it enters in
-	 * @param workflow
 	 */
-	public TaskModel(String name, StageModel stage, WorkflowModel workflow) {
+	public TaskModel(String name, StageModel stage) {
 		this.name = name;
 		id = name;
 		assigned = new HashSet<User>();
 		activities = new ArrayList<ActivityModel>();
 		this.stage = stage;
 		stage.addTask(this);
-		this.workflow = workflow;
-		workflow.addTask(this, stage);
 	}
 
 	/**
@@ -101,15 +95,12 @@ public class TaskModel extends AbstractModel {
 	 *            name of the new task
 	 * @param stage
 	 *            stage that it enters in
-	 * @param workflow
 	 */
-	public TaskModel(String name, String stage, WorkflowModel workflow) {
+	public TaskModel(String name, String stage) {
 		this.name = name;
-		this.workflow = workflow;
 		id = name;
 		assigned = new HashSet<User>();
 		activities = new ArrayList<ActivityModel>();
-		workflow.addTask(this, stage);
 	}
 
 	/**
@@ -166,13 +157,6 @@ public class TaskModel extends AbstractModel {
 	 */
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	/**
-	 * @return the workflow
-	 */
-	public WorkflowModel getWorkflow() {
-		return workflow;
 	}
 
 	/**
