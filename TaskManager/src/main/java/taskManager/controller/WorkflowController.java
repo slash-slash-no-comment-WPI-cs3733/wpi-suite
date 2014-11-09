@@ -12,6 +12,7 @@ import java.util.List;
 
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
+import taskManager.view.StageView;
 import taskManager.view.WorkflowView;
 
 /**
@@ -32,7 +33,12 @@ public class WorkflowController {
 		List<StageModel> stages = this.model.getStages();
 		// and add them all to the view
 		for (StageModel stage : stages) {
-			this.view.addStageView(stage);
+			// create stage view and controller.
+			StageView stv = new StageView();
+			new StageController(stv, stage);
+			
+			// add stage view to workflow
+			this.view.addStageView(stv, stage.getName());
 		}
 	}
 
