@@ -4,11 +4,14 @@ package taskManager.view;
  * @author Beth Martino
  */
 
-import javax.swing.*;
+import java.awt.Dimension;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
-
-import java.awt.*;
 
 public class TaskView extends JPanel implements ITaskView {
 
@@ -41,7 +44,7 @@ public class TaskView extends JPanel implements ITaskView {
 	
 	@Override
 	public String getName(){
-		return this.getName();
+		return super.getName();
 	}
 
 	

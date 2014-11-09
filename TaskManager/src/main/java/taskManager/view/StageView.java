@@ -4,7 +4,8 @@ package taskManager.view;
  * @author Beth Martino
  */
 
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.JPanel;
 
 public class StageView extends JPanel implements IStageView {
 
@@ -45,7 +46,7 @@ public class StageView extends JPanel implements IStageView {
 	
 	@Override
 	public String getName(){
-		return this.getName();
+		return super.getName();
 	}
 
 
