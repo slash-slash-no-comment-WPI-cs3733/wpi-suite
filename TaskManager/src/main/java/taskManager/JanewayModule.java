@@ -50,7 +50,7 @@ public class JanewayModule implements IJanewayModule {
 		
 		// add sample tasks to the workflow model.
 		TaskModel task1 = new TaskModel("Some task", "Backlog", wfm);
-		task1.setDueDate(new Date(2014, 5, 5)); // This date constructor is deprecated.
+		task1.setDueDate(new Date(114, 5, 5)); // This date constructor is deprecated.
 		task1.setEstimatedEffort(3);
 		TaskModel task2 = new TaskModel("Working on this task", "In Progress", wfm);
 		task2.setDueDate(new Date());

@@ -4,8 +4,6 @@ package taskManager.view;
  * @author Beth Martino
  */
 
-import java.util.Date;
-
 import javax.swing.*;
 
 import taskManager.controller.StageController;

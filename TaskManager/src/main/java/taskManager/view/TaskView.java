@@ -38,7 +38,7 @@ public class TaskView extends JPanel implements ITaskView {
 		this.setMinimumSize(new Dimension(300,100));
 		
 		//adds the data to the view
-		this.add(new JLabel("Due Date: "+duedate)); 
+		this.add(new JLabel("Due Date: "+(duedate.getMonth()+1)+"/"+duedate.getDate()+"/"+(duedate.getYear() + 1900))); // Deprecated date functions.
 		this.add(new JLabel("Est Effort: "+estEffort+"#"));
 	}
 	
