@@ -15,6 +15,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonPrimitive;
+
 import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
@@ -40,9 +45,11 @@ public class TaskModel extends AbstractModel {
 	// Task description
 	private String description;
 
-	// Current stage that task belongs to. This is not a link to the StageModel
-	// itself, since that would serialize poorly.
-	private String stage;
+	// Workflow this task is a part of. This should never change.
+	private final WorkflowModel workflow;
+
+	// Current stage that task belongs to. This will not be serialized.
+	private StageModel stage;
 
 	// List of users assigned to this task
 	private final Set<User> assigned;
@@ -71,8 +78,29 @@ public class TaskModel extends AbstractModel {
 	 *            stage that it enters in
 	 * @param workflow
 	 */
+	public TaskModel(String name, StageModel stage, WorkflowModel workflow) {
+		this.name = name;
+		id = name;
+		assigned = new HashSet<User>();
+		activities = new ArrayList<ActivityModel>();
+		this.stage = stage;
+		stage.addTask(this);
+		this.workflow = workflow;
+		workflow.addTask(this, stage);
+	}
+
+	/**
+	 * Constructor assigns name, task id, and stage.
+	 *
+	 * @param name
+	 *            name of the new task
+	 * @param stage
+	 *            stage that it enters in
+	 * @param workflow
+	 */
 	public TaskModel(String name, String stage, WorkflowModel workflow) {
 		this.name = name;
+		this.workflow = workflow;
 		id = name;
 		assigned = new HashSet<User>();
 		activities = new ArrayList<ActivityModel>();
@@ -104,7 +132,8 @@ public class TaskModel extends AbstractModel {
 
 	/**
 	 * @param id
-	 *            set the internal id
+	 *            set the internal id. Should only be used when intializing the
+	 *            task.
 	 */
 	public void setID(String id) {
 		this.id = id;
@@ -126,18 +155,25 @@ public class TaskModel extends AbstractModel {
 	}
 
 	/**
+	 * @return the workflow
+	 */
+	public WorkflowModel getWorkflow() {
+		return workflow;
+	}
+
+	/**
 	 * @return the current stage
 	 */
-	public String getStage() {
+	public StageModel getStage() {
 		return stage;
 	}
 
 	/**
 	 * @param stage
-	 *            Change the current task stage. This is only a duplicate, and
-	 *            the stage that the task belongs to should be updated too.
+	 *            Change the current task stage. The stage should be updated as
+	 *            well.
 	 */
-	public void setStage(String stage) {
+	public void setStage(StageModel stage) {
 		this.stage = stage;
 	}
 
@@ -233,7 +269,11 @@ public class TaskModel extends AbstractModel {
 	 *            to be removed
 	 */
 	public void removeAssigned(User user) {
-		assigned.remove(user);
+		if (!assigned.contains(user)) {
+			// TODO: Log user non-existence in set
+		} else {
+			assigned.remove(user);
+		}
 	}
 
 	/**
@@ -264,16 +304,42 @@ public class TaskModel extends AbstractModel {
 
 	@Override
 	public String toJson() {
-		// TODO Auto-generated method stub
-		return null;
+		final Gson gson = new GsonBuilder().registerTypeAdapter(
+				TaskModel.class, new TaskModelSerializer()).create();
+		return gson.toJson(this, TaskModel.class);
 	}
 
 	@Override
 	public Boolean identify(Object o) {
-		boolean identify = false;
 		if (o instanceof TaskModel) {
-			identify = ((TaskModel) o).id.equals(id);
+			return ((TaskModel) o).id.equals(id);
 		}
-		return identify;
+		return false;
+	}
+
+	/**
+	 * Returns the list of activities as a JsonArray
+	 *
+	 * @return a JsonArray of the activities
+	 */
+	public JsonArray getActivitiesAsJson() {
+		final JsonArray activityList = new JsonArray();
+		for (ActivityModel activity : activities) {
+			activityList.add(new JsonPrimitive(activity.toJson()));
+		}
+		return null;
+	}
+
+	/**
+	 * Return the list of assigned users as a JsonArray.
+	 *
+	 * @return a JsonArray of the users
+	 */
+	public JsonArray getAssignedAsJson() {
+		final JsonArray assignedList = new JsonArray();
+		for (User user : assigned) {
+			assignedList.add(new JsonPrimitive(user.toJson()));
+		}
+		return null;
 	}
 }
