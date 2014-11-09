@@ -71,7 +71,7 @@ public class TestWorkflowController {
 
 	@After
 	public void cleanup() {
-		// fixture.cleanUp();
+		fixture.cleanUp();
 	}
 
 
