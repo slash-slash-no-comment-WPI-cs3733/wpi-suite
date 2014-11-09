@@ -10,6 +10,8 @@ package taskManager.model;
 
 import java.util.Date;
 
+import com.google.gson.JsonElement;
+
 import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
@@ -84,6 +86,16 @@ public class ActivityModel extends AbstractModel {
 	public void delete() {
 		// TODO Auto-generated method stub
 
+	}
+
+	/**
+	 * Method fromJson.
+	 * @param activity JsonElement
+	 * @return ActivityModel
+	 */
+	public static ActivityModel fromJson(JsonElement activity) {
+		// TODO Implement
+		return null;
 	}
 
 	@Override
