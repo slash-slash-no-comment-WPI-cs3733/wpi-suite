@@ -23,6 +23,9 @@ import com.google.gson.JsonPrimitive;
 import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
+import edu.wpi.cs.wpisuitetng.network.Network;
+import edu.wpi.cs.wpisuitetng.network.Request;
+import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
 
 /**
  * Stores data of each task in the workflow. Tasks are saved per
@@ -68,6 +71,8 @@ public class TaskModel extends AbstractModel {
 
 	// Associated requirement that this task corresponds to
 	private Requirement req;
+
+	static private TaskRequestObserver observer = new TaskRequestObserver();
 
 	/**
 	 * Constructor assigns name, task id, and stage.
@@ -303,12 +308,20 @@ public class TaskModel extends AbstractModel {
 
 	@Override
 	public void save() {
-		// TODO Auto-generated method stub
+		final Request request = Network.getInstance().makeRequest(
+				"taskmanager/task", HttpMethod.POST);
+		request.setBody(toJson());
+		request.addObserver(observer);
+		request.send();
 	}
 
 	@Override
 	public void delete() {
-		// TODO Auto-generated method stub
+		final Request request = Network.getInstance().makeRequest(
+				"taskmanager/task", HttpMethod.DELETE);
+		request.setBody(toJson());
+		request.addObserver(observer);
+		request.send();
 	}
 
 	@Override
