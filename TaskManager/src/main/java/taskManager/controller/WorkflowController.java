@@ -15,7 +15,7 @@ import taskManager.model.WorkflowModel;
 import taskManager.view.WorkflowView;
 
 /**
- * Description A controller for the workflow view
+ * A controller for the workflow view
  *
  * @author Jon Sorrells
  */
@@ -27,7 +27,7 @@ public class WorkflowController {
 	public WorkflowController(WorkflowView view, WorkflowModel model) {
 		this.view = view;
 		this.model = model;
-		
+
 		// get all the stages in this workflow
 		List<StageModel> stages = this.model.getStages();
 		// and add them all to the view
