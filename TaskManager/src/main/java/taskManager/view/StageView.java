@@ -6,6 +6,8 @@ package taskManager.view;
 
 import javax.swing.*;
 
+import taskManager.controller.StageController;
+
 public class StageView extends JPanel implements IStageView {
 
 	/**
@@ -13,26 +15,11 @@ public class StageView extends JPanel implements IStageView {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	private StageController controller;
 
 	public StageView() {
-		
 		//organizes the tasks in a vertical list
 		this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
-		
-		//adds example tasks
-		this.addTaskView("Task1");
-		this.addTaskView("Task2");
-		this.addTaskView("Task3");
-		this.addTaskView("Task4");
-		this.addTaskView("Task5");
-		this.addTaskView("Task5");
-		this.addTaskView("Task5");
-		this.addTaskView("Task5");
-		this.addTaskView("Task5");
-		this.addTaskView("Task5");
-		this.addTaskView("Task5");
-		this.addTaskView("Task5");
-
 	}
 	
 	/*
@@ -48,6 +35,8 @@ public class StageView extends JPanel implements IStageView {
 		return this.getName();
 	}
 
-
+	public void setController(StageController controller) {
+		this.controller = controller;
+	}
 
 }

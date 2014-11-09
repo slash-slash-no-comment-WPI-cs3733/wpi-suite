@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 
 import taskManager.controller.WorkflowController;
 import taskManager.model.StageModel;
+import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.WorkflowView;
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
@@ -45,7 +46,14 @@ public class JanewayModule implements IJanewayModule {
 		new StageModel(wfm, "Review", false);
 		new StageModel(wfm, "To Merge", false);
 		new StageModel(wfm, "Merged", false);
-
+		
+		// add sample tasks to the workflow model.
+		new TaskModel("Some task", "Backlog", wfm);
+		new TaskModel("Working on this task", "In Progress", wfm);
+		new TaskModel("Plz review", "Review", wfm);
+		new TaskModel("blah", "Review", wfm);
+		new TaskModel("This is merged", "Merged", wfm);
+		
 		// create the controller for the view
 		wfv.setController(new WorkflowController(wfv, wfm));
 		

@@ -13,7 +13,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import taskManager.controller.StageController;
 import taskManager.controller.WorkflowController;
+import taskManager.model.StageModel;
 
 public class WorkflowView extends JPanel implements IWorkflowView{
 
@@ -36,7 +38,11 @@ public class WorkflowView extends JPanel implements IWorkflowView{
 	 * creates a new scroll panel to house the stage view object 
 	 * sets the size and border
 	 */
-	public void addStageView(String name){
+	public void addStageView(StageModel stm){
+		
+		// create stage view and controller.
+		StageView stv = new StageView();
+		new StageController(stv, stm);
 		
 		//creates the container for both the label and the scroll
 		JPanel block = new JPanel();
@@ -45,11 +51,11 @@ public class WorkflowView extends JPanel implements IWorkflowView{
 		//creates the label for the name of the stage and adds it to the block
 		JPanel label = new JPanel();
 		label.setPreferredSize(new Dimension(175,25));
-		label.add(new JLabel(name));
+		label.add(new JLabel(stm.getName()));
 		block.add(label);
 		
 		//creates the scroll containing the stage view and adds it to the block
-		JScrollPane stage = new JScrollPane(new StageView());
+		JScrollPane stage = new JScrollPane(stv);
 		stage.setBorder(BorderFactory.createLineBorder(Color.black));
 		stage.setPreferredSize(new Dimension(175,350));
 		block.add(stage);

@@ -32,7 +32,7 @@ public class WorkflowController {
 		List<StageModel> stages = this.model.getStages();
 		// and add them all to the view
 		for (StageModel stage : stages) {
-			this.view.addStageView(stage.getName());
+			this.view.addStageView(stage);
 		}
 	}
 
