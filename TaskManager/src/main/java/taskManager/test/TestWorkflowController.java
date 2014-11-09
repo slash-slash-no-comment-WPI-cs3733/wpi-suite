@@ -21,7 +21,7 @@ import taskManager.model.WorkflowModel;
 import taskManager.view.WorkflowView;
 
 /**
- * Description tests for the workflow controller
+ * Tests for the workflow controller
  *
  * @author Jon Sorrells
  */
@@ -34,14 +34,14 @@ public class TestWorkflowController {
 	private FrameFixture fixture;
 
 	@Before
-	public void setup() { 
-		// creates a workflow view 
+	public void setup() {
+		// creates a workflow view
 		wfv = new WorkflowView();
 
 		// create a new workflow model
-		wfm = new WorkflowModel(); 
-		// give it the stages 
-		for (String name : stageNames) { 
+		wfm = new WorkflowModel();
+		// give it the stages
+		for (String name : stageNames) {
 			new StageModel(wfm, name, false);
 		}
 
@@ -73,6 +73,5 @@ public class TestWorkflowController {
 	public void cleanup() {
 		fixture.cleanUp();
 	}
-
 
 }
