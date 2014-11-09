@@ -25,6 +25,7 @@ import taskManager.controller.TaskController;
  * @author Beth Martino
  * @version November 9, 2014
  */
+
 public class TaskView extends JPanel implements ITaskView {
 
 	/**

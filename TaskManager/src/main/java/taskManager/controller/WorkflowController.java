@@ -16,7 +16,7 @@ import taskManager.view.StageView;
 import taskManager.view.WorkflowView;
 
 /**
- * Description A controller for the workflow view
+ * A controller for the workflow view
  *
  * @author Jon Sorrells
  * @author Stefan Alexander

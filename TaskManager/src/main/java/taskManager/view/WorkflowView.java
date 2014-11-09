@@ -33,6 +33,9 @@ public class WorkflowView extends JPanel implements IWorkflowView {
 
 	private WorkflowController controller;
 
+	// used to generate unique names for the stage labels
+	private int i = 0;
+
 	/**
 	 * Constructor for WorkflowView.
 	 */
@@ -56,13 +59,16 @@ public class WorkflowView extends JPanel implements IWorkflowView {
 	public void addStageView(StageView stv, String name) {
 
 		// creates the container for both the label and the scroll
-		final JPanel block = new JPanel();
+		JPanel block = new JPanel();
 		block.setLayout(new BoxLayout(block, BoxLayout.Y_AXIS));
 
 		// creates the label for the name of the stage and adds it to the block
-		final JPanel label = new JPanel();
+		JPanel label = new JPanel();
 		label.setPreferredSize(new Dimension(175, 25));
-		label.add(new JLabel(name));
+		JLabel stageName = new JLabel(name);
+		stageName.setName("stage_label" + i++); // these need unique labels for
+												// the tests to work
+		label.add(stageName);
 		block.add(label);
 
 		// creates the scroll containing the stage view and adds it to the block

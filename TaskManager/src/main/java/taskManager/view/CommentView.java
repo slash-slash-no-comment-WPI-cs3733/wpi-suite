@@ -36,7 +36,7 @@ public class CommentView extends JPanel {
 	
 	@Override
 	public String getName(){
-		return this.getName();
+		return super.getName();
 	}
 
 }
