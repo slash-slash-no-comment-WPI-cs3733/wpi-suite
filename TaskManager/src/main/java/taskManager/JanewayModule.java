@@ -9,12 +9,12 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
+import taskManager.controller.ToolbarController;
 import taskManager.controller.WorkflowController;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.WorkflowView;
 import taskManager.view.ToolbarView;
-
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
 import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
 
@@ -47,6 +47,8 @@ public class JanewayModule implements IJanewayModule {
 
 		// Create the toolbar view
 		ToolbarView tv = new ToolbarView();
+		ToolbarController tc = new ToolbarController(tv);
+		tv.setController(tc);
 		// toolbarPanel.setController(ToolbarController);
 
 		tabs = new ArrayList<JanewayTabModel>();
