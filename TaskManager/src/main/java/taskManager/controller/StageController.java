@@ -19,28 +19,37 @@ import taskManager.view.TaskView;
  * Controller for stages.
  *
  * @author Stefan Alexander
+ * @version November 9, 2014
  */
 public class StageController {
-	
+
 	private final StageView view;
 	private final StageModel model;
 
 	/**
-	 * Constructor
+	 * Constructor for the StageController gets all the tasks from the
+	 * StageModel, creates the corresponding TaskView and TaskControllers for
+	 * each, and final adds all of the TaskViews to the UI.
+	 * 
+	 * @param view
+	 *            the corresponding StageView object
+	 * @param model
+	 *            the corresponding StageModel object
 	 */
 	public StageController(StageView view, StageModel model) {
 		this.view = view;
 		this.model = model;
-		
+
 		// Get all the tasks associated with this Stage.
-		List<TaskModel> tasks = this.model.getTasks();
-		
+		final List<TaskModel> tasks = this.model.getTasks();
+
 		// Add the tasks.
 		for (TaskModel task : tasks) {
 			// create stage view and controller.
-			TaskView tkv = new TaskView(task.getName(), task.getDueDate(), task.getEstimatedEffort());
+			TaskView tkv = new TaskView(task.getName(), task.getDueDate(),
+					task.getEstimatedEffort());
 			tkv.setController(new TaskController(tkv, task));
-			
+
 			this.view.addTaskView(tkv);
 		}
 	}

@@ -15,15 +15,21 @@ import taskManager.view.TaskView;
  * Controller for Tasks.
  *
  * @author Stefan Alexander
+ * @version November 9, 2014
  */
 public class TaskController {
-	
+
 	private final TaskView view;
 	private final TaskModel model;
 
 	/**
-	 * Constructor
+	 * Constructor for the TaskController, currently just sets the corresponding
+	 * view and model parameters.
 	 *
+	 * @param view
+	 *            the corresponding TaskView object
+	 * @param model
+	 *            the corresponding TaskModel object
 	 */
 	public TaskController(TaskView view, TaskModel model) {
 		this.view = view;
