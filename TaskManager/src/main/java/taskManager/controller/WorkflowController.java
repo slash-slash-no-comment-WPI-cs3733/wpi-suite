@@ -35,7 +35,7 @@ public class WorkflowController {
 		for (StageModel stage : stages) {
 			// create stage view and controller.
 			StageView stv = new StageView();
-			new StageController(stv, stage);
+			stv.setController(new StageController(stv, stage));
 			
 			// add stage view to workflow
 			this.view.addStageView(stv, stage.getName());

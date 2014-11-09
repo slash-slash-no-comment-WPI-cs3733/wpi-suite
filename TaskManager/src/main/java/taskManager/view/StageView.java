@@ -4,6 +4,8 @@ package taskManager.view;
  * @author Beth Martino
  */
 
+import java.util.Date;
+
 import javax.swing.*;
 
 import taskManager.controller.StageController;
@@ -26,8 +28,8 @@ public class StageView extends JPanel implements IStageView {
 	 * @param data for new task view
 	 * will be entered by the user
 	 */
-	public void addTaskView(String name){
-		this.add(new TaskView(name));
+	public void addTaskView(TaskView tkv){
+		this.add(tkv);
 	}
 	
 	@Override

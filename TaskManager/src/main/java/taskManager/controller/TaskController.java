@@ -8,19 +8,26 @@
  *******************************************************************************/
 package taskManager.controller;
 
+import taskManager.model.TaskModel;
+import taskManager.view.TaskView;
+
 /**
- * Description
+ * Controller for Tasks.
  *
- * @author
+ * @author Stefan Alexander
  */
 public class TaskController {
+	
+	private final TaskView view;
+	private final TaskModel model;
 
 	/**
-	 * Description
+	 * Constructor
 	 *
 	 */
-	public TaskController() {
-		// TODO Auto-generated constructor stub
+	public TaskController(TaskView view, TaskModel model) {
+		this.view = view;
+		this.model = model;
 	}
 
 }

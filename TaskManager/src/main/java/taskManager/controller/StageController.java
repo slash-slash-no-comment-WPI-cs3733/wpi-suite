@@ -8,11 +8,13 @@
  *******************************************************************************/
 package taskManager.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.view.StageView;
+import taskManager.view.TaskView;
 
 /**
  * Controller for stages.
@@ -36,7 +38,11 @@ public class StageController {
 		
 		// Add the tasks.
 		for (TaskModel task : tasks) {
-			this.view.addTaskView(task.getName());
+			// create stage view and controller.
+			TaskView tkv = new TaskView(task.getName(), task.getDueDate(), task.getEstimatedEffort());
+			tkv.setController(new TaskController(tkv, task));
+			
+			this.view.addTaskView(tkv);
 		}
 	}
 

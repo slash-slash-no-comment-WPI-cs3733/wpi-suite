@@ -8,7 +8,10 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
+import taskManager.controller.TaskController;
+
 import java.awt.*;
+import java.util.Date;
 
 public class TaskView extends JPanel implements ITaskView {
 
@@ -17,12 +20,14 @@ public class TaskView extends JPanel implements ITaskView {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	private TaskController controller;
+	
 	/**
 	 * @param the name of the new task
 	 * creates a list-like view for the following information
 	 * the name of the task, the due date and the estimated effort
 	 */
-	public TaskView(String name){
+	public TaskView(String name, Date duedate, int estEffort){
 		//organizes the data in a vertical list
 		this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
 		Border raisedbevel = BorderFactory.createRaisedBevelBorder();
@@ -32,10 +37,9 @@ public class TaskView extends JPanel implements ITaskView {
 		this.setBorder(title);
 		this.setMinimumSize(new Dimension(300,100));
 		
-		
 		//adds the data to the view
-		this.add(new JLabel("Due Date: 00/00/00")); 
-		this.add(new JLabel("Est Effort: 3#"));
+		this.add(new JLabel("Due Date: "+duedate)); 
+		this.add(new JLabel("Est Effort: "+estEffort+"#"));
 	}
 	
 	
@@ -44,6 +48,8 @@ public class TaskView extends JPanel implements ITaskView {
 		return this.getName();
 	}
 
-	
+	public void setController(TaskController controller) {
+		this.controller = controller;
+	}
 
 }

@@ -6,6 +6,7 @@ package taskManager;
 
 import java.awt.FlowLayout;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -48,11 +49,21 @@ public class JanewayModule implements IJanewayModule {
 		new StageModel(wfm, "Merged", false);
 		
 		// add sample tasks to the workflow model.
-		new TaskModel("Some task", "Backlog", wfm);
-		new TaskModel("Working on this task", "In Progress", wfm);
-		new TaskModel("Plz review", "Review", wfm);
-		new TaskModel("blah", "Review", wfm);
-		new TaskModel("This is merged", "Merged", wfm);
+		TaskModel task1 = new TaskModel("Some task", "Backlog", wfm);
+		task1.setDueDate(new Date(2014, 5, 5)); // This date constructor is deprecated.
+		task1.setEstimatedEffort(3);
+		TaskModel task2 = new TaskModel("Working on this task", "In Progress", wfm);
+		task2.setDueDate(new Date());
+		task2.setEstimatedEffort(1);
+		TaskModel task3 = new TaskModel("Plz review", "Review", wfm);
+		task3.setDueDate(new Date());
+		task3.setEstimatedEffort(5);
+		TaskModel task4 = new TaskModel("blah", "Review", wfm);
+		task4.setDueDate(new Date());
+		task4.setEstimatedEffort(2);
+		TaskModel task5 = new TaskModel("This is merged", "Merged", wfm);
+		task5.setDueDate(new Date());
+		task5.setEstimatedEffort(2);
 		
 		// create the controller for the view
 		wfv.setController(new WorkflowController(wfv, wfm));
