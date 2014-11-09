@@ -108,6 +108,15 @@ public class TaskModel extends AbstractModel {
 	}
 
 	/**
+	 * Blank constructor Necessary for creating dummy objects when querying
+	 * database
+	 */
+	public TaskModel() {
+		assigned = null;
+		activities = null;
+	}
+
+	/**
 	 * @return the name
 	 */
 	public String getName() {
@@ -307,6 +316,18 @@ public class TaskModel extends AbstractModel {
 		final Gson gson = new GsonBuilder().registerTypeAdapter(
 				TaskModel.class, new TaskModelSerializer()).create();
 		return gson.toJson(this, TaskModel.class);
+	}
+
+	/**
+	 * Static method for deserializing object from JSON
+	 *
+	 * @param serialized
+	 *            JSON string
+	 * @return the deserialized TaskModel
+	 */
+	public static TaskModel fromJson(String serialized) {
+		// TODO
+		return null;
 	}
 
 	@Override
