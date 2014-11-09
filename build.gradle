@@ -46,7 +46,7 @@ subprojects {
         //runtime files('libs/a.jar', 'libs/b.jar')
         compile fileTree(dir: rootDir.toString()+'/libs', includes: ['*.jar']) //db4o jar that isn't on Maven, and any other new dependencies placed in the libs directory
         
-        testCompile 'junit:junit:4.11'
+        compile 'junit:junit:4.11'
         testCompile 'org.mockito:mockito-core:1.9.5'
     }
     
