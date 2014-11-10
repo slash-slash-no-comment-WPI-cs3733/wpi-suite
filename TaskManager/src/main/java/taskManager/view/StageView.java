@@ -24,6 +24,7 @@ public class StageView extends JPanel implements IStageView {
 		
 		//stage view is a panel that contains the title and the scroll pane w/tasks
 		this.setLayout(new BoxLayout(this,BoxLayout.Y_AXIS));
+		this.setPreferredSize(new Dimension(200,450));
 		
 		//organizes the tasks in a vertical list
 		tasks.setLayout(new BoxLayout(tasks,BoxLayout.Y_AXIS));
@@ -35,10 +36,6 @@ public class StageView extends JPanel implements IStageView {
 		label.add(new JLabel(name));
 		this.add(label);
 		
-		//creates the scroll containing the stage view and adds it to the block
-		stage.setBorder(BorderFactory.createLineBorder(Color.black));
-		stage.setMinimumSize(new Dimension(175,350));
-		this.add(stage);
 		
 		//adds example tasks
 		this.addTaskView("Task1");
@@ -46,12 +43,30 @@ public class StageView extends JPanel implements IStageView {
 		this.addTaskView("Task1");
 		this.addTaskView("Task1");
 		this.addTaskView("Task1");
+		this.addTaskView("Task1");
+		this.addTaskView("Task1");
+		this.addTaskView("Task1");
+		this.addTaskView("Task1");
+		this.addTaskView("Task1");
+		this.addTaskView("Task1");
+		this.addTaskView("Task1");
+		this.addTaskView("Task1");
+		this.addTaskView("Task1");
+		this.addTaskView("Task1");
+
+		//creates the scroll containing the stage view and adds it to the block
+		stage = new JScrollPane(tasks);
+		stage.setBorder(BorderFactory.createLineBorder(Color.black));
+		stage.setMinimumSize(new Dimension(175,350));
+
 		updateTasks();
 	}
 	
 	private void updateTasks(){
 		this.remove(stage);
 		stage  = new JScrollPane(tasks);
+		stage.setBorder(BorderFactory.createLineBorder(Color.black));
+		stage.setMinimumSize(new Dimension(175,350));
 		this.add(stage);
 	}
 	
