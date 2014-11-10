@@ -50,6 +50,7 @@ public class ManageUsersView extends JPanel {
 		users.setBorder(BorderFactory.createLineBorder(Color.black));
 		users.setPreferredSize(new Dimension(175, 350));
 		usersBlock.add(users);
+		
 		// tasks = new JPanel();
 		// buttons = new JPanel();
 

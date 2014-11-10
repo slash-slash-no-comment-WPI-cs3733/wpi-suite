@@ -9,6 +9,7 @@ import javax.swing.BoxLayout;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 import javax.swing.JPanel;
+import javax.swing.JLabel;
 
 import taskManager.view.TaskView;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
@@ -41,6 +42,14 @@ public class UserView extends JPanel {
 		title.setTitlePosition(TitledBorder.LEFT);
 		this.setBorder(title);
 		this.setMinimumSize(new Dimension(300, 100));
+		// this.setPreferredSize(new Dimension(300, 100));
+		// this.setSize(new Dimension(300, 100));
+
+		JLabel name = new JLabel("Name: " + user.getName());
+		// name.setSize(new Dimension(300,100));
+		// name.setPreferredSize(new Dimension(300, 100));
+		this.add(name);
+		this.add(new JLabel("Username: " + user.getUsername()));
 
 		// TODO: Add the user's tasks to the tasks list
 	}
