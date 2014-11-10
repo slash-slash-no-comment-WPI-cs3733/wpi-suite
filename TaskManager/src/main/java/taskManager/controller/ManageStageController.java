@@ -10,6 +10,7 @@ package taskManager.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JButton;
 
@@ -35,9 +36,7 @@ public class ManageStageController implements ActionListener {
 		this.view = view;
 		this.model = model;
 
-		for (StageModel stage : model.getStages()) {
-			view.addStage(stage.getName());
-		}
+		reloadData();
 	}
 
 	/*
@@ -53,32 +52,66 @@ public class ManageStageController implements ActionListener {
 			String stageName = ((JButton) button).getParent().getName();
 			// get which button was pressed
 			String name = ((JButton) button).getName();
+			// get the current list of stages
+			List<StageModel> stages = model.getStages();
 
 			// take the appropriate action
 			switch (name) {
 			case "Delete":
 				view.removeStage(stageName);
 				model.getStages().removeIf(s -> s.getName() == stageName);
+				// refresh the view
+				view.updateUI();
 				break;
 			case "Move Up":
-				// TODO
+				// move the stage up by 1
+				for (int i = 0; i < stages.size(); i++) {
+					StageModel stage = stages.get(i);
+					if (stage.getName() == stageName) {
+						model.moveStage(i - 1, stage);
+						break;
+					}
+				}
+				// need to reload all the components to reorder them
+				reloadData();
 				break;
 			case "Move Down":
-				// TODO
+				// move the stage down by 1
+				stages = model.getStages();
+				for (int i = 0; i < stages.size(); i++) {
+					StageModel stage = stages.get(i);
+					if (stage.getName() == stageName) {
+						model.moveStage(i + 1, stage);
+						break;
+					}
+				}
+				// need to reload all the components to reorder them
+				reloadData();
 				break;
 			case "Add new stage":
+				// Create a new stage at the end
 				String newStageName = view.getNewStageNameField().getText();
 				view.addStage(newStageName);
 				new StageModel(model, newStageName);
+				// refresh the view
+				view.updateUI();
 				break;
 			default:
 				System.out.println("Unknown button pushed");
 				break;
 			}
-
-			// refresh the view, because the information (likely) changed
-			view.updateUI();
 		}
+	}
 
+	/**
+	 * Reloads all the data on the view to match the data in the model
+	 *
+	 */
+	private void reloadData() {
+		view.removeAllStages();
+		for (StageModel stage : model.getStages()) {
+			view.addStage(stage.getName());
+		}
+		view.updateUI();
 	}
 }

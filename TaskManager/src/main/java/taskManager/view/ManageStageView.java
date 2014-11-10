@@ -82,6 +82,14 @@ public class ManageStageView extends JPanel {
 	}
 
 	/**
+	 * Removes all of the stages from the view
+	 *
+	 */
+	public void removeAllStages() {
+		this.stageArea.removeAll();
+	}
+
+	/**
 	 * Sets the controller on this view, and attaches it to the buttons
 	 *
 	 * @param controller
