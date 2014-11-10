@@ -36,12 +36,11 @@ public class JanewayModule implements IJanewayModule {
 		WorkflowView wfv = new WorkflowView();
 		// create a new workflow model
 		WorkflowModel wfm = new WorkflowModel();
-		// give it the default stages
-		new StageModel(wfm, "Backlog", false);
+		// give it the default stages (listed in initial requirements)
+		new StageModel(wfm, "New", false);
+		new StageModel(wfm, "Scheduled", false);
 		new StageModel(wfm, "In Progress", false);
-		new StageModel(wfm, "Review", false);
-		new StageModel(wfm, "To Merge", false);
-		new StageModel(wfm, "Merged", false);
+		new StageModel(wfm, "Complete", false);
 		// create the controller for the view
 		wfv.setController(new WorkflowController(wfv, wfm));
 

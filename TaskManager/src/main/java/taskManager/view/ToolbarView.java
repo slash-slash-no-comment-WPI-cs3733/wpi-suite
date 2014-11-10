@@ -30,6 +30,7 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 	private JButton manageUsers;
 	private JButton manageStages;
 	private JButton statistics;
+	private JButton workflow;
 	private JLabel projectName;
 	
 	// TODO: Change ActionListener to ToolbarController when one exists
@@ -56,6 +57,8 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 		this.setMargin(margins);
 		
 		// Construct the buttons
+		workflow = new JButton("Workflow");
+		workflow.setName("workflow");
 		createTask = new JButton("Create Task");
 		createTask.setName("createTask");
 		manageStages = new JButton("Manage Stages");
@@ -64,6 +67,7 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 		manageUsers.setName("manageUsers");
 		statistics = new JButton("Statistics");
 		statistics.setName("statistics");
+		
 
 		// Construct the project title
 		projectName = new JLabel("Project Title"); // TODO(sswartz): update this
@@ -71,6 +75,7 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 
 		// Add buttons to the content panel
 		title.add(projectName);
+		buttons.add(workflow);
 		buttons.add(createTask);
 		buttons.add(manageStages);
 		buttons.add(manageUsers);
@@ -80,16 +85,20 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 		this.add(title);
 		this.add(buttons);
 	}
-	
-	// TODO: Change ActionListener to ToolbarController
+
+	/**
+	 * adds the toolbar controller as the action listener for all buttons
+	 * @param controller the toolbar controller to be addded to the buttons
+	 */
 	public void setController(ToolbarController controller) {
 		this.controller = controller;
+		workflow.addActionListener(controller);
 		createTask.addActionListener(controller);
 		manageStages.addActionListener(controller);
 		manageUsers.addActionListener(controller);
 		statistics.addActionListener(controller);
 	}
-	
+
 	@Override
 	public String getName() {
 		return this.getName();
