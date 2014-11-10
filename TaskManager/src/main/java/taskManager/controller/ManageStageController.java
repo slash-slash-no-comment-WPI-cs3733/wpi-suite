@@ -49,17 +49,17 @@ public class ManageStageController implements ActionListener {
 		if (button instanceof JButton) {
 
 			// get the name of the stage
-			String stageName = ((JButton) button).getParent().getName();
+			String stageID = ((JButton) button).getParent().getName();
 			// get which button was pressed
-			String name = ((JButton) button).getName();
+			String buttonName = ((JButton) button).getName();
 			// get the current list of stages
 			List<StageModel> stages = model.getStages();
 
 			// take the appropriate action
-			switch (name) {
+			switch (buttonName) {
 			case "Delete":
-				view.removeStage(stageName);
-				model.getStages().removeIf(s -> s.getName() == stageName);
+				view.removeStage(stageID);
+				model.getStages().removeIf(s -> s.getID() == stageID);
 				// refresh the view
 				view.updateUI();
 				break;
@@ -67,7 +67,7 @@ public class ManageStageController implements ActionListener {
 				// move the stage up by 1
 				for (int i = 0; i < stages.size(); i++) {
 					StageModel stage = stages.get(i);
-					if (stage.getName() == stageName) {
+					if (stage.getID() == stageID) {
 						model.moveStage(i - 1, stage);
 						break;
 					}
@@ -80,7 +80,7 @@ public class ManageStageController implements ActionListener {
 				stages = model.getStages();
 				for (int i = 0; i < stages.size(); i++) {
 					StageModel stage = stages.get(i);
-					if (stage.getName() == stageName) {
+					if (stage.getID() == stageID) {
 						model.moveStage(i + 1, stage);
 						break;
 					}
@@ -91,8 +91,8 @@ public class ManageStageController implements ActionListener {
 			case "Add new stage":
 				// Create a new stage at the end
 				String newStageName = view.getNewStageNameField().getText();
-				view.addStage(newStageName);
-				new StageModel(model, newStageName);
+				StageModel newStage = new StageModel(model, newStageName);
+				view.addStage(newStage.getName(), newStage.getID());
 				// refresh the view
 				view.updateUI();
 				break;
@@ -110,7 +110,7 @@ public class ManageStageController implements ActionListener {
 	private void reloadData() {
 		view.removeAllStages();
 		for (StageModel stage : model.getStages()) {
-			view.addStage(stage.getName());
+			view.addStage(stage.getName(), stage.getID());
 		}
 		view.updateUI();
 	}

@@ -62,8 +62,8 @@ public class ManageStageView extends JPanel {
 	 * @param name
 	 *            The name of the stage to add
 	 */
-	public void addStage(String name) {
-		this.stageArea.add(newStagePanel(name));
+	public void addStage(String name, String id) {
+		this.stageArea.add(newStagePanel(name, id));
 	}
 
 	/**
@@ -72,9 +72,9 @@ public class ManageStageView extends JPanel {
 	 * @param name
 	 *            The name of the stage to remove
 	 */
-	public void removeStage(String name) {
+	public void removeStage(String id) {
 		for (Component stage : this.stageArea.getComponents()) {
-			if (stage.getName() == name) {
+			if (stage.getName() == id) {
 				this.stageArea.remove(stage);
 				break;
 			}
@@ -120,9 +120,10 @@ public class ManageStageView extends JPanel {
 	 * @param name
 	 *            The name of the stage
 	 */
-	private JPanel newStagePanel(String name) {
+	private JPanel newStagePanel(String name, String id) {
 		JPanel panel = new JPanel();
-		panel.setName(name);
+		// set the id, so to locate this stage later
+		panel.setName(id);
 
 		// add the name of the stage
 		panel.add(new JLabel(name));
