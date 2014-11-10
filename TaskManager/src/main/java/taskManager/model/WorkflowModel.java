@@ -114,6 +114,25 @@ public class WorkflowModel extends AbstractModel {
 	}
 
 	/**
+	 * Locates unique ID for a task, by appending '#' when conflicts appear
+	 *
+	 * @param newID
+	 *            a potential ID
+	 * @return a unique ID
+	 */
+	public String findUniqueTaskID(String newID) {
+		for (StageModel stage : stageList) {
+			for (TaskModel task : stage.getTasks()) {
+				if (task.getID() == newID) {
+					// Append '#' when conflicts appear
+					return findUniqueTaskID(newID + '#');
+				}
+			}
+		}
+		return newID;
+	}
+
+	/**
 	 * Gets a list of the stages in this workflow.
 	 *
 	 * @return the list of stages

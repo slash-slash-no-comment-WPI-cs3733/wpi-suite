@@ -103,6 +103,26 @@ public class StageModel extends AbstractModel {
 		this.workflow = workflow;
 		taskList = new ArrayList<TaskModel>();
 		workflow.addStage(this, index);
+
+	}
+
+	/**
+	 * Get the workflow this stage belongs to
+	 * 
+	 * @return the workflow
+	 */
+	public WorkflowModel getWorkflow() {
+		return workflow;
+	}
+
+	/**
+	 * Set the workflow this stage belongs to
+	 * 
+	 * @param workflow
+	 *            the workflow to set
+	 */
+	public void setWorkflow(WorkflowModel workflow) {
+		this.workflow = workflow;
 	}
 
 	/**
@@ -116,21 +136,6 @@ public class StageModel extends AbstractModel {
 
 	public List<TaskModel> getTasks() {
 		return taskList;
-	}
-
-	/**
-	 * @return the workflow
-	 */
-	public WorkflowModel getWorkflow() {
-		return workflow;
-	}
-
-	/**
-	 * @param workflow
-	 *            the workflow to set
-	 */
-	public void setWorkflow(WorkflowModel workflow) {
-		this.workflow = workflow;
 	}
 
 	/**

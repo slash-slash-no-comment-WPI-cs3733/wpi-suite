@@ -79,9 +79,11 @@ public class TaskModel extends AbstractModel {
 	 * @param stage
 	 *            stage that it enters in
 	 */
+
 	public TaskModel(String name, StageModel stage) {
 		this.name = name;
-		id = name;
+		this.id = stage.getWorkflow().findUniqueTaskID(name);
+
 		assigned = new HashSet<User>();
 		activities = new ArrayList<ActivityModel>();
 		this.stage = stage;
