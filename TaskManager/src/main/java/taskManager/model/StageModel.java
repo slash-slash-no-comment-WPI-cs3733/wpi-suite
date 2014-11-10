@@ -142,6 +142,10 @@ public class StageModel extends AbstractModel {
 		return taskList;
 	}
 
+	public boolean isRemovable() {
+		return removable;
+	}
+
 	/**
 	 * Check if the current stage contains a given task.
 	 *
@@ -294,6 +298,12 @@ public class StageModel extends AbstractModel {
 		}
 		taskList.remove(task);
 		return task;
+	}
+
+	public void makeIdenticalTo(StageModel stage) {
+		taskList = stage.getTasks();
+		name = stage.getName();
+		workflow = stage.getWorkflow();
 	}
 
 	@Override

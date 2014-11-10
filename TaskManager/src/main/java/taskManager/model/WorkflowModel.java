@@ -35,6 +35,21 @@ public class WorkflowModel extends AbstractModel {
 	}
 
 	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name
+	 *            the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
 	 * Moves a stage currently in the WorkFlowModel to the given position on its
 	 * list.
 	 *
@@ -172,6 +187,11 @@ public class WorkflowModel extends AbstractModel {
 		toStage.addTask(task); // TODO: Check for duplicate on addition?
 		fromStage.removeTask(task);
 		return 0;
+	}
+
+	public void makeIdenticalTo(WorkflowModel workflow) {
+		stageList = workflow.getStages();
+		name = workflow.getName();
 	}
 
 	/**

@@ -52,7 +52,7 @@ public class TaskModel extends AbstractModel {
 	private transient StageModel stage;
 
 	// List of users assigned to this task
-	private final Set<User> assigned;
+	private Set<User> assigned;
 
 	// Due date timestamp
 	private Date dueDate;
@@ -64,7 +64,7 @@ public class TaskModel extends AbstractModel {
 	private int actualEffort;
 
 	// Actions and comments relevant to task
-	private final List<ActivityModel> activities;
+	private List<ActivityModel> activities;
 
 	// Associated requirement that this task corresponds to
 	private Requirement req;
@@ -110,8 +110,6 @@ public class TaskModel extends AbstractModel {
 	 * database
 	 */
 	public TaskModel() {
-		assigned = null;
-		activities = null;
 	}
 
 	/**
@@ -290,6 +288,19 @@ public class TaskModel extends AbstractModel {
 	 */
 	public void addActivity(ActivityModel activity) {
 		activities.add(activity);
+	}
+
+	public void makeIdenticalTo(TaskModel task) {
+		name = task.getName();
+		id = task.getID();
+		description = task.getDescription();
+		stage = task.getStage();
+		assigned = task.getAssigned();
+		dueDate = task.getDueDate();
+		estimatedEffort = task.getEstimatedEffort();
+		actualEffort = task.getActualEffort();
+		activities = task.getActivities();
+		req = task.getReq();
 	}
 
 	@Override
