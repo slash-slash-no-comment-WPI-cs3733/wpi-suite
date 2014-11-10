@@ -20,7 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
- * Description
+ * A view to add/remove/move stages
  *
  * @author Jon Sorrells
  */
@@ -33,9 +33,6 @@ public class ManageStageView extends JPanel {
 
 	private JPanel stageArea;
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -66,6 +63,12 @@ public class ManageStageView extends JPanel {
 		this.stageArea.add(newStagePanel(name));
 	}
 
+	/**
+	 * Remove the stage with the specified name
+	 *
+	 * @param name
+	 *            The name of the stage to remove
+	 */
 	public void removeStage(String name) {
 		this.stageArea.remove(newStagePanel(name));
 	}
@@ -79,7 +82,8 @@ public class ManageStageView extends JPanel {
 	public void setController(ActionListener controller) {
 		this.controller = controller;
 
-		// add action listeners to any buttons created before this was called
+		// add action listeners to any buttons that were created before a
+		// controller was attached to this view
 		for (JButton button : buttonsWithoutAController) {
 			button.addActionListener(controller);
 		}
@@ -134,8 +138,7 @@ public class ManageStageView extends JPanel {
 		JTextField text = new JTextField();
 		text.setName("newStageName");
 
-		// I don't understand why it won't become this size unless I set both of
-		// these
+		// both of these need to be set for it to become that size
 		text.setPreferredSize(new Dimension(200, 25));
 		text.setSize(new Dimension(200, 25));
 
