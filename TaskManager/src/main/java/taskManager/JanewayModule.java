@@ -13,8 +13,8 @@ import taskManager.controller.ToolbarController;
 import taskManager.controller.WorkflowController;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
-import taskManager.view.WorkflowView;
 import taskManager.view.ToolbarView;
+import taskManager.view.WorkflowView;
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
 import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
 

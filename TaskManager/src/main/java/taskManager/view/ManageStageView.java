@@ -8,6 +8,7 @@
  *******************************************************************************/
 package taskManager.view;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class ManageStageView extends JPanel {
 	private List<JButton> buttonsWithoutAController;
 
 	private JPanel stageArea;
+	private JTextField text;
 
 	private static final long serialVersionUID = 1L;
 
@@ -47,30 +49,43 @@ public class ManageStageView extends JPanel {
 		this.controller = null;
 		this.buttonsWithoutAController = new ArrayList<JButton>();
 		this.add(stageArea);
-		this.addStage("stage 1");
-		this.addStage("Stage 2");
 		this.add(addNewStagePanel());
-		this.addStage("stage 3");
+
 	}
 
 	/**
 	 * Adds a stage to the view
 	 *
 	 * @param name
-	 *            The name of the stage
+	 *            The name of the stage to add
+	 * @param id
+	 *            The ID of the stage to add
 	 */
-	public void addStage(String name) {
-		this.stageArea.add(newStagePanel(name));
+	public void addStage(String name, String id) {
+		this.stageArea.add(newStagePanel(name, id));
 	}
 
 	/**
 	 * Remove the stage with the specified name
 	 *
-	 * @param name
-	 *            The name of the stage to remove
+	 * @param id
+	 *            The id of the stage to remove
 	 */
-	public void removeStage(String name) {
-		this.stageArea.remove(newStagePanel(name));
+	public void removeStage(String id) {
+		for (Component stage : this.stageArea.getComponents()) {
+			if (stage.getName() == id) {
+				this.stageArea.remove(stage);
+				break;
+			}
+		}
+	}
+
+	/**
+	 * Removes all of the stages from the view
+	 *
+	 */
+	public void removeAllStages() {
+		this.stageArea.removeAll();
 	}
 
 	/**
@@ -91,14 +106,27 @@ public class ManageStageView extends JPanel {
 	}
 
 	/**
+	 * Gets the text field for the new stage name
+	 *
+	 * @return The text field
+	 */
+	public JTextField getNewStageNameField() {
+		return text;
+	}
+
+	/**
 	 * Creates a panel for this stage
 	 *
 	 * @param name
 	 *            The name of the stage
+	 * @param id
+	 *            The ID of the stage
+	 * @return A panel containing the stage name and some buttons
 	 */
-	private JPanel newStagePanel(String name) {
+	private JPanel newStagePanel(String name, String id) {
 		JPanel panel = new JPanel();
-		panel.setName(name);
+		// set the id, so to locate this stage later
+		panel.setName(id);
 
 		// add the name of the stage
 		panel.add(new JLabel(name));
@@ -135,7 +163,7 @@ public class ManageStageView extends JPanel {
 	 */
 	private JPanel addNewStagePanel() {
 		JPanel panel = new JPanel();
-		JTextField text = new JTextField();
+		text = new JTextField();
 		text.setName("newStageName");
 
 		// both of these need to be set for it to become that size
