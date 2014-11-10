@@ -96,8 +96,8 @@ public class StageModel extends AbstractModel {
 	public StageModel(WorkflowModel workflow, String name, int index,
 			boolean removable) {
 		// Enforce uniqueness of Stage names
-		if (workflow.findStageByName(name) == null) {
-			throw new IllegalArgumentException();
+		if (workflow.findStageByName(name) != null) {
+			throw new IllegalArgumentException("Stage name must be unique.");
 		}
 		this.name = name;
 		this.removable = removable;
