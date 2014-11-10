@@ -9,11 +9,9 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
-import taskManager.controller.ManageStageController;
 import taskManager.controller.WorkflowController;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
-import taskManager.view.ManageStageView;
 import taskManager.view.ToolbarView;
 import taskManager.view.WorkflowView;
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
@@ -51,15 +49,8 @@ public class JanewayModule implements IJanewayModule {
 		// toolbarPanel.setController(ToolbarController);
 
 		tabs = new ArrayList<JanewayTabModel>();
-		// JanewayTabModel tab = new JanewayTabModel("Task Manager",
-		// new ImageIcon(), tv, wfv);
-
-		// TODO: remove this when done testing
-		ManageStageView msv = new ManageStageView();
-		msv.setController(new ManageStageController(msv, wfm));
 		JanewayTabModel tab = new JanewayTabModel("Task Manager",
-				new ImageIcon(), tv, msv);
-
+				new ImageIcon(), tv, wfv);
 		tabs.add(tab);
 	}
 
