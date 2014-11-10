@@ -32,6 +32,9 @@ public class StageModel extends AbstractModel {
 	// The public name of this stage
 	private String name;
 
+	// Workflow that stage belongs to; not serialized
+	private transient WorkflowModel workflow;
+
 	// Whether users can remove this stage
 	private boolean removable;
 
@@ -61,8 +64,10 @@ public class StageModel extends AbstractModel {
 	public StageModel(WorkflowModel workflow, String name, boolean removable) {
 		this.name = name;
 		this.removable = removable;
+		this.workflow = workflow;
 		taskList = new ArrayList<TaskModel>();
 		workflow.addStage(this);
+		// TODO this should really call the other constructor
 	}
 
 	/**
@@ -95,6 +100,7 @@ public class StageModel extends AbstractModel {
 			boolean removable) {
 		this.name = name;
 		this.removable = removable;
+		this.workflow = workflow;
 		taskList = new ArrayList<TaskModel>();
 		workflow.addStage(this, index);
 	}
@@ -113,13 +119,29 @@ public class StageModel extends AbstractModel {
 	}
 
 	/**
+	 * @return the workflow
+	 */
+	public WorkflowModel getWorkflow() {
+		return workflow;
+	}
+
+	/**
+	 * @param workflow
+	 *            the workflow to set
+	 */
+	public void setWorkflow(WorkflowModel workflow) {
+		this.workflow = workflow;
+	}
+
+	/**
 	 * Check if the current stage contains a given task.
 	 *
 	 * @param task
 	 *            The task to look for
 	 *
-	
-	 * @return If the stage contains the task */
+	 * 
+	 * @return If the stage contains the task
+	 */
 	public boolean containsTask(TaskModel task) {
 		return taskList.contains(task);
 	}
@@ -130,8 +152,9 @@ public class StageModel extends AbstractModel {
 	 * @param id
 	 *            The id of the task to look for
 	 *
-	
-	 * @return the task if found, null otherwise. */
+	 * 
+	 * @return the task if found, null otherwise.
+	 */
 	public TaskModel findTaskByID(String id) {
 		TaskModel task = null;
 		for (TaskModel existingTask : taskList) {
@@ -149,8 +172,9 @@ public class StageModel extends AbstractModel {
 	 * @param name
 	 *            The name of the task to look for
 	 *
-	
-	 * @return The number of different tasks by that name in the stage. */
+	 * 
+	 * @return The number of different tasks by that name in the stage.
+	 */
 	public List<TaskModel> findTaskByName(String name) {
 		final List<TaskModel> tasks = new ArrayList<TaskModel>();
 		for (TaskModel existingTask : taskList) {
@@ -194,8 +218,9 @@ public class StageModel extends AbstractModel {
 	 * @param taskName
 	 *            The name of the task to search for.
 	 *
-	
-	 * @return The removed task, null if no task removed. */
+	 * 
+	 * @return The removed task, null if no task removed.
+	 */
 	public TaskModel removeTaskByName(String taskName) {
 		int count = 0;
 		final List<TaskModel> possibleTasks = new ArrayList<TaskModel>();
@@ -230,8 +255,9 @@ public class StageModel extends AbstractModel {
 	 * @param id
 	 *            The id of the task to remove.
 	 *
-	
-	 * @return The removed task, null if no task removed. */
+	 * 
+	 * @return The removed task, null if no task removed.
+	 */
 	public TaskModel removeTaskByID(String id) {
 		for (TaskModel existingTask : taskList) {
 			if (existingTask.getID().equals(id)) {
@@ -250,8 +276,9 @@ public class StageModel extends AbstractModel {
 	 * @param task
 	 *            The task to add
 	 *
-	
-	 * @return The removed task, null if no task removed. */
+	 * 
+	 * @return The removed task, null if no task removed.
+	 */
 	public TaskModel removeTask(TaskModel task) {
 		if (!taskList.contains(task)) {
 			return null;

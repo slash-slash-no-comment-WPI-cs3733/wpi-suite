@@ -49,7 +49,7 @@ public class TaskModel extends AbstractModel {
 	private String description;
 
 	// Current stage that task belongs to. This will not be serialized.
-	private StageModel stage;
+	private transient StageModel stage;
 
 	// List of users assigned to this task
 	private final Set<User> assigned;
