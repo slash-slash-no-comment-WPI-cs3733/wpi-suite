@@ -27,6 +27,7 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 	private JButton manageUsers;
 	private JButton manageStages;
 	private JButton statistics;
+	private JButton workflow;
 	private JLabel projectName;
 	
 	// TODO: Change ActionListener to ToolbarController when one exists
@@ -53,16 +54,17 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 		this.setMargin(margins);
 		
 		// Construct the buttons
+		workflow = new JButton("workflow");
+		workflow.setName("workflow");
 		createTask = new JButton("Create Task");
+		createTask.setName("createTask");
 		manageStages = new JButton("Manage Stages");
+		manageStages.setName("manageStages");
 		manageUsers = new JButton("Manage Users");
+		manageUsers.setName("manageUsers");
 		statistics = new JButton("Statistics");
-
-		// Add button actions
-		// createTask.setAction(new CreateTaskAction(toolbarController));
-		// manageStages.setAction(new ManageStagesAction(toolbarController));
-		// manageUsers.setAction(new ManageUsersAction(toolbarController));
-		// statistics.setAction(new StatisticsAction(toolbarController));
+		statistics.setName("statistics");
+		
 
 		// Construct the project title
 		projectName = new JLabel("Project Title"); // TODO(sswartz): update this
@@ -70,6 +72,7 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 
 		// Add buttons to the content panel
 		title.add(projectName);
+		buttons.add(workflow);
 		buttons.add(createTask);
 		buttons.add(manageStages);
 		buttons.add(manageUsers);
