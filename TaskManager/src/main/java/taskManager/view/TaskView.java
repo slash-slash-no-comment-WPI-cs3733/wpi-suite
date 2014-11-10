@@ -23,6 +23,7 @@ import taskManager.controller.TaskController;
 
 /**
  * @author Beth Martino
+ * @author Stefan Alexander
  * @version November 9, 2014
  */
 

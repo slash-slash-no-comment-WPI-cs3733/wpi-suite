@@ -28,6 +28,7 @@ import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
  *
  * @author Beth Martino
  * @author Samee Swartz
+ * @author Stefan Alexander
  * @version November 9, 2014
  */
 public class JanewayModule implements IJanewayModule {
@@ -72,6 +73,12 @@ public class JanewayModule implements IJanewayModule {
 		TaskModel task5 = new TaskModel("This is merged", "Merged", wfm);
 		task5.setDueDate(Calendar.getInstance().getTime());
 		task5.setEstimatedEffort(2);
+
+		for (int i = 0; i < 10; ++i) {
+			TaskModel tsk = new TaskModel("test " + i, "To Merge", wfm);
+			tsk.setDueDate(Calendar.getInstance().getTime());
+			tsk.setEstimatedEffort(1);
+		}
 
 		// create the controller for the view
 		wfv.setController(new WorkflowController(wfv, wfm));
