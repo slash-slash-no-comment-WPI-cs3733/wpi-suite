@@ -194,19 +194,6 @@ public class WorkflowModel extends AbstractModel {
 		name = workflow.getName();
 	}
 
-	/**
-	 * Check if the workflow has a given task
-	 *
-	 * @param task
-	 *            The task to look for
-	 * 
-	 * @return If the workflow has the task
-	 */
-	public boolean hasTask(TaskModel task) {
-		// TODO (is this method needed)?
-		return false;
-	}
-
 	@Override
 	public void save() {
 		// TODO Auto-generated method stub

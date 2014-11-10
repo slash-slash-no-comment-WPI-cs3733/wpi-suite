@@ -87,22 +87,11 @@ public class TaskModel extends AbstractModel {
 		assigned = new HashSet<User>();
 		activities = new ArrayList<ActivityModel>();
 		this.stage = stage;
-		stage.addTask(this);
-	}
 
-	/**
-	 * Constructor assigns name, task id, and stage.
-	 *
-	 * @param name
-	 *            name of the new task
-	 * @param stage
-	 *            stage that it enters in
-	 */
-	public TaskModel(String name, String stage) {
-		this.name = name;
-		id = name;
-		assigned = new HashSet<User>();
-		activities = new ArrayList<ActivityModel>();
+		// Allow creation of null objects for database
+		if (stage != null) {
+			stage.addTask(this);
+		}
 	}
 
 	/**
