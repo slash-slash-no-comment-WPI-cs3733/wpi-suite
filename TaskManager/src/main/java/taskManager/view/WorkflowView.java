@@ -83,7 +83,7 @@ public class WorkflowView extends JPanel implements IWorkflowView {
 
 	@Override
 	public String getName() {
-		return this.getName();
+		return super.getName();
 	}
 
 	public void setController(WorkflowController controller) {

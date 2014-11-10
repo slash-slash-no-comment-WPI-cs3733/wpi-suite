@@ -72,7 +72,7 @@ public class TaskView extends JPanel implements ITaskView {
 
 	@Override
 	public String getName() {
-		return this.getName();
+		return super.getName();
 	}
 
 	public void setController(TaskController controller) {

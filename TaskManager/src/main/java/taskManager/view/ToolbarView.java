@@ -3,19 +3,16 @@
  */
 package taskManager.view;
 
+import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import java.awt.FlowLayout;
-import java.awt.Insets;
-
 import javax.swing.JToolBar;
-//import java.awt.*;
 
-//import taskManager.controller.*;
 /**
  * The Task Managers tab's toolbar panel.
  */
@@ -28,7 +25,7 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 	private JButton manageStages;
 	private JButton statistics;
 	private JLabel projectName;
-	
+
 	// TODO: Change ActionListener to ToolbarController when one exists
 	private ActionListener controller;
 
@@ -51,7 +48,7 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 
 		Insets margins = new Insets(30, 5, 0, 5);
 		this.setMargin(margins);
-		
+
 		// Construct the buttons
 		createTask = new JButton("Create Task");
 		manageStages = new JButton("Manage Stages");
@@ -79,7 +76,7 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 		this.add(title);
 		this.add(buttons);
 	}
-	
+
 	// TODO: Change ActionListener to ToolbarController
 	public void setController(ActionListener controller) {
 		this.controller = controller;
@@ -87,6 +84,6 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 
 	@Override
 	public String getName() {
-		return this.getName();
+		return super.getName();
 	}
 }

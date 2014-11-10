@@ -46,7 +46,7 @@ public class StageView extends JPanel implements IStageView {
 
 	@Override
 	public String getName() {
-		return this.getName();
+		return super.getName();
 	}
 
 	public void setController(StageController controller) {
