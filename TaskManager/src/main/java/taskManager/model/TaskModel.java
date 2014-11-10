@@ -65,7 +65,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	// Associated requirement that this task corresponds to
 	private Requirement req;
 
-	static private TaskRequestObserver observer = new TaskRequestObserver();
+	static private GenericRequestObserver observer = new GenericRequestObserver();
 
 	/**
 	 * Constructor assigns name, task id, and stage.
