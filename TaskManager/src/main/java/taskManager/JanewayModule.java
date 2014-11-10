@@ -10,10 +10,12 @@ import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
+import taskManager.controller.ManageStageController;
 import taskManager.controller.ToolbarController;
 import taskManager.controller.WorkflowController;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
+import taskManager.view.ManageStageView;
 import taskManager.view.ToolbarView;
 import taskManager.view.WorkflowView;
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
@@ -34,12 +36,11 @@ public class JanewayModule implements IJanewayModule {
 	public JanewayModule() {
 
 		// creates the workflow view
-		// TODO change JPanels to ManageStagesView, ManageUsersView,
-		// NewTaskView, StatisticsView
-		// TODO move set visible into constructors?
+		// TODO change JPanels to ManageUsersView, NewTaskView, StatisticsView
+		// TODO move setVisible(false) into view constructors?
 		WorkflowView wfv = new WorkflowView();
 		wfv.setVisible(true);
-		JPanel msv = new JPanel();
+		ManageStageView msv = new ManageStageView();
 		msv.setVisible(false);
 		JPanel muv = new JPanel();
 		muv.setVisible(false);
@@ -59,6 +60,7 @@ public class JanewayModule implements IJanewayModule {
 		
 		// create the controller for the view
 		wfv.setController(new WorkflowController(wfv, wfm));
+		msv.setController(new ManageStageController(msv, wfm));
 
 		JPanel allPanels = new JPanel();
 		allPanels.add(wfv);

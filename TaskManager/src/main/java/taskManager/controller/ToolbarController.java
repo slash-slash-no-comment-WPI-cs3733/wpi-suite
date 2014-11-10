@@ -15,6 +15,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import taskManager.view.ManageStageView;
 import taskManager.view.ToolbarView;
 import taskManager.view.WorkflowView;
 
@@ -30,7 +31,7 @@ public class ToolbarController implements ActionListener{
 	private final ToolbarView toolbarView;
 	private final WorkflowView workflowView;
 	//TODO: change JPanels to correct view objects
-	private final JPanel manageStagesView;
+	private final ManageStageView manageStagesView;
 	private final JPanel manageUsersView;
 	private final JPanel newTaskView;
 	private final JPanel statisticsView;
@@ -44,7 +45,7 @@ public class ToolbarController implements ActionListener{
 	 * @param ntv the newTask view to be switched to
 	 * @param sv the statistics view to be switched to
 	 */
-	public ToolbarController(ToolbarView view, WorkflowView wfv, JPanel msv, JPanel muv,
+	public ToolbarController(ToolbarView view, WorkflowView wfv, ManageStageView msv, JPanel muv,
 			JPanel ntv, JPanel sv) {
 		this.toolbarView = view;
 		this.workflowView = wfv;
@@ -66,7 +67,6 @@ public class ToolbarController implements ActionListener{
 				manageStagesView.setVisible(false);
 				statisticsView.setVisible(false);
 				newTaskView.setVisible(true);
-				System.out.println("blah");
 				break;
 			case "manageStages": 
 				workflowView.setVisible(false);
@@ -74,7 +74,6 @@ public class ToolbarController implements ActionListener{
 				statisticsView.setVisible(false);
 				newTaskView.setVisible(false);
 				manageStagesView.setVisible(true);
-				System.out.println("blah2");
 				break;
 			case "manageUsers": 
 				workflowView.setVisible(false);
@@ -82,7 +81,6 @@ public class ToolbarController implements ActionListener{
 				statisticsView.setVisible(false);
 				newTaskView.setVisible(false);
 				manageUsersView.setVisible(true);
-				System.out.println("blah3");
 				break;
 			case "statistics": 
 				workflowView.setVisible(false);
@@ -90,7 +88,6 @@ public class ToolbarController implements ActionListener{
 				manageStagesView.setVisible(false);
 				newTaskView.setVisible(false);
 				statisticsView.setVisible(true);
-				System.out.println("blah4");
 				break;
 				
 			case "workflow": 
@@ -99,7 +96,6 @@ public class ToolbarController implements ActionListener{
 				newTaskView.setVisible(false);
 				statisticsView.setVisible(false);
 				workflowView.setVisible(true);
-				System.out.println("blah4");
 				break;
 			}
 		}
