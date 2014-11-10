@@ -35,6 +35,15 @@ public class ToolbarController implements ActionListener{
 	private final JPanel newTaskView;
 	private final JPanel statisticsView;
 
+	/**
+	 * 
+	 * @param view the toolbar view to be listened to
+	 * @param wfv the workflow view to be switched to
+	 * @param msv the manageStages view to be switched to
+	 * @param muv the manageUsers view to be switched to
+	 * @param ntv the newTask view to be switched to
+	 * @param sv the statistics view to be switched to
+	 */
 	public ToolbarController(ToolbarView view, WorkflowView wfv, JPanel msv, JPanel muv,
 			JPanel ntv, JPanel sv) {
 		this.toolbarView = view;
@@ -81,6 +90,15 @@ public class ToolbarController implements ActionListener{
 				manageStagesView.setVisible(false);
 				newTaskView.setVisible(false);
 				statisticsView.setVisible(true);
+				System.out.println("blah4");
+				break;
+				
+			case "workflow": 
+				manageUsersView.setVisible(false);
+				manageStagesView.setVisible(false);
+				newTaskView.setVisible(false);
+				statisticsView.setVisible(false);
+				workflowView.setVisible(true);
 				System.out.println("blah4");
 				break;
 			}

@@ -52,11 +52,11 @@ public class JanewayModule implements IJanewayModule {
 		WorkflowModel wfm = new WorkflowModel();
 
 		// give it the default stages
-		new StageModel(wfm, "Backlog", false);
+		new StageModel(wfm, "New", false);
+		new StageModel(wfm, "Started", false);
 		new StageModel(wfm, "In Progress", false);
-		new StageModel(wfm, "Review", false);
-		new StageModel(wfm, "To Merge", false);
-		new StageModel(wfm, "Merged", false);
+		new StageModel(wfm, "Complete", false);
+		
 		// create the controller for the view
 		wfv.setController(new WorkflowController(wfv, wfm));
 
@@ -71,7 +71,6 @@ public class JanewayModule implements IJanewayModule {
 		ToolbarView tv = new ToolbarView();
 		ToolbarController tc = new ToolbarController(tv, wfv, msv, muv, ntv, sv);
 		tv.setController(tc);
-		// toolbarPanel.setController(ToolbarController);
 
 		tabs = new ArrayList<JanewayTabModel>();
 		JanewayTabModel tab = new JanewayTabModel("Task Manager",
