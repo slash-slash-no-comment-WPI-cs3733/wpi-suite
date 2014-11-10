@@ -38,14 +38,24 @@ public class JanewayModule implements IJanewayModule {
 		// creates the workflow view
 		// TODO change JPanels to ManageUsersView, NewTaskView, StatisticsView
 		// TODO move setVisible(false) into view constructors?
+		
+		//create workflow view
 		WorkflowView wfv = new WorkflowView();
 		wfv.setVisible(true);
+		
+		//create manage stages view
 		ManageStageView msv = new ManageStageView();
 		msv.setVisible(false);
+		
+		//create manage users view
 		JPanel muv = new JPanel();
 		muv.setVisible(false);
+		
+		//create new task view
 		JPanel ntv = new JPanel();
 		ntv.setVisible(false);
+		
+		//create statistics view
 		JPanel sv = new JPanel();
 		sv.setVisible(false);
 
@@ -58,10 +68,11 @@ public class JanewayModule implements IJanewayModule {
 		new StageModel(wfm, "In Progress", false);
 		new StageModel(wfm, "Complete", false);
 		
-		// create the controller for the view
+		// create the controllers for the views
 		wfv.setController(new WorkflowController(wfv, wfm));
 		msv.setController(new ManageStageController(msv, wfm));
 
+		//adds all views to one panel
 		JPanel allPanels = new JPanel();
 		allPanels.add(wfv);
 		allPanels.add(msv);
