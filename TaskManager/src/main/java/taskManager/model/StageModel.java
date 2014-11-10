@@ -29,7 +29,7 @@ public class StageModel extends AbstractModel {
 	// List of tasks in this stage
 	private List<TaskModel> taskList;
 
-	// The public name of this stage
+	// The name of this stage; treated as ID and uniqueness enforced
 	private String name;
 
 	// Workflow that stage belongs to; not serialized
@@ -62,12 +62,8 @@ public class StageModel extends AbstractModel {
 	 *            Whether or not the stage can be removed.
 	 */
 	public StageModel(WorkflowModel workflow, String name, boolean removable) {
-		this.name = name;
-		this.removable = removable;
-		this.workflow = workflow;
-		taskList = new ArrayList<TaskModel>();
-		workflow.addStage(this);
-		// TODO this should really call the other constructor
+		this(workflow, name, -1, true);
+		// TODO better way than passing -1 for index?
 	}
 
 	/**
@@ -92,18 +88,26 @@ public class StageModel extends AbstractModel {
 	 * @param name
 	 *            The name of the stage.
 	 * @param index
-	 *            Index in the list to add stages too.
+	 *            Index in the list to add stages too. -1 will add to end of
+	 *            list
 	 * @param removable
 	 *            Whether or not the stage can be removed.
 	 */
 	public StageModel(WorkflowModel workflow, String name, int index,
 			boolean removable) {
+		// Enforce uniqueness of Stage names
+		if (workflow.findStageByName(name) == null) {
+			throw new IllegalArgumentException();
+		}
 		this.name = name;
 		this.removable = removable;
 		this.workflow = workflow;
 		taskList = new ArrayList<TaskModel>();
-		workflow.addStage(this, index);
-
+		if (index == -1) {
+			workflow.addStage(this);
+		} else {
+			workflow.addStage(this, index);
+		}
 	}
 
 	/**
