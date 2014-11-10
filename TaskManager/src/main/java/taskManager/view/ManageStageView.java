@@ -8,6 +8,7 @@
  *******************************************************************************/
 package taskManager.view;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class ManageStageView extends JPanel {
 	private List<JButton> buttonsWithoutAController;
 
 	private JPanel stageArea;
+	private JTextField text;
 
 	/**
 	 * 
@@ -60,14 +62,26 @@ public class ManageStageView extends JPanel {
 	 * Adds a stage to the view
 	 *
 	 * @param name
-	 *            The name of the stage
+	 *            The name of the stage to add
 	 */
 	public void addStage(String name) {
 		this.stageArea.add(newStagePanel(name));
 	}
 
+	/**
+	 * Remove the stage with the specified name
+	 *
+	 * @param name
+	 *            The name of the stage to remove
+	 */
 	public void removeStage(String name) {
-		this.stageArea.remove(newStagePanel(name));
+		// this.stageArea.remove(newStagePanel(name));
+		for (Component stage : this.stageArea.getComponents()) {
+			if (stage.getName() == name) {
+				this.stageArea.remove(stage);
+				break;
+			}
+		}
 	}
 
 	/**
@@ -84,6 +98,15 @@ public class ManageStageView extends JPanel {
 			button.addActionListener(controller);
 		}
 		buttonsWithoutAController.clear();
+	}
+
+	/**
+	 * Gets the text field for the new stage name
+	 *
+	 * @return The text field
+	 */
+	public JTextField getNewStageNameField() {
+		return text;
 	}
 
 	/**
@@ -131,7 +154,7 @@ public class ManageStageView extends JPanel {
 	 */
 	private JPanel addNewStagePanel() {
 		JPanel panel = new JPanel();
-		JTextField text = new JTextField();
+		text = new JTextField();
 		text.setName("newStageName");
 
 		// I don't understand why it won't become this size unless I set both of
