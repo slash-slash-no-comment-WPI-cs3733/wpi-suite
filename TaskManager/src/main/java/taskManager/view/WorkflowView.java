@@ -3,45 +3,40 @@ package taskManager.view;
 /*
  * @author Beth Martino
  */
-import java.awt.*;
-import javax.swing.*;
+//<<<<<<< HEAD
+import java.awt.FlowLayout;
+import javax.swing.JPanel;
 
-import javax.swing.*;
+import taskManager.controller.WorkflowController;
 
+public class WorkflowView extends JPanel implements IWorkflowView {
 
-public class WorkflowView extends JPanel implements IWorkflowView{
-
-	/**
-	 * not sure what this is, ask Jon or Sam?
-	 */
 	private static final long serialVersionUID = 1L;
 
+	private WorkflowController controller;
+
 	public WorkflowView() {
-		
-		//arranges the stages horizontally and evenly spaced
+
+		// arranges the stages horizontally and evenly spaced
 		this.setLayout(new FlowLayout());
-		
-		this.addStageView("Backlog");
-		this.addStageView("In Progress");
-		this.addStageView("Review");
-		this.addStageView("To Merge");
-		
-	}
-	
-	/**
-	 * @param name of the new stage to be added
-	 * creates a new scroll panel to house the stage view object 
-	 * sets the size and border
-	 */
-	public void addStageView(String name){
-		this.add(new StageView(name));
-	}
-	
-	@Override
-	public String getName(){
-		return this.getName();
 	}
 
-	
+	/**
+	 * @param name
+	 *            of the new stage to be added creates a new scroll panel to
+	 *            house the stage view object sets the size and border
+	 */
+	public void addStageView(String name) {
+		this.add(new StageView(name));
+	}
+
+	@Override
+	public String getName() {
+		return super.getName();
+	}
+
+	public void setController(WorkflowController controller) {
+		this.controller = controller;
+	}
 
 }

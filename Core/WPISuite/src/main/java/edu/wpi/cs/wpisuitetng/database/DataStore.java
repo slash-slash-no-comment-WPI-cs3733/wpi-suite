@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:rchamer, bgaffey, mpdelladonna
- *    
+ *
  *******************************************************************************/
 package edu.wpi.cs.wpisuitetng.database;
 
@@ -53,7 +53,7 @@ public class DataStore implements Data {
 
     /**
      * Get the single instance of the Database
-     * 
+     *
      * @return the only instance of the Database
      */
     public static DataStore getDataStore() {
@@ -78,7 +78,7 @@ public class DataStore implements Data {
 
     /**
      * Saves a Model into the database
-     * 
+     *
      * @param Model to save
      */
     public <T> boolean save(T aModel) {
@@ -95,7 +95,7 @@ public class DataStore implements Data {
 
     /**
      * Saves a Model associated with the given project into the database
-     * 
+     *
      * @param Model to save
      */
     public <T> boolean save(T aModel, Project aProject) {
@@ -114,7 +114,7 @@ public class DataStore implements Data {
     /**
      * Retrieves objects of the given class with the given value for the given field.
      * This function is not project specific.
-     * 
+     *
      * @param anObjectQueried - The class type of the object being queried.
      * @param aFieldName - The field name of the value in the object you are querying.
      * @param theGivenValue - The value of field aFieldName that you want all returned objects to have
@@ -158,7 +158,7 @@ public class DataStore implements Data {
             public boolean match(Model anObject) {
                 try {
                     return theGetter.invoke(anObjectQueried.cast(anObject)).equals(theGivenValue);
-                    //objects that have aFieldName equal to theGivenValue get added to the list 
+                    //objects that have aFieldName equal to theGivenValue get added to the list
                 } catch (IllegalArgumentException e) {
                     return false;
                 } catch (IllegalAccessException e) {
@@ -179,7 +179,7 @@ public class DataStore implements Data {
     /**
      * Retrieves the objects of the given class type with the given field value from only
      * the given project.
-     * 
+     *
      * @param anObjectQueried - The class type of the object being queried.
      * @param aFieldName - The field Name of the value in the object you are querying about.
      * @param theGivenValue - The value of field aFieldName that you want all returned objects to have
@@ -192,7 +192,7 @@ public class DataStore implements Data {
     @Override
     public List<Model> retrieve(final Class anObjectQueried, String aFieldName, final Object theGivenValue, final Project theProject) throws WPISuiteException {
 
-        //If no project is given, then the project neutral retrieve should be used 
+        //If no project is given, then the project neutral retrieve should be used
         if (theProject == null) {
             //If no project is given, just search the entire database
             retrieve(anObjectQueried, aFieldName, theGivenValue);
@@ -257,7 +257,7 @@ public class DataStore implements Data {
 
     /**
      * Retrieves all objects of the given Class from the Database.
-     * 
+     *
      * @param aSample an object of the class we want to retrieve All of
      * @return a List of all of the objects of the given class
      */
@@ -276,7 +276,7 @@ public class DataStore implements Data {
 
     /**
      * Retrieves all objects of the given Class in a given Project
-     * 
+     *
      * @param aSample an object of the class we want to retrieve All of
      * @param aProject Project to search in for the objects
      * @return a List of all of the objects of the given class
@@ -301,7 +301,7 @@ public class DataStore implements Data {
 
     /**
      * Deletes the given object and returns the object if successful
-     * 
+     *
      * @param The object to be deleted
      * @return The object being deleted
      */
@@ -324,7 +324,7 @@ public class DataStore implements Data {
 
     /**
      * Deletes all objects of the given Class in the database
-     * 
+     *
      * @param aSample an object of the class we want to retrieve All of
      * @return a List of all of the objects deleted
      */
@@ -346,7 +346,7 @@ public class DataStore implements Data {
 
     /**
      * Deletes all objects of the given Class in a given Project
-     * 
+     *
      * @param aSample an object of the class we want to retrieve All of
      * @param aProject Project to search in for the objects
      * @return a List of all of the objects of the given class in the given project
@@ -370,7 +370,7 @@ public class DataStore implements Data {
 
     /**
      * Updates the given field in every object which has the uniqueID value in a specific project
-     * 
+     *
      * @param anObjectToBeModified - Class of object to be updated
      * @param fieldName - Field the object will be identified by
      * @param uniqueID - Value of fieldName that the object will be identified by
@@ -426,7 +426,7 @@ public class DataStore implements Data {
 
     /**
      * Updates the given field in every object which has the uniqueID value
-     * 
+     *
      * @param anObjectToBeModified - Class of object to be updated
      * @param fieldName - Field the object will be identified by
      * @param uniqueID - value of fieldName that the object will be identified by
@@ -487,7 +487,7 @@ public class DataStore implements Data {
 
     /**
      * Retrieves objects which do not have the given value
-     * 
+     *
      * @param anObjectQueried - Class of the object to be queried
      * @param aFieldName - name of the Field to check
      * @param theGivenValue - Value the field should not equal
@@ -518,7 +518,7 @@ public class DataStore implements Data {
             public boolean match(Model anObject) {
                 try {
                     Object foundobj = theGetter.invoke(anObjectQueried.cast(anObject));
-                    return (!(foundobj.equals(theGivenValue)));//objects that have aFieldName equal to theGivenValue get added to the list 
+                    return (!(foundobj.equals(theGivenValue)));//objects that have aFieldName equal to theGivenValue get added to the list
                 } catch (IllegalArgumentException e) {
                     e.printStackTrace();
                     return false;
@@ -538,7 +538,7 @@ public class DataStore implements Data {
 
     /**
      * Retrieves objects which match one of the given fields to one of the given values
-     * 
+     *
      * @param anObjectQueried - Class of the object to be queried
      * @param aFieldName - Array of names of the Field to check in order
      * @param theGivenValueList - Array of values the field should equal in order
@@ -605,7 +605,7 @@ public class DataStore implements Data {
 
     /**
      * Retrieves objects which match all of the given fields to all of the given values
-     * 
+     *
      * @param anObjectQueried - Class of the object to be queried
      * @param aFieldName - Array of names of the Field to check in order
      * @param theGivenValueList - Array of values the field should equal in order
@@ -681,7 +681,7 @@ public class DataStore implements Data {
 
     /**
      * Retrieves objects which match all of the given fields to all of the given values
-     * 
+     *
      * @param anObjectQueried - Class of the object to be queried
      * @param aFieldName - Array of names of the Field to check in order
      * @param theGivenValueList - Array of values the field should equal in order
@@ -763,7 +763,7 @@ public class DataStore implements Data {
 
     /**
      * Retrieves objects which match one of the given fields to one of the given values
-     * 
+     *
      * @param anObjectQueried - Class of the object to be queried
      * @param aFieldName - Array of names of the Field to check in order
      * @param theGivenValueList - Array of values the field should equal in order
@@ -835,7 +835,7 @@ public class DataStore implements Data {
     /**
      * Retrieves objects which match all of the given "and" fields to all of the given "and" values AND
      * which match one of the given "or" fields to one of the given "or" values
-     * 
+     *
      * @param andAnObjectQueried - Class of the "and" object to be queried
      * @param andFieldNameList - Array of names of the "and" Fields to check in order
      * @param andGivenValueList - Array of values the "and" fields should equal in order
@@ -860,7 +860,7 @@ public class DataStore implements Data {
 
     /**
      * Returns a List with all duplicate items removed
-     * 
+     *
      * @param listWithDuplicates - A list with duplicate items
      * @return a list with no duplicate items
      */
@@ -879,7 +879,7 @@ public class DataStore implements Data {
     /**
      * Retrieves objects which match all of the given "and" fields to all of the given "and" values AND
      * which match one of the given "or" fields to one of the given "or" values in the given project
-     * 
+     *
      * @param andAnObjectQueried - Class of the "and" object to be queried
      * @param andFieldNameList - Array of names of the "and" Fields to check in order
      * @param andGivenValueList - Array of values the "and" fields should equal in order
