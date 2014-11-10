@@ -15,9 +15,17 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonPrimitive;
+
 import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
+import edu.wpi.cs.wpisuitetng.network.Network;
+import edu.wpi.cs.wpisuitetng.network.Request;
+import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
 
 /**
  * Stores data of each task in the workflow. Tasks are saved per
@@ -40,12 +48,11 @@ public class TaskModel extends AbstractModel {
 	// Task description
 	private String description;
 
-	// Current stage that task belongs to. This is not a link to the StageModel
-	// itself, since that would serialize poorly.
-	private String stage;
+	// Current stage that task belongs to. This will not be serialized.
+	private transient StageModel stage;
 
 	// List of users assigned to this task
-	private final Set<User> assigned;
+	private Set<User> assigned;
 
 	// Due date timestamp
 	private Date dueDate;
@@ -57,10 +64,12 @@ public class TaskModel extends AbstractModel {
 	private int actualEffort;
 
 	// Actions and comments relevant to task
-	private final List<ActivityModel> activities;
+	private List<ActivityModel> activities;
 
 	// Associated requirement that this task corresponds to
 	private Requirement req;
+
+	static private TaskRequestObserver observer = new TaskRequestObserver();
 
 	/**
 	 * Constructor assigns name, task id, and stage.
@@ -69,14 +78,20 @@ public class TaskModel extends AbstractModel {
 	 *            name of the new task
 	 * @param stage
 	 *            stage that it enters in
-	 * @param workflow
 	 */
-	public TaskModel(String name, String stage, WorkflowModel workflow) {
+
+	public TaskModel(String name, StageModel stage) {
 		this.name = name;
-		id = name;
+		this.id = stage.getWorkflow().findUniqueTaskID(name);
+
 		assigned = new HashSet<User>();
 		activities = new ArrayList<ActivityModel>();
-		workflow.addTask(this, stage);
+		this.stage = stage;
+
+		// Allow creation of null objects for database
+		if (stage != null) {
+			stage.addTask(this);
+		}
 	}
 
 	/**
@@ -84,8 +99,6 @@ public class TaskModel extends AbstractModel {
 	 * database
 	 */
 	public TaskModel() {
-		assigned = null;
-		activities = null;
 	}
 
 	/**
@@ -113,7 +126,8 @@ public class TaskModel extends AbstractModel {
 
 	/**
 	 * @param id
-	 *            set the internal id
+	 *            set the internal id. Should only be used when intializing the
+	 *            task.
 	 */
 	public void setID(String id) {
 		this.id = id;
@@ -137,16 +151,16 @@ public class TaskModel extends AbstractModel {
 	/**
 	 * @return the current stage
 	 */
-	public String getStage() {
+	public StageModel getStage() {
 		return stage;
 	}
 
 	/**
 	 * @param stage
-	 *            Change the current task stage. This is only a duplicate, and
-	 *            the stage that the task belongs to should be updated too.
+	 *            Change the current task stage. The stage should be updated as
+	 *            well.
 	 */
-	public void setStage(String stage) {
+	public void setStage(StageModel stage) {
 		this.stage = stage;
 	}
 
@@ -242,7 +256,11 @@ public class TaskModel extends AbstractModel {
 	 *            to be removed
 	 */
 	public void removeAssigned(User user) {
-		assigned.remove(user);
+		if (!assigned.contains(user)) {
+			// TODO: Log user non-existence in set
+		} else {
+			assigned.remove(user);
+		}
 	}
 
 	/**
@@ -261,20 +279,42 @@ public class TaskModel extends AbstractModel {
 		activities.add(activity);
 	}
 
+	public void makeIdenticalTo(TaskModel task) {
+		name = task.getName();
+		id = task.getID();
+		description = task.getDescription();
+		stage = task.getStage();
+		assigned = task.getAssigned();
+		dueDate = task.getDueDate();
+		estimatedEffort = task.getEstimatedEffort();
+		actualEffort = task.getActualEffort();
+		activities = task.getActivities();
+		req = task.getReq();
+	}
+
 	@Override
 	public void save() {
-		// TODO Auto-generated method stub
+		final Request request = Network.getInstance().makeRequest(
+				"taskmanager/task", HttpMethod.POST);
+		request.setBody(toJson());
+		request.addObserver(observer);
+		request.send();
 	}
 
 	@Override
 	public void delete() {
-		// TODO Auto-generated method stub
+		final Request request = Network.getInstance().makeRequest(
+				"taskmanager/task", HttpMethod.DELETE);
+		request.setBody(toJson());
+		request.addObserver(observer);
+		request.send();
 	}
 
 	@Override
 	public String toJson() {
-		// TODO Auto-generated method stub
-		return null;
+		final Gson gson = new GsonBuilder().registerTypeAdapter(
+				TaskModel.class, new TaskModelSerializer()).create();
+		return gson.toJson(this, TaskModel.class);
 	}
 
 	/**
@@ -291,10 +331,35 @@ public class TaskModel extends AbstractModel {
 
 	@Override
 	public Boolean identify(Object o) {
-		boolean identify = false;
 		if (o instanceof TaskModel) {
-			identify = ((TaskModel) o).id.equals(id);
+			return ((TaskModel) o).id.equals(id);
 		}
-		return identify;
+		return false;
+	}
+
+	/**
+	 * Returns the list of activities as a JsonArray
+	 *
+	 * @return a JsonArray of the activities
+	 */
+	public JsonArray getActivitiesAsJson() {
+		final JsonArray activityList = new JsonArray();
+		for (ActivityModel activity : activities) {
+			activityList.add(new JsonPrimitive(activity.toJson()));
+		}
+		return null;
+	}
+
+	/**
+	 * Return the list of assigned users as a JsonArray.
+	 *
+	 * @return a JsonArray of the users
+	 */
+	public JsonArray getAssignedAsJson() {
+		final JsonArray assignedList = new JsonArray();
+		for (User user : assigned) {
+			assignedList.add(new JsonPrimitive(user.toJson()));
+		}
+		return null;
 	}
 }
