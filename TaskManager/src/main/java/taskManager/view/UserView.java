@@ -44,7 +44,7 @@ public class UserView extends JPanel {
 
 		// TODO: Add the user's tasks to the tasks list
 	}
-	
+
 	/**
 	 * addTask adds a TaskView to the task list
 	 * 

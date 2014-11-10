@@ -14,6 +14,9 @@ import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.WorkflowView;
 import taskManager.view.ToolbarView;
+import taskManager.view.ManageUsersView;
+import taskManager.view.UserView;
+import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
 import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
@@ -49,9 +52,15 @@ public class JanewayModule implements IJanewayModule {
 		ToolbarView tv = new ToolbarView();
 		// toolbarPanel.setController(ToolbarController);
 
+		// ManageUsers window
+		ManageUsersView muv = new ManageUsersView();
+		// muv.addUser(new User("A", "A", "A", 1));
+		// muv.addUser(new User("B", "B", "B", 2));
+		// muv.addUser(new User("C", "C", "C", 3));
+
 		tabs = new ArrayList<JanewayTabModel>();
 		JanewayTabModel tab = new JanewayTabModel("Task Manager",
-				new ImageIcon(), tv, wfv);
+				new ImageIcon(), tv, muv);
 		tabs.add(tab);
 	}
 

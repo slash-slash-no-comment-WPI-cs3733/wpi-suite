@@ -15,9 +15,6 @@ import javax.swing.border.TitledBorder;
 
 public class TaskView extends JPanel implements ITaskView {
 
-	/**
-	 * not sure what this is, ask Jon or Sam?
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
