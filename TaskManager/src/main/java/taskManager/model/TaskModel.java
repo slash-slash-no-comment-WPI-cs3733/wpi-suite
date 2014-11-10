@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonPrimitive;
 
@@ -288,9 +287,12 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 
 	@Override
 	public String toJson() {
-		final Gson gson = new GsonBuilder().registerTypeAdapter(
-				TaskModel.class, new TaskModelSerializer()).create();
-		return gson.toJson(this, TaskModel.class);
+		return new Gson().toJson(this, TaskModel.class);
+		/*
+		 * final Gson gson = new GsonBuilder().registerTypeAdapter(
+		 * TaskModel.class, new TaskModelSerializer()).create(); return
+		 * gson.toJson(this, TaskModel.class);
+		 */
 	}
 
 	@Override
