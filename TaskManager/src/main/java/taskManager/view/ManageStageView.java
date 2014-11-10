@@ -52,10 +52,8 @@ public class ManageStageView extends JPanel {
 		this.controller = null;
 		this.buttonsWithoutAController = new ArrayList<JButton>();
 		this.add(stageArea);
-		this.addStage("stage 1");
-		this.addStage("Stage 2");
 		this.add(addNewStagePanel());
-		this.addStage("stage 3");
+
 	}
 
 	/**
@@ -75,7 +73,6 @@ public class ManageStageView extends JPanel {
 	 *            The name of the stage to remove
 	 */
 	public void removeStage(String name) {
-		// this.stageArea.remove(newStagePanel(name));
 		for (Component stage : this.stageArea.getComponents()) {
 			if (stage.getName() == name) {
 				this.stageArea.remove(stage);

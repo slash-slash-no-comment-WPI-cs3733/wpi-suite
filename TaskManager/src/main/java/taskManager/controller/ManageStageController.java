@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
+import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.ManageStageView;
 
@@ -33,6 +34,10 @@ public class ManageStageController implements ActionListener {
 	public ManageStageController(ManageStageView view, WorkflowModel model) {
 		this.view = view;
 		this.model = model;
+
+		for (StageModel stage : model.getStages()) {
+			view.addStage(stage.getName());
+		}
 	}
 
 	/*
@@ -53,6 +58,7 @@ public class ManageStageController implements ActionListener {
 			switch (name) {
 			case "Delete":
 				view.removeStage(stageName);
+				model.getStages().removeIf(s -> s.getName() == stageName);
 				break;
 			case "Move Up":
 				// TODO
@@ -61,7 +67,9 @@ public class ManageStageController implements ActionListener {
 				// TODO
 				break;
 			case "Add new stage":
-				view.addStage(view.getNewStageNameField().getText());
+				String newStageName = view.getNewStageNameField().getText();
+				view.addStage(newStageName);
+				new StageModel(model, newStageName);
 				break;
 			default:
 				System.out.println("Unknown button pushed");
