@@ -12,8 +12,6 @@ package taskManager.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
-
 /**
  * One stage in development for the process. Stages are saved per
  * {@link WorkflowModel Workflow}, and contain a number of {@link TaskModel
@@ -24,7 +22,7 @@ import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
  * @author Ezra Davis
  * @version Nov 6, 2014
  */
-public class StageModel extends AbstractModel {
+public class StageModel extends AbstractJsonableModel<StageModel> {
 
 	// List of tasks in this stage
 	private List<TaskModel> taskList;
@@ -95,6 +93,8 @@ public class StageModel extends AbstractModel {
 	 */
 	public StageModel(WorkflowModel workflow, String name, int index,
 			boolean removable) {
+		// Set name as ID
+		super(name);
 		// Enforce uniqueness of Stage names
 		if (workflow.findStageByName(name) == null) {
 			throw new IllegalArgumentException();
@@ -301,6 +301,7 @@ public class StageModel extends AbstractModel {
 	}
 
 	public void makeIdenticalTo(StageModel stage) {
+		setID(stage.getID());
 		taskList = stage.getTasks();
 		name = stage.getName();
 		workflow = stage.getWorkflow();

@@ -12,8 +12,6 @@ package taskManager.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
-
 /**
  * An entire program workflow. Contains a number of {@link StageModel Stages}.
  *
@@ -22,16 +20,22 @@ import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
  * @author Ezra Davis
  * @version Nov 6, 2014
  */
-public class WorkflowModel extends AbstractModel {
+public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	List<StageModel> stageList;
 	String name;
 
 	/**
 	 * Constructor for WorkflowModel.
 	 */
-	public WorkflowModel() {
+	public WorkflowModel(String name) {
+		// set ID
+		super(name);
 		stageList = new ArrayList<StageModel>();
 		// TODO Add default stages
+	}
+
+	public WorkflowModel() {
+		this(null);
 	}
 
 	/**
@@ -190,6 +194,7 @@ public class WorkflowModel extends AbstractModel {
 	}
 
 	public void makeIdenticalTo(WorkflowModel workflow) {
+		setID(workflow.getID());
 		stageList = workflow.getStages();
 		name = workflow.getName();
 	}

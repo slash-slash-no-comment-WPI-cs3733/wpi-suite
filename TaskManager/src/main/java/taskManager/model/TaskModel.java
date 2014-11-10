@@ -20,7 +20,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonPrimitive;
 
-import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.network.Network;
@@ -37,13 +36,10 @@ import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
  * @version Nov 6, 2014
  */
 
-public class TaskModel extends AbstractModel {
+public class TaskModel extends AbstractJsonableModel<TaskModel> {
 
 	// Task name
 	private String name;
-
-	// Internal task name, unique.
-	private String id;
 
 	// Task description
 	private String description;
@@ -81,8 +77,11 @@ public class TaskModel extends AbstractModel {
 	 */
 
 	public TaskModel(String name, StageModel stage) {
+
+		// Set ID
+		super(stage.getWorkflow().findUniqueTaskID(name));
+
 		this.name = name;
-		this.id = stage.getWorkflow().findUniqueTaskID(name);
 
 		assigned = new HashSet<User>();
 		activities = new ArrayList<ActivityModel>();
@@ -92,13 +91,6 @@ public class TaskModel extends AbstractModel {
 		if (stage != null) {
 			stage.addTask(this);
 		}
-	}
-
-	/**
-	 * Blank constructor Necessary for creating dummy objects when querying
-	 * database
-	 */
-	public TaskModel() {
 	}
 
 	/**
@@ -115,22 +107,6 @@ public class TaskModel extends AbstractModel {
 	 */
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	/**
-	 * @return the internal id
-	 */
-	public String getID() {
-		return id;
-	}
-
-	/**
-	 * @param id
-	 *            set the internal id. Should only be used when intializing the
-	 *            task.
-	 */
-	public void setID(String id) {
-		this.id = id;
 	}
 
 	/**
@@ -280,8 +256,8 @@ public class TaskModel extends AbstractModel {
 	}
 
 	public void makeIdenticalTo(TaskModel task) {
+		setID(task.getID());
 		name = task.getName();
-		id = task.getID();
 		description = task.getDescription();
 		stage = task.getStage();
 		assigned = task.getAssigned();
@@ -317,22 +293,10 @@ public class TaskModel extends AbstractModel {
 		return gson.toJson(this, TaskModel.class);
 	}
 
-	/**
-	 * Static method for deserializing object from JSON
-	 *
-	 * @param serialized
-	 *            JSON string
-	 * @return the deserialized TaskModel
-	 */
-	public static TaskModel fromJson(String serialized) {
-		// TODO
-		return null;
-	}
-
 	@Override
 	public Boolean identify(Object o) {
 		if (o instanceof TaskModel) {
-			return ((TaskModel) o).id.equals(id);
+			return ((TaskModel) o).getID().equals(this.getID());
 		}
 		return false;
 	}

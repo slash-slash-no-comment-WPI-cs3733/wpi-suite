@@ -8,6 +8,7 @@
  *******************************************************************************/
 package taskManager.model;
 
+import java.lang.reflect.Array;
 import java.util.List;
 
 import edu.wpi.cs.wpisuitetng.Session;
@@ -20,56 +21,49 @@ import edu.wpi.cs.wpisuitetng.modules.EntityManager;
 import edu.wpi.cs.wpisuitetng.modules.Model;
 
 /**
- * Entity Manager for saving and loading TaskModel objects to and from the
- * database
+ * Description
  *
  * @author Sam Khalandovsky
- * @version Nov 8, 2014
+ * @version Nov 10, 2014
  */
-public class TaskEntityManager implements EntityManager<TaskModel> {
-
+public class GenericEntityManager<T extends AbstractJsonableModel<T>>
+		implements EntityManager<T> {
 	// The database
 	private final Data db;
 
-	public TaskEntityManager(Data db) {
+	Class<T> type;
+
+	public GenericEntityManager(Data db, Class<T> type) {
 		this.db = db;
+		this.type = type;
 	}
 
 	/**
-	 * Saves a TaskModel when received from a client
+	 * Saves a Model when received from a client
 	 * 
 	 * @see edu.wpi.cs.wpisuitetng.modules.EntityManager#makeEntity(edu.wpi.cs.
 	 *      wpisuitetng.Session, java.lang.String)
 	 */
 	@Override
-	public TaskModel makeEntity(Session s, String content)
-			throws BadRequestException, ConflictException, WPISuiteException {
-
-		// Parse JSON
-		final TaskModel newModel = TaskModel.fromJson(content);
-
-		// Save model in database, with current project
+	public T makeEntity(Session s, String content) throws BadRequestException,
+			ConflictException, WPISuiteException {
+		final T newModel = AbstractJsonableModel.fromJson(content, type);
 		db.save(newModel, s.getProject());
-		return null;
+
+		return newModel;
+
 	}
 
-	/**
-	 * Retrieves all TaskModels with given id
-	 * 
-	 * @param s
-	 *            Session to specify Project to search in
-	 * @param id
-	 *            TaskModel ID
-	 * @see edu.wpi.cs.wpisuitetng.modules.EntityManager#getEntity(edu.wpi.cs.wpisuitetng
-	 *      .Session, java.lang.String)
+	/*
+	 * @see
+	 * edu.wpi.cs.wpisuitetng.modules.EntityManager#getEntity(edu.wpi.cs.wpisuitetng
+	 * .Session, java.lang.String)
 	 */
 	@Override
-	public TaskModel[] getEntity(Session s, String id)
-			throws NotFoundException, WPISuiteException {
-
-		List<Model> response = db.retrieve(TaskModel.class, "id", id,
-				s.getProject());
-		TaskModel[] tasks = response.toArray(new TaskModel[0]);
+	public T[] getEntity(Session s, String id) throws NotFoundException,
+			WPISuiteException {
+		List<Model> response = db.retrieve(type, "id", id, s.getProject());
+		T[] tasks = response.toArray((T[]) Array.newInstance(type, 0));
 
 		if (tasks.length < 1 || tasks[0] == null) {
 			throw new NotFoundException();
@@ -77,21 +71,22 @@ public class TaskEntityManager implements EntityManager<TaskModel> {
 		return tasks;
 	}
 
-	/**
-	 * Retrives all TaskModel objects in current project
-	 * 
-	 * @see edu.wpi.cs.wpisuitetng.modules.EntityManager#getAll(edu.wpi.cs.wpisuitetng
-	 *      .Session)
-	 * @param s
-	 *            current session
-	 * @return array of TaskModels
-	 * @throws WPISuiteException
-	 **/
+	/*
+	 * @see
+	 * edu.wpi.cs.wpisuitetng.modules.EntityManager#getAll(edu.wpi.cs.wpisuitetng
+	 * .Session)
+	 */
 	@Override
-	public TaskModel[] getAll(Session s) throws WPISuiteException {
-		List<Model> tasks = db.retrieveAll(new TaskModel(), s.getProject());
+	public T[] getAll(Session s) throws WPISuiteException {
+		List<Model> tasks;
+		try {
+			tasks = db.retrieveAll(type.newInstance(), s.getProject());
+		} catch (InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+			return null;
+		}
 
-		return tasks.toArray(new TaskModel[0]);
+		return tasks.toArray((T[]) Array.newInstance(type, 0));
 	}
 
 	/*
@@ -100,21 +95,21 @@ public class TaskEntityManager implements EntityManager<TaskModel> {
 	 * .Session, java.lang.String)
 	 */
 	@Override
-	public TaskModel update(Session s, String content) throws WPISuiteException {
+	public T update(Session s, String content) throws WPISuiteException {
 		// deserialize
-		TaskModel task = TaskModel.fromJson(content);
+		T newModel = AbstractJsonableModel.fromJson(content, type);
 
 		// check if object already exists
-		List<Model> existingTasks = db.retrieve(TaskModel.class, "id",
-				task.getID(), s.getProject());
-		if (existingTasks.size() < 1 || existingTasks.get(0) == null) {
-			save(s, task); // if it doesn't exist, save it
+		List<Model> existingModels = db.retrieve(type, "id", newModel.getID(),
+				s.getProject());
+		if (existingModels.size() < 1 || existingModels.get(0) == null) {
+			save(s, newModel); // if it doesn't exist, save it
 		} else {
-			TaskModel oldTask = (TaskModel) existingTasks.get(0);
-			db.delete(oldTask); // TODO should we update?
-			save(s, task);
+			T existingModel = (T) existingModels.get(0);
+			existingModel.makeIdenticalTo(newModel);
+			save(s, existingModel);
 		}
-		return task;
+		return newModel;
 	}
 
 	/*
@@ -123,7 +118,7 @@ public class TaskEntityManager implements EntityManager<TaskModel> {
 	 * .Session, edu.wpi.cs.wpisuitetng.modules.Model)
 	 */
 	@Override
-	public void save(Session s, TaskModel model) throws WPISuiteException {
+	public void save(Session s, T model) throws WPISuiteException {
 		db.save(model, s.getProject());
 
 	}
@@ -135,8 +130,7 @@ public class TaskEntityManager implements EntityManager<TaskModel> {
 	 */
 	@Override
 	public boolean deleteEntity(Session s, String id) throws WPISuiteException {
-
-		TaskModel task = getEntity(s, id)[0];
+		T task = getEntity(s, id)[0];
 		return (db.delete(task) != null);
 	}
 
