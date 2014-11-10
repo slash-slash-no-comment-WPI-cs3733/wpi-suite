@@ -55,7 +55,7 @@ public class WorkflowModel extends AbstractModel {
 					"Stage being moved must already be in the workflow.");
 		}
 		if (stagesList.size() <= index) {
-			index = stagesList.size();
+			index = stagesList.size() - 1;
 		}
 		if (index < 0) {
 			index = 0;
