@@ -3,22 +3,19 @@
  */
 package taskManager.view;
 
+import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.event.ActionListener;
+import java.awt.Insets;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
-import java.awt.FlowLayout;
-import java.awt.Insets;
-
 import javax.swing.JToolBar;
 
 import taskManager.controller.ToolbarController;
+
 //import java.awt.*;
 
-//import taskManager.controller.*;
 /**
  * The Task Managers tab's toolbar panel.
  */
@@ -30,8 +27,9 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 	private JButton manageUsers;
 	private JButton manageStages;
 	private JButton statistics;
+	private JButton workflow;
 	private JLabel projectName;
-	
+
 	// TODO: Change ActionListener to ToolbarController when one exists
 	private ToolbarController controller;
 
@@ -54,8 +52,10 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 
 		Insets margins = new Insets(30, 5, 0, 5);
 		this.setMargin(margins);
-		
+
 		// Construct the buttons
+		workflow = new JButton("Workflow");
+		workflow.setName("workflow");
 		createTask = new JButton("Create Task");
 		createTask.setName("createTask");
 		manageStages = new JButton("Manage Stages");
@@ -71,6 +71,7 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 
 		// Add buttons to the content panel
 		title.add(projectName);
+		buttons.add(workflow);
 		buttons.add(createTask);
 		buttons.add(manageStages);
 		buttons.add(manageUsers);
@@ -80,18 +81,24 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 		this.add(title);
 		this.add(buttons);
 	}
-	
-	// TODO: Change ActionListener to ToolbarController
+
+	/**
+	 * adds the toolbar controller as the action listener for all buttons
+	 * 
+	 * @param controller
+	 *            the toolbar controller to be addded to the buttons
+	 */
 	public void setController(ToolbarController controller) {
 		this.controller = controller;
+		workflow.addActionListener(controller);
 		createTask.addActionListener(controller);
 		manageStages.addActionListener(controller);
 		manageUsers.addActionListener(controller);
 		statistics.addActionListener(controller);
 	}
-	
+
 	@Override
 	public String getName() {
-		return this.getName();
+		return super.getName();
 	}
 }

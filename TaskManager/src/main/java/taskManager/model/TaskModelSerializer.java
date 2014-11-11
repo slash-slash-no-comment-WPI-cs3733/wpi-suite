@@ -48,7 +48,9 @@ public class TaskModelSerializer implements JsonSerializer<TaskModel> {
 		deflated.addProperty("dueDate", dueDate.getTime());
 		deflated.addProperty("estimatedEffort", task.getEstimatedEffort());
 		deflated.addProperty("actualEffort", task.getActualEffort());
+
 		deflated.addProperty("requirement", dueDate.getTime());
+
 		// Requirement ...?
 
 		return deflated;

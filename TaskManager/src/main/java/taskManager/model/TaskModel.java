@@ -56,7 +56,10 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	// List of users assigned to this task
 	private Set<User> assigned;
 
-	// Due date timestamp
+	// // Due date timestamp
+	// private Date dueDate;
+	// temporarily making this a string for testing
+	// TODO turn it back into a date
 	private Date dueDate;
 
 	// Estimated effort required for completion

@@ -1,59 +1,117 @@
+/*******************************************************************************
+ * Copyright (c) 2012-2014 -- WPI Suite
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
 package taskManager;
 
-/**
- * @author Samee Swartz
- */
-
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.ImageIcon;
+import javax.swing.JPanel;
 
+import taskManager.controller.EditTaskController;
+import taskManager.controller.ManageStageController;
 import taskManager.controller.ToolbarController;
 import taskManager.controller.WorkflowController;
 import taskManager.model.StageModel;
+import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
-import taskManager.view.WorkflowView;
+import taskManager.view.EditTaskView;
+import taskManager.view.ManageStageView;
+import taskManager.view.ManageUsersView;
 import taskManager.view.ToolbarView;
+import taskManager.view.WorkflowView;
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
 import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
 
 /**
  * The JanewayModule for the task manager
  *
+ * @author Beth Martino
+ * @author Samee Swartz
+ * @author Stefan Alexander
+ * @version November 9, 2014
  */
 public class JanewayModule implements IJanewayModule {
 
 	// The tabs used by this module
-	private ArrayList<JanewayTabModel> tabs;
+	private final ArrayList<JanewayTabModel> tabs;
 
 	/**
 	 * Construct a blank tab
 	 */
 	public JanewayModule() {
-
 		// creates the workflow view
+
+		// TODO change JPanels to ManageUsersView, NewTaskView, StatisticsView
+		// TODO move setVisible(false) into view constructors?
+
+		// create workflow view
 		WorkflowView wfv = new WorkflowView();
+		wfv.setVisible(true);
+
+		// create manage stages view
+		ManageStageView msv = new ManageStageView();
+		msv.setVisible(false);
+
+		// ManageUsers window
+		ManageUsersView muv = new ManageUsersView();
+		muv.setVisible(false);
+
+		// create new task view
+		EditTaskView ntv = new EditTaskView();
+		ntv.setVisible(false);
+
+		// create statistics view
+		JPanel sv = new JPanel();
+		sv.setVisible(false);
+
 		// create a new workflow model
-		WorkflowModel wfm = new WorkflowModel();
+		final WorkflowModel wfm = new WorkflowModel();
+
 		// give it the default stages
-		new StageModel(wfm, "Backlog", false);
-		new StageModel(wfm, "In Progress", false);
-		new StageModel(wfm, "Review", false);
-		new StageModel(wfm, "To Merge", false);
-		new StageModel(wfm, "Merged", false);
+		StageModel newStage = new StageModel(wfm, "New", false);
+		StageModel startedStage = new StageModel(wfm, "Started", false);
+		StageModel progressStage = new StageModel(wfm, "In Progress", false);
+		StageModel completeStage = new StageModel(wfm, "Complete", false);
+
+		for (int i = 0; i < 10; ++i) {
+			TaskModel tsk = new TaskModel("test " + i, progressStage);
+			tsk.setDueDate(Calendar.getInstance().getTime());
+			tsk.setEstimatedEffort(1);
+		}
+
 		// create the controller for the view
 		wfv.setController(new WorkflowController(wfv, wfm));
+		msv.setController(new ManageStageController(msv, wfm));
+		ntv.setController(new EditTaskController(ntv, wfm, wfv));
+
+		// adds all views to one panel
+		JPanel allPanels = new JPanel();
+		allPanels.add(wfv);
+		allPanels.add(msv);
+		allPanels.add(muv);
+		allPanels.add(ntv);
+		allPanels.add(sv);
 
 		// Create the toolbar view
 		ToolbarView tv = new ToolbarView();
-		ToolbarController tc = new ToolbarController(tv);
+		ToolbarController tc = new ToolbarController(tv, wfv, msv, muv, ntv, sv);
 		tv.setController(tc);
-		// toolbarPanel.setController(ToolbarController);
 
+		// this adds the menu and the main panel to the pre-configured janeway
+		// module view.
+		// It uses the spring layout
 		tabs = new ArrayList<JanewayTabModel>();
 		JanewayTabModel tab = new JanewayTabModel("Task Manager",
-				new ImageIcon(), tv, wfv);
+
+		new ImageIcon(), tv, allPanels);
 		tabs.add(tab);
 	}
 

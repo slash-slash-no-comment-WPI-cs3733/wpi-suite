@@ -368,5 +368,4 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 		}
 		return false;
 	}
-
 }

@@ -77,8 +77,10 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 			throw new IllegalArgumentException(
 					"Stage being moved must already be in the workflow.");
 		}
+
 		if (stageList.size() <= index) {
-			index = stageList.size();
+			index = stageList.size() - 1;
+
 		}
 		if (index < 0) {
 			index = 0;
