@@ -21,6 +21,7 @@ import taskManager.controller.WorkflowController;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
+import taskManager.view.EditTaskView;
 import taskManager.view.ManageStageView;
 import taskManager.view.ManageUsersView;
 import taskManager.view.ToolbarView;
@@ -63,7 +64,7 @@ public class JanewayModule implements IJanewayModule {
 		muv.setVisible(false);
 
 		// create new task view
-		JPanel ntv = new JPanel();
+		EditTaskView ntv = new EditTaskView();
 		ntv.setVisible(false);
 
 		// create statistics view
