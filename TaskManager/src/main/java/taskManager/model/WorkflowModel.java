@@ -66,7 +66,7 @@ public class WorkflowModel extends AbstractModel {
 		}
 
 		if (stageList.size() <= index) {
-			index = stageList.size();
+			index = stageList.size() - 1;
 
 		}
 		if (index < 0) {
