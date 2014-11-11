@@ -27,6 +27,8 @@ public class EditTaskController implements ActionListener {
 	private final WorkflowModel wfm;
 	private final WorkflowView wfv;
 
+	private String taskID;
+
 	/**
 	 * Constructor, attaches the edit task view to this controller
 	 * 
@@ -49,6 +51,16 @@ public class EditTaskController implements ActionListener {
 				// find the appropriate stage
 				// create new task
 				StageModel stage = wfm.findStageByName(etv.getStageName());
+
+				if (stage.containsTask(stage.findTaskByID(taskID))) {
+					TaskModel t = stage.findTaskByID(taskID);
+					t.setTitle(etv.getTitle().getText());
+					t.setDescription(etv.getDescription().getText());
+					t.setEstEffort(Integer.parseInt(etv.getEstEffort()
+							.getText()));
+					SimpleDateFormat d = new SimpleDateFormat("MM/dd/yyyy");
+					t.setDate(d.parse(etv.getDate().getText()));
+				}
 
 				TaskModel task = new TaskModel(etv.getTitle(), stage);
 
@@ -106,4 +118,13 @@ public class EditTaskController implements ActionListener {
 		this.wfv.setVisible(true);
 	}
 
+	/**
+	 * Enter the task id that will be edited
+	 * 
+	 * @param id
+	 *            the id that new task info will be saved to
+	 */
+	public void setTaskID(String id) {
+		this.taskID = id;
+	}
 }
