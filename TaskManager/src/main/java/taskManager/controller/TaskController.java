@@ -10,7 +10,6 @@ package taskManager.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 
 import taskManager.JanewayModule;
 import taskManager.model.StageModel;
@@ -70,11 +69,13 @@ public class TaskController implements ActionListener {
 
 		// figures out the index of the stage, then sets the drop down to the
 		// stage at that index
-		List<StageModel> x = this.wfm.getStages();
-		for (int i = 0; i < x.size(); i++) {
-			if (x.get(i) == this.sm) {
+		int i = 0;
+		for (StageModel stage : wfm.getStages()) {
+			if (stage == this.sm) {
 				JanewayModule.etv.setStageDropdown(i);
+				break;
 			}
+			i++;
 		}
 	}
 }
