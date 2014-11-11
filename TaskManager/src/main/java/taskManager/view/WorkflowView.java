@@ -25,9 +25,6 @@ public class WorkflowView extends JPanel implements IWorkflowView {
 
 	private WorkflowController controller;
 
-	// used to generate unique names for the stage labels
-	private int i = 0;
-
 	/**
 	 * Constructor for WorkflowView.
 	 */
@@ -43,12 +40,14 @@ public class WorkflowView extends JPanel implements IWorkflowView {
 	 *            of the new stage to be added creates a new scroll panel to
 	 *            house the stage view object sets the size and border
 	 */
-
 	public void addStageView(StageView stv) {
 		this.add(stv);
 		this.repaint();
 	}
 
+	/*
+	 * @see java.awt.Component#getName()
+	 */
 	@Override
 	public String getName() {
 		return super.getName();
@@ -59,6 +58,9 @@ public class WorkflowView extends JPanel implements IWorkflowView {
 	 * 
 	 * @param controller
 	 *            the workflow controller to be attached
+	 *
+	 * @param controller
+	 *            The controller to attach to this view
 	 */
 	public void setController(WorkflowController controller) {
 		this.controller = controller;
@@ -96,4 +98,16 @@ public class WorkflowView extends JPanel implements IWorkflowView {
 		}
 		return new StageView(name);
 	}
+
+	/*
+	 * @see javax.swing.JComponent#setVisible(boolean)
+	 */
+	@Override
+	public void setVisible(boolean visible) {
+		if (visible && controller != null) {
+			controller.reloadData();
+		}
+		super.setVisible(visible);
+	}
+
 }

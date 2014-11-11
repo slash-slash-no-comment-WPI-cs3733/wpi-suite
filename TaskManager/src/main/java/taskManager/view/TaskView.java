@@ -9,8 +9,6 @@
 package taskManager.view;
 
 import java.awt.Dimension;
-import java.util.Calendar;
-import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -44,7 +42,7 @@ public class TaskView extends JPanel implements ITaskView {
 	 * @param estEffort
 	 *            the estimated effort for the task
 	 */
-	public TaskView(String name, Date duedate, int estEffort) {
+	public TaskView(String name, String duedate, int estEffort) {
 		// organizes the data in a vertical list
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		final Border raisedbevel = BorderFactory.createRaisedBevelBorder();
@@ -54,16 +52,20 @@ public class TaskView extends JPanel implements ITaskView {
 		this.setBorder(title);
 		this.setMinimumSize(new Dimension(300, 100));
 
-		// convert Date object to Calendar object to avoid using deprecated Date
-		// methods.
-		final Calendar date = Calendar.getInstance();
-		date.setTime(duedate);
+		// TODO put this back in
+		// // convert Date object to Calendar object to avoid using deprecated
+		// Date
+		// // methods.
+		// final Calendar date = Calendar.getInstance();
+		// date.setTime(duedate);
 
 		// adds the data to the view
 		// note: the Calendar.MONTH value ranges between 0-11 so here we add 1
 		// to the month.
-		this.add(new JLabel("Due Date: " + (date.get(Calendar.MONTH) + 1) + "/"
-				+ date.get(Calendar.DATE) + "/" + (date.get(Calendar.YEAR))));
+		// this.add(new JLabel("Due Date: " + (date.get(Calendar.MONTH) + 1) +
+		// "/"
+		// + date.get(Calendar.DATE) + "/" + (date.get(Calendar.YEAR))));
+		this.add(new JLabel("Due Date: " + duedate));
 		this.add(new JLabel("Est Effort: " + estEffort + "#"));
 	}
 

@@ -88,24 +88,31 @@ public class JanewayModule implements IJanewayModule {
 		// note: the 11 here is equivalent to December since months in a
 		// Calendar object are between 0-11.
 		sampleDate.set(2014, 11, 25);
-		task1.setDueDate(sampleDate.getTime());
+		// TODO put all of the dates back in
+		// task1.setDueDate(sampleDate.getTime());
 		task1.setEstimatedEffort(3);
+		task1.setDueDate("01/14/14");
 		TaskModel task2 = new TaskModel("Working on this task", startedStage);
-		task2.setDueDate(Calendar.getInstance().getTime());
+		// task2.setDueDate(Calendar.getInstance().getTime());
 		task2.setEstimatedEffort(1);
+		task2.setDueDate("01/14/14");
 		TaskModel task3 = new TaskModel("Plz review", progressStage);
-		task3.setDueDate(Calendar.getInstance().getTime());
+		// task3.setDueDate(Calendar.getInstance().getTime());
 		task3.setEstimatedEffort(5);
+		task3.setDueDate("01/14/14");
 		TaskModel task4 = new TaskModel("blah", progressStage);
-		task4.setDueDate(Calendar.getInstance().getTime());
+		// task4.setDueDate(Calendar.getInstance().getTime());
 		task4.setEstimatedEffort(2);
+		task4.setDueDate("01/14/14");
 		TaskModel task5 = new TaskModel("This is merged", completeStage);
-		task5.setDueDate(Calendar.getInstance().getTime());
+		// task5.setDueDate(Calendar.getInstance().getTime());
 		task5.setEstimatedEffort(2);
+		task5.setDueDate("01/14/14");
 
 		for (int i = 0; i < 10; ++i) {
 			TaskModel tsk = new TaskModel("test " + i, progressStage);
-			tsk.setDueDate(Calendar.getInstance().getTime());
+			// tsk.setDueDate(Calendar.getInstance().getTime());
+			tsk.setDueDate("01/14/15");
 			tsk.setEstimatedEffort(1);
 		}
 

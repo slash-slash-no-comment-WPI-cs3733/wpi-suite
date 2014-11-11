@@ -5,15 +5,12 @@ package taskManager.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Date;
 
 import javax.swing.JButton;
 
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
-import taskManager.view.StageView;
-import taskManager.view.TaskView;
 import taskManager.view.WorkflowView;
 
 /**
@@ -57,16 +54,6 @@ public class EditTaskController implements ActionListener {
 											.getName());
 				}
 
-				// create a new task view
-				TaskView taskView = new TaskView(task.getName(), new Date(),
-						task.getEstimatedEffort());
-
-				// add the task view to the stage view
-				StageView s = this.wfv.getStageViewByName(etv.getStageName());
-				s.addTaskView(taskView);
-				s.updateTasks();
-				s.repaint();
-				wfv.repaint();
 				System.out.println("The string from the dropdown is "
 						+ etv.getStageName());
 				etv.resetFields();
