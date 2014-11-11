@@ -3,6 +3,8 @@ package taskManager.view;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -355,6 +357,68 @@ public class EditTaskView extends JPanel {
 	public String getStageName() {
 		String stage = stages.getSelectedItem().toString();
 		return stage;
+	}
+
+	/**
+	 * sets the text in the title field
+	 * 
+	 * @param the
+	 *            text in the title field
+	 */
+	public void setTitle(String d) {
+		this.titleField.setText(d);
+	}
+
+	/**
+	 * sets the text in the description field
+	 * 
+	 * @param d
+	 *            the text in the description field
+	 */
+	public void setDescription(String d) {
+		this.descripField.setText(d);
+	}
+
+	/**
+	 * Sets the text in the date field
+	 * 
+	 * @param d
+	 *            the text in the date field
+	 */
+	public void setDate(Date d) {
+		SimpleDateFormat q = new SimpleDateFormat("MM/dd/yyyy");
+		this.dateField.setText(q.format(d));
+	}
+
+	/**
+	 * Sets the estimated effort to the value i
+	 * 
+	 * @param i
+	 *            the value to set the estimated effort field to
+	 */
+	public void setEstEffort(Integer i) {
+		this.estEffortField.setText(i.toString());
+	}
+
+	/**
+	 * Set the the actual effort field to the value of i
+	 * 
+	 * @param i
+	 *            the value to set the actual effort field to
+	 */
+	public void setActEffort(Integer i) {
+		this.actEffortField.setText(i.toString());
+	}
+
+	/**
+	 * set stage dropdown box to the stage associated with the task
+	 * 
+	 * @param n
+	 *            the index of the stage in the workflow
+	 */
+	public void setStageDropdown(int n) {
+		String p = this.stages.getItemAt(n);
+		this.stages.setSelectedItem(p);
 	}
 
 	/**

@@ -10,6 +10,8 @@ import java.text.SimpleDateFormat;
 
 import javax.swing.JButton;
 
+import taskManager.JanewayModule;
+import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
@@ -30,11 +32,10 @@ public class EditTaskController implements ActionListener {
 	 * 
 	 * @param etv
 	 */
-	public EditTaskController(EditTaskView etv, WorkflowModel wfm,
-			WorkflowView wfv) {
-		this.etv = etv;
+	public EditTaskController(WorkflowModel wfm) {
+		this.etv = JanewayModule.etv;
 		this.wfm = wfm;
-		this.wfv = wfv;
+		this.wfv = JanewayModule.wfv;
 	}
 
 	@Override
@@ -47,8 +48,9 @@ public class EditTaskController implements ActionListener {
 			case "save":
 				// find the appropriate stage
 				// create new task
-				TaskModel task = new TaskModel(this.etv.getTitle(),
-						wfm.findStageByName(etv.getStageName()));
+				StageModel stage = wfm.findStageByName(etv.getStageName());
+
+				TaskModel task = new TaskModel(etv.getTitle(), stage);
 
 				// sets all task values according to fields
 				SimpleDateFormat d = new SimpleDateFormat("MM/dd/yyyy");
@@ -103,4 +105,5 @@ public class EditTaskController implements ActionListener {
 		this.etv.setVisible(false);
 		this.wfv.setVisible(true);
 	}
+
 }
