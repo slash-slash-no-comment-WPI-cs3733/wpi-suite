@@ -13,8 +13,11 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JPanel;
 
+import taskManager.view.ManageStageView;
 import taskManager.view.ToolbarView;
+import taskManager.view.WorkflowView;
 
 
 
@@ -25,10 +28,31 @@ import taskManager.view.ToolbarView;
  */
 public class ToolbarController implements ActionListener{
 
-	private final ToolbarView view;
+	private final ToolbarView toolbarView;
+	private final WorkflowView workflowView;
+	//TODO: change JPanels to correct view objects
+	private final ManageStageView manageStagesView;
+	private final JPanel manageUsersView;
+	private final JPanel newTaskView;
+	private final JPanel statisticsView;
 
-	public ToolbarController(ToolbarView view) {
-		this.view = view;
+	/**
+	 * 
+	 * @param view the toolbar view to be listened to
+	 * @param wfv the workflow view to be switched to
+	 * @param msv the manageStages view to be switched to
+	 * @param muv the manageUsers view to be switched to
+	 * @param ntv the newTask view to be switched to
+	 * @param sv the statistics view to be switched to
+	 */
+	public ToolbarController(ToolbarView view, WorkflowView wfv, ManageStageView msv, JPanel muv,
+			JPanel ntv, JPanel sv) {
+		this.toolbarView = view;
+		this.workflowView = wfv;
+		this.manageStagesView = msv;
+		this.manageUsersView = muv;
+		this.newTaskView = ntv;
+		this.statisticsView = sv;
 		}
 	
 	@Override
@@ -38,16 +62,40 @@ public class ToolbarController implements ActionListener{
 			String name = ((JButton)button).getName();
 			switch(name){
 			case "createTask": 
-				System.out.println("blah");
+				workflowView.setVisible(false);
+				manageUsersView.setVisible(false);
+				manageStagesView.setVisible(false);
+				statisticsView.setVisible(false);
+				newTaskView.setVisible(true);
 				break;
 			case "manageStages": 
-				System.out.println("blah2");
+				workflowView.setVisible(false);
+				manageUsersView.setVisible(false);
+				statisticsView.setVisible(false);
+				newTaskView.setVisible(false);
+				manageStagesView.setVisible(true);
 				break;
 			case "manageUsers": 
-				System.out.println("blah3");
+				workflowView.setVisible(false);
+				manageStagesView.setVisible(false);
+				statisticsView.setVisible(false);
+				newTaskView.setVisible(false);
+				manageUsersView.setVisible(true);
 				break;
 			case "statistics": 
-				System.out.println("blah4");
+				workflowView.setVisible(false);
+				manageUsersView.setVisible(false);
+				manageStagesView.setVisible(false);
+				newTaskView.setVisible(false);
+				statisticsView.setVisible(true);
+				break;
+				
+			case "workflow": 
+				manageUsersView.setVisible(false);
+				manageStagesView.setVisible(false);
+				newTaskView.setVisible(false);
+				statisticsView.setVisible(false);
+				workflowView.setVisible(true);
 				break;
 			}
 		}

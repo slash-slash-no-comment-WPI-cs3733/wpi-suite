@@ -26,7 +26,7 @@ import taskManager.view.WorkflowView;
  */
 public class TestWorkflowController {
 
-	private final String[] stageNames = { "first", "duplicate", "duplicate",
+	private final String[] stageNames = { "first", "second", "not-a-duplicate",
 			"last" };
 	private WorkflowView wfv;
 	private WorkflowModel wfm;
@@ -64,7 +64,7 @@ public class TestWorkflowController {
 		// make sure the correct stages exist and were added in the correct
 		// order
 		for (int i = 0; i < 4; i++) {
-			fixture.label("stage_label" + i).requireText(stageNames[i]);
+			fixture.label(stageNames[i]).requireText(stageNames[i]);
 		}
 	}
 
