@@ -35,11 +35,11 @@ public class TaskEntityManager implements EntityManager<TaskModel> {
 		this.db = db;
 	}
 
-	/*
+	/**
 	 * Saves a TaskModel when received from a client
 	 * 
 	 * @see edu.wpi.cs.wpisuitetng.modules.EntityManager#makeEntity(edu.wpi.cs.
-	 * wpisuitetng.Session, java.lang.String)
+	 *      wpisuitetng.Session, java.lang.String)
 	 */
 	@Override
 	public TaskModel makeEntity(Session s, String content)
@@ -53,16 +53,28 @@ public class TaskEntityManager implements EntityManager<TaskModel> {
 		return null;
 	}
 
-	/*
-	 * @see
-	 * edu.wpi.cs.wpisuitetng.modules.EntityManager#getEntity(edu.wpi.cs.wpisuitetng
-	 * .Session, java.lang.String)
+	/**
+	 * Retrieves all TaskModels with given id
+	 * 
+	 * @param s
+	 *            Session to specify Project to search in
+	 * @param id
+	 *            TaskModel ID
+	 * @see edu.wpi.cs.wpisuitetng.modules.EntityManager#getEntity(edu.wpi.cs.wpisuitetng
+	 *      .Session, java.lang.String)
 	 */
 	@Override
 	public TaskModel[] getEntity(Session s, String id)
 			throws NotFoundException, WPISuiteException {
-		// TODO Auto-generated method stub
-		return null;
+
+		List<Model> response = db.retrieve(TaskModel.class, "id", id,
+				s.getProject());
+		TaskModel[] tasks = response.toArray(new TaskModel[0]);
+
+		if (tasks.length < 1 || tasks[0] == null) {
+			throw new NotFoundException();
+		}
+		return tasks;
 	}
 
 	/**
@@ -77,9 +89,9 @@ public class TaskEntityManager implements EntityManager<TaskModel> {
 	 **/
 	@Override
 	public TaskModel[] getAll(Session s) throws WPISuiteException {
-		List<Model> models = db.retrieveAll(new TaskModel(), s.getProject());
+		List<Model> tasks = db.retrieveAll(new TaskModel(), s.getProject());
 
-		return models.toArray(new TaskModel[0]);
+		return tasks.toArray(new TaskModel[0]);
 	}
 
 	/*
@@ -89,8 +101,20 @@ public class TaskEntityManager implements EntityManager<TaskModel> {
 	 */
 	@Override
 	public TaskModel update(Session s, String content) throws WPISuiteException {
-		// TODO Auto-generated method stub
-		return null;
+		// deserialize
+		TaskModel task = TaskModel.fromJson(content);
+
+		// check if object already exists
+		List<Model> existingTasks = db.retrieve(TaskModel.class, "id",
+				task.getID(), s.getProject());
+		if (existingTasks.size() < 1 || existingTasks.get(0) == null) {
+			save(s, task); // if it doesn't exist, save it
+		} else {
+			TaskModel oldTask = (TaskModel) existingTasks.get(0);
+			db.delete(oldTask); // TODO should we update?
+			save(s, task);
+		}
+		return task;
 	}
 
 	/*
@@ -100,7 +124,7 @@ public class TaskEntityManager implements EntityManager<TaskModel> {
 	 */
 	@Override
 	public void save(Session s, TaskModel model) throws WPISuiteException {
-		// TODO Auto-generated method stub
+		db.save(model, s.getProject());
 
 	}
 
@@ -111,8 +135,9 @@ public class TaskEntityManager implements EntityManager<TaskModel> {
 	 */
 	@Override
 	public boolean deleteEntity(Session s, String id) throws WPISuiteException {
-		// TODO Auto-generated method stub
-		return false;
+
+		TaskModel task = getEntity(s, id)[0];
+		return (db.delete(task) != null);
 	}
 
 	/*

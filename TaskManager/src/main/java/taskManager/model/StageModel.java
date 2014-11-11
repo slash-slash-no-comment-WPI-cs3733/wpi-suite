@@ -12,8 +12,6 @@ package taskManager.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.gson.Gson;
-
 import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
 
 /**
@@ -31,12 +29,11 @@ public class StageModel extends AbstractModel {
 	// List of tasks in this stage
 	private List<TaskModel> taskList;
 
-	// The public name of this stage
+	// The name of this stage; treated as ID and uniqueness enforced
 	private String name;
 
-	// The private name of this stage. May contain octothorps to ensure
-	// uniqueness within this workflow.
-	private String id;
+	// Workflow that stage belongs to; not serialized
+	private transient WorkflowModel workflow;
 
 	// Whether users can remove this stage
 	private boolean removable;
@@ -65,11 +62,8 @@ public class StageModel extends AbstractModel {
 	 *            Whether or not the stage can be removed.
 	 */
 	public StageModel(WorkflowModel workflow, String name, boolean removable) {
-		this.name = name;
-		id = name;
-		this.removable = removable;
-		taskList = new ArrayList<TaskModel>();
-		workflow.addStage(this);
+		this(workflow, name, -1, true);
+		// TODO better way than passing -1 for index?
 	}
 
 	/**
@@ -94,17 +88,45 @@ public class StageModel extends AbstractModel {
 	 * @param name
 	 *            The name of the stage.
 	 * @param index
-	 *            Index in the list to add stages too.
+	 *            Index in the list to add stages too. -1 will add to end of
+	 *            list
 	 * @param removable
 	 *            Whether or not the stage can be removed.
 	 */
 	public StageModel(WorkflowModel workflow, String name, int index,
 			boolean removable) {
+		// Enforce uniqueness of Stage names
+		if (workflow.findStageByName(name) != null) {
+			throw new IllegalArgumentException("Stage name must be unique.");
+		}
 		this.name = name;
-		id = name;
 		this.removable = removable;
+		this.workflow = workflow;
 		taskList = new ArrayList<TaskModel>();
-		workflow.addStage(this, index);
+		if (index == -1) {
+			workflow.addStage(this);
+		} else {
+			workflow.addStage(this, index);
+		}
+	}
+
+	/**
+	 * Get the workflow this stage belongs to
+	 * 
+	 * @return the workflow
+	 */
+	public WorkflowModel getWorkflow() {
+		return workflow;
+	}
+
+	/**
+	 * Set the workflow this stage belongs to
+	 * 
+	 * @param workflow
+	 *            the workflow to set
+	 */
+	public void setWorkflow(WorkflowModel workflow) {
+		this.workflow = workflow;
 	}
 
 	/**
@@ -116,27 +138,12 @@ public class StageModel extends AbstractModel {
 		return name;
 	}
 
-	/**
-	 * Get the internal id of the Stage
-	 *
-	 * @return the id of the Stage
-	 */
-	public String getID() {
-		return id;
-	}
-
-	/**
-	 * Set the internal id of the Stage.
-	 *
-	 * @param id
-	 *            set the id of the stage.
-	 */
-	public void setID(String id) {
-		this.id = id;
-	}
-
 	public List<TaskModel> getTasks() {
 		return taskList;
+	}
+
+	public boolean isRemovable() {
+		return removable;
 	}
 
 	/**
@@ -144,6 +151,7 @@ public class StageModel extends AbstractModel {
 	 *
 	 * @param task
 	 *            The task to look for
+	 *
 	 * 
 	 * @return If the stage contains the task
 	 */
@@ -156,18 +164,19 @@ public class StageModel extends AbstractModel {
 	 *
 	 * @param id
 	 *            The id of the task to look for
+	 *
 	 * 
-	 * @return If the stage contains the task
+	 * @return the task if found, null otherwise.
 	 */
-	public boolean containsTaskID(String id) {
-		boolean containsTaskID = false;
+	public TaskModel findTaskByID(String id) {
+		TaskModel task = null;
 		for (TaskModel existingTask : taskList) {
 			if (existingTask.getID().equals(id)) {
-				containsTaskID = true;
+				task = existingTask;
 				break;
 			}
 		}
-		return containsTaskID;
+		return task;
 	}
 
 	/**
@@ -175,17 +184,18 @@ public class StageModel extends AbstractModel {
 	 *
 	 * @param name
 	 *            The name of the task to look for
+	 *
 	 * 
 	 * @return The number of different tasks by that name in the stage.
 	 */
-	public int containsTaskName(String name) {
-		int count = 0;
+	public List<TaskModel> findTaskByName(String name) {
+		final List<TaskModel> tasks = new ArrayList<TaskModel>();
 		for (TaskModel existingTask : taskList) {
 			if (existingTask.getName().equals(name)) {
-				count++;
+				tasks.add(existingTask);
 			}
 		}
-		return count;
+		return tasks;
 	}
 
 	/**
@@ -198,8 +208,8 @@ public class StageModel extends AbstractModel {
 		addTask(taskList.size(), task);
 	}
 
-	// TODO: Do the tasks need ordering? If not, let's replac this taskList
-	// method and use a sorted collection for speed.
+	// TODO: Do the tasks need ordering? If not, let's replace this taskList
+	// method and use a collection for speed.
 	/**
 	 * Duplicate task names are handled by the Workflow.
 	 *
@@ -220,6 +230,7 @@ public class StageModel extends AbstractModel {
 	 *
 	 * @param taskName
 	 *            The name of the task to search for.
+	 *
 	 * 
 	 * @return The removed task, null if no task removed.
 	 */
@@ -256,20 +267,19 @@ public class StageModel extends AbstractModel {
 	 *
 	 * @param id
 	 *            The id of the task to remove.
+	 *
 	 * 
 	 * @return The removed task, null if no task removed.
 	 */
 	public TaskModel removeTaskByID(String id) {
-		TaskModel removedTask = null;
 		for (TaskModel existingTask : taskList) {
 			if (existingTask.getID().equals(id)) {
 				taskList.remove(existingTask);
-				removedTask = existingTask;
-				break;
+				return existingTask;
 			}
 		}
-		return removedTask;
 		// TODO: Log task non-existence, claim success?
+		return null;
 	}
 
 	/**
@@ -278,27 +288,38 @@ public class StageModel extends AbstractModel {
 	 *
 	 * @param task
 	 *            The task to add
+	 *
 	 * 
 	 * @return The removed task, null if no task removed.
 	 */
 	public TaskModel removeTask(TaskModel task) {
-		if (taskList.contains(task)) {
-			taskList.remove(task);
+		if (!taskList.contains(task)) {
+			return null;
 		}
+		taskList.remove(task);
 		return task;
+	}
+
+	public void makeIdenticalTo(StageModel stage) {
+		taskList = stage.getTasks();
+		name = stage.getName();
+		workflow = stage.getWorkflow();
 	}
 
 	@Override
 	public void save() {
+		// TODO: Autogenerated method stub
 	}
 
 	@Override
+	// TODO: Autogenerated method stub
 	public void delete() {
 	}
 
 	@Override
 	public String toJson() {
-		return (new Gson()).toJson(this);
+		// TODO: Autogenerated method stub
+		return null;
 	}
 
 	/*
@@ -306,11 +327,10 @@ public class StageModel extends AbstractModel {
 	 */
 	@Override
 	public Boolean identify(Object o) {
-		boolean identify = false;
 		if (o instanceof StageModel) {
-			identify = ((StageModel) o).id.equals(id);
+			return ((StageModel) o).name.equals(name);
 		}
-		return identify;
+		return false;
 	}
 
 }

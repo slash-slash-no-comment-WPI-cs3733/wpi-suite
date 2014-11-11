@@ -59,7 +59,7 @@ public class ManageStageController implements ActionListener {
 			switch (buttonName) {
 			case "Delete":
 				view.removeStage(stageID);
-				model.getStages().removeIf(s -> s.getID() == stageID);
+				model.getStages().removeIf(s -> s.getName() == stageID);
 				// refresh the view
 				view.updateUI();
 				break;
@@ -67,7 +67,7 @@ public class ManageStageController implements ActionListener {
 				// move the stage up by 1
 				for (int i = 0; i < stages.size(); i++) {
 					StageModel stage = stages.get(i);
-					if (stage.getID() == stageID) {
+					if (stage.getName() == stageID) {
 						model.moveStage(i - 1, stage);
 						break;
 					}
@@ -80,7 +80,7 @@ public class ManageStageController implements ActionListener {
 				stages = model.getStages();
 				for (int i = 0; i < stages.size(); i++) {
 					StageModel stage = stages.get(i);
-					if (stage.getID() == stageID) {
+					if (stage.getName() == stageID) {
 						model.moveStage(i + 1, stage);
 						break;
 					}
@@ -92,7 +92,7 @@ public class ManageStageController implements ActionListener {
 				// Create a new stage at the end
 				String newStageName = view.getNewStageNameField().getText();
 				StageModel newStage = new StageModel(model, newStageName);
-				view.addStage(newStage.getName(), newStage.getID());
+				view.addStage(newStage.getName(), newStage.getName());
 				// refresh the view
 				view.updateUI();
 				break;
@@ -110,7 +110,7 @@ public class ManageStageController implements ActionListener {
 	private void reloadData() {
 		view.removeAllStages();
 		for (StageModel stage : model.getStages()) {
-			view.addStage(stage.getName(), stage.getID());
+			view.addStage(stage.getName(), stage.getName());
 		}
 		view.updateUI();
 	}
