@@ -18,6 +18,8 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 /**
+ * @author Sam Khalandovsky
+ * @version Nov 10, 2014
  */
 public class TaskModelSerializer implements JsonSerializer<TaskModel> {
 
@@ -30,8 +32,8 @@ public class TaskModelSerializer implements JsonSerializer<TaskModel> {
 	 *            Type
 	 * @param context
 	 *            JsonSerializationContext
-	 * @return JsonElement
-	 */
+	
+	 * @return JsonElement */
 	@Override
 	public JsonElement serialize(TaskModel task, Type type,
 			JsonSerializationContext context) {

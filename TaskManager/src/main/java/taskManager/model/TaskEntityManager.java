@@ -31,6 +31,12 @@ public class TaskEntityManager implements EntityManager<TaskModel> {
 	// The database
 	private final Data db;
 
+	/**
+	 * Task entity manager constructor
+	 *
+	 * @param db
+	 *            A link to the database to save into.
+	 */
 	public TaskEntityManager(Data db) {
 		this.db = db;
 	}
@@ -38,8 +44,8 @@ public class TaskEntityManager implements EntityManager<TaskModel> {
 	/**
 	 * Saves a TaskModel when received from a client
 	 * 
-	 * @see edu.wpi.cs.wpisuitetng.modules.EntityManager#makeEntity(edu.wpi.cs.
-	 *      wpisuitetng.Session, java.lang.String)
+	 * @see edu.wpi.cs.wpisuitetng.modules.EntityManager#makeEntity(edu.wpi.cs.wpisuitetng.Session,
+	 *      java.lang.String)
 	 */
 	@Override
 	public TaskModel makeEntity(Session s, String content)
@@ -60,19 +66,19 @@ public class TaskEntityManager implements EntityManager<TaskModel> {
 	 *            Session to specify Project to search in
 	 * @param id
 	 *            TaskModel ID
-	 * @see edu.wpi.cs.wpisuitetng.modules.EntityManager#getEntity(edu.wpi.cs.wpisuitetng
-	 *      .Session, java.lang.String)
+	 * @see edu.wpi.cs.wpisuitetng.modules.EntityManager#getEntity(edu.wpi.cs.wpisuitetng.Session,
+	 *      java.lang.String)
 	 */
 	@Override
 	public TaskModel[] getEntity(Session s, String id)
 			throws NotFoundException, WPISuiteException {
 
-		List<Model> response = db.retrieve(TaskModel.class, "id", id,
+		final List<Model> response = db.retrieve(TaskModel.class, "id", id,
 				s.getProject());
-		TaskModel[] tasks = response.toArray(new TaskModel[0]);
+		final TaskModel[] tasks = response.toArray(new TaskModel[0]);
 
 		if (tasks.length < 1 || tasks[0] == null) {
-			throw new NotFoundException();
+			throw new NotFoundException("Tasks array seems to be null.");
 		}
 		return tasks;
 	}
@@ -80,8 +86,7 @@ public class TaskEntityManager implements EntityManager<TaskModel> {
 	/**
 	 * Retrives all TaskModel objects in current project
 	 * 
-	 * @see edu.wpi.cs.wpisuitetng.modules.EntityManager#getAll(edu.wpi.cs.wpisuitetng
-	 *      .Session)
+	 * @see edu.wpi.cs.wpisuitetng.modules.EntityManager#getAll(edu.wpi.cs.wpisuitetng.Session)
 	 * @param s
 	 *            current session
 	 * @return array of TaskModels
@@ -89,7 +94,8 @@ public class TaskEntityManager implements EntityManager<TaskModel> {
 	 **/
 	@Override
 	public TaskModel[] getAll(Session s) throws WPISuiteException {
-		List<Model> tasks = db.retrieveAll(new TaskModel(), s.getProject());
+		final List<Model> tasks = db.retrieveAll(new TaskModel(),
+				s.getProject());
 
 		return tasks.toArray(new TaskModel[0]);
 	}
@@ -102,15 +108,15 @@ public class TaskEntityManager implements EntityManager<TaskModel> {
 	@Override
 	public TaskModel update(Session s, String content) throws WPISuiteException {
 		// deserialize
-		TaskModel task = TaskModel.fromJson(content);
+		final TaskModel task = TaskModel.fromJson(content);
 
 		// check if object already exists
-		List<Model> existingTasks = db.retrieve(TaskModel.class, "id",
+		final List<Model> existingTasks = db.retrieve(TaskModel.class, "id",
 				task.getID(), s.getProject());
 		if (existingTasks.size() < 1 || existingTasks.get(0) == null) {
 			save(s, task); // if it doesn't exist, save it
 		} else {
-			TaskModel oldTask = (TaskModel) existingTasks.get(0);
+			final TaskModel oldTask = (TaskModel) existingTasks.get(0);
 			db.delete(oldTask); // TODO should we update?
 			save(s, task);
 		}
@@ -121,6 +127,12 @@ public class TaskEntityManager implements EntityManager<TaskModel> {
 	 * @see
 	 * edu.wpi.cs.wpisuitetng.modules.EntityManager#save(edu.wpi.cs.wpisuitetng
 	 * .Session, edu.wpi.cs.wpisuitetng.modules.Model)
+	 */
+	/**
+	 * Method save.
+	 * @param s Session
+	 * @param model TaskModel
+	 * @throws WPISuiteException
 	 */
 	@Override
 	public void save(Session s, TaskModel model) throws WPISuiteException {
@@ -135,8 +147,7 @@ public class TaskEntityManager implements EntityManager<TaskModel> {
 	 */
 	@Override
 	public boolean deleteEntity(Session s, String id) throws WPISuiteException {
-
-		TaskModel task = getEntity(s, id)[0];
+		final TaskModel task = getEntity(s, id)[0];
 		return (db.delete(task) != null);
 	}
 
