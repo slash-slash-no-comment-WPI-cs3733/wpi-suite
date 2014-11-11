@@ -28,7 +28,7 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 	private JButton manageStages;
 	private JButton statistics;
 	private JLabel projectName;
-	
+
 	// TODO: Change ActionListener to ToolbarController when one exists
 	private ActionListener controller;
 
@@ -51,7 +51,7 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 
 		Insets margins = new Insets(30, 5, 0, 5);
 		this.setMargin(margins);
-		
+
 		// Construct the buttons
 		createTask = new JButton("Create Task");
 		manageStages = new JButton("Manage Stages");
@@ -79,7 +79,7 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 		this.add(title);
 		this.add(buttons);
 	}
-	
+
 	// TODO: Change ActionListener to ToolbarController
 	public void setController(ActionListener controller) {
 		this.controller = controller;

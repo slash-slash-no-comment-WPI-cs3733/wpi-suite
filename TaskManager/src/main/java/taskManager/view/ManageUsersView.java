@@ -5,14 +5,15 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
+import javax.swing.JButton;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.Dimension;
 import java.util.ArrayList;
 
-import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import taskManager.view.UserList;
 
 /**
@@ -27,47 +28,77 @@ public class ManageUsersView extends JPanel {
 	// TODO: Change ActionListener to ManageUsersController when it exists
 	private ActionListener controller;
 	private ArrayList<UserView> usersList = new ArrayList<UserView>();
+	private JPanel window;
+	private JLabel title;
+	// JPanel's on the window
 	private JPanel usersBlock;
-	private JPanel tasks;
+	private JPanel tasksBlock;
 	private JPanel buttons;
 
 	/**
 	 * Constructor to create the layout of the window
 	 */
 	public ManageUsersView() {
-		this.setLayout(new FlowLayout());
+		// The title and window
+		// TODO: Center the Title (properly) and add padding below it
+		title = new JLabel("Manage Users");
+		title.setFont(new Font("Serif", Font.PLAIN, 15));
+		window = new JPanel();
+		this.window.setLayout(new FlowLayout());
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+		// Users panel
 		usersBlock = new JPanel();
 		usersBlock.setLayout(new BoxLayout(usersBlock, BoxLayout.Y_AXIS));
-
-		JPanel label = new JPanel();
-		label.setPreferredSize(new Dimension(175, 25));
+		// Label for the users panel
+		JPanel uLabel = new JPanel();
+		uLabel.setPreferredSize(new Dimension(175, 25));
 		JLabel usersLabel = new JLabel("Users");
-
-		label.add(usersLabel);
-		usersBlock.add(label);
-
+		// Add label to panel
+		uLabel.add(usersLabel);
+		usersBlock.add(uLabel);
+		// Create the scrollPane with a UserList inside it
 		JScrollPane users = new JScrollPane(new UserList());
 		users.setBorder(BorderFactory.createLineBorder(Color.black));
-		users.setPreferredSize(new Dimension(175, 350));
+		users.setPreferredSize(new Dimension(200, 350));
 		usersBlock.add(users);
-		
-		// tasks = new JPanel();
-		// buttons = new JPanel();
 
-		// tasks.setLayout(new BoxLayout(tasks, BoxLayout.Y_AXIS));
-		// buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
+		// Button panel
+		buttons = new JPanel();
+		buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
+		JButton addUser = new JButton("Add User");
+		JButton removeUser = new JButton("Remove User");
+		JButton done = new JButton("Done");
+		// TODO: add spacing between the buttons
+		buttons.add(addUser);
+		buttons.add(removeUser);
+		buttons.add(done);
 
-		this.add(usersBlock);
-		// this.add(tasks);
-		// this.add(buttons);
+		// Task panel
+		tasksBlock = new JPanel();
+		tasksBlock.setLayout(new BoxLayout(tasksBlock, BoxLayout.Y_AXIS));
+		// Label for the task panel
+		JPanel tLabel = new JPanel();
+		tLabel.setPreferredSize(new Dimension(175, 25));
+		JLabel tasksLabel = new JLabel("Associated Tasks");
+		// Add label to panel
+		tLabel.add(tasksLabel);
+		tasksBlock.add(tLabel);
+		// Create the scrollPane with a StageView inside it
+		// TODO: change StageView to a TaskListView?
+		JScrollPane tasks = new JScrollPane(new StageView());
+		tasks.setBorder(BorderFactory.createLineBorder(Color.black));
+		tasks.setPreferredSize(new Dimension(200, 350));
+		tasksBlock.add(tasks);
 
-	}
+		// Add panels to the window
+		this.window.add(usersBlock);
+		this.window.add(buttons);
+		this.window.add(tasksBlock);
 
-	/**
-	 * @return The list of Users that are displayed
-	 */
-	public ArrayList<UserView> getUsersList() {
-		return this.usersList;
+		// Add title and window to this
+		this.add(title);
+		this.add(window);
 	}
 
 	public void addController(ActionListener controller) {

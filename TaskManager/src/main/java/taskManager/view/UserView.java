@@ -23,6 +23,7 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 public class UserView extends JPanel {
 
 	private static final long serialVersionUID = -159086497774697511L;
+	// TODO: Change ActionListener to UserController when it exists
 	private ActionListener controller;
 	private ArrayList<TaskView> tasks;
 
@@ -37,18 +38,12 @@ public class UserView extends JPanel {
 		// organizes the data in a vertical list
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		Border raisedbevel = BorderFactory.createRaisedBevelBorder();
-		TitledBorder title = BorderFactory.createTitledBorder(raisedbevel,
-				user.getName());
+		TitledBorder title = BorderFactory.createTitledBorder(raisedbevel, "");
 		title.setTitlePosition(TitledBorder.LEFT);
 		this.setBorder(title);
 		this.setMinimumSize(new Dimension(300, 100));
-		// this.setPreferredSize(new Dimension(300, 100));
-		// this.setSize(new Dimension(300, 100));
-
-		JLabel name = new JLabel("Name: " + user.getName());
-		// name.setSize(new Dimension(300,100));
-		// name.setPreferredSize(new Dimension(300, 100));
-		this.add(name);
+		// Displayed in the view
+		this.add(new JLabel(user.getName()));
 		this.add(new JLabel("Username: " + user.getUsername()));
 
 		// TODO: Add the user's tasks to the tasks list

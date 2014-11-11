@@ -8,6 +8,8 @@ import javax.swing.JPanel;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
+ * UserList generates a JPanel of UserView objects.
+ * 
  * @author samee
  *
  */
@@ -18,7 +20,8 @@ public class UserList extends JPanel {
 
 	public UserList() {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		
+
+		// Example Users
 		this.addUser(new User("Alice", "Alice0001", "A", 1));
 		this.addUser(new User("Bobby", "Bob", "B", 2));
 		this.addUser(new User("Carol", "Cooky", "C", 3));
@@ -37,7 +40,8 @@ public class UserList extends JPanel {
 	 */
 	public void addUser(User user) {
 		UserView uv = new UserView(user);
-//		this.usersList.add(uv);
+		// This makes the tab disappear. No clue why...
+		// this.usersList.add(uv);
 		this.add(uv);
 	}
 
