@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonPrimitive;
 
@@ -35,6 +34,12 @@ import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
  * @version Nov 6, 2014
  */
 
+/**
+ * Description
+ *
+ * @author Sam Khalandovsky
+ * @version Nov 10, 2014
+ */
 public class TaskModel extends AbstractJsonableModel<TaskModel> {
 
 	// Task name
@@ -91,6 +96,13 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 			stage.addTask(this);
 		}
 	}
+
+	/**
+	 * Required to create dummy instance Necessary for passing TaskModel type
+	 * into DataStore *
+	 */
+	public TaskModel() {
+	};
 
 	/**
 	 * @return the name
@@ -283,16 +295,6 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		request.setBody(toJson());
 		request.addObserver(observer);
 		request.send();
-	}
-
-	@Override
-	public String toJson() {
-		return new Gson().toJson(this, TaskModel.class);
-		/*
-		 * final Gson gson = new GsonBuilder().registerTypeAdapter(
-		 * TaskModel.class, new TaskModelSerializer()).create(); return
-		 * gson.toJson(this, TaskModel.class);
-		 */
 	}
 
 	@Override

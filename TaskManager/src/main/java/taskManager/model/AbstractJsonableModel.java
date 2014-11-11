@@ -49,4 +49,8 @@ public abstract class AbstractJsonableModel<T> extends AbstractModel {
 		final Gson parser = new Gson();
 		return parser.fromJson(json, type);
 	}
+
+	public String toJson() {
+		return new Gson().toJson(this, this.getClass());
+	}
 }
