@@ -66,7 +66,7 @@ public class StageView extends JPanel implements IStageView {
 	/**
 	 * repopulates the tasks list into the scroll pane
 	 */
-	public void updateTasks() {
+	private void updateTasks() {
 		this.remove(stage);
 		stage = new JScrollPane(tasks);
 		stage.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -79,14 +79,10 @@ public class StageView extends JPanel implements IStageView {
 	 */
 	public void addTaskView(TaskView tkv) {
 		tasks.add(tkv);
-		// TODO Make sure that this is right
-		repaint();
 	}
 
 	@Override
 	public String getName() {
-		System.out.println("The name of the stageview object is: "
-				+ super.getName());
 		return super.getName();
 	}
 

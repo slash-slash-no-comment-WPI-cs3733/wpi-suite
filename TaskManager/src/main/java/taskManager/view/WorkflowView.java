@@ -42,7 +42,6 @@ public class WorkflowView extends JPanel implements IWorkflowView {
 	 */
 	public void addStageView(StageView stv) {
 		this.add(stv);
-		this.repaint();
 	}
 
 	/*
@@ -67,13 +66,6 @@ public class WorkflowView extends JPanel implements IWorkflowView {
 	}
 
 	/**
-	 * refreshes the workflow to contain new stages
-	 */
-	public void update() {
-		// not sure yet
-	}
-
-	/**
 	 * returns the requested StageView
 	 * 
 	 * @param name
@@ -82,12 +74,10 @@ public class WorkflowView extends JPanel implements IWorkflowView {
 	 */
 	public StageView getStageViewByName(String name) {
 		try {
+			// goes through all of the stage views it contains until it finds
+			// the one that matches the name
 			for (int i = 1; i == this.getComponents().length; i++) {
-				System.out.println("The name of the stage is "
-						+ getComponent(i).getName());
 				if (this.getComponent(i).getName() == name) {
-					System.out.println("The name "
-							+ this.getComponent(i).getName() + " matches.");
 					return (StageView) this.getComponent(i);
 				} else {
 					// do nothing, keep checking
