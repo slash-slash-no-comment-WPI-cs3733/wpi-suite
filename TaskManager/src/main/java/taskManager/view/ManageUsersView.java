@@ -103,4 +103,16 @@ public class ManageUsersView extends JPanel {
 		this.controller = controller;
 	}
 
+	/*
+	 * @see javax.swing.JComponent#setVisible(boolean)
+	 */
+	@Override
+	public void setVisible(boolean visible) {
+		if (visible && controller != null) {
+			// TODO: uncomment once controller exists
+			// controller.reloadData();
+		}
+		super.setVisible(visible);
+	}
+
 }
