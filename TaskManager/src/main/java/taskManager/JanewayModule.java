@@ -85,6 +85,7 @@ public class JanewayModule implements IJanewayModule {
 			TaskModel tsk = new TaskModel("test " + i, progressStage);
 			tsk.setDueDate(Calendar.getInstance().getTime());
 			tsk.setEstimatedEffort(1);
+			tsk.setActualEffort(1);
 		}
 
 		// create the controller for the view

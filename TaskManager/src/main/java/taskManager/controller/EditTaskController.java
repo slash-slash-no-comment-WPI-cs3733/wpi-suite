@@ -70,10 +70,9 @@ public class EditTaskController implements ActionListener {
 				// create new task
 				StageModel desiredStage = wfm.findStageByName((String) etv
 						.getStages().getSelectedItem());
-				System.out.println("Grabbed the selected stage: "
-						+ desiredStage.getName());
 				if (exists) {
 
+					// set the task to be edited
 					TaskModel t = currentStage.findTaskByID(taskID);
 
 					// updates text fields
@@ -99,6 +98,7 @@ public class EditTaskController implements ActionListener {
 					this.setTaskID("000000");
 				} else {
 
+					// creates a new task model
 					TaskModel task = new TaskModel(etv.getTitle().getText(),
 							currentStage);
 
@@ -118,7 +118,7 @@ public class EditTaskController implements ActionListener {
 
 				// makes all the fields blank again
 				etv.resetFields();
-				// exit the edit view
+				// exit the edit view, this refreshes the workflow
 				this.returnToWorkflowView();
 				break;
 
@@ -156,6 +156,9 @@ public class EditTaskController implements ActionListener {
 		}
 	}
 
+	/**
+	 * refreshes the data on the view
+	 */
 	public void reloadData() {
 		JComboBox<String> stages = etv.getStages();
 		stages.removeAllItems();

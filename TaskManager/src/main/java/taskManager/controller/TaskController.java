@@ -57,6 +57,8 @@ public class TaskController implements ActionListener {
 		// uses description field to hold the name of the stage
 		JanewayModule.etv.getDescription().setName(
 				this.model.getStage().getName());
+
+		// populate editable fields with this tasks info
 		JanewayModule.etv.setTitle(model.getName());
 		JanewayModule.etv.setDescription(model.getDescription());
 		JanewayModule.etv.setDate(model.getDueDate());
