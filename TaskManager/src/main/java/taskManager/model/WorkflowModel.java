@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import taskManager.controller.WorkflowController;
+
 import com.google.gson.Gson;
 
 import edu.wpi.cs.wpisuitetng.network.Network;
@@ -256,6 +258,17 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 				"taskmanager/workflow", HttpMethod.DELETE);
 		request.setBody(toJson());
 		request.addObserver(getObserver());
+		request.send();
+	}
+
+	/**
+	 * Retrieve all workspaces
+	 *
+	 */
+	public void update(WorkflowController controller) {
+		final Request request = Network.getInstance().makeRequest(
+				"taskmanager/workflow", HttpMethod.GET);
+		request.addObserver(new FetchWorkflowObserver(this, controller));
 		request.send();
 	}
 
