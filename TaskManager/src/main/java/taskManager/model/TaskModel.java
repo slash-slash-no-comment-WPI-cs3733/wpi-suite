@@ -76,13 +76,13 @@ public class TaskModel extends AbstractModel {
 	/**
 	 * Constructor assigns name, task id, and stage.
 	 *
-	 * @param name
-	 *            name of the new task
 	 * @param stage
 	 *            stage that it enters in
+	 * @param name
+	 *            name of the new task
 	 */
 
-	public TaskModel(String name, StageModel stage) {
+	public TaskModel(StageModel stage, String name) {
 		final ActivityModel createTask = new ActivityModel("Created task",
 				ActivityModel.activityModelType.CREATION);
 		this.name = name;
@@ -348,8 +348,9 @@ public class TaskModel extends AbstractModel {
 	 *
 	 * @param serialized
 	 *            JSON string
-	
-	 * @return the deserialized TaskModel */
+	 * 
+	 * @return the deserialized TaskModel
+	 */
 	public static TaskModel fromJson(String serialized) {
 		final Gson gson = new Gson();
 		return gson.fromJson(serialized, TaskModel.class);
