@@ -16,8 +16,6 @@ import java.util.logging.Logger;
 
 import com.google.gson.Gson;
 
-import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
-
 /**
  * One stage in development for the process. Stages are saved per
  * {@link WorkflowModel Workflow}, and contain a number of {@link TaskModel
@@ -28,7 +26,13 @@ import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
  * @author Ezra Davis
  * @version Nov 6, 2014
  */
-public class StageModel extends AbstractModel {
+/**
+ * Description
+ *
+ * @author Sam Khalandovsky
+ * @version Nov 10, 2014
+ */
+public class StageModel extends AbstractJsonableModel<StageModel> {
 
 	private static final Logger logger = Logger.getLogger(StageModel.class
 			.getName());
@@ -102,6 +106,8 @@ public class StageModel extends AbstractModel {
 	 */
 	public StageModel(WorkflowModel workflow, String name, int index,
 			boolean removable) {
+		// Set name as ID
+		super(name);
 		// Enforce uniqueness of Stage names
 		if (workflow.findStageByName(name) != null) {
 			throw new IllegalArgumentException("Stage name must be unique.");
@@ -118,8 +124,17 @@ public class StageModel extends AbstractModel {
 	}
 
 	/**
+	 * Required to create dummy instance Necessary for passing TaskModel type
+	 * into DataStore *
+	 *
+	 *
+	 */
+	public StageModel() {
+	};
+
+	/**
 	 * Get the workflow this stage belongs to
-	 * 
+	 *
 	 * @return the workflow
 	 */
 	public WorkflowModel getWorkflow() {
@@ -128,7 +143,7 @@ public class StageModel extends AbstractModel {
 
 	/**
 	 * Set the workflow this stage belongs to
-	 * 
+	 *
 	 * @param workflow
 	 *            the workflow to set
 	 */
@@ -159,7 +174,7 @@ public class StageModel extends AbstractModel {
 	 * @param task
 	 *            The task to look for
 	 *
-	 * 
+	 *
 	
 	 * @return If the stage contains the task */
 	public boolean containsTask(TaskModel task) {
@@ -172,7 +187,7 @@ public class StageModel extends AbstractModel {
 	 * @param id
 	 *            The id of the task to look for
 	 *
-	 * 
+	 *
 	
 	 * @return the task if found, null otherwise. */
 	public TaskModel findTaskByID(String id) {
@@ -192,7 +207,7 @@ public class StageModel extends AbstractModel {
 	 * @param name
 	 *            The name of the task to look for
 	 *
-	 * 
+	 *
 	
 	 * @return The number of different tasks by that name in the stage. */
 	public List<TaskModel> findTaskByName(String name) {
@@ -238,7 +253,7 @@ public class StageModel extends AbstractModel {
 	 * @param taskName
 	 *            The name of the task to search for.
 	 *
-	 * 
+	 *
 	
 	 * @return The removed task, null if no task removed. */
 	public TaskModel removeTaskByName(String taskName) {
@@ -266,7 +281,7 @@ public class StageModel extends AbstractModel {
 	 * @param id
 	 *            The id of the task to remove.
 	 *
-	 * 
+	 *
 	
 	 * @return The removed task, null if no task removed. */
 	public TaskModel removeTaskByID(String id) {
@@ -288,7 +303,7 @@ public class StageModel extends AbstractModel {
 	 * @param task
 	 *            The task to add
 	 *
-	 * 
+	 *
 	
 	 * @return The removed task, null if no task removed. */
 	public TaskModel removeTask(TaskModel task) {
@@ -309,6 +324,7 @@ public class StageModel extends AbstractModel {
 	 *            The stage to copy
 	 */
 	public void makeIdenticalTo(StageModel stage) {
+		setID(stage.getID());
 		taskList = stage.getTasks();
 		name = stage.getName();
 		workflow = stage.getWorkflow();

@@ -16,8 +16,6 @@ import java.util.logging.Logger;
 
 import com.google.gson.Gson;
 
-import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
-
 /**
  * An entire program workflow. Contains a number of {@link StageModel Stages}.
  *
@@ -26,8 +24,8 @@ import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
  * @author Ezra Davis
  * @version Nov 6, 2014
  */
-public class WorkflowModel extends AbstractModel {
-	// List of stages in the workflow.
+public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
+  // List of stages in the workflow.
 	List<StageModel> stageList;
 	String name;
 
@@ -37,9 +35,15 @@ public class WorkflowModel extends AbstractModel {
 	/**
 	 * Constructor for WorkflowModel.
 	 */
-	public WorkflowModel() {
+	public WorkflowModel(String name) {
+		// set ID
+		super(name);
 		stageList = new ArrayList<StageModel>();
 		// TODO Add default stages
+	}
+
+	public WorkflowModel() {
+		this(null);
 	}
 
 	/**
@@ -113,7 +117,7 @@ public class WorkflowModel extends AbstractModel {
 	 *
 	 * @param stage
 	 *            the stage to look for
-	 * 
+	 *
 	
 	 * @return if the workflow contains the given stage */
 	public boolean hasStage(StageModel stage) {
@@ -126,7 +130,7 @@ public class WorkflowModel extends AbstractModel {
 	 *
 	 * @param stage
 	 *            the name of the stage
-	 * 
+	 *
 	
 	 * @return the StageModel, null if non-existent */
 	public StageModel findStageByName(String stage) {
@@ -211,6 +215,7 @@ public class WorkflowModel extends AbstractModel {
 	 *            The workflow to copy
 	 */
 	public void makeIdenticalTo(WorkflowModel workflow) {
+		setID(workflow.getID());
 		stageList = workflow.getStages();
 		name = workflow.getName();
 	}
