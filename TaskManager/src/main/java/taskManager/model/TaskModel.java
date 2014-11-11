@@ -10,6 +10,7 @@
 package taskManager.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -57,7 +58,7 @@ public class TaskModel extends AbstractModel {
 	// private Date dueDate;
 	// temporarily making this a string for testing
 	// TODO turn it back into a date
-	private String dueDate;
+	private Date dueDate;
 
 	// Estimated effort required for completion
 	private int estimatedEffort;
@@ -169,7 +170,7 @@ public class TaskModel extends AbstractModel {
 	/**
 	 * @return the dueDate
 	 */
-	public String getDueDate() {
+	public Date getDueDate() {
 		return dueDate;
 	}
 
@@ -177,7 +178,7 @@ public class TaskModel extends AbstractModel {
 	 * @param dueDate
 	 *            the dueDate to set
 	 */
-	public void setDueDate(String dueDate) {
+	public void setDueDate(Date dueDate) {
 		this.dueDate = dueDate;
 	}
 

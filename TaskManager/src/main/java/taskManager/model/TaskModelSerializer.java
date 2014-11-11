@@ -10,6 +10,7 @@
 package taskManager.model;
 
 import java.lang.reflect.Type;
+import java.util.Date;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -41,9 +42,8 @@ public class TaskModelSerializer implements JsonSerializer<TaskModel> {
 		deflated.addProperty("description", task.getDescription());
 		deflated.addProperty("stage", task.getStage().getName());
 		deflated.add("users", task.getAssignedAsJson());
-		// final Date dueDate = task.getDueDate();
-		final String dueDate = task.getDueDate();
-		// deflated.addProperty("dueDate", dueDate.getTime());
+		final Date dueDate = task.getDueDate();
+		deflated.addProperty("dueDate", dueDate.getTime());
 		deflated.addProperty("estimatedEffort", task.getEstimatedEffort());
 		deflated.addProperty("actualEffort", task.getActualEffort());
 		deflated.add("activities", task.getActivitiesAsJson());

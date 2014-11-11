@@ -9,6 +9,7 @@
 package taskManager.view;
 
 import java.awt.Dimension;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -42,7 +43,7 @@ public class TaskView extends JPanel implements ITaskView {
 	 * @param estEffort
 	 *            the estimated effort for the task
 	 */
-	public TaskView(String name, String duedate, int estEffort) {
+	public TaskView(String name, Date duedate, int estEffort) {
 		// organizes the data in a vertical list
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		final Border raisedbevel = BorderFactory.createRaisedBevelBorder();

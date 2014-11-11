@@ -5,6 +5,8 @@ package taskManager.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import javax.swing.JButton;
 
@@ -49,7 +51,12 @@ public class EditTaskController implements ActionListener {
 						wfm.findStageByName(etv.getStageName()));
 
 				// sets all task values according to fields
-				task.setDueDate(etv.getDate());
+				SimpleDateFormat d = new SimpleDateFormat("MM/dd/yyyy");
+				try {
+					task.setDueDate(d.parse(etv.getDate()));
+				} catch (ParseException p) {
+					p.printStackTrace();
+				}
 				task.setEstimatedEffort(etv.getEstEffort());
 				task.setActualEffort(etv.getActEffort());
 				task.setDescription(etv.getDescription());
