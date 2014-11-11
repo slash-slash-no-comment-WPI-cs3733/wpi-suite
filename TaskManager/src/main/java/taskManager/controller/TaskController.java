@@ -51,12 +51,20 @@ public class TaskController implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		// sets the text fields to the values of the task
 
+		// uses the title field to hold the unique id
 		JanewayModule.etv.getTitle().setName(this.model.getID());
+
+		// uses description field to hold the name of the stage
+		JanewayModule.etv.getDescription().setName(
+				this.model.getStage().getName());
 		JanewayModule.etv.setTitle(model.getName());
 		JanewayModule.etv.setDescription(model.getDescription());
 		JanewayModule.etv.setDate(model.getDueDate());
 		JanewayModule.etv.setEstEffort(model.getEstimatedEffort());
 		JanewayModule.etv.setActEffort(model.getActualEffort());
+
+		JanewayModule.wfv.setVisible(false);
+		JanewayModule.etv.setVisible(true);
 
 		// figures out the index of the stage, then sets the drop down to the
 		// stage at that index
@@ -66,7 +74,5 @@ public class TaskController implements ActionListener {
 				JanewayModule.etv.setStageDropdown(i);
 			}
 		}
-		JanewayModule.wfv.setVisible(false);
-		JanewayModule.etv.setVisible(true);
 	}
 }

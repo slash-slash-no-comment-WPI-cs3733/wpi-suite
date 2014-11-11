@@ -72,7 +72,7 @@ public class ToolbarController implements ActionListener {
 				manageUsersView.setVisible(false);
 				manageStagesView.setVisible(false);
 				statisticsView.setVisible(false);
-				// makes the fields blank
+				newTaskView.getTitle().setName("000000");
 				newTaskView.setVisible(true);
 				break;
 			case "manageStages":

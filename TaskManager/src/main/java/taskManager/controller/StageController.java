@@ -51,6 +51,7 @@ public class StageController {
 			tkv.setController(new TaskController(tkv, task));
 			this.view.addTaskView(tkv);
 		}
+
 	}
 
 }

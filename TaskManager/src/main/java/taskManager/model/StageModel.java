@@ -180,6 +180,28 @@ public class StageModel extends AbstractModel {
 	}
 
 	/**
+	 * Check if the current stage contains a given task ID.
+	 *
+	 * @param id
+	 *            The id of the task to look for
+	 *
+	 * 
+	 * @return the task if found, null otherwise.
+	 */
+	public boolean containsTaskByID(String id) {
+		boolean contains = false;
+		for (TaskModel existingTask : taskList) {
+			if (existingTask.getID().equals(id)) {
+				contains = true;
+				break;
+			} else {
+				contains = false;
+			}
+		}
+		return contains;
+	}
+
+	/**
 	 * Check if the current stage contains a given task name
 	 *
 	 * @param name

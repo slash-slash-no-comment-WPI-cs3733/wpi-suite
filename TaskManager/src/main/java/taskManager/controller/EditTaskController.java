@@ -48,17 +48,33 @@ public class EditTaskController implements ActionListener {
 		Object button = e.getSource();
 		if (button instanceof JButton) {
 			String name = ((JButton) button).getName();
+
+			taskID = etv.getTitle().getName();
+
+			boolean exists = false;
+			StageModel currentStage = wfm.findStageByName("New");
+			for (StageModel stage : wfm.getStages()) {
+				if (stage.containsTaskByID(taskID)) {
+					exists = true;
+					currentStage = stage;
+					break;
+				} else {
+					exists = false;
+				}
+			}
+
 			switch (name) {
 
 			case "save":
 				// find the appropriate stage
 				// create new task
-				StageModel stage = wfm.findStageByName((String) etv.getStages()
-						.getSelectedItem());
-				taskID = etv.getTitle().getName();
+				StageModel desiredStage = wfm.findStageByName((String) etv
+						.getStages().getSelectedItem());
+				System.out.println("Grabbed the selected stage: "
+						+ desiredStage.getName());
+				if (exists) {
 
-				if (stage.containsTask(stage.findTaskByID(taskID))) {
-					TaskModel t = stage.findTaskByID(taskID);
+					TaskModel t = currentStage.findTaskByID(taskID);
 
 					// updates text fields
 					t.setName(etv.getTitle().getText());
@@ -68,22 +84,23 @@ public class EditTaskController implements ActionListener {
 					t.setActualEffort(Integer.parseInt(etv.getActEffort()
 							.getText()));
 
-					// grabs the correct stage model from the workflow model and
-					// moves the task to that stage
-					t.setStage(wfm.findStageByName(etv.getStages()
-							.getSelectedItem().toString()));
 					// formats the date
 					SimpleDateFormat d = new SimpleDateFormat("MM/dd/yyyy");
 					try {
 						t.setDueDate(d.parse(etv.getDate().getText()));
 					} catch (ParseException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
+						// TODO think of something to go here
 					}
+
+					// grabs the correct stage model from the workflow model and
+					// moves the task to that stage
+					wfm.moveTask(t, currentStage, desiredStage);
+					this.returnToWorkflowView();
+					this.setTaskID("000000");
 				} else {
 
 					TaskModel task = new TaskModel(etv.getTitle().getText(),
-							stage);
+							currentStage);
 
 					// sets all task values according to fields
 					SimpleDateFormat d = new SimpleDateFormat("MM/dd/yyyy");
@@ -101,14 +118,18 @@ public class EditTaskController implements ActionListener {
 
 				// makes all the fields blank again
 				etv.resetFields();
-
 				// exit the edit view
 				this.returnToWorkflowView();
 				break;
 
 			case "delete":
 				// delete this task
-				System.out.println("You've pressed the delete task button");
+				StageModel s = wfm.findStageByName((String) etv.getStages()
+						.getSelectedItem());
+				TaskModel task = s.findTaskByID(taskID);
+				s.getTasks().remove(task);
+				this.returnToWorkflowView();
+				etv.resetFields();
 				break;
 
 			case "addUser":
@@ -124,6 +145,7 @@ public class EditTaskController implements ActionListener {
 			case "cancel":
 				// go back to workflow view
 				this.returnToWorkflowView();
+				etv.resetFields();
 				break;
 
 			case "submitComment":
@@ -159,4 +181,5 @@ public class EditTaskController implements ActionListener {
 	public void setTaskID(String id) {
 		this.taskID = id;
 	}
+
 }
