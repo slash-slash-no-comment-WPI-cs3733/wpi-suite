@@ -4,9 +4,11 @@ package taskManager.view;
  * @author Beth Martino
  */
 //<<<<<<< HEAD
-import java.awt.FlowLayout;
+import java.awt.Dimension;
+
 import javax.swing.JPanel;
 
+import net.miginfocom.swing.MigLayout;
 import taskManager.controller.WorkflowController;
 
 public class WorkflowView extends JPanel implements IWorkflowView {
@@ -18,7 +20,9 @@ public class WorkflowView extends JPanel implements IWorkflowView {
 	public WorkflowView() {
 
 		// arranges the stages horizontally and evenly spaced
-		this.setLayout(new FlowLayout());
+		this.setLayout(new MigLayout());
+		this.setMinimumSize(new Dimension(1000, 450));
+		this.setMaximumSize(new Dimension(1600, 900));
 	}
 
 	/**
@@ -27,7 +31,7 @@ public class WorkflowView extends JPanel implements IWorkflowView {
 	 *            house the stage view object sets the size and border
 	 */
 	public void addStageView(String name) {
-		this.add(new StageView(name));
+		this.add(new StageView(name), "span 2 6 align center");
 	}
 
 	@Override
