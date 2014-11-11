@@ -7,11 +7,11 @@ package taskManager.view;
 import java.awt.Color;
 import java.awt.Dimension;
 
-import javax.swing.JScrollPane;
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 public class StageView extends JPanel implements IStageView {
 
@@ -33,7 +33,9 @@ public class StageView extends JPanel implements IStageView {
 		// creates the label for the name of the stage and adds it to the block
 		JPanel label = new JPanel();
 		label.setPreferredSize(new Dimension(175, 25));
-		label.add(new JLabel(name));
+		JLabel labelText = new JLabel(name);
+		labelText.setName(name);
+		label.add(labelText);
 		this.add(label);
 
 		// adds example tasks
