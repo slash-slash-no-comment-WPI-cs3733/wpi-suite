@@ -31,8 +31,9 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 	@Override
 	public void responseSuccess(IRequest iReq) {
 		String body = iReq.getBody();
-		WorkflowModel workflow = AbstractJsonableModel.fromJson(body,
-				WorkflowModel.class);
+		WorkflowModel[] workflows = AbstractJsonableModel.fromJson(body,
+				WorkflowModel[].class);
+		WorkflowModel workflow = workflows[0];
 		workflow.rebuildAllRefs();
 		model.makeIdenticalTo(workflow);
 
