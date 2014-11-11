@@ -68,6 +68,10 @@ public class EditTaskController implements ActionListener {
 					t.setActualEffort(Integer.parseInt(etv.getActEffort()
 							.getText()));
 
+					// grabs the correct stage model from the workflow model and
+					// moves the task to that stage
+					t.setStage(wfm.findStageByName(etv.getStages()
+							.getSelectedItem().toString()));
 					// formats the date
 					SimpleDateFormat d = new SimpleDateFormat("MM/dd/yyyy");
 					try {

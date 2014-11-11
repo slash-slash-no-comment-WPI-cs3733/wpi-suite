@@ -61,7 +61,7 @@ public class TaskController implements ActionListener {
 		// figures out the index of the stage, then sets the drop down to the
 		// stage at that index
 		List<StageModel> x = this.wfm.getStages();
-		for (int i = 0; i == x.size(); i++) {
+		for (int i = 0; i < x.size(); i++) {
 			if (x.get(i) == this.sm) {
 				JanewayModule.etv.setStageDropdown(i);
 			}
