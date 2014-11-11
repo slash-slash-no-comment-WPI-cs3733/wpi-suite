@@ -17,9 +17,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonPrimitive;
-
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.network.Network;
@@ -85,13 +82,12 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 *            name of the new task
 	 */
 
-<<<<<<< HEAD
-	public TaskModel(StageModel stage, String name) {
+	public TaskModel(String name, StageModel stage) {
+
+		super(stage.getWorkflow().findUniqueTaskID(name));
 		final ActivityModel createTask = new ActivityModel("Created task",
 				ActivityModel.activityModelType.CREATION);
 		this.name = name;
-		id = stage.getWorkflow().findUniqueTaskID(name);
-		super(stage.getWorkflow().findUniqueTaskID(name));
 
 		assigned = new HashSet<User>();
 		activities = new ArrayList<ActivityModel>();
@@ -321,28 +317,6 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		request.setBody(toJson());
 		request.addObserver(observer);
 		request.send();
-	}
-
-	/*
-	 * @see edu.wpi.cs.wpisuitetng.modules.Model#toJson()
-	 */
-	@Override
-	public String toJson() {
-		final Gson gson = new Gson();
-		return gson.toJson(this);
-	}
-
-	/**
-	 * Static method for deserializing object from JSON
-	 *
-	 * @param serialized
-	 *            JSON string
-	 *
-	 * @return the deserialized TaskModel
-	 */
-	public static TaskModel fromJson(String serialized) {
-		final Gson gson = new Gson();
-		return gson.fromJson(serialized, TaskModel.class);
 	}
 
 	@Override
