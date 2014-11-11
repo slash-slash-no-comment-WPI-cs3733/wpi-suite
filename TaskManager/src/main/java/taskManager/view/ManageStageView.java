@@ -10,7 +10,6 @@ package taskManager.view;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +19,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import taskManager.controller.ManageStageController;
+
 /**
  * A view to add/remove/move stages
  *
@@ -27,8 +28,7 @@ import javax.swing.JTextField;
  */
 public class ManageStageView extends JPanel {
 
-	// TODO: change this to ManageStageController when that exists
-	private ActionListener controller;
+	private ManageStageController controller;
 
 	private List<JButton> buttonsWithoutAController;
 
@@ -94,7 +94,7 @@ public class ManageStageView extends JPanel {
 	 * @param controller
 	 *            The controller to attach to this view
 	 */
-	public void setController(ActionListener controller) {
+	public void setController(ManageStageController controller) {
 		this.controller = controller;
 
 		// add action listeners to any buttons that were created before a
@@ -112,6 +112,17 @@ public class ManageStageView extends JPanel {
 	 */
 	public JTextField getNewStageNameField() {
 		return text;
+	}
+
+	/*
+	 * @see javax.swing.JComponent#setVisible(boolean)
+	 */
+	@Override
+	public void setVisible(boolean visible) {
+		if (visible && controller != null) {
+			controller.reloadData();
+		}
+		super.setVisible(visible);
 	}
 
 	/**

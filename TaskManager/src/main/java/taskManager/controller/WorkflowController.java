@@ -41,8 +41,19 @@ public class WorkflowController {
 		this.view = view;
 		this.model = model;
 
+		reloadData();
+	}
+
+	/**
+	 * Reloads all the data on the view to match the data in the model
+	 *
+	 */
+	public void reloadData() {
+		// clear the stages previously on the view
+		view.removeAll();
+
 		// get all the stages in this workflow
-		final List<StageModel> stages = this.model.getStages();
+		final List<StageModel> stages = model.getStages();
 		// and add them all to the view
 		for (StageModel stage : stages) {
 			// create stage view and controller.
@@ -50,8 +61,7 @@ public class WorkflowController {
 			stv.setController(new StageController(stv, stage));
 
 			// add stage view to workflow
-			this.view.addStageView(stv);
+			view.addStageView(stv);
 		}
 	}
-
 }

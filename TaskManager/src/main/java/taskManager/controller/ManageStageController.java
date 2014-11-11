@@ -107,7 +107,7 @@ public class ManageStageController implements ActionListener {
 	 * Reloads all the data on the view to match the data in the model
 	 *
 	 */
-	private void reloadData() {
+	public void reloadData() {
 		view.removeAllStages();
 		for (StageModel stage : model.getStages()) {
 			view.addStage(stage.getName(), stage.getName());
