@@ -48,14 +48,16 @@ public class EditTaskController implements ActionListener {
 		Object button = e.getSource();
 		if (button instanceof JButton) {
 			String name = ((JButton) button).getName();
+
+			StageModel stage = wfm.findStageByName((String) etv.getStages()
+					.getSelectedItem());
+			taskID = etv.getTitle().getName();
+
 			switch (name) {
 
 			case "save":
 				// find the appropriate stage
 				// create new task
-				StageModel stage = wfm.findStageByName((String) etv.getStages()
-						.getSelectedItem());
-				taskID = etv.getTitle().getName();
 
 				if (stage.containsTask(stage.findTaskByID(taskID))) {
 					TaskModel t = stage.findTaskByID(taskID);
@@ -104,7 +106,10 @@ public class EditTaskController implements ActionListener {
 
 			case "delete":
 				// delete this task
-				System.out.println("You've pressed the delete task button");
+				TaskModel task = stage.findTaskByID(taskID);
+				stage.getTasks().remove(task);
+
+				this.returnToWorkflowView();
 				break;
 
 			case "addUser":
