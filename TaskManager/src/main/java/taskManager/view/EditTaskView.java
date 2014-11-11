@@ -54,6 +54,8 @@ public class EditTaskView extends JPanel {
 
 	private JComboBox<String> stages;
 
+	private EditTaskController controller;
+
 	public EditTaskView() {
 		// TODO
 		// When Task added make EditTask take in a Task called currTask
@@ -160,10 +162,6 @@ public class EditTaskView extends JPanel {
 		// Options are currently fixed
 		// Need access to stages, preferably in a list
 		JComboBox<String> nt_stagesBoxes = new JComboBox<String>();
-		nt_stagesBoxes.addItem("New");
-		nt_stagesBoxes.addItem("Started");
-		nt_stagesBoxes.addItem("In Progress");
-		nt_stagesBoxes.addItem("Complete");
 		this.stages = nt_stagesBoxes;
 
 		setLayout(new GridBagLayout());
@@ -291,6 +289,7 @@ public class EditTaskView extends JPanel {
 	 *            the controller to be attached to this view
 	 */
 	public void setController(EditTaskController controller) {
+		this.controller = controller;
 		this.cancel.addActionListener(controller);
 		this.save.addActionListener(controller);
 		this.addUser.addActionListener(controller);
@@ -304,9 +303,8 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the text in the title field
 	 */
-	public String getTitle() {
-		String title = titleField.getText();
-		return title;
+	public JTextField getTitle() {
+		return titleField;
 	}
 
 	/**
@@ -314,9 +312,8 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the text in the description field
 	 */
-	public String getDescription() {
-		String descr = descripField.getText();
-		return descr;
+	public JTextField getDescription() {
+		return descripField;
 	}
 
 	/**
@@ -324,9 +321,8 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the text in the date field
 	 */
-	public String getDate() {
-		String date = dateField.getText();
-		return date;
+	public JTextField getDate() {
+		return dateField;
 	}
 
 	/**
@@ -334,9 +330,8 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the number in the estimated effort field
 	 */
-	public int getEstEffort() {
-		int est = Integer.parseInt(estEffortField.getText());
-		return est;
+	public JTextField getEstEffort() {
+		return estEffortField;
 	}
 
 	/**
@@ -344,19 +339,12 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the number in the actual effort field
 	 */
-	public int getActEffort() {
-		int act = Integer.parseInt(actEffortField.getText());
-		return act;
+	public JTextField getActEffort() {
+		return actEffortField;
 	}
 
-	/**
-	 * Gets the name of the Stage
-	 * 
-	 * @return the name of the selected stage
-	 */
-	public String getStageName() {
-		String stage = stages.getSelectedItem().toString();
-		return stage;
+	public JComboBox<String> getStages() {
+		return stages;
 	}
 
 	/**
@@ -430,5 +418,13 @@ public class EditTaskView extends JPanel {
 		this.estEffortField.setText("");
 		this.actEffortField.setText("");
 		this.dateField.setText("");
+	}
+
+	@Override
+	public void setVisible(boolean visible) {
+		if (visible && controller != null) {
+			controller.reloadData();
+		}
+		super.setVisible(visible);
 	}
 }

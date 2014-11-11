@@ -50,6 +50,8 @@ public class TaskController implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// sets the text fields to the values of the task
+
+		JanewayModule.etv.getTitle().setName(this.model.getID());
 		JanewayModule.etv.setTitle(model.getName());
 		JanewayModule.etv.setDescription(model.getDescription());
 		JanewayModule.etv.setDate(model.getDueDate());
