@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 
 import taskManager.JanewayModule;
 import taskManager.model.StageModel;
@@ -36,6 +37,8 @@ public class EditTaskController implements ActionListener {
 		this.etv = JanewayModule.etv;
 		this.wfm = wfm;
 		this.wfv = JanewayModule.wfv;
+
+		reloadData();
 	}
 
 	@Override
@@ -98,6 +101,14 @@ public class EditTaskController implements ActionListener {
 				System.out.println("You've pressed the submit comment button");
 				break;
 			}
+		}
+	}
+
+	public void reloadData() {
+		JComboBox<String> stages = etv.getStages();
+		stages.removeAllItems();
+		for (StageModel stage : wfm.getStages()) {
+			stages.addItem(stage.getName());
 		}
 	}
 

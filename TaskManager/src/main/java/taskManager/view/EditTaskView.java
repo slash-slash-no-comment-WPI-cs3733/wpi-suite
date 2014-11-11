@@ -54,6 +54,8 @@ public class EditTaskView extends JPanel {
 
 	private JComboBox<String> stages;
 
+	private EditTaskController controller;
+
 	public EditTaskView() {
 		// TODO
 		// When Task added make EditTask take in a Task called currTask
@@ -160,10 +162,6 @@ public class EditTaskView extends JPanel {
 		// Options are currently fixed
 		// Need access to stages, preferably in a list
 		JComboBox<String> nt_stagesBoxes = new JComboBox<String>();
-		nt_stagesBoxes.addItem("New");
-		nt_stagesBoxes.addItem("Started");
-		nt_stagesBoxes.addItem("In Progress");
-		nt_stagesBoxes.addItem("Complete");
 		this.stages = nt_stagesBoxes;
 
 		setLayout(new GridBagLayout());
@@ -291,6 +289,7 @@ public class EditTaskView extends JPanel {
 	 *            the controller to be attached to this view
 	 */
 	public void setController(EditTaskController controller) {
+		this.controller = controller;
 		this.cancel.addActionListener(controller);
 		this.save.addActionListener(controller);
 		this.addUser.addActionListener(controller);
@@ -419,5 +418,13 @@ public class EditTaskView extends JPanel {
 		this.estEffortField.setText("");
 		this.actEffortField.setText("");
 		this.dateField.setText("");
+	}
+
+	@Override
+	public void setVisible(boolean visible) {
+		if (visible && controller != null) {
+			controller.reloadData();
+		}
+		super.setVisible(visible);
 	}
 }
