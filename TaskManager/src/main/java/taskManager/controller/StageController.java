@@ -49,7 +49,6 @@ public class StageController {
 			TaskView tkv = new TaskView(task.getName(), task.getDueDate(),
 					task.getEstimatedEffort());
 			tkv.setController(new TaskController(tkv, task));
-
 			this.view.addTaskView(tkv);
 		}
 	}

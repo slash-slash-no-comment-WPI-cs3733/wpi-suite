@@ -46,6 +46,7 @@ public class WorkflowView extends JPanel implements IWorkflowView {
 
 	public void addStageView(StageView stv) {
 		this.add(stv);
+		this.repaint();
 	}
 
 	@Override
@@ -53,8 +54,46 @@ public class WorkflowView extends JPanel implements IWorkflowView {
 		return super.getName();
 	}
 
+	/**
+	 * attaches the controller to this view
+	 * 
+	 * @param controller
+	 *            the workflow controller to be attached
+	 */
 	public void setController(WorkflowController controller) {
 		this.controller = controller;
 	}
 
+	/**
+	 * refreshes the workflow to contain new stages
+	 */
+	public void update() {
+		// not sure yet
+	}
+
+	/**
+	 * returns the requested StageView
+	 * 
+	 * @param name
+	 *            the name of the stageview to be returned
+	 * @return the requested stageview
+	 */
+	public StageView getStageViewByName(String name) {
+		try {
+			for (int i = 1; i == this.getComponents().length; i++) {
+				System.out.println("The name of the stage is "
+						+ getComponent(i).getName());
+				if (this.getComponent(i).getName() == name) {
+					System.out.println("The name "
+							+ this.getComponent(i).getName() + " matches.");
+					return (StageView) this.getComponent(i);
+				} else {
+					// do nothing, keep checking
+				}
+			}
+		} catch (NullPointerException e) {
+			System.out.println("How did you actually do this?");
+		}
+		return new StageView(name);
+	}
 }
