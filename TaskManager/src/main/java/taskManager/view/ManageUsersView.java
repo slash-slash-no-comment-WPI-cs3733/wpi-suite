@@ -1,20 +1,18 @@
 package taskManager.view;
 
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-import javax.swing.JButton;
-
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionListener;
-import java.awt.Dimension;
 import java.util.ArrayList;
 
-import taskManager.view.UserList;
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 /**
  * This is the view for the ManageUsers pane in the workflow.
@@ -85,8 +83,8 @@ public class ManageUsersView extends JPanel {
 		tLabel.add(tasksLabel);
 		tasksBlock.add(tLabel);
 		// Create the scrollPane with a StageView inside it
-		// TODO: change StageView to a TaskListView?
-		JScrollPane tasks = new JScrollPane(new StageView());
+		// TODO: change StageView to a TaskListView. Do this
+		JScrollPane tasks = new JScrollPane(new StageView("Tasks"));
 		tasks.setBorder(BorderFactory.createLineBorder(Color.black));
 		tasks.setPreferredSize(new Dimension(200, 350));
 		tasksBlock.add(tasks);
