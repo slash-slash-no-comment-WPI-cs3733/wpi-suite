@@ -328,22 +328,22 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * Gets the text in the estimated effort field
+	 * Gets the number in the estimated effort field
 	 * 
-	 * @return the text in the estimated effort field
+	 * @return the number in the estimated effort field
 	 */
-	public String getEstEffort() {
-		String est = estEffortField.getText();
+	public int getEstEffort() {
+		int est = Integer.parseInt(estEffortField.getText());
 		return est;
 	}
 
 	/**
-	 * Gets the text in the actual effort field
+	 * Gets the number in the actual effort field
 	 * 
-	 * @return the text in the actual effort field
+	 * @return the number in the actual effort field
 	 */
-	public String getActEffort() {
-		String act = actEffortField.getText();
+	public int getActEffort() {
+		int act = Integer.parseInt(actEffortField.getText());
 		return act;
 	}
 

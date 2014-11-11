@@ -19,7 +19,6 @@ import taskManager.view.WorkflowView;
  */
 public class EditTaskController implements ActionListener {
 
-	// TODO: change from JPanel to edit task view
 	private final EditTaskView etv;
 	private final WorkflowModel wfm;
 	private final WorkflowView wfv;
@@ -42,40 +41,46 @@ public class EditTaskController implements ActionListener {
 		if (button instanceof JButton) {
 			String name = ((JButton) button).getName();
 			switch (name) {
+
 			case "save":
 				// find the appropriate stage
 				// create new task
 				TaskModel task = new TaskModel(this.etv.getTitle(),
 						wfm.findStageByName(etv.getStageName()));
-				if (wfm.findStageByName(etv.getStageName()).containsTask(task)) {
-					System.out
-							.println("The task is in stage "
-									+ wfm.findStageByName(etv.getStageName())
-											.getName());
-				}
 
-				System.out.println("The string from the dropdown is "
-						+ etv.getStageName());
+				// sets all task values according to fields
+				task.setDueDate(etv.getDate());
+				task.setEstimatedEffort(etv.getEstEffort());
+				task.setActualEffort(etv.getActEffort());
+				task.setDescription(etv.getDescription());
+
+				// makes all the fields blank again
 				etv.resetFields();
+
 				// exit the edit view
 				this.returnToWorkflowView();
 				break;
+
 			case "delete":
 				// delete this task
 				System.out.println("You've pressed the delete task button");
 				break;
+
 			case "addUser":
 				// add a user to this task
 				System.out.println("You've pressed the add user button");
 				break;
+
 			case "addReq":
 				// add a requirement to this task
 				System.out.println("You've pressed the add requirement button");
 				break;
+
 			case "cancel":
 				// go back to workflow view
 				this.returnToWorkflowView();
 				break;
+
 			case "submitComment":
 				// creates a new activity
 				System.out.println("You've pressed the submit comment button");
