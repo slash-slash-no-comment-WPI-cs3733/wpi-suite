@@ -156,6 +156,16 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	}
 
 	/**
+	 * For each task in this stage, rebuild reference to stage
+	 *
+	 */
+	public void rebuildTaskRefs() {
+		for (TaskModel task : taskList) {
+			task.setStage(this);
+		}
+	}
+
+	/**
 	 * Get the name of the Stage.
 	 *
 	 * @return the name of the stage

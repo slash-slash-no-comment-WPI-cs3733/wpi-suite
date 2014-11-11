@@ -229,6 +229,18 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		name = workflow.getName();
 	}
 
+	/**
+	 * Rebuild the stage->workflow and task->stage references for all objects in
+	 * workflow
+	 *
+	 */
+	public void rebuildAllRefs() {
+		for (StageModel stage : stageList) {
+			stage.setWorkflow(this);
+			stage.rebuildTaskRefs();
+		}
+	}
+
 	@Override
 	public void save() {
 		final Request request = Network.getInstance().makeRequest(
