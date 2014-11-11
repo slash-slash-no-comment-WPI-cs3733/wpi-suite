@@ -74,8 +74,6 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	// Associated requirement that this task corresponds to
 	private Requirement req;
 
-	static private GenericRequestObserver observer = new GenericRequestObserver();
-
 	/**
 	 * Constructor assigns name, task id, and stage.
 	 *
@@ -309,7 +307,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		final Request request = Network.getInstance().makeRequest(
 				"taskmanager/task", HttpMethod.POST);
 		request.setBody(toJson());
-		request.addObserver(observer);
+		request.addObserver(getObserver());
 		request.send();
 	}
 
@@ -318,7 +316,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		final Request request = Network.getInstance().makeRequest(
 				"taskmanager/task", HttpMethod.DELETE);
 		request.setBody(toJson());
-		request.addObserver(observer);
+		request.addObserver(getObserver());
 		request.send();
 	}
 

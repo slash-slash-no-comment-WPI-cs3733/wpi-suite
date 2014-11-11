@@ -22,6 +22,8 @@ public abstract class AbstractJsonableModel<T> extends AbstractModel {
 
 	private String id;
 
+	static private GenericRequestObserver observer = new GenericRequestObserver();
+
 	public AbstractJsonableModel(String id) {
 		this.id = id;
 	}
@@ -32,6 +34,10 @@ public abstract class AbstractJsonableModel<T> extends AbstractModel {
 
 	public String getID() {
 		return id;
+	}
+
+	public GenericRequestObserver getObserver() {
+		return observer;
 	}
 
 	protected void setID(String id) {
