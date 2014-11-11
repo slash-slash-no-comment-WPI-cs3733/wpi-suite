@@ -47,19 +47,22 @@ public class EditTaskController implements ActionListener {
 			case "save":
 				// find the appropriate stage
 				// create new task
-				TaskModel task = new TaskModel(this.etv.getTitle(),
-						wfm.findStageByName(etv.getStageName()));
+				TaskModel task = new TaskModel(this.etv.getTitle().getText(),
+						wfm.findStageByName((String) etv.getStages()
+								.getSelectedItem()));
 
 				// sets all task values according to fields
 				SimpleDateFormat d = new SimpleDateFormat("MM/dd/yyyy");
 				try {
-					task.setDueDate(d.parse(etv.getDate()));
+					task.setDueDate(d.parse(etv.getDate().getText()));
 				} catch (ParseException p) {
 					p.printStackTrace();
 				}
-				task.setEstimatedEffort(etv.getEstEffort());
-				task.setActualEffort(etv.getActEffort());
-				task.setDescription(etv.getDescription());
+				task.setEstimatedEffort(Integer.parseInt(etv.getEstEffort()
+						.getText()));
+				task.setActualEffort(Integer.parseInt(etv.getActEffort()
+						.getText()));
+				task.setDescription(etv.getDescription().getText());
 
 				// makes all the fields blank again
 				etv.resetFields();

@@ -302,9 +302,8 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the text in the title field
 	 */
-	public String getTitle() {
-		String title = titleField.getText();
-		return title;
+	public JTextField getTitle() {
+		return titleField;
 	}
 
 	/**
@@ -312,9 +311,8 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the text in the description field
 	 */
-	public String getDescription() {
-		String descr = descripField.getText();
-		return descr;
+	public JTextField getDescription() {
+		return descripField;
 	}
 
 	/**
@@ -322,9 +320,8 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the text in the date field
 	 */
-	public String getDate() {
-		String date = dateField.getText();
-		return date;
+	public JTextField getDate() {
+		return dateField;
 	}
 
 	/**
@@ -332,9 +329,8 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the number in the estimated effort field
 	 */
-	public int getEstEffort() {
-		int est = Integer.parseInt(estEffortField.getText());
-		return est;
+	public JTextField getEstEffort() {
+		return estEffortField;
 	}
 
 	/**
@@ -342,19 +338,12 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the number in the actual effort field
 	 */
-	public int getActEffort() {
-		int act = Integer.parseInt(actEffortField.getText());
-		return act;
+	public JTextField getActEffort() {
+		return actEffortField;
 	}
 
-	/**
-	 * Gets the name of the Stage
-	 * 
-	 * @return the name of the selected stage
-	 */
-	public String getStageName() {
-		String stage = stages.getSelectedItem().toString();
-		return stage;
+	public JComboBox<String> getStages() {
+		return stages;
 	}
 
 	/**
