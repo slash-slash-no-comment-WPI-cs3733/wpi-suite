@@ -74,7 +74,7 @@ public class TestManageStageController {
 	@Test
 	public void testRemoveStage() {
 		// the stages we should end up with
-		final String[] result = { "first", "second", "last" };
+		final String[] result = { "first", "second", "fourth" };
 
 		// remove the stage named third
 		fixture.panel("third").button("Delete").click();
@@ -95,8 +95,8 @@ public class TestManageStageController {
 		checkStages(result);
 
 		// move stage third down once
-		fixture.panel("third").button("Move Down").click();
-		String[] result2 = { "third", "first", "fourth", "third" };
+		fixture.panel("second").button("Move Down").click();
+		String[] result2 = { "third", "first", "fourth", "second" };
 		checkStages(result2);
 	}
 

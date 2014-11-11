@@ -72,8 +72,8 @@ public class WorkflowView extends JPanel implements IWorkflowView {
 		JPanel label = new JPanel();
 		label.setPreferredSize(new Dimension(175, 25));
 		JLabel stageName = new JLabel(name);
-		stageName.setName("stage_label" + i++); // these need unique labels for
-												// the tests to work
+		stageName.setName(name);
+
 		label.add(stageName);
 		block.add(label);
 
