@@ -34,6 +34,7 @@ public class ToolbarController implements ActionListener {
 	private final ManageUsersView manageUsersView;
 	private final EditTaskView newTaskView;
 	private final JPanel statisticsView;
+	private final WorkflowController workflowController;
 
 	/**
 	 * 
@@ -52,13 +53,14 @@ public class ToolbarController implements ActionListener {
 	 */
 	public ToolbarController(ToolbarView view, WorkflowView wfv,
 			ManageStageView msv, ManageUsersView muv, EditTaskView ntv,
-			JPanel sv) {
+			JPanel sv, WorkflowController wfc) {
 		this.toolbarView = view;
 		this.workflowView = wfv;
 		this.manageStagesView = msv;
 		this.manageUsersView = muv;
 		this.newTaskView = ntv;
 		this.statisticsView = sv;
+		this.workflowController = wfc;
 	}
 
 	@Override
@@ -72,7 +74,7 @@ public class ToolbarController implements ActionListener {
 				manageUsersView.setVisible(false);
 				manageStagesView.setVisible(false);
 				statisticsView.setVisible(false);
-				// makes the fields blank
+				newTaskView.getTitle().setName("000000");
 				newTaskView.setVisible(true);
 				break;
 			case "manageStages":
@@ -104,6 +106,9 @@ public class ToolbarController implements ActionListener {
 				statisticsView.setVisible(false);
 				workflowView.setVisible(true);
 				break;
+
+			case "refresh":
+				workflowController.fetch();
 			}
 		}
 	}

@@ -10,6 +10,7 @@ package taskManager.model;
 
 import taskManager.controller.WorkflowController;
 import edu.wpi.cs.wpisuitetng.network.models.IRequest;
+import edu.wpi.cs.wpisuitetng.network.models.ResponseModel;
 
 /**
  * Observer for Workflow fetch requests
@@ -30,12 +31,20 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 
 	@Override
 	public void responseSuccess(IRequest iReq) {
-		String body = iReq.getBody();
+		ResponseModel response = iReq.getResponse();
+		String body = response.getBody();
+		System.out.println("Response:" + body);
+
 		WorkflowModel[] workflows = AbstractJsonableModel.fromJson(body,
 				WorkflowModel[].class);
+		if (workflows == null) {
+			System.out.println("Workflow not found on server");
+			return;
+		}
+
 		WorkflowModel workflow = workflows[0];
-		workflow.rebuildAllRefs();
 		model.makeIdenticalTo(workflow);
+		model.rebuildAllRefs();
 
 		// Allow calling with null controller to permit testing without
 		// controller

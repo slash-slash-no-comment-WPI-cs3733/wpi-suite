@@ -77,7 +77,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 *            Whether or not the stage can be removed.
 	 */
 	public StageModel(WorkflowModel workflow, String name, boolean removable) {
-		this(workflow, name, -1, true);
+		this(workflow, name, -1, removable);
 		// TODO better way than passing -1 for index?
 	}
 
@@ -215,6 +215,28 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 			}
 		}
 		return task;
+	}
+
+	/**
+	 * Check if the current stage contains a given task ID.
+	 *
+	 * @param id
+	 *            The id of the task to look for
+	 *
+	 * 
+	 * @return the task if found, null otherwise.
+	 */
+	public boolean containsTaskByID(String id) {
+		boolean contains = false;
+		for (TaskModel existingTask : taskList) {
+			if (existingTask.getID().equals(id)) {
+				contains = true;
+				break;
+			} else {
+				contains = false;
+			}
+		}
+		return contains;
 	}
 
 	/**
@@ -378,4 +400,5 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 		}
 		return false;
 	}
+
 }

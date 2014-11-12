@@ -26,7 +26,7 @@ public class GenericRequestObserver implements RequestObserver {
 	 */
 	@Override
 	public void responseSuccess(IRequest iReq) {
-		// TODO Auto-generated method stub
+		System.out.println("Request successful");
 
 	}
 

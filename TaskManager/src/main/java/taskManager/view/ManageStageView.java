@@ -60,9 +60,11 @@ public class ManageStageView extends JPanel {
 	 *            The name of the stage to add
 	 * @param id
 	 *            The ID of the stage to add
+	 * @param removable
+	 *            If the stage is removable
 	 */
-	public void addStage(String name, String id) {
-		this.stageArea.add(newStagePanel(name, id));
+	public void addStage(String name, String id, boolean removable) {
+		this.stageArea.add(newStagePanel(name, id, removable));
 	}
 
 	/**
@@ -132,9 +134,11 @@ public class ManageStageView extends JPanel {
 	 *            The name of the stage
 	 * @param id
 	 *            The ID of the stage
+	 * @param removable
+	 *            If the stage is removable
 	 * @return A panel containing the stage name and some buttons
 	 */
-	private JPanel newStagePanel(String name, String id) {
+	private JPanel newStagePanel(String name, String id, boolean removable) {
 		JPanel panel = new JPanel();
 		// set the id, so to locate this stage later
 		panel.setName(id);
@@ -143,7 +147,9 @@ public class ManageStageView extends JPanel {
 		panel.add(new JLabel(name));
 
 		// add buttons
-		panel.add(newButtonWithListener("Delete"));
+		JButton delButton = newButtonWithListener("Delete");
+		delButton.setEnabled(removable);
+		panel.add(delButton);
 		panel.add(newButtonWithListener("Move Up"));
 		panel.add(newButtonWithListener("Move Down"));
 		return panel;

@@ -201,7 +201,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 *            the actualEffort to set
 	 */
 	public void setActualEffort(int actualEffort) {
-		if (actualEffort <= 0) {
+		if (actualEffort < 0) {
 			throw new IllegalArgumentException(
 					"actualEffort must be non-negative");
 		}

@@ -3,6 +3,8 @@ package taskManager.view;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -51,6 +53,8 @@ public class EditTaskView extends JPanel {
 	private JTextField commentsField;
 
 	private JComboBox<String> stages;
+
+	private EditTaskController controller;
 
 	public EditTaskView() {
 		// TODO
@@ -158,10 +162,6 @@ public class EditTaskView extends JPanel {
 		// Options are currently fixed
 		// Need access to stages, preferably in a list
 		JComboBox<String> nt_stagesBoxes = new JComboBox<String>();
-		nt_stagesBoxes.addItem("New");
-		nt_stagesBoxes.addItem("Started");
-		nt_stagesBoxes.addItem("In Progress");
-		nt_stagesBoxes.addItem("Complete");
 		this.stages = nt_stagesBoxes;
 
 		setLayout(new GridBagLayout());
@@ -289,6 +289,7 @@ public class EditTaskView extends JPanel {
 	 *            the controller to be attached to this view
 	 */
 	public void setController(EditTaskController controller) {
+		this.controller = controller;
 		this.cancel.addActionListener(controller);
 		this.save.addActionListener(controller);
 		this.addUser.addActionListener(controller);
@@ -302,9 +303,8 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the text in the title field
 	 */
-	public String getTitle() {
-		String title = titleField.getText();
-		return title;
+	public JTextField getTitle() {
+		return titleField;
 	}
 
 	/**
@@ -312,9 +312,8 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the text in the description field
 	 */
-	public String getDescription() {
-		String descr = descripField.getText();
-		return descr;
+	public JTextField getDescription() {
+		return descripField;
 	}
 
 	/**
@@ -322,9 +321,8 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the text in the date field
 	 */
-	public String getDate() {
-		String date = dateField.getText();
-		return date;
+	public JTextField getDate() {
+		return dateField;
 	}
 
 	/**
@@ -332,9 +330,8 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the number in the estimated effort field
 	 */
-	public int getEstEffort() {
-		int est = Integer.parseInt(estEffortField.getText());
-		return est;
+	public JTextField getEstEffort() {
+		return estEffortField;
 	}
 
 	/**
@@ -342,19 +339,74 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the number in the actual effort field
 	 */
-	public int getActEffort() {
-		int act = Integer.parseInt(actEffortField.getText());
-		return act;
+	public JTextField getActEffort() {
+		return actEffortField;
+	}
+
+	public JComboBox<String> getStages() {
+		return stages;
 	}
 
 	/**
-	 * Gets the name of the Stage
+	 * sets the text in the title field
 	 * 
-	 * @return the name of the selected stage
+	 * @param the
+	 *            text in the title field
 	 */
-	public String getStageName() {
-		String stage = stages.getSelectedItem().toString();
-		return stage;
+	public void setTitle(String d) {
+		this.titleField.setText(d);
+	}
+
+	/**
+	 * sets the text in the description field
+	 * 
+	 * @param d
+	 *            the text in the description field
+	 */
+	public void setDescription(String d) {
+		this.descripField.setText(d);
+	}
+
+	/**
+	 * Sets the text in the date field
+	 * 
+	 * @param d
+	 *            the text in the date field
+	 */
+	public void setDate(Date d) {
+		SimpleDateFormat q = new SimpleDateFormat("MM/dd/yyyy");
+		this.dateField.setText(q.format(d));
+	}
+
+	/**
+	 * Sets the estimated effort to the value i
+	 * 
+	 * @param i
+	 *            the value to set the estimated effort field to
+	 */
+	public void setEstEffort(Integer i) {
+		this.estEffortField.setText(i.toString());
+	}
+
+	/**
+	 * Set the the actual effort field to the value of i
+	 * 
+	 * @param i
+	 *            the value to set the actual effort field to
+	 */
+	public void setActEffort(Integer i) {
+		this.actEffortField.setText(i.toString());
+	}
+
+	/**
+	 * set stage dropdown box to the stage associated with the task
+	 * 
+	 * @param n
+	 *            the index of the stage in the workflow
+	 */
+	public void setStageDropdown(int n) {
+		String p = this.stages.getItemAt(n);
+		this.stages.setSelectedItem(p);
 	}
 
 	/**
@@ -366,5 +418,13 @@ public class EditTaskView extends JPanel {
 		this.estEffortField.setText("");
 		this.actEffortField.setText("");
 		this.dateField.setText("");
+	}
+
+	@Override
+	public void setVisible(boolean visible) {
+		if (visible && controller != null) {
+			controller.reloadData();
+		}
+		super.setVisible(visible);
 	}
 }
