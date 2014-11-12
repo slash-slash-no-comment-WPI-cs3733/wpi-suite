@@ -63,5 +63,11 @@ public class WorkflowController {
 			// add stage view to workflow
 			view.addStageView(stv);
 		}
+		view.revalidate();
+		view.repaint();
+	}
+
+	public void fetch() {
+		model.update(this);
 	}
 }

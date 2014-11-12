@@ -248,7 +248,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		final Request request = Network.getInstance().makeRequest(
 				"taskmanager/workflow", HttpMethod.POST);
 		request.setBody(toJson());
-		System.out.println("Sending: " + toJson());
+		System.out.println("Saving: " + toJson());
 		request.addObserver(getObserver());
 		request.send();
 	}
@@ -258,6 +258,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		final Request request = Network.getInstance().makeRequest(
 				"taskmanager/workflow", HttpMethod.DELETE);
 		request.setBody(toJson());
+		System.out.println("Deleting: " + toJson());
 		request.addObserver(getObserver());
 		request.send();
 	}

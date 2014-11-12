@@ -38,7 +38,7 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 		WorkflowModel[] workflows = AbstractJsonableModel.fromJson(body,
 				WorkflowModel[].class);
 		if (workflows == null) {
-			responseError(iReq);
+			System.out.println("Workflow not found on server");
 			return;
 		}
 
