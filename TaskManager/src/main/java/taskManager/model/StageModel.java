@@ -62,7 +62,7 @@ public class StageModel extends AbstractModel {
 	 *            Whether or not the stage can be removed.
 	 */
 	public StageModel(WorkflowModel workflow, String name, boolean removable) {
-		this(workflow, name, -1, true);
+		this(workflow, name, -1, removable);
 		// TODO better way than passing -1 for index?
 	}
 
