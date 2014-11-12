@@ -67,7 +67,7 @@ public class TaskView extends JPanel implements ITaskView {
 		// to the month.
 		this.add(new JLabel("Due Date: " + (date.get(Calendar.MONTH) + 1) + "/"
 				+ date.get(Calendar.DATE) + "/" + (date.get(Calendar.YEAR))));
-		this.add(new JLabel("Est Effort: " + estEffort + "#"));
+		this.add(new JLabel("Est Effort: " + estEffort));
 		edit = new JButton("Edit");
 		edit.setName(taskID);
 		this.add(edit);
