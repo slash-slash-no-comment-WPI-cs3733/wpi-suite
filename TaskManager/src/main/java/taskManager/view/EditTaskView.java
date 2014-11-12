@@ -70,7 +70,7 @@ public class EditTaskView extends JPanel {
 		// JLabels
 		JLabel nt_titleLabel = new JLabel("Title ");
 		JLabel nt_descriptionLabel = new JLabel("Description ");
-		JLabel nt_dueDateLabel = new JLabel("Due Date ");
+		JLabel nt_dueDateLabel = new JLabel("Due Date (MM/DD/YY)");
 		JLabel nt_stageLabel = new JLabel("Stage ");
 		JLabel nt_usersLabel = new JLabel("Users ");
 		JLabel nt_estimatedEffortLabel = new JLabel("Estimated Effort ");
