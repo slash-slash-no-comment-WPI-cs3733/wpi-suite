@@ -13,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
@@ -46,7 +47,7 @@ public class EditTaskView extends JPanel {
 	private JButton submitComment;
 
 	private JTextField titleField;
-	private JTextField descripField;
+	private JTextArea descripArea;
 	private JTextField dateField;
 	private JTextField estEffortField;
 	private JTextField actEffortField;
@@ -83,9 +84,14 @@ public class EditTaskView extends JPanel {
 		JTextField nt_titleField = new JTextField(25);
 		nt_titleField.setEditable(true);
 		this.titleField = nt_titleField;
-		JTextField nt_descriptionField = new JTextField(25);
-		nt_descriptionField.setEditable(true);
-		this.descripField = nt_descriptionField;
+		JTextArea nt_descriptionArea = new JTextArea(3, 25);
+		nt_descriptionArea.setEditable(true);
+		this.descripArea = nt_descriptionArea;
+		nt_descriptionArea.setLineWrap(true);
+		JScrollPane nt_descriptionScrollPane = new JScrollPane(nt_descriptionArea);
+		nt_descriptionScrollPane
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		nt_descriptionScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		JTextField nt_dueDateField = new JTextField(25);
 		nt_dueDateField.setEditable(true);
 		this.dateField = nt_dueDateField;
@@ -170,7 +176,7 @@ public class EditTaskView extends JPanel {
 
 		// First Column ////
 
-		newTaskGridBag.anchor = GridBagConstraints.LINE_START;
+		newTaskGridBag.anchor = GridBagConstraints.FIRST_LINE_START;
 
 		newTaskGridBag.weightx = 0.15;
 		newTaskGridBag.weighty = 0.077;
@@ -219,7 +225,7 @@ public class EditTaskView extends JPanel {
 		add(nt_titleField, newTaskGridBag);
 
 		newTaskGridBag.gridy = 1;
-		add(nt_descriptionField, newTaskGridBag);
+		add(nt_descriptionScrollPane, newTaskGridBag);
 
 		newTaskGridBag.gridy = 2;
 		add(nt_dueDateField, newTaskGridBag);
@@ -312,8 +318,8 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the text in the description field
 	 */
-	public JTextField getDescription() {
-		return descripField;
+	public JTextArea getDescription() {
+		return descripArea;
 	}
 
 	/**
@@ -364,7 +370,7 @@ public class EditTaskView extends JPanel {
 	 *            the text in the description field
 	 */
 	public void setDescription(String d) {
-		this.descripField.setText(d);
+		this.descripArea.setText(d);
 	}
 
 	/**
@@ -414,7 +420,7 @@ public class EditTaskView extends JPanel {
 	 */
 	public void resetFields() {
 		this.titleField.setText("");
-		this.descripField.setText("");
+		this.descripArea.setText("");
 		this.estEffortField.setText("");
 		this.actEffortField.setText("");
 		this.dateField.setText("");
