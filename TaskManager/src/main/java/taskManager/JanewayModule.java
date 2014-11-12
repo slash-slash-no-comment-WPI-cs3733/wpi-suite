@@ -9,7 +9,6 @@
 package taskManager;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -20,7 +19,6 @@ import taskManager.controller.ManageStageController;
 import taskManager.controller.ToolbarController;
 import taskManager.controller.WorkflowController;
 import taskManager.model.StageModel;
-import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.ManageStageView;
@@ -80,13 +78,6 @@ public class JanewayModule implements IJanewayModule {
 		StageModel startedStage = new StageModel(wfm, "Started", false);
 		StageModel progressStage = new StageModel(wfm, "In Progress", false);
 		StageModel completeStage = new StageModel(wfm, "Complete", false);
-
-		for (int i = 0; i < 10; ++i) {
-			TaskModel tsk = new TaskModel("test " + i, progressStage);
-			tsk.setDueDate(Calendar.getInstance().getTime());
-			tsk.setEstimatedEffort(1);
-			tsk.setActualEffort(1);
-		}
 
 		// create the controller for the view
 		wfv.setController(new WorkflowController(wfv, wfm));
