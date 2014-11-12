@@ -63,13 +63,15 @@ public class EditTaskController implements ActionListener {
 				}
 			}
 
+			StageModel desiredStage = wfm.findStageByName((String) etv
+					.getStages().getSelectedItem());
+
 			switch (name) {
 
 			case "save":
 				// find the appropriate stage
 				// create new task
-				StageModel desiredStage = wfm.findStageByName((String) etv
-						.getStages().getSelectedItem());
+
 				if (exists) {
 
 					// set the task to be edited
@@ -94,6 +96,7 @@ public class EditTaskController implements ActionListener {
 					// grabs the correct stage model from the workflow model and
 					// moves the task to that stage
 					wfm.moveTask(t, currentStage, desiredStage);
+					t.setStage(desiredStage);
 					this.returnToWorkflowView();
 					this.setTaskID("000000");
 				} else {
