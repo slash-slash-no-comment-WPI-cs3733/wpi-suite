@@ -9,7 +9,6 @@
 package taskManager;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -20,7 +19,6 @@ import taskManager.controller.ManageStageController;
 import taskManager.controller.ToolbarController;
 import taskManager.controller.WorkflowController;
 import taskManager.model.StageModel;
-import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.ManageStageView;
@@ -42,6 +40,11 @@ public class JanewayModule implements IJanewayModule {
 
 	// The tabs used by this module
 	private final ArrayList<JanewayTabModel> tabs;
+	public static final WorkflowView wfv = new WorkflowView();
+	public static final ManageStageView msv = new ManageStageView();
+	public static final ManageUsersView muv = new ManageUsersView();
+	public static final EditTaskView etv = new EditTaskView();
+	public static final JPanel sv = new JPanel();
 
 	/**
 	 * Construct a blank tab
@@ -53,23 +56,18 @@ public class JanewayModule implements IJanewayModule {
 		// TODO move setVisible(false) into view constructors?
 
 		// create workflow view
-		WorkflowView wfv = new WorkflowView();
 		wfv.setVisible(true);
 
 		// create manage stages view
-		ManageStageView msv = new ManageStageView();
 		msv.setVisible(false);
 
 		// ManageUsers window
-		ManageUsersView muv = new ManageUsersView();
 		muv.setVisible(false);
 
 		// create new task view
-		EditTaskView ntv = new EditTaskView();
-		ntv.setVisible(false);
+		etv.setVisible(false);
 
 		// create statistics view
-		JPanel sv = new JPanel();
 		sv.setVisible(false);
 
 		// create a new workflow model
@@ -77,32 +75,26 @@ public class JanewayModule implements IJanewayModule {
 
 		// give it the default stages
 		StageModel newStage = new StageModel(wfm, "New", false);
-		StageModel startedStage = new StageModel(wfm, "Started", false);
+		StageModel startedStage = new StageModel(wfm, "Scheduled", false);
 		StageModel progressStage = new StageModel(wfm, "In Progress", false);
 		StageModel completeStage = new StageModel(wfm, "Complete", false);
-
-		for (int i = 0; i < 10; ++i) {
-			TaskModel tsk = new TaskModel("test " + i, progressStage);
-			tsk.setDueDate(Calendar.getInstance().getTime());
-			tsk.setEstimatedEffort(1);
-		}
 
 		// create the controller for the view
 		wfv.setController(new WorkflowController(wfv, wfm));
 		msv.setController(new ManageStageController(msv, wfm));
-		ntv.setController(new EditTaskController(ntv, wfm, wfv));
+		etv.setController(new EditTaskController(wfm));
 
 		// adds all views to one panel
 		JPanel allPanels = new JPanel();
 		allPanels.add(wfv);
 		allPanels.add(msv);
 		allPanels.add(muv);
-		allPanels.add(ntv);
+		allPanels.add(etv);
 		allPanels.add(sv);
 
 		// Create the toolbar view
 		ToolbarView tv = new ToolbarView();
-		ToolbarController tc = new ToolbarController(tv, wfv, msv, muv, ntv, sv);
+		ToolbarController tc = new ToolbarController(tv, wfv, msv, muv, etv, sv);
 		tv.setController(tc);
 
 		// this adds the menu and the main panel to the pre-configured janeway

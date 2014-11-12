@@ -9,7 +9,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 
+import taskManager.JanewayModule;
+import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
@@ -25,16 +28,19 @@ public class EditTaskController implements ActionListener {
 	private final WorkflowModel wfm;
 	private final WorkflowView wfv;
 
+	private String taskID;
+
 	/**
 	 * Constructor, attaches the edit task view to this controller
 	 * 
 	 * @param etv
 	 */
-	public EditTaskController(EditTaskView etv, WorkflowModel wfm,
-			WorkflowView wfv) {
-		this.etv = etv;
+	public EditTaskController(WorkflowModel wfm) {
+		this.etv = JanewayModule.etv;
 		this.wfm = wfm;
-		this.wfv = wfv;
+		this.wfv = JanewayModule.wfv;
+
+		reloadData();
 	}
 
 	@Override
@@ -42,35 +48,95 @@ public class EditTaskController implements ActionListener {
 		Object button = e.getSource();
 		if (button instanceof JButton) {
 			String name = ((JButton) button).getName();
+
+			taskID = etv.getTitle().getName();
+
+			boolean exists = false;
+			StageModel currentStage = wfm.findStageByName("New");
+			for (StageModel stage : wfm.getStages()) {
+				if (stage.containsTaskByID(taskID)) {
+					exists = true;
+					currentStage = stage;
+					break;
+				} else {
+					exists = false;
+				}
+			}
+
+			StageModel desiredStage = wfm.findStageByName((String) etv
+					.getStages().getSelectedItem());
+
 			switch (name) {
 
 			case "save":
 				// find the appropriate stage
 				// create new task
-				TaskModel task = new TaskModel(this.etv.getTitle(),
-						wfm.findStageByName(etv.getStageName()));
 
-				// sets all task values according to fields
-				SimpleDateFormat d = new SimpleDateFormat("MM/dd/yyyy");
-				try {
-					task.setDueDate(d.parse(etv.getDate()));
-				} catch (ParseException p) {
-					p.printStackTrace();
+				if (exists) {
+
+					// set the task to be edited
+					TaskModel t = currentStage.findTaskByID(taskID);
+
+					// updates text fields
+					t.setName(etv.getTitle().getText());
+					t.setDescription(etv.getDescription().getText());
+					t.setEstimatedEffort(Integer.parseInt(etv.getEstEffort()
+							.getText()));
+					t.setActualEffort(Integer.parseInt(etv.getActEffort()
+							.getText()));
+
+					// formats the date
+					SimpleDateFormat d = new SimpleDateFormat("MM/dd/yyyy");
+					try {
+						t.setDueDate(d.parse(etv.getDate().getText()));
+					} catch (ParseException e1) {
+						// TODO think of something to go here
+					}
+
+					// grabs the correct stage model from the workflow model and
+					// moves the task to that stage
+					wfm.moveTask(t, currentStage, desiredStage);
+					t.setStage(desiredStage);
+					this.returnToWorkflowView();
+					this.setTaskID("000000");
+				} else {
+
+					// creates a new task model
+					TaskModel task = new TaskModel(etv.getTitle().getText(),
+							currentStage);
+
+					// sets all task values according to fields
+					SimpleDateFormat d = new SimpleDateFormat("MM/dd/yyyy");
+					try {
+						task.setDueDate(d.parse(etv.getDate().getText()));
+					} catch (ParseException p) {
+						p.printStackTrace();
+					}
+					task.setEstimatedEffort(Integer.parseInt(etv.getEstEffort()
+							.getText()));
+					String actEffort = etv.getActEffort().getText();
+					try {
+						task.setActualEffort(Integer.parseInt(actEffort));
+					} catch (java.lang.NumberFormatException e2) {
+						// TODO: handle error
+					}
+					task.setDescription(etv.getDescription().getText());
 				}
-				task.setEstimatedEffort(etv.getEstEffort());
-				task.setActualEffort(etv.getActEffort());
-				task.setDescription(etv.getDescription());
 
 				// makes all the fields blank again
 				etv.resetFields();
-
-				// exit the edit view
+				// exit the edit view, this refreshes the workflow
 				this.returnToWorkflowView();
 				break;
 
 			case "delete":
 				// delete this task
-				System.out.println("You've pressed the delete task button");
+				StageModel s = wfm.findStageByName((String) etv.getStages()
+						.getSelectedItem());
+				TaskModel task = s.findTaskByID(taskID);
+				s.getTasks().remove(task);
+				this.returnToWorkflowView();
+				etv.resetFields();
 				break;
 
 			case "addUser":
@@ -86,6 +152,7 @@ public class EditTaskController implements ActionListener {
 			case "cancel":
 				// go back to workflow view
 				this.returnToWorkflowView();
+				etv.resetFields();
 				break;
 
 			case "submitComment":
@@ -97,10 +164,32 @@ public class EditTaskController implements ActionListener {
 	}
 
 	/**
+	 * refreshes the data on the view
+	 */
+	public void reloadData() {
+		JComboBox<String> stages = etv.getStages();
+		stages.removeAllItems();
+		for (StageModel stage : wfm.getStages()) {
+			stages.addItem(stage.getName());
+		}
+	}
+
+	/**
 	 * switches back to workflow view
 	 */
 	private void returnToWorkflowView() {
 		this.etv.setVisible(false);
 		this.wfv.setVisible(true);
 	}
+
+	/**
+	 * Enter the task id that will be edited
+	 * 
+	 * @param id
+	 *            the id that new task info will be saved to
+	 */
+	public void setTaskID(String id) {
+		this.taskID = id;
+	}
+
 }

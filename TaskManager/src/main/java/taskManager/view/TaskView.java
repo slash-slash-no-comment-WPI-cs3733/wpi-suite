@@ -14,6 +14,7 @@ import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
@@ -31,6 +32,8 @@ public class TaskView extends JPanel implements ITaskView {
 
 	private static final long serialVersionUID = 1L;
 
+	private JButton edit;
+
 	private TaskController controller;
 
 	/**
@@ -44,7 +47,7 @@ public class TaskView extends JPanel implements ITaskView {
 	 * @param estEffort
 	 *            the estimated effort for the task
 	 */
-	public TaskView(String name, Date duedate, int estEffort) {
+	public TaskView(String name, Date duedate, int estEffort, String taskID) {
 		// organizes the data in a vertical list
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		final Border raisedbevel = BorderFactory.createRaisedBevelBorder();
@@ -64,7 +67,11 @@ public class TaskView extends JPanel implements ITaskView {
 		// to the month.
 		this.add(new JLabel("Due Date: " + (date.get(Calendar.MONTH) + 1) + "/"
 				+ date.get(Calendar.DATE) + "/" + (date.get(Calendar.YEAR))));
-		this.add(new JLabel("Est Effort: " + estEffort + "#"));
+		this.add(new JLabel("Est Effort: " + estEffort));
+		edit = new JButton("Edit");
+		edit.setName(taskID);
+		this.add(edit);
+
 	}
 
 	@Override
@@ -80,6 +87,7 @@ public class TaskView extends JPanel implements ITaskView {
 	 */
 	public void setController(TaskController controller) {
 		this.controller = controller;
+		edit.addActionListener(controller);
 	}
 
 }

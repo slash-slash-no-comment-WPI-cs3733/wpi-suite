@@ -55,19 +55,30 @@ public class ManageStageController implements ActionListener {
 			// get the current list of stages
 			List<StageModel> stages = model.getStages();
 
+			StageModel stage = null;
+
+			stages = model.getStages();
+			for (StageModel s : model.getStages()) {
+				if (s.getName() == stageID) {
+					stage = s;
+					break;
+				}
+			}
+
 			// take the appropriate action
 			switch (buttonName) {
 			case "Delete":
-				view.removeStage(stageID);
-				model.getStages().removeIf(s -> s.getName() == stageID);
-				// refresh the view
-				view.updateUI();
+				if (stage.isRemovable()) {
+					view.removeStage(stageID);
+					model.getStages().removeIf(s -> s.getName() == stageID);
+					// refresh the view
+					view.updateUI();
+				}
 				break;
 			case "Move Up":
 				// move the stage up by 1
 				for (int i = 0; i < stages.size(); i++) {
-					StageModel stage = stages.get(i);
-					if (stage.getName() == stageID) {
+					if (stage == stages.get(i)) {
 						model.moveStage(i - 1, stage);
 						break;
 					}
@@ -79,8 +90,7 @@ public class ManageStageController implements ActionListener {
 				// move the stage down by 1
 				stages = model.getStages();
 				for (int i = 0; i < stages.size(); i++) {
-					StageModel stage = stages.get(i);
-					if (stage.getName() == stageID) {
+					if (stage == stages.get(i)) {
 						model.moveStage(i + 1, stage);
 						break;
 					}
@@ -92,8 +102,9 @@ public class ManageStageController implements ActionListener {
 				// Create a new stage at the end
 				String newStageName = view.getNewStageNameField().getText();
 				StageModel newStage = new StageModel(model, newStageName);
-				view.addStage(newStage.getName(), newStage.getName());
+				view.addStage(newStage.getName(), newStage.getName(), true);
 				// refresh the view
+				view.getNewStageNameField().setText("New Stage Name");
 				view.updateUI();
 				break;
 			default:
@@ -110,8 +121,9 @@ public class ManageStageController implements ActionListener {
 	public void reloadData() {
 		view.removeAllStages();
 		for (StageModel stage : model.getStages()) {
-			view.addStage(stage.getName(), stage.getName());
+			view.addStage(stage.getName(), stage.getName(), stage.isRemovable());
 		}
+		view.getNewStageNameField().setText("New Stage Name");
 		view.updateUI();
 	}
 }
