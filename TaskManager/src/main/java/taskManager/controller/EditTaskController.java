@@ -114,8 +114,12 @@ public class EditTaskController implements ActionListener {
 					}
 					task.setEstimatedEffort(Integer.parseInt(etv.getEstEffort()
 							.getText()));
-					task.setActualEffort(Integer.parseInt(etv.getActEffort()
-							.getText()));
+					String actEffort = etv.getActEffort().getText();
+					try {
+						task.setActualEffort(Integer.parseInt(actEffort));
+					} catch (java.lang.NumberFormatException e2) {
+						// TODO: handle error
+					}
 					task.setDescription(etv.getDescription().getText());
 				}
 
