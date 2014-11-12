@@ -18,6 +18,8 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
 /**
+ * @author Sam Khalandovsky
+ * @version Nov 10, 2014
  */
 public class TaskModelSerializer implements JsonSerializer<TaskModel> {
 
@@ -30,6 +32,7 @@ public class TaskModelSerializer implements JsonSerializer<TaskModel> {
 	 *            Type
 	 * @param context
 	 *            JsonSerializationContext
+	 * 
 	 * @return JsonElement
 	 */
 	@Override
@@ -41,12 +44,10 @@ public class TaskModelSerializer implements JsonSerializer<TaskModel> {
 		deflated.addProperty("id", task.getID());
 		deflated.addProperty("description", task.getDescription());
 		deflated.addProperty("stage", task.getStage().getName());
-		deflated.add("users", task.getAssignedAsJson());
 		final Date dueDate = task.getDueDate();
 		deflated.addProperty("dueDate", dueDate.getTime());
 		deflated.addProperty("estimatedEffort", task.getEstimatedEffort());
 		deflated.addProperty("actualEffort", task.getActualEffort());
-		deflated.add("activities", task.getActivitiesAsJson());
 		deflated.addProperty("requirement", dueDate.getTime());
 		// Requirement ...?
 

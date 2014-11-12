@@ -11,8 +11,10 @@ package taskManager.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
+import com.google.gson.Gson;
 
 /**
  * One stage in development for the process. Stages are saved per
@@ -24,7 +26,16 @@ import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
  * @author Ezra Davis
  * @version Nov 6, 2014
  */
-public class StageModel extends AbstractModel {
+/**
+ * Description
+ *
+ * @author Sam Khalandovsky
+ * @version Nov 10, 2014
+ */
+public class StageModel extends AbstractJsonableModel<StageModel> {
+
+	private static final Logger logger = Logger.getLogger(StageModel.class
+			.getName());
 
 	// List of tasks in this stage
 	private List<TaskModel> taskList;
@@ -95,6 +106,8 @@ public class StageModel extends AbstractModel {
 	 */
 	public StageModel(WorkflowModel workflow, String name, int index,
 			boolean removable) {
+		// Set name as ID
+		super(name);
 		// Enforce uniqueness of Stage names
 		if (workflow.findStageByName(name) != null) {
 			throw new IllegalArgumentException("Stage name must be unique.");
@@ -111,8 +124,17 @@ public class StageModel extends AbstractModel {
 	}
 
 	/**
+	 * Required to create dummy instance Necessary for passing TaskModel type
+	 * into DataStore *
+	 *
+	 *
+	 */
+	public StageModel() {
+	};
+
+	/**
 	 * Get the workflow this stage belongs to
-	 * 
+	 *
 	 * @return the workflow
 	 */
 	public WorkflowModel getWorkflow() {
@@ -121,7 +143,7 @@ public class StageModel extends AbstractModel {
 
 	/**
 	 * Set the workflow this stage belongs to
-	 * 
+	 *
 	 * @param workflow
 	 *            the workflow to set
 	 */
@@ -152,9 +174,9 @@ public class StageModel extends AbstractModel {
 	 * @param task
 	 *            The task to look for
 	 *
-	 * 
-	 * @return If the stage contains the task
-	 */
+	 *
+	
+	 * @return If the stage contains the task */
 	public boolean containsTask(TaskModel task) {
 		return taskList.contains(task);
 	}
@@ -165,9 +187,9 @@ public class StageModel extends AbstractModel {
 	 * @param id
 	 *            The id of the task to look for
 	 *
-	 * 
-	 * @return the task if found, null otherwise.
-	 */
+	 *
+	
+	 * @return the task if found, null otherwise. */
 	public TaskModel findTaskByID(String id) {
 		TaskModel task = null;
 		for (TaskModel existingTask : taskList) {
@@ -185,9 +207,9 @@ public class StageModel extends AbstractModel {
 	 * @param name
 	 *            The name of the task to look for
 	 *
-	 * 
-	 * @return The number of different tasks by that name in the stage.
-	 */
+	 *
+	
+	 * @return The number of different tasks by that name in the stage. */
 	public List<TaskModel> findTaskByName(String name) {
 		final List<TaskModel> tasks = new ArrayList<TaskModel>();
 		for (TaskModel existingTask : taskList) {
@@ -231,33 +253,24 @@ public class StageModel extends AbstractModel {
 	 * @param taskName
 	 *            The name of the task to search for.
 	 *
-	 * 
-	 * @return The removed task, null if no task removed.
-	 */
+	 *
+	
+	 * @return The removed task, null if no task removed. */
 	public TaskModel removeTaskByName(String taskName) {
-		int count = 0;
-		final List<TaskModel> possibleTasks = new ArrayList<TaskModel>();
-		for (TaskModel existingTask : taskList) {
-			if (existingTask.getName().equals(taskName)) {
-				count++;
-				possibleTasks.add(existingTask);
-			}
-		}
-		switch (count) {
+		final List<TaskModel> possibleTasks = findTaskByName(taskName);
+		switch (possibleTasks.size()) {
 		case 0:
-			// TODO: Log task non-existence, claim success?
-			return null;
+			logger.log(Level.WARNING,
+					"Tried to remove a task that did not exist.");
+			throw new IndexOutOfBoundsException("No such task.");
 		case 1:
 			taskList.remove(possibleTasks.get(0));
 			return possibleTasks.get(0);
 		default:
-			// TODO: Log multiplicity of possible tasks
-			// TODO: Prompt user for action, of:
-			// 1. Specify a particular task (of the possible)
-			// 2. Remove all
-			// 3. Remove first (may be part of 1)
-			// 4. No action
-			return null;
+			logger.log(Level.FINE,
+					"Tried to remove a task, but multiple available");
+			throw new IllegalArgumentException(
+					"Referenced task could refer to multiple.");
 		}
 	}
 
@@ -268,18 +281,19 @@ public class StageModel extends AbstractModel {
 	 * @param id
 	 *            The id of the task to remove.
 	 *
-	 * 
-	 * @return The removed task, null if no task removed.
-	 */
+	 *
+	
+	 * @return The removed task, null if no task removed. */
 	public TaskModel removeTaskByID(String id) {
 		for (TaskModel existingTask : taskList) {
 			if (existingTask.getID().equals(id)) {
 				taskList.remove(existingTask);
+				logger.log(Level.FINER, "Removed task by id: " + id + ".");
 				return existingTask;
 			}
 		}
-		// TODO: Log task non-existence, claim success?
-		return null;
+		logger.log(Level.WARNING, "Tried to remove a task that did not exist.");
+		throw new IndexOutOfBoundsException("No such task.");
 	}
 
 	/**
@@ -289,18 +303,28 @@ public class StageModel extends AbstractModel {
 	 * @param task
 	 *            The task to add
 	 *
-	 * 
-	 * @return The removed task, null if no task removed.
-	 */
+	 *
+	
+	 * @return The removed task, null if no task removed. */
 	public TaskModel removeTask(TaskModel task) {
 		if (!taskList.contains(task)) {
-			return null;
+			logger.log(Level.WARNING,
+					"Tried to remove a task that did not exist.");
+			throw new IndexOutOfBoundsException("No such task.");
 		}
 		taskList.remove(task);
 		return task;
 	}
 
+	/**
+	 * Changes this stagemodel to be identical to the inputted stage model,
+	 * while maintaining the pointer
+	 *
+	 * @param stage
+	 *            The stage to copy
+	 */
 	public void makeIdenticalTo(StageModel stage) {
+		setID(stage.getID());
 		taskList = stage.getTasks();
 		name = stage.getName();
 		workflow = stage.getWorkflow();
@@ -318,8 +342,20 @@ public class StageModel extends AbstractModel {
 
 	@Override
 	public String toJson() {
-		// TODO: Autogenerated method stub
-		return null;
+		final Gson gson = new Gson();
+		return gson.toJson(this);
+	}
+
+	/**
+	 * Static method for deserializing object from JSON
+	 *
+	 * @param serialized
+	 *            JSON string
+	
+	 * @return the deserialized TaskModel */
+	public static StageModel fromJson(String serialized) {
+		final Gson gson = new Gson();
+		return gson.fromJson(serialized, StageModel.class);
 	}
 
 	/*

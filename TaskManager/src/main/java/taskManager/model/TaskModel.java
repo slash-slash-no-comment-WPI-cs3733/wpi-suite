@@ -14,13 +14,12 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonPrimitive;
 
-import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.network.Network;
@@ -37,13 +36,19 @@ import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
  * @version Nov 6, 2014
  */
 
-public class TaskModel extends AbstractModel {
+/**
+ * Description
+ *
+ * @author Sam Khalandovsky
+ * @version Nov 10, 2014
+ */
+public class TaskModel extends AbstractJsonableModel<TaskModel> {
+
+	private static final Logger logger = Logger.getLogger(TaskModel.class
+			.getName());
 
 	// Task name
 	private String name;
-
-	// Internal task name, unique.
-	private String id;
 
 	// Task description
 	private String description;
@@ -69,23 +74,28 @@ public class TaskModel extends AbstractModel {
 	// Associated requirement that this task corresponds to
 	private Requirement req;
 
-	static private TaskRequestObserver observer = new TaskRequestObserver();
+	static private GenericRequestObserver observer = new GenericRequestObserver();
 
 	/**
 	 * Constructor assigns name, task id, and stage.
 	 *
-	 * @param name
-	 *            name of the new task
 	 * @param stage
 	 *            stage that it enters in
+	 * @param name
+	 *            name of the new task
 	 */
 
-	public TaskModel(String name, StageModel stage) {
+<<<<<<< HEAD
+	public TaskModel(StageModel stage, String name) {
+		final ActivityModel createTask = new ActivityModel("Created task",
+				ActivityModel.activityModelType.CREATION);
 		this.name = name;
-		this.id = stage.getWorkflow().findUniqueTaskID(name);
+		id = stage.getWorkflow().findUniqueTaskID(name);
+		super(stage.getWorkflow().findUniqueTaskID(name));
 
 		assigned = new HashSet<User>();
 		activities = new ArrayList<ActivityModel>();
+		activities.add(createTask);
 		this.stage = stage;
 
 		// Allow creation of null objects for database
@@ -95,11 +105,11 @@ public class TaskModel extends AbstractModel {
 	}
 
 	/**
-	 * Blank constructor Necessary for creating dummy objects when querying
-	 * database
+	 * Required to create dummy instance Necessary for passing TaskModel type
+	 * into DataStore *
 	 */
 	public TaskModel() {
-	}
+	};
 
 	/**
 	 * @return the name
@@ -115,22 +125,6 @@ public class TaskModel extends AbstractModel {
 	 */
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	/**
-	 * @return the internal id
-	 */
-	public String getID() {
-		return id;
-	}
-
-	/**
-	 * @param id
-	 *            set the internal id. Should only be used when intializing the
-	 *            task.
-	 */
-	public void setID(String id) {
-		this.id = id;
 	}
 
 	/**
@@ -246,7 +240,12 @@ public class TaskModel extends AbstractModel {
 	 *            new user to be added
 	 */
 	public void addAssigned(User user) {
+		final ActivityModel addUser = new ActivityModel("User added to task",
+				ActivityModel.activityModelType.USER_ADD, user);
 		assigned.add(user);
+		addActivity(addUser);
+		logger.log(Level.FINER, "Added user " + user.getName() + " to task "
+				+ name + ".");
 	}
 
 	/**
@@ -256,11 +255,18 @@ public class TaskModel extends AbstractModel {
 	 *            to be removed
 	 */
 	public void removeAssigned(User user) {
+		final ActivityModel delUser = new ActivityModel(
+				"Removed user from task",
+				ActivityModel.activityModelType.USER_ADD, user);
 		if (!assigned.contains(user)) {
-			// TODO: Log user non-existence in set
-		} else {
-			assigned.remove(user);
+			logger.log(Level.WARNING,
+					"Tried to remove a user from a task they were not assigned to.");
+			throw new IndexOutOfBoundsException("User not in suggested task");
 		}
+		assigned.remove(user);
+		addActivity(delUser);
+		logger.log(Level.FINER, "Removed user " + user.getName()
+				+ " from task " + name + ".");
 	}
 
 	/**
@@ -279,9 +285,16 @@ public class TaskModel extends AbstractModel {
 		activities.add(activity);
 	}
 
+	/**
+	 * Changes this taskmodel to be identical to the inputted stage model, while
+	 * maintaining the pointer
+	 *
+	 * @param task
+	 *            The task to copy
+	 */
 	public void makeIdenticalTo(TaskModel task) {
+		setID(task.getID());
 		name = task.getName();
-		id = task.getID();
 		description = task.getDescription();
 		stage = task.getStage();
 		assigned = task.getAssigned();
@@ -310,11 +323,13 @@ public class TaskModel extends AbstractModel {
 		request.send();
 	}
 
+	/*
+	 * @see edu.wpi.cs.wpisuitetng.modules.Model#toJson()
+	 */
 	@Override
 	public String toJson() {
-		final Gson gson = new GsonBuilder().registerTypeAdapter(
-				TaskModel.class, new TaskModelSerializer()).create();
-		return gson.toJson(this, TaskModel.class);
+		final Gson gson = new Gson();
+		return gson.toJson(this);
 	}
 
 	/**
@@ -322,44 +337,19 @@ public class TaskModel extends AbstractModel {
 	 *
 	 * @param serialized
 	 *            JSON string
+	 *
 	 * @return the deserialized TaskModel
 	 */
 	public static TaskModel fromJson(String serialized) {
-		// TODO
-		return null;
+		final Gson gson = new Gson();
+		return gson.fromJson(serialized, TaskModel.class);
 	}
 
 	@Override
 	public Boolean identify(Object o) {
 		if (o instanceof TaskModel) {
-			return ((TaskModel) o).id.equals(id);
+			return ((TaskModel) o).getID().equals(this.getID());
 		}
 		return false;
-	}
-
-	/**
-	 * Returns the list of activities as a JsonArray
-	 *
-	 * @return a JsonArray of the activities
-	 */
-	public JsonArray getActivitiesAsJson() {
-		final JsonArray activityList = new JsonArray();
-		for (ActivityModel activity : activities) {
-			activityList.add(new JsonPrimitive(activity.toJson()));
-		}
-		return null;
-	}
-
-	/**
-	 * Return the list of assigned users as a JsonArray.
-	 *
-	 * @return a JsonArray of the users
-	 */
-	public JsonArray getAssignedAsJson() {
-		final JsonArray assignedList = new JsonArray();
-		for (User user : assigned) {
-			assignedList.add(new JsonPrimitive(user.toJson()));
-		}
-		return null;
 	}
 }
