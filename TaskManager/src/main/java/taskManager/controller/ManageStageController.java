@@ -94,6 +94,7 @@ public class ManageStageController implements ActionListener {
 				StageModel newStage = new StageModel(model, newStageName);
 				view.addStage(newStage.getName(), newStage.getName());
 				// refresh the view
+				view.getNewStageNameField().setText("New Stage Name");
 				view.updateUI();
 				break;
 			default:
@@ -112,6 +113,7 @@ public class ManageStageController implements ActionListener {
 		for (StageModel stage : model.getStages()) {
 			view.addStage(stage.getName(), stage.getName());
 		}
+		view.getNewStageNameField().setText("New Stage Name");
 		view.updateUI();
 	}
 }
