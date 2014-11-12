@@ -33,7 +33,6 @@ import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
 public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	// List of stages in the workflow.
 	List<StageModel> stageList;
-	String name;
 
 	private static final Logger logger = Logger.getLogger(WorkflowModel.class
 			.getName());
@@ -41,30 +40,15 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	/**
 	 * Constructor for WorkflowModel.
 	 */
-	public WorkflowModel(String name) {
+	public WorkflowModel(String ID) {
 		// set ID
-		super(name);
+		super(ID);
 		stageList = new ArrayList<StageModel>();
 		// TODO Add default stages
 	}
 
 	public WorkflowModel() {
 		this(null);
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	/**
@@ -126,7 +110,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 * @param stage
 	 *            the stage to look for
 	 *
-	 * 
+	 *
 	 * @return if the workflow contains the given stage
 	 */
 	public boolean hasStage(StageModel stage) {
@@ -140,7 +124,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 * @param stage
 	 *            the name of the stage
 	 *
-	 * 
+	 *
 	 * @return the StageModel, null if non-existent
 	 */
 	public StageModel findStageByName(String stage) {
@@ -157,7 +141,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 *
 	 * @param newID
 	 *            a potential ID
-	 * 
+	 *
 	 * @return a unique ID
 	 */
 	public String findUniqueTaskID(String newID) {
@@ -283,7 +267,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 *
 	 * @param serialized
 	 *            JSON string
-	 * 
+	 *
 	 * @return the deserialized TaskModel
 	 */
 	public static WorkflowModel fromJson(String serialized) {

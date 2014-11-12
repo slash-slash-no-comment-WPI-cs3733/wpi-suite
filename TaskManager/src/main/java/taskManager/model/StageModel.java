@@ -189,7 +189,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 *            The task to look for
 	 *
 	 *
-	 * 
+	 *
 	 * @return If the stage contains the task
 	 */
 	public boolean containsTask(TaskModel task) {
@@ -203,7 +203,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 *            The id of the task to look for
 	 *
 	 *
-	 * 
+	 *
 	 * @return the task if found, null otherwise.
 	 */
 	public TaskModel findTaskByID(String id) {
@@ -224,7 +224,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 *            The name of the task to look for
 	 *
 	 *
-	 * 
+	 *
 	 * @return The number of different tasks by that name in the stage.
 	 */
 	public List<TaskModel> findTaskByName(String name) {
@@ -271,7 +271,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 *            The name of the task to search for.
 	 *
 	 *
-	 * 
+	 *
 	 * @return The removed task, null if no task removed.
 	 */
 	public TaskModel removeTaskByName(String taskName) {
@@ -300,7 +300,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 *            The id of the task to remove.
 	 *
 	 *
-	 * 
+	 *
 	 * @return The removed task, null if no task removed.
 	 */
 	public TaskModel removeTaskByID(String id) {
@@ -323,7 +323,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 *            The task to add
 	 *
 	 *
-	 * 
+	 *
 	 * @return The removed task, null if no task removed.
 	 */
 	public TaskModel removeTask(TaskModel task) {
@@ -366,25 +366,6 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 		request.setBody(toJson());
 		request.addObserver(getObserver());
 		request.send();
-	}
-
-	@Override
-	public String toJson() {
-		final Gson gson = new Gson();
-		return gson.toJson(this);
-	}
-
-	/**
-	 * Static method for deserializing object from JSON
-	 *
-	 * @param serialized
-	 *            JSON string
-	 * 
-	 * @return the deserialized TaskModel
-	 */
-	public static StageModel fromJson(String serialized) {
-		final Gson gson = new Gson();
-		return gson.fromJson(serialized, StageModel.class);
 	}
 
 	/*

@@ -124,24 +124,6 @@ public class ActivityModel extends AbstractModel {
 
 	}
 
-	/**
-	 * Method fromJson.
-	 * 
-	 * @param activity
-	 *            JsonElement
-	
-	 * @return ActivityModel */
-	public static ActivityModel fromJson(JsonElement activity) {
-		final Gson gson = new Gson();
-		return gson.fromJson(activity, ActivityModel.class);
-	}
-
-	@Override
-	public String toJson() {
-		final Gson gson = new Gson();
-		return gson.toJson(this);
-	}
-
 	@Override
 	public Boolean identify(Object o) {
 		if (o instanceof ActivityModel) {
