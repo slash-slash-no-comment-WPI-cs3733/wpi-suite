@@ -77,7 +77,7 @@ public class JanewayModule implements IJanewayModule {
 
 		// give it the default stages
 		StageModel newStage = new StageModel(wfm, "New", false);
-		StageModel startedStage = new StageModel(wfm, "Started", false);
+		StageModel startedStage = new StageModel(wfm, "Scheduled", false);
 		StageModel progressStage = new StageModel(wfm, "In Progress", false);
 		StageModel completeStage = new StageModel(wfm, "Complete", false);
 
