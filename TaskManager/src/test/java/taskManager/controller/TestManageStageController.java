@@ -44,7 +44,7 @@ public class TestManageStageController {
 		wfm = new WorkflowModel();
 		// give it the stages
 		for (String name : stageNames) {
-			new StageModel(wfm, name, false);
+			new StageModel(wfm, name, true);
 		}
 
 		// create controller for view
