@@ -60,6 +60,16 @@ public class EditTaskView extends JPanel {
 
 	private EditTaskController controller;
 
+	/**
+	 * Creates a Edit Task Panel so that you can changed all of
+	 * the values of a task:
+	 * 	Title
+	 * 	Description
+	 * 	Due Date
+	 * 	Estimated Effort
+	 * 	Actual Effort
+	 * 	Adding Comments
+	 */
 	public EditTaskView() {
 		
 		Dimension nt_panelSize = getPreferredSize();
@@ -410,6 +420,9 @@ public class EditTaskView extends JPanel {
 		this.dateField.setText("");
 	}
 
+	/*
+	 * @see javax.swing.JComponent#setVisible(boolean)
+	 */
 	@Override
 	public void setVisible(boolean visible) {
 		if (visible && controller != null) {
