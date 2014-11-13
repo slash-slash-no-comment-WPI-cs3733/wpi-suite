@@ -10,6 +10,9 @@ package taskManager.controller;
 
 import static org.junit.Assert.assertEquals;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.swing.JFrame;
 
 import org.fest.swing.fixture.FrameFixture;
@@ -21,6 +24,7 @@ import org.junit.Test;
 
 import taskManager.JanewayModule;
 import taskManager.model.StageModel;
+import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 
@@ -54,6 +58,8 @@ public class TestEditTaskController {
 			new StageModel(wfm, name, true);
 		}
 
+		etv.resetFields();
+
 		JFrame frame = new JFrame();
 		frame.add(etv);
 
@@ -67,8 +73,8 @@ public class TestEditTaskController {
 		// enter information for a new task
 		new JTextComponentFixture(fixture.robot, etv.getTitle())
 				.enterText("New Task");
-		fixture.textBox("description").enterText(
-				"a sample task used for testing");
+		new JTextComponentFixture(fixture.robot, etv.getDescription())
+				.enterText("a sample task used for testing");
 		fixture.textBox("due_date").enterText("11/11/2011");
 		fixture.textBox("est_effort").enterText("3");
 
@@ -84,6 +90,32 @@ public class TestEditTaskController {
 	public void testInvalidTask() {
 		// TODO: attempt to create a task with invalid/missing values
 		// then verify save button is disabled
+	}
+
+	@Test
+	public void testLoadTask() {
+		// add a task
+		StageModel stage = wfm.getStages().get(2);
+		TaskModel task = new TaskModel("New Task", stage);
+		task.setDescription("test description");
+		task.setDueDate(new Date(12345));
+		task.setEstimatedEffort(5);
+		task.setActualEffort(7);
+
+		TaskController tc = new TaskController(null, task);
+		tc.actionPerformed(null);
+
+		// edit that task, and make sure the fields match up
+		new JTextComponentFixture(fixture.robot, etv.getTitle())
+				.requireText(task.getName());
+		new JTextComponentFixture(fixture.robot, etv.getDescription())
+				.requireText(task.getDescription());
+		fixture.textBox("due_date").requireText(
+				new SimpleDateFormat("MM/dd/yyyy").format(task.getDueDate()));
+		fixture.textBox("est_effort").requireText(
+				Integer.toString(task.getEstimatedEffort()));
+		fixture.textBox("act_effort").requireText(
+				Integer.toString(task.getActualEffort()));
 	}
 
 	@After

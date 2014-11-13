@@ -85,7 +85,6 @@ public class EditTaskView extends JPanel {
 		this.titleField = nt_titleField;
 		JTextField nt_descriptionField = new JTextField(25);
 		nt_descriptionField.setEditable(true);
-		nt_descriptionField.setName("description");
 		this.descripField = nt_descriptionField;
 		JTextField nt_dueDateField = new JTextField(25);
 		nt_dueDateField.setEditable(true);
