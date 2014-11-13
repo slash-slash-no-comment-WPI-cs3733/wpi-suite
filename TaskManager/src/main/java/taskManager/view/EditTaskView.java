@@ -166,6 +166,7 @@ public class EditTaskView extends JPanel {
 		// Options are currently fixed
 		// Need access to stages, preferably in a list
 		JComboBox<String> nt_stagesBoxes = new JComboBox<String>();
+		nt_stagesBoxes.setName("stages");
 		this.stages = nt_stagesBoxes;
 
 		setLayout(new GridBagLayout());

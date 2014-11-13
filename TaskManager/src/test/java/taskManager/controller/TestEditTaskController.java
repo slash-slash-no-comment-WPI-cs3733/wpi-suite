@@ -59,6 +59,7 @@ public class TestEditTaskController {
 		}
 
 		etv.resetFields();
+		etv.setVisible(true);
 
 		JFrame frame = new JFrame();
 		frame.add(etv);
@@ -84,14 +85,6 @@ public class TestEditTaskController {
 		assertEquals(stage.findTaskByName("New Task").size(), 1);
 	}
 
-	private JTextComponentFixture getDescriptionBoxFixture() {
-		return new JTextComponentFixture(fixture.robot, etv.getDescription());
-	}
-
-	private JTextComponentFixture getTitleBoxFixture() {
-		return new JTextComponentFixture(fixture.robot, etv.getTitle());
-	}
-
 	@Test
 	public void testInvalidTask() {
 		// TODO: attempt to create a task with invalid/missing values
@@ -105,17 +98,6 @@ public class TestEditTaskController {
 
 		// make sure the fields match up
 		verifyTask(task);
-	}
-
-	private void verifyTask(TaskModel task) {
-		getTitleBoxFixture().requireText(task.getName());
-		getDescriptionBoxFixture().requireText(task.getDescription());
-		fixture.textBox("due_date").requireText(
-				new SimpleDateFormat("MM/dd/yyyy").format(task.getDueDate()));
-		fixture.textBox("est_effort").requireText(
-				Integer.toString(task.getEstimatedEffort()));
-		fixture.textBox("act_effort").requireText(
-				Integer.toString(task.getActualEffort()));
 	}
 
 	@Test
@@ -148,11 +130,26 @@ public class TestEditTaskController {
 		assertEquals(newTask.getActualEffort(), 8);
 	}
 
+	@Test
+	public void testMoveTask() {
+		TaskModel task = createAndLoadTask();
+
+		fixture.comboBox("stages").selectItem(0);
+		fixture.button("save").click();
+
+		assertEquals(task.getStage().getName(), stageNames[0]);
+	}
+
 	@After
 	public void cleanup() {
 		fixture.cleanUp();
 	}
 
+	/**
+	 * Creates a new task, then opens the EditTaskView to edit that task
+	 *
+	 * @return the created task
+	 */
 	private TaskModel createAndLoadTask() {
 		// add a task
 		StageModel stage = wfm.getStages().get(2);
@@ -167,6 +164,33 @@ public class TestEditTaskController {
 		tc.actionPerformed(null);
 
 		return task;
+	}
+
+	/**
+	 * Checks to make sure the the given task matches what is displayed on the
+	 * view
+	 *
+	 * @param task
+	 *            The task that should be shown on the view
+	 */
+	private void verifyTask(TaskModel task) {
+		getTitleBoxFixture().requireText(task.getName());
+		getDescriptionBoxFixture().requireText(task.getDescription());
+		fixture.textBox("due_date").requireText(
+				new SimpleDateFormat("MM/dd/yyyy").format(task.getDueDate()));
+		fixture.textBox("est_effort").requireText(
+				Integer.toString(task.getEstimatedEffort()));
+		fixture.textBox("act_effort").requireText(
+				Integer.toString(task.getActualEffort()));
+		fixture.comboBox("stages").requireSelection(task.getStage().getName());
+	}
+
+	private JTextComponentFixture getDescriptionBoxFixture() {
+		return new JTextComponentFixture(fixture.robot, etv.getDescription());
+	}
+
+	private JTextComponentFixture getTitleBoxFixture() {
+		return new JTextComponentFixture(fixture.robot, etv.getTitle());
 	}
 
 }
