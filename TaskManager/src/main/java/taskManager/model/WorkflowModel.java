@@ -196,14 +196,14 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	public void moveTask(TaskModel task, StageModel fromStage,
 			StageModel toStage) {
 		if (!stageList.contains(toStage)) {
-			logger.log(Level.FINE,
-					"Tried to move a task to a non-existant stage. Stage was created.");
-			addStage(toStage);
+			logger.log(Level.WARNING,
+					"Tried to move a task to a non-existant stage.");
+			throw new IllegalArgumentException("No such target stage");
 		}
 		if (!stageList.contains(fromStage)) {
 			logger.log(Level.WARNING,
 					"Tried to move a task from a non-existant stage.");
-			throw new IndexOutOfBoundsException("No such stage.");
+			throw new IndexOutOfBoundsException("No such source stage.");
 		}
 		if (!fromStage.containsTask(task)) {
 			logger.log(Level.WARNING,
@@ -219,7 +219,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	}
 
 	/**
-	 * Changes this workflowmodel to be identical to the inputted stage model,
+	 * Changes this workflowmodel to be identical to the inputed workflow model,
 	 * while maintaining the pointer
 	 *
 	 * @param workflow

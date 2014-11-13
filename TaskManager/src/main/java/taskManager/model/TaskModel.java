@@ -277,7 +277,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	}
 
 	/**
-	 * Changes this taskmodel to be identical to the inputted stage model, while
+	 * Changes this taskmodel to be identical to the inputed task model, while
 	 * maintaining the pointer
 	 *
 	 * @param task
