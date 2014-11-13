@@ -27,13 +27,13 @@ import taskManager.view.WorkflowView;
  */
 public class ToolbarController implements ActionListener {
 
-	private final ToolbarView toolbarView;
-	private final WorkflowView workflowView;
-	// TODO: change JPanels to correct view objects
-	private final ManageStageView manageStagesView;
-	private final ManageUsersView manageUsersView;
-	private final EditTaskView newTaskView;
-	private final JPanel statisticsView;
+//	private final ToolbarView toolbarView;
+//	private final WorkflowView workflowView;
+//	// TODO: change JPanels to correct view objects
+//	private final ManageStageView manageStagesView;
+//	private final ManageUsersView manageUsersView;
+//	private final EditTaskView newTaskView;
+//	private final JPanel statisticsView;
 
 	/**
 	 * 
@@ -50,15 +50,15 @@ public class ToolbarController implements ActionListener {
 	 * @param sv
 	 *            the statistics view to be switched to
 	 */
-	public ToolbarController(ToolbarView view, WorkflowView wfv,
-			ManageStageView msv, ManageUsersView muv, EditTaskView ntv,
-			JPanel sv) {
-		this.toolbarView = view;
-		this.workflowView = wfv;
-		this.manageStagesView = msv;
-		this.manageUsersView = muv;
-		this.newTaskView = ntv;
-		this.statisticsView = sv;
+	public ToolbarController(){//ToolbarView view, WorkflowView wfv,
+//			ManageStageView msv, ManageUsersView muv, EditTaskView ntv,
+//			JPanel sv) {
+//		this.toolbarView = view;
+//		this.workflowView = wfv;
+//		this.manageStagesView = msv;
+//		this.manageUsersView = muv;
+//		this.newTaskView = ntv;
+//		this.statisticsView = sv;
 	}
 
 	@Override
@@ -68,41 +68,41 @@ public class ToolbarController implements ActionListener {
 			String name = ((JButton) button).getName();
 			switch (name) {
 			case "createTask":
-				workflowView.setVisible(false);
-				manageUsersView.setVisible(false);
-				manageStagesView.setVisible(false);
-				statisticsView.setVisible(false);
-				newTaskView.getTitle().setName("000000");
-				newTaskView.setVisible(true);
+//				workflowView.setVisible(false);
+//				manageUsersView.setVisible(false);
+//				manageStagesView.setVisible(false);
+//				statisticsView.setVisible(false);
+//				newTaskView.getTitle().setName("000000");
+//				newTaskView.setVisible(true);
 				break;
 			case "manageStages":
-				workflowView.setVisible(false);
-				manageUsersView.setVisible(false);
-				statisticsView.setVisible(false);
-				newTaskView.setVisible(false);
-				manageStagesView.setVisible(true);
+//				workflowView.setVisible(false);
+//				manageUsersView.setVisible(false);
+//				statisticsView.setVisible(false);
+//				newTaskView.setVisible(false);
+//				manageStagesView.setVisible(true);
 				break;
 			case "manageUsers":
-				workflowView.setVisible(false);
-				manageStagesView.setVisible(false);
-				statisticsView.setVisible(false);
-				newTaskView.setVisible(false);
-				manageUsersView.setVisible(true);
+//				workflowView.setVisible(false);
+//				manageStagesView.setVisible(false);
+//				statisticsView.setVisible(false);
+//				newTaskView.setVisible(false);
+//				manageUsersView.setVisible(true);
 				break;
 			case "statistics":
-				workflowView.setVisible(false);
-				manageUsersView.setVisible(false);
-				manageStagesView.setVisible(false);
-				newTaskView.setVisible(false);
-				statisticsView.setVisible(true);
+//				workflowView.setVisible(false);
+//				manageUsersView.setVisible(false);
+//				manageStagesView.setVisible(false);
+//				newTaskView.setVisible(false);
+//				statisticsView.setVisible(true);
 				break;
 
 			case "workflow":
-				manageUsersView.setVisible(false);
-				manageStagesView.setVisible(false);
-				newTaskView.setVisible(false);
-				statisticsView.setVisible(false);
-				workflowView.setVisible(true);
+//				manageUsersView.setVisible(false);
+//				manageStagesView.setVisible(false);
+//				newTaskView.setVisible(false);
+//				statisticsView.setVisible(false);
+//				workflowView.setVisible(true);
 				break;
 			}
 		}

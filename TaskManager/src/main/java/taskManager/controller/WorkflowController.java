@@ -40,6 +40,11 @@ public class WorkflowController {
 	public WorkflowController(WorkflowView view, WorkflowModel model) {
 		this.view = view;
 		this.model = model;
+		
+		StageModel newStage = new StageModel(this.model, "New", false);
+		StageModel startedStage = new StageModel(this.model, "Scheduled", false);
+		StageModel progressStage = new StageModel(this.model, "In Progress", false);
+		StageModel completeStage = new StageModel(this.model, "Complete", false);
 
 		reloadData();
 	}

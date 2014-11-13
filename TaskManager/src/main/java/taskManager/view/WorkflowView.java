@@ -13,6 +13,8 @@ import java.awt.FlowLayout;
 import javax.swing.JPanel;
 
 import taskManager.controller.WorkflowController;
+import taskManager.model.WorkflowModel;
+import taskManager.model.StageModel;
 
 /**
  * @author Beth Martino
@@ -32,6 +34,7 @@ public class WorkflowView extends JPanel implements IWorkflowView {
 
 		// arranges the stages horizontally and evenly spaced
 		this.setLayout(new FlowLayout());
+		
 
 	}
 
