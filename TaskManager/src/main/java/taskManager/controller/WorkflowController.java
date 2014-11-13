@@ -67,6 +67,11 @@ public class WorkflowController {
 		view.repaint();
 	}
 
+	/**
+	 * Asks the model to pull from the server. When the server responds, model
+	 * data is updated and reloadData is called.
+	 *
+	 */
 	public void fetch() {
 		model.update(this);
 	}

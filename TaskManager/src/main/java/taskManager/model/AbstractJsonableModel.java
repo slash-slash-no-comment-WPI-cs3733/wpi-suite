@@ -21,10 +21,16 @@ import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
  */
 public abstract class AbstractJsonableModel<T> extends AbstractModel {
 
+	// Subclasses should make sure this stays unique
 	private String id;
 
 	private static GenericRequestObserver observer = new GenericRequestObserver();
 
+	/**
+	 * Main constructor: should be called by all constructors with a valid ID
+	 *
+	 * @param id
+	 */
 	protected AbstractJsonableModel(String id) {
 		this.id = id;
 	}
@@ -33,14 +39,31 @@ public abstract class AbstractJsonableModel<T> extends AbstractModel {
 		this(null);
 	}
 
+	/**
+	 * Getter for ID
+	 *
+	 * @return the ID
+	 */
 	public String getID() {
 		return id;
 	}
 
+	/**
+	 * Getter for Generic Observer
+	 *
+	 * @return observer object
+	 */
 	public GenericRequestObserver getObserver() {
 		return observer;
 	}
 
+	/**
+	 * Setter for ID Should not normally be called, ID should be set in
+	 * constructor
+	 *
+	 * @param id
+	 *            the id to set
+	 */
 	protected void setID(String id) {
 		this.id = id;
 	}
@@ -52,11 +75,25 @@ public abstract class AbstractJsonableModel<T> extends AbstractModel {
 	 */
 	protected abstract void makeIdenticalTo(T model);
 
+	/**
+	 * Static method for handling all json deserialization
+	 *
+	 * @param json
+	 *            the serialized data
+	 * @param type
+	 *            the type of the serialized data (i.e. TaskModel.class,
+	 *            WorkflowModel[].class)
+	 * @return the deserialized object
+	 */
 	public static <T> T fromJson(String json, Class<T> type) {
 		final Gson parser = new Gson();
 		return parser.fromJson(json, type);
 	}
 
+	/**
+	 * @see edu.wpi.cs.wpisuitetng.modules.Model#toJson()
+	 */
+	@Override
 	public String toJson() {
 		return new Gson().toJson(this, this.getClass());
 	}

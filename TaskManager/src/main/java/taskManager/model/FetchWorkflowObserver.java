@@ -23,12 +23,23 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 	WorkflowModel model;
 	WorkflowController controller;
 
+	/**
+	 * Constructor for Observer
+	 *
+	 * @param model
+	 *            the workflow model being fetched/overwritten
+	 * @param controller
+	 *            will be called upon success if it is passed; null is allowed
+	 */
 	public FetchWorkflowObserver(WorkflowModel model,
 			WorkflowController controller) {
 		this.model = model;
 		this.controller = controller;
 	}
 
+	/**
+	 * @see taskManager.model.GenericRequestObserver#responseSuccess(edu.wpi.cs.wpisuitetng.network.models.IRequest)
+	 */
 	@Override
 	public void responseSuccess(IRequest iReq) {
 		ResponseModel response = iReq.getResponse();
