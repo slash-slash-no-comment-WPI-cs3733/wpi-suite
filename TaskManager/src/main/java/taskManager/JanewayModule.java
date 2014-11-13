@@ -80,7 +80,8 @@ public class JanewayModule implements IJanewayModule {
 		StageModel completeStage = new StageModel(wfm, "Complete", false);
 
 		// create the controller for the view
-		wfv.setController(new WorkflowController(wfv, wfm));
+		final WorkflowController wfc = new WorkflowController(wfv, wfm);
+		wfv.setController(wfc);
 		msv.setController(new ManageStageController(msv, wfm));
 		etv.setController(new EditTaskController(wfm));
 
@@ -94,7 +95,8 @@ public class JanewayModule implements IJanewayModule {
 
 		// Create the toolbar view
 		ToolbarView tv = new ToolbarView();
-		ToolbarController tc = new ToolbarController(tv, wfv, msv, muv, etv, sv);
+		ToolbarController tc = new ToolbarController(tv, wfv, msv, muv, etv,
+				sv, wfc);
 		tv.setController(tc);
 
 		// this adds the menu and the main panel to the pre-configured janeway
