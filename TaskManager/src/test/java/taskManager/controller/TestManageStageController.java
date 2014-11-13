@@ -33,6 +33,7 @@ public class TestManageStageController {
 	private final String[] stageNames = { "first", "second", "third", "fourth" };
 	private ManageStageView msv;
 	private WorkflowModel wfm;
+	private ManageStageController msc;
 	private FrameFixture fixture;
 
 	@Before
@@ -44,11 +45,12 @@ public class TestManageStageController {
 		wfm = new WorkflowModel();
 		// give it the stages
 		for (String name : stageNames) {
-			new StageModel(wfm, name, false);
+			new StageModel(wfm, name, true);
 		}
 
 		// create controller for view
-		msv.setController(new ManageStageController(msv, wfm));
+		msc = new ManageStageController(msv, wfm);
+		msv.setController(msc);
 
 		JFrame frame = new JFrame();
 		frame.add(msv);
@@ -80,6 +82,13 @@ public class TestManageStageController {
 		fixture.panel("third").button("Delete").click();
 
 		checkStages(result);
+
+		// add an undeletable stage
+		new StageModel(wfm, "undeletable", false);
+		msc.reloadData();
+
+		// make sure the delete button is disabled
+		fixture.panel("undeletable").button("Delete").requireDisabled();
 	}
 
 	@Test
