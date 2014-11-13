@@ -23,13 +23,13 @@ public abstract class AbstractJsonableModel<T> extends AbstractModel {
 
 	private String id;
 
-	static private GenericRequestObserver observer = new GenericRequestObserver();
+	private static GenericRequestObserver observer = new GenericRequestObserver();
 
-	public AbstractJsonableModel(String id) {
+	protected AbstractJsonableModel(String id) {
 		this.id = id;
 	}
 
-	public AbstractJsonableModel() {
+	protected AbstractJsonableModel() {
 		this(null);
 	}
 

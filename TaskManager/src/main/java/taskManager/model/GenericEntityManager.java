@@ -67,7 +67,7 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 		T[] tasks = response.toArray((T[]) Array.newInstance(type, 0));
 
 		if (tasks.length < 1 || tasks[0] == null) {
-			throw new NotFoundException();
+			throw new NotFoundException("Entity not found");
 		}
 		return tasks;
 	}

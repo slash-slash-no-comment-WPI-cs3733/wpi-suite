@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2012-2014 -- WPI Suite
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
+
 package taskManager.view;
 
 import java.awt.Dimension;
@@ -6,12 +15,11 @@ import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
 
-import taskManager.view.TaskView;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
