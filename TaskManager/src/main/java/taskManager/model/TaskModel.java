@@ -33,12 +33,6 @@ import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
  * @version Nov 6, 2014
  */
 
-/**
- * Description
- *
- * @author Sam Khalandovsky
- * @version Nov 10, 2014
- */
 public class TaskModel extends AbstractJsonableModel<TaskModel> {
 
 	private static final Logger logger = Logger.getLogger(TaskModel.class

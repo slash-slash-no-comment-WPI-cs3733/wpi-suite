@@ -21,7 +21,8 @@ import edu.wpi.cs.wpisuitetng.modules.EntityManager;
 import edu.wpi.cs.wpisuitetng.modules.Model;
 
 /**
- * Description
+ * A generic entity manager to allow the same code to be reused by objects
+ * needing boilerplate entity management.
  *
  * @author Sam Khalandovsky
  * @version Nov 10, 2014

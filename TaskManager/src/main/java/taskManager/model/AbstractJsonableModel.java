@@ -13,7 +13,8 @@ import com.google.gson.Gson;
 import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
 
 /**
- * Description
+ * Abstract superclass for the taskmanager models (workflow, stage, and task).
+ * Handles IDs and serializing with JSON.
  *
  * @author Sam Khalandovsky
  * @version Nov 10, 2014

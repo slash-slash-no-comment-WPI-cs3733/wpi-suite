@@ -11,7 +11,7 @@ package taskManager.model;
 import org.junit.Test;
 
 /**
- * Description
+ * Some basic tests
  *
  * @author Sam Khalandovsky
  * @version Nov 10, 2014

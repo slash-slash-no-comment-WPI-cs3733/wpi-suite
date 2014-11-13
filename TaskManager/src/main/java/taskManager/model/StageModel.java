@@ -30,12 +30,7 @@ import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
  * @author Ezra Davis
  * @version Nov 6, 2014
  */
-/**
- * Description
- *
- * @author Sam Khalandovsky
- * @version Nov 10, 2014
- */
+
 public class StageModel extends AbstractJsonableModel<StageModel> {
 
 	private static final Logger logger = Logger.getLogger(StageModel.class

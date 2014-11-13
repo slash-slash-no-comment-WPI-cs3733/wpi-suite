@@ -21,7 +21,7 @@ import taskManager.view.ToolbarView;
 import taskManager.view.WorkflowView;
 
 /**
- * Description A controller for the toolbar view
+ * A controller for the toolbar view
  *
  * @author Beth Martino
  */
