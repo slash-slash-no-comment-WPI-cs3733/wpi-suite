@@ -85,18 +85,23 @@ public class EditTaskView extends JPanel {
 		this.titleField = nt_titleField;
 		JTextField nt_descriptionField = new JTextField(25);
 		nt_descriptionField.setEditable(true);
+		nt_descriptionField.setName("description");
 		this.descripField = nt_descriptionField;
 		JTextField nt_dueDateField = new JTextField(25);
 		nt_dueDateField.setEditable(true);
+		nt_dueDateField.setName("due_date");
 		this.dateField = nt_dueDateField;
 		JTextField nt_estimatedEffortField = new JTextField(10);
 		nt_estimatedEffortField.setEditable(true);
+		nt_estimatedEffortField.setName("est_effort");
 		this.estEffortField = nt_estimatedEffortField;
 		JTextField nt_actualEffortField = new JTextField(10);
 		nt_actualEffortField.setEditable(true);
+		nt_actualEffortField.setName("act_effort");
 		this.actEffortField = nt_actualEffortField;
 		JTextField nt_commentsField = new JTextField(25);
 		nt_commentsField.setEditable(true);
+		nt_commentsField.setName("comments");
 		this.commentsField = nt_estimatedEffortField;
 		// TODO
 		// When task is added switch to these
