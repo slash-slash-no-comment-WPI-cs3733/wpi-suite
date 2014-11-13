@@ -185,10 +185,20 @@ public class TestEditTaskController {
 		fixture.comboBox("stages").requireSelection(task.getStage().getName());
 	}
 
+	/**
+	 * Create a fixture for the Description text field on the EditTaskView
+	 *
+	 * @return A fixture with the description text box as the target
+	 */
 	private JTextComponentFixture getDescriptionBoxFixture() {
 		return new JTextComponentFixture(fixture.robot, etv.getDescription());
 	}
 
+	/**
+	 * Create a fixture for the Title text field on the EditTaskView
+	 *
+	 * @return A fixture with the title text box as the target
+	 */
 	private JTextComponentFixture getTitleBoxFixture() {
 		return new JTextComponentFixture(fixture.robot, etv.getTitle());
 	}
