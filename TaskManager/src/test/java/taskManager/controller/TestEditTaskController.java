@@ -71,10 +71,8 @@ public class TestEditTaskController {
 	@Test
 	public void testAddTask() {
 		// enter information for a new task
-		new JTextComponentFixture(fixture.robot, etv.getTitle())
-				.enterText("New Task");
-		new JTextComponentFixture(fixture.robot, etv.getDescription())
-				.enterText("a sample task used for testing");
+		getTitleBoxFixture().enterText("New Task");
+		getDescriptionBoxFixture().enterText("a sample task used for testing");
 		fixture.textBox("due_date").enterText("11/11/2011");
 		fixture.textBox("est_effort").enterText("3");
 
@@ -86,6 +84,14 @@ public class TestEditTaskController {
 		assertEquals(stage.findTaskByName("New Task").size(), 1);
 	}
 
+	private JTextComponentFixture getDescriptionBoxFixture() {
+		return new JTextComponentFixture(fixture.robot, etv.getDescription());
+	}
+
+	private JTextComponentFixture getTitleBoxFixture() {
+		return new JTextComponentFixture(fixture.robot, etv.getTitle());
+	}
+
 	@Test
 	public void testInvalidTask() {
 		// TODO: attempt to create a task with invalid/missing values
@@ -94,22 +100,16 @@ public class TestEditTaskController {
 
 	@Test
 	public void testLoadTask() {
-		// add a task
-		StageModel stage = wfm.getStages().get(2);
-		TaskModel task = new TaskModel("New Task", stage);
-		task.setDescription("test description");
-		task.setDueDate(new Date(12345));
-		task.setEstimatedEffort(5);
-		task.setActualEffort(7);
+		// create a task, and load the edit view with it
+		TaskModel task = createAndLoadTask();
 
-		TaskController tc = new TaskController(null, task);
-		tc.actionPerformed(null);
+		// make sure the fields match up
+		verifyTask(task);
+	}
 
-		// edit that task, and make sure the fields match up
-		new JTextComponentFixture(fixture.robot, etv.getTitle())
-				.requireText(task.getName());
-		new JTextComponentFixture(fixture.robot, etv.getDescription())
-				.requireText(task.getDescription());
+	private void verifyTask(TaskModel task) {
+		getTitleBoxFixture().requireText(task.getName());
+		getDescriptionBoxFixture().requireText(task.getDescription());
 		fixture.textBox("due_date").requireText(
 				new SimpleDateFormat("MM/dd/yyyy").format(task.getDueDate()));
 		fixture.textBox("est_effort").requireText(
@@ -118,9 +118,55 @@ public class TestEditTaskController {
 				Integer.toString(task.getActualEffort()));
 	}
 
+	@Test
+	public void testEditTask() {
+		// create a task and load it
+		TaskModel task = createAndLoadTask();
+
+		// edit the task
+		getTitleBoxFixture().deleteText().enterText("renamed task");
+		getDescriptionBoxFixture().deleteText().enterText("new description");
+		fixture.textBox("due_date").deleteText().enterText("11/11/2011");
+		fixture.textBox("est_effort").deleteText().enterText("4");
+		fixture.textBox("act_effort").deleteText().enterText("8");
+
+		// save the task
+		fixture.button("save").click();
+
+		// verify the task got saved (and not duplicated)
+		StageModel stage = wfm.findStageByName(task.getStage().getName());
+		assertEquals(stage.findTaskByName("New Task").size(), 0);
+		assertEquals(stage.findTaskByName("renamed task").size(), 1);
+
+		// verify the fields of the task got saved correctly
+		TaskModel newTask = stage.findTaskByName("renamed task").get(0);
+		assertEquals(newTask.getDescription(), "new description");
+		assertEquals(
+				new SimpleDateFormat("MM/dd/yyyy").format(newTask.getDueDate()),
+				"11/11/2011");
+		assertEquals(newTask.getEstimatedEffort(), 4);
+		assertEquals(newTask.getActualEffort(), 8);
+	}
+
 	@After
 	public void cleanup() {
 		fixture.cleanUp();
+	}
+
+	private TaskModel createAndLoadTask() {
+		// add a task
+		StageModel stage = wfm.getStages().get(2);
+		TaskModel task = new TaskModel("New Task", stage);
+		task.setDescription("test description");
+		task.setDueDate(new Date(12345));
+		task.setEstimatedEffort(5);
+		task.setActualEffort(7);
+
+		// load the edit view
+		TaskController tc = new TaskController(null, task);
+		tc.actionPerformed(null);
+
+		return task;
 	}
 
 }
