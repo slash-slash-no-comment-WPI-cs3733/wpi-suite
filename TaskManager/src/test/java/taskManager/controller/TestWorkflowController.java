@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package taskManager.test;
+package taskManager.controller;
 
 import javax.swing.JFrame;
 
@@ -15,7 +15,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import taskManager.controller.WorkflowController;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.WorkflowView;
