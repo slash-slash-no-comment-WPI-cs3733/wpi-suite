@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * Copyright (c) 2012-2014 -- WPI Suite
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
 package taskManager.view;
 
 import java.awt.Dimension;
@@ -28,11 +36,6 @@ import taskManager.controller.EditTaskController;
  *
  */
 
-// TODO
-// Need Access to
-// Tasks
-// Stages
-// Users
 public class EditTaskView extends JPanel {
 
 	/**
@@ -58,15 +61,13 @@ public class EditTaskView extends JPanel {
 	private EditTaskController controller;
 
 	public EditTaskView() {
-		// TODO
-		// When Task added make EditTask take in a Task called currTask
-
+		
 		Dimension nt_panelSize = getPreferredSize();
 		nt_panelSize.width = 625; // TODO
 		nt_panelSize.height = 500; // Decide size
 		setPreferredSize(nt_panelSize);
 
-		setBorder(BorderFactory.createTitledBorder("New Task"));
+		setBorder(BorderFactory.createTitledBorder("Edit Task"));
 
 		// JLabels
 		JLabel nt_titleLabel = new JLabel("Title ");
@@ -84,7 +85,7 @@ public class EditTaskView extends JPanel {
 		JTextField nt_titleField = new JTextField(25);
 		nt_titleField.setEditable(true);
 		this.titleField = nt_titleField;
-		JTextArea nt_descriptionArea = new JTextArea(3, 25);
+		JTextArea nt_descriptionArea = new JTextArea(2, 25);
 		nt_descriptionArea.setEditable(true);
 		this.descripArea = nt_descriptionArea;
 		nt_descriptionArea.setLineWrap(true);
@@ -104,25 +105,11 @@ public class EditTaskView extends JPanel {
 		JTextField nt_commentsField = new JTextField(25);
 		nt_commentsField.setEditable(true);
 		this.commentsField = nt_estimatedEffortField;
-		// TODO
-		// When task is added switch to these
-		// JTextField nt_titleField = new JTextField(currTask.getTitle, 25);
-		// JTextField nt_descriptionField = new
-		// JTextField(currTask.getDescription, 25);
-		// JTextField nt_dueDateField = new JTextField(currTask.getDueDate, 25);
-		// JTextField nt_estimatedEffortField = new
-		// JTextField(currTask.getEstimatedEffort, 10);
-		// JTextField nt_actualEffortField = new
-		// JTextField(currTask.getActualEffort, 10);
-		// JTextField nt_commentsField = new JTextField(25);
+	
 
 		// JTextArea
 		// TODO
 		// Get to add users
-		// TODO
-		// When task is added switch/include this
-		// String[] nt_currUsersList = currTask.getUsers().getName();
-		// JList<String> nt_usersList = new JList<String>(nt_currUsersList);
 		JList<String> nt_usersList = new JList<String>();
 		nt_usersList.setVisibleRowCount(3);
 		nt_usersList.setFixedCellWidth(this.getWidth() * 2 / 5);
@@ -164,9 +151,6 @@ public class EditTaskView extends JPanel {
 		this.cancel.setName("cancel");
 
 		// Combo Box for Stage
-		// TODO
-		// Options are currently fixed
-		// Need access to stages, preferably in a list
 		JComboBox<String> nt_stagesBoxes = new JComboBox<String>();
 		this.stages = nt_stagesBoxes;
 
