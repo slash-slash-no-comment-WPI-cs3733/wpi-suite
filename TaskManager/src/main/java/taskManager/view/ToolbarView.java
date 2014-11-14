@@ -51,6 +51,8 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 
 		Insets margins = new Insets(30, 5, 0, 5);
 		this.setMargin(margins);
+		
+		this.setFloatable(false);
 
 		// Construct the buttons
 		createTask = new JButton("Create Task");
