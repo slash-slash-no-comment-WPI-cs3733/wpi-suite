@@ -28,6 +28,7 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 	private JButton manageStages;
 	private JButton statistics;
 	private JButton workflow;
+	private JButton refresh;
 	private JLabel projectName;
 
 	// TODO: Change ActionListener to ToolbarController when one exists
@@ -64,6 +65,8 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 		manageUsers.setName("manageUsers");
 		statistics = new JButton("Statistics");
 		statistics.setName("statistics");
+		refresh = new JButton("Refresh");
+		refresh.setName("refresh");
 
 		// Construct the project title
 		projectName = new JLabel("Project Title"); // TODO(sswartz): update this
@@ -76,6 +79,7 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 		buttons.add(manageStages);
 		buttons.add(manageUsers);
 		buttons.add(statistics);
+		buttons.add(refresh);
 
 		// Title and buttons to the toolbar
 		this.add(title);
@@ -95,6 +99,7 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 		manageStages.addActionListener(controller);
 		manageUsers.addActionListener(controller);
 		statistics.addActionListener(controller);
+		refresh.addActionListener(controller);
 	}
 
 	@Override

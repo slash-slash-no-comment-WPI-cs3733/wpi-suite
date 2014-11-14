@@ -14,7 +14,6 @@ package taskManager.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -48,38 +47,26 @@ public class StageView extends JPanel implements IStageView {
 
 		// creates the label for the name of the stage and adds it to the block
 		JPanel label = new JPanel();
-		label.setPreferredSize(new Dimension(175, 25));
+		label.setMaximumSize(new Dimension(175, 25));
 		JLabel labelText = new JLabel(name);
 		labelText.setName(name);
 		label.add(labelText);
 		this.add(label);
 
-		// adds example tasks
-		this.addTaskView("Task1");
-		this.addTaskView("Task1");
-		this.addTaskView("Task1");
-		this.addTaskView("Task1");
-		this.addTaskView("Task1");
-		this.addTaskView("Task1");
-		this.addTaskView("Task1");
-		this.addTaskView("Task1");
-		this.addTaskView("Task1");
-		this.addTaskView("Task1");
-		this.addTaskView("Task1");
-		this.addTaskView("Task1");
-		this.addTaskView("Task1");
-		this.addTaskView("Task1");
-		this.addTaskView("Task1");
-
 		// creates the scroll containing the stage view and adds it to the block
 		stage = new JScrollPane(tasks);
 		stage.setBorder(BorderFactory.createLineBorder(Color.black));
-		stage.setMinimumSize(new Dimension(175, 350));
+		stage.setMinimumSize(new Dimension(175, 450));
+		stage.setSize(new Dimension(175, 450));
+		stage.setPreferredSize(new Dimension(175, 450));
 
 		updateTasks();
 	}
 
-	private void updateTasks() {
+	/**
+	 * repopulates the tasks list into the scroll pane
+	 */
+	public void updateTasks() {
 		this.remove(stage);
 		stage = new JScrollPane(tasks);
 		stage.setBorder(BorderFactory.createLineBorder(Color.black));
@@ -90,28 +77,8 @@ public class StageView extends JPanel implements IStageView {
 	/*
 	 * @param data for new task view will be entered by the user
 	 */
-	public void addTaskView(String name) {
-		tasks.add(new TaskView(name, new Date(), 0)); // Not sure that this is
-														// right...
-		// TODO Make sure that this is right
-	}
-
-	/**
-	 * Constructor for StageView.
-	 */
-	public StageView() {
-		// organizes the tasks in a vertical list
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-	}
-
-	/**
-	 * Method addTaskView.
-	 * 
-	 * @param tkv
-	 *            data for new task view will be entered by the user
-	 */
 	public void addTaskView(TaskView tkv) {
-		this.add(tkv);
+		tasks.add(tkv);
 	}
 
 	@Override
@@ -119,8 +86,22 @@ public class StageView extends JPanel implements IStageView {
 		return super.getName();
 	}
 
+	/**
+	 * Adds the stage controller to this view
+	 * 
+	 * @param controller
+	 */
 	public void setController(StageController controller) {
 		this.controller = controller;
+	}
+
+	/**
+	 * Adds the stage controller to this view
+	 * 
+	 * @return the controller attached to this view
+	 */
+	public StageController getController() {
+		return this.controller;
 	}
 
 }

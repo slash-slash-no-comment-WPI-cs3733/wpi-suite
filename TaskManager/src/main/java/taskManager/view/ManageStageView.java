@@ -10,7 +10,6 @@ package taskManager.view;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +19,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import taskManager.controller.ManageStageController;
+
 /**
  * A view to add/remove/move stages
  *
@@ -27,8 +28,7 @@ import javax.swing.JTextField;
  */
 public class ManageStageView extends JPanel {
 
-	// TODO: change this to ManageStageController when that exists
-	private ActionListener controller;
+	private ManageStageController controller;
 
 	private List<JButton> buttonsWithoutAController;
 
@@ -60,9 +60,11 @@ public class ManageStageView extends JPanel {
 	 *            The name of the stage to add
 	 * @param id
 	 *            The ID of the stage to add
+	 * @param removable
+	 *            If the stage is removable
 	 */
-	public void addStage(String name, String id) {
-		this.stageArea.add(newStagePanel(name, id));
+	public void addStage(String name, String id, boolean removable) {
+		this.stageArea.add(newStagePanel(name, id, removable));
 	}
 
 	/**
@@ -94,7 +96,7 @@ public class ManageStageView extends JPanel {
 	 * @param controller
 	 *            The controller to attach to this view
 	 */
-	public void setController(ActionListener controller) {
+	public void setController(ManageStageController controller) {
 		this.controller = controller;
 
 		// add action listeners to any buttons that were created before a
@@ -114,6 +116,17 @@ public class ManageStageView extends JPanel {
 		return text;
 	}
 
+	/*
+	 * @see javax.swing.JComponent#setVisible(boolean)
+	 */
+	@Override
+	public void setVisible(boolean visible) {
+		if (visible && controller != null) {
+			controller.reloadData();
+		}
+		super.setVisible(visible);
+	}
+
 	/**
 	 * Creates a panel for this stage
 	 *
@@ -121,9 +134,11 @@ public class ManageStageView extends JPanel {
 	 *            The name of the stage
 	 * @param id
 	 *            The ID of the stage
+	 * @param removable
+	 *            If the stage is removable
 	 * @return A panel containing the stage name and some buttons
 	 */
-	private JPanel newStagePanel(String name, String id) {
+	private JPanel newStagePanel(String name, String id, boolean removable) {
 		JPanel panel = new JPanel();
 		// set the id, so to locate this stage later
 		panel.setName(id);
@@ -132,7 +147,9 @@ public class ManageStageView extends JPanel {
 		panel.add(new JLabel(name));
 
 		// add buttons
-		panel.add(newButtonWithListener("Delete"));
+		JButton delButton = newButtonWithListener("Delete");
+		delButton.setEnabled(removable);
+		panel.add(delButton);
 		panel.add(newButtonWithListener("Move Up"));
 		panel.add(newButtonWithListener("Move Down"));
 		return panel;

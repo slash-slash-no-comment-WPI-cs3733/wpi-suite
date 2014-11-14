@@ -17,9 +17,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonPrimitive;
-
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.network.Network;
@@ -36,12 +33,6 @@ import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
  * @version Nov 6, 2014
  */
 
-/**
- * Description
- *
- * @author Sam Khalandovsky
- * @version Nov 10, 2014
- */
 public class TaskModel extends AbstractJsonableModel<TaskModel> {
 
 	private static final Logger logger = Logger.getLogger(TaskModel.class
@@ -59,7 +50,10 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	// List of users assigned to this task
 	private Set<User> assigned;
 
-	// Due date timestamp
+	// // Due date timestamp
+	// private Date dueDate;
+	// temporarily making this a string for testing
+	// TODO turn it back into a date
 	private Date dueDate;
 
 	// Estimated effort required for completion
@@ -74,8 +68,6 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	// Associated requirement that this task corresponds to
 	private Requirement req;
 
-	static private GenericRequestObserver observer = new GenericRequestObserver();
-
 	/**
 	 * Constructor assigns name, task id, and stage.
 	 *
@@ -85,13 +77,12 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 *            name of the new task
 	 */
 
-<<<<<<< HEAD
-	public TaskModel(StageModel stage, String name) {
+	public TaskModel(String name, StageModel stage) {
+
+		super(stage.getWorkflow().findUniqueTaskID(name));
 		final ActivityModel createTask = new ActivityModel("Created task",
 				ActivityModel.activityModelType.CREATION);
 		this.name = name;
-		id = stage.getWorkflow().findUniqueTaskID(name);
-		super(stage.getWorkflow().findUniqueTaskID(name));
 
 		assigned = new HashSet<User>();
 		activities = new ArrayList<ActivityModel>();
@@ -204,7 +195,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 *            the actualEffort to set
 	 */
 	public void setActualEffort(int actualEffort) {
-		if (actualEffort <= 0) {
+		if (actualEffort < 0) {
 			throw new IllegalArgumentException(
 					"actualEffort must be non-negative");
 		}
@@ -286,7 +277,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	}
 
 	/**
-	 * Changes this taskmodel to be identical to the inputted stage model, while
+	 * Changes this taskmodel to be identical to the inputed task model, while
 	 * maintaining the pointer
 	 *
 	 * @param task
@@ -310,7 +301,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		final Request request = Network.getInstance().makeRequest(
 				"taskmanager/task", HttpMethod.POST);
 		request.setBody(toJson());
-		request.addObserver(observer);
+		request.addObserver(getObserver());
 		request.send();
 	}
 
@@ -319,30 +310,8 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		final Request request = Network.getInstance().makeRequest(
 				"taskmanager/task", HttpMethod.DELETE);
 		request.setBody(toJson());
-		request.addObserver(observer);
+		request.addObserver(getObserver());
 		request.send();
-	}
-
-	/*
-	 * @see edu.wpi.cs.wpisuitetng.modules.Model#toJson()
-	 */
-	@Override
-	public String toJson() {
-		final Gson gson = new Gson();
-		return gson.toJson(this);
-	}
-
-	/**
-	 * Static method for deserializing object from JSON
-	 *
-	 * @param serialized
-	 *            JSON string
-	 *
-	 * @return the deserialized TaskModel
-	 */
-	public static TaskModel fromJson(String serialized) {
-		final Gson gson = new Gson();
-		return gson.fromJson(serialized, TaskModel.class);
 	}
 
 	@Override

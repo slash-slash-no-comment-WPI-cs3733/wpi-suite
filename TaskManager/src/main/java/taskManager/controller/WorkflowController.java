@@ -41,17 +41,38 @@ public class WorkflowController {
 		this.view = view;
 		this.model = model;
 
+		reloadData();
+	}
+
+	/**
+	 * Reloads all the data on the view to match the data in the model
+	 *
+	 */
+	public void reloadData() {
+		// clear the stages previously on the view
+		view.removeAll();
+
 		// get all the stages in this workflow
-		final List<StageModel> stages = this.model.getStages();
+		final List<StageModel> stages = model.getStages();
 		// and add them all to the view
 		for (StageModel stage : stages) {
 			// create stage view and controller.
-			StageView stv = new StageView();
+			StageView stv = new StageView(stage.getName());
 			stv.setController(new StageController(stv, stage));
 
 			// add stage view to workflow
-			this.view.addStageView(stv, stage.getName());
+			view.addStageView(stv);
 		}
+		view.revalidate();
+		view.repaint();
 	}
 
+	/**
+	 * Asks the model to pull from the server. When the server responds, model
+	 * data is updated and reloadData is called.
+	 *
+	 */
+	public void fetch() {
+		model.update(this);
+	}
 }
