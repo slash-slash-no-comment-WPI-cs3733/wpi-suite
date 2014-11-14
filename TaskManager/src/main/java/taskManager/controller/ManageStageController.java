@@ -111,6 +111,9 @@ public class ManageStageController implements ActionListener {
 				System.out.println("Unknown button pushed");
 				break;
 			}
+
+			// Save entire workflow whenever a stage is added of edited
+			model.save();
 		}
 	}
 

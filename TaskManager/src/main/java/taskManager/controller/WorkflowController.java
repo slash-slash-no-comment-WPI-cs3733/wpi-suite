@@ -63,5 +63,16 @@ public class WorkflowController {
 			// add stage view to workflow
 			view.addStageView(stv);
 		}
+		view.revalidate();
+		view.repaint();
+	}
+
+	/**
+	 * Asks the model to pull from the server. When the server responds, model
+	 * data is updated and reloadData is called.
+	 *
+	 */
+	public void fetch() {
+		model.update(this);
 	}
 }

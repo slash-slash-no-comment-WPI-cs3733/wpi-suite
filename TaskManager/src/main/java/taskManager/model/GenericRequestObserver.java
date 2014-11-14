@@ -17,7 +17,7 @@ import edu.wpi.cs.wpisuitetng.network.models.IRequest;
  * @author Sam Khalandovsky
  * @version Nov 9, 2014
  */
-public class TaskRequestObserver implements RequestObserver {
+public class GenericRequestObserver implements RequestObserver {
 
 	/*
 	 * @see
@@ -26,7 +26,7 @@ public class TaskRequestObserver implements RequestObserver {
 	 */
 	@Override
 	public void responseSuccess(IRequest iReq) {
-		// TODO Auto-generated method stub
+		System.out.println("Request successful");
 
 	}
 

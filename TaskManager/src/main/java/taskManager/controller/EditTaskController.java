@@ -127,6 +127,9 @@ public class EditTaskController implements ActionListener {
 				etv.resetFields();
 				// exit the edit view, this refreshes the workflow
 				this.returnToWorkflowView();
+
+				// Save entire workflow whenever a task is saved
+				wfm.save();
 				break;
 
 			case "delete":
@@ -137,6 +140,9 @@ public class EditTaskController implements ActionListener {
 				s.getTasks().remove(task);
 				this.returnToWorkflowView();
 				etv.resetFields();
+
+				// Save entire workflow whenever a task is deleted
+				wfm.save();
 				break;
 
 			case "addUser":
