@@ -70,7 +70,8 @@ public class ManageStageController implements ActionListener {
 			case "Delete":
 				if (stage.isRemovable()) {
 					view.removeStage(stageID);
-					model.getStages().removeIf(s -> s.getName() == stageID);
+					model.getStages()
+							.removeIf(s -> s.getName().equals(stageID));
 					// refresh the view
 					view.updateUI();
 				}
