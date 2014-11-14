@@ -265,7 +265,9 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 
 	/**
 	 * Retrieve all workspaces
-	 *
+	 * 
+	 * @param controller
+	 *            The active workflow controller.
 	 */
 	public void update(WorkflowController controller) {
 		final Request request = Network.getInstance().makeRequest(

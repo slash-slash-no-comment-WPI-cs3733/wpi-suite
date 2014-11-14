@@ -69,11 +69,21 @@ public class UserView extends JPanel {
 
 	/**
 	 * Removes a task from the task list
+	 * 
+	 * @param task
+	 *            Task to be removed
 	 */
 	public void removeTask(TaskView task) {
 		tasks.remove(task); // TODO: will this work? Write a test
 	}
 
+	/**
+	 * 
+	 * Sets this view's controller.
+	 *
+	 * @param controller
+	 *            the controller associated with this view.
+	 */
 	public void addController(ActionListener controller) {
 		this.controller = controller;
 	}

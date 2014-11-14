@@ -33,7 +33,8 @@ public class EditTaskController implements ActionListener {
 	/**
 	 * Constructor, attaches the edit task view to this controller
 	 * 
-	 * @param etv
+	 * @param wfm
+	 *            The workflowModel that belongs to this controller.
 	 */
 	public EditTaskController(WorkflowModel wfm) {
 		etv = JanewayModule.etv;

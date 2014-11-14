@@ -109,6 +109,14 @@ public class ManageUsersView extends JPanel {
 		this.add(window);
 	}
 
+	/**
+	 * 
+	 * Sets this view's Controller. This method should probably be named
+	 * setController.
+	 *
+	 * @param controller
+	 *            The new controller (that implements ActionListener)
+	 */
 	public void addController(ActionListener controller) {
 		this.controller = controller;
 	}

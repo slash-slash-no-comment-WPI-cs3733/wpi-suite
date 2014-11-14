@@ -74,7 +74,7 @@ public class ManageStageView extends JPanel {
 	 */
 	public void removeStage(String id) {
 		for (Component stage : stageArea.getComponents()) {
-			if (stage.getName() == id) {
+			if (stage.getName().equals(id)) {
 				stageArea.remove(stage);
 				break;
 			}

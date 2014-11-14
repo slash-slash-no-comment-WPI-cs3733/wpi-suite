@@ -35,6 +35,13 @@ public class StageView extends JPanel implements IStageView {
 	JPanel tasks = new JPanel();
 	JScrollPane stage = new JScrollPane(tasks);
 
+	/**
+	 * 
+	 * Creates a new stage interface with a name with all the pretty UI elements
+	 *
+	 * @param name
+	 *            The title of the stage being drawn
+	 */
 	public StageView(String name) {
 
 		// stage view is a panel that contains the title and the scroll pane
@@ -74,8 +81,9 @@ public class StageView extends JPanel implements IStageView {
 		this.add(stage);
 	}
 
-	/*
-	 * @param data for new task view will be entered by the user
+	/**
+	 * @param tkv
+	 *            for new task view will be entered by the user
 	 */
 	public void addTaskView(TaskView tkv) {
 		tasks.add(tkv);

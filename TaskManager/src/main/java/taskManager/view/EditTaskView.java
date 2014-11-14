@@ -359,8 +359,8 @@ public class EditTaskView extends JPanel {
 	/**
 	 * sets the text in the title field
 	 * 
-	 * @param the
-	 *            text in the title field
+	 * @param d
+	 *            the text in the title field
 	 */
 	public void setTitle(String d) {
 		titleField.setText(d);

@@ -50,6 +50,8 @@ public class ToolbarController implements ActionListener {
 	 *            the newTask view to be switched to
 	 * @param sv
 	 *            the statistics view to be switched to
+	 * @param wfc
+	 *            The active workflow controller
 	 */
 	public ToolbarController(ToolbarView view, WorkflowView wfv,
 			ManageStageView msv, ManageUsersView muv, EditTaskView ntv,

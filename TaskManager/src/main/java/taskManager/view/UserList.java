@@ -56,6 +56,9 @@ public class UserList extends JPanel {
 
 	/**
 	 * Removes a user from the user list
+	 * 
+	 * @param user
+	 *            User to be removed
 	 */
 	public void removeUser(UserView user) {
 		usersList.remove(user); // TODO: will this work? Write a test
