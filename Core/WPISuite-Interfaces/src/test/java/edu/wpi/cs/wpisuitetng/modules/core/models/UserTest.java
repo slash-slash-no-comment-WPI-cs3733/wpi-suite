@@ -55,7 +55,7 @@ public class UserTest {
 	 */
 	public void testGetProjectNull()
 	{
-		assertTrue(null == u1.getProject());
+		assertTrue(u1.getProject() == null);
 	}
 	
 	@Test

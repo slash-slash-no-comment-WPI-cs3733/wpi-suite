@@ -43,8 +43,8 @@ public class TaskController implements ActionListener {
 	public TaskController(TaskView view, TaskModel model) {
 		this.view = view;
 		this.model = model;
-		this.sm = model.getStage();
-		this.wfm = sm.getWorkflow();
+		sm = model.getStage();
+		wfm = sm.getWorkflow();
 	}
 
 	@Override
@@ -52,11 +52,10 @@ public class TaskController implements ActionListener {
 		// sets the text fields to the values of the task
 
 		// uses the title field to hold the unique id
-		JanewayModule.etv.getTitle().setName(this.model.getID());
+		JanewayModule.etv.getTitle().setName(model.getID());
 
 		// uses description field to hold the name of the stage
-		JanewayModule.etv.getDescription().setName(
-				this.model.getStage().getName());
+		JanewayModule.etv.getDescription().setName(model.getStage().getName());
 
 		// populate editable fields with this tasks info
 		JanewayModule.etv.setTitle(model.getName());
@@ -71,9 +70,9 @@ public class TaskController implements ActionListener {
 		// figures out the index of the stage, then sets the drop down to the
 		// stage at that index
 
-		List<StageModel> stages = this.wfm.getStages();
+		List<StageModel> stages = wfm.getStages();
 		for (int i = 0; i < stages.size(); i++) {
-			if (stages.get(i) == this.sm) {
+			if (stages.get(i) == sm) {
 				JanewayModule.etv.setStageDropdown(i);
 				break;
 			}

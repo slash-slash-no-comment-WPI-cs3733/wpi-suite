@@ -8,10 +8,10 @@ package taskManager.view;
  *
  */
 public interface ITaskView {
-	
-	/*
-	 *@return a string containing the name of the class
+
+	/**
+	 * @return a string containing the name of the class
 	 */
-	public String getName();
+	String getName();
 
 }

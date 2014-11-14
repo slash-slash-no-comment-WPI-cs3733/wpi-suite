@@ -20,6 +20,6 @@ public interface ICommentView {
 	 * 
 	 * @return the name of the class
 	 */
-	public String getName();
+	String getName();
 
 }
