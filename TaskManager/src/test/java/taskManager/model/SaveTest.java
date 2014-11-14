@@ -51,7 +51,5 @@ public class SaveTest {
 		System.out.println(model1.toJson());
 		System.out.println(model2.toJson());
 		System.out.println(model3.toJson());
-
 	}
-
 }
