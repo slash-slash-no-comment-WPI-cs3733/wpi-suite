@@ -101,7 +101,7 @@ public class StageView extends JPanel implements IStageView {
 	 * @return the controller attached to this view
 	 */
 	public StageController getController() {
-		return this.controller;
+		return controller;
 	}
 
 }

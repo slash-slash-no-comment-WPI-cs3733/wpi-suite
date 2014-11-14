@@ -36,9 +36,9 @@ public class EditTaskController implements ActionListener {
 	 * @param etv
 	 */
 	public EditTaskController(WorkflowModel wfm) {
-		this.etv = JanewayModule.etv;
+		etv = JanewayModule.etv;
 		this.wfm = wfm;
-		this.wfv = JanewayModule.wfv;
+		wfv = JanewayModule.wfv;
 
 		reloadData();
 	}
@@ -184,8 +184,8 @@ public class EditTaskController implements ActionListener {
 	 * switches back to workflow view
 	 */
 	private void returnToWorkflowView() {
-		this.etv.setVisible(false);
-		this.wfv.setVisible(true);
+		etv.setVisible(false);
+		wfv.setVisible(true);
 	}
 
 	/**
@@ -195,7 +195,7 @@ public class EditTaskController implements ActionListener {
 	 *            the id that new task info will be saved to
 	 */
 	public void setTaskID(String id) {
-		this.taskID = id;
+		taskID = id;
 	}
 
 }

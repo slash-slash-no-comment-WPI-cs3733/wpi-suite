@@ -39,7 +39,7 @@ import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
 public class JanewayModule implements IJanewayModule {
 
 	// The tabs used by this module
-	private final ArrayList<JanewayTabModel> tabs;
+	private final List<JanewayTabModel> tabs;
 	public static final WorkflowView wfv = new WorkflowView();
 	public static final ManageStageView msv = new ManageStageView();
 	public static final ManageUsersView muv = new ManageUsersView();

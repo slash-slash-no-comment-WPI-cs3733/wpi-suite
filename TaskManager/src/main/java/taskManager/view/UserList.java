@@ -9,7 +9,7 @@
 
 package taskManager.view;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -25,7 +25,7 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 public class UserList extends JPanel {
 
 	private static final long serialVersionUID = -6637385817228659411L;
-	private ArrayList<UserView> usersList;
+	private List<UserView> usersList;
 
 	public UserList() {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -58,6 +58,6 @@ public class UserList extends JPanel {
 	 * Removes a user from the user list
 	 */
 	public void removeUser(UserView user) {
-		this.usersList.remove(user); // TODO: will this work? Write a test
+		usersList.remove(user); // TODO: will this work? Write a test
 	}
 }

@@ -42,12 +42,11 @@ public class ManageStageView extends JPanel {
 	 *
 	 */
 	public ManageStageView() {
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		this.stageArea = new JPanel();
-		this.stageArea
-				.setLayout(new BoxLayout(this.stageArea, BoxLayout.Y_AXIS));
-		this.controller = null;
-		this.buttonsWithoutAController = new ArrayList<JButton>();
+		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		stageArea = new JPanel();
+		stageArea.setLayout(new BoxLayout(stageArea, BoxLayout.Y_AXIS));
+		controller = null;
+		buttonsWithoutAController = new ArrayList<JButton>();
 		this.add(stageArea);
 		this.add(addNewStagePanel());
 
@@ -64,7 +63,7 @@ public class ManageStageView extends JPanel {
 	 *            If the stage is removable
 	 */
 	public void addStage(String name, String id, boolean removable) {
-		this.stageArea.add(newStagePanel(name, id, removable));
+		stageArea.add(newStagePanel(name, id, removable));
 	}
 
 	/**
@@ -74,9 +73,9 @@ public class ManageStageView extends JPanel {
 	 *            The id of the stage to remove
 	 */
 	public void removeStage(String id) {
-		for (Component stage : this.stageArea.getComponents()) {
+		for (Component stage : stageArea.getComponents()) {
 			if (stage.getName() == id) {
-				this.stageArea.remove(stage);
+				stageArea.remove(stage);
 				break;
 			}
 		}
@@ -87,7 +86,7 @@ public class ManageStageView extends JPanel {
 	 *
 	 */
 	public void removeAllStages() {
-		this.stageArea.removeAll();
+		stageArea.removeAll();
 	}
 
 	/**

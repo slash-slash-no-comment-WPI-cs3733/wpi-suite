@@ -13,13 +13,13 @@ package taskManager.controller;
  *
  * @author
  */
-public class CommentController {
+public class ActivityController {
 
 	/**
 	 * Description
 	 *
 	 */
-	public CommentController() {
+	public ActivityController() {
 		// TODO Auto-generated constructor stub
 	}
 

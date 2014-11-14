@@ -11,7 +11,7 @@ package taskManager.view;
 
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -33,7 +33,7 @@ public class UserView extends JPanel {
 	private static final long serialVersionUID = -159086497774697511L;
 	// TODO: Change ActionListener to UserController when it exists
 	private ActionListener controller;
-	private ArrayList<TaskView> tasks;
+	private List<TaskView> tasks;
 
 	/**
 	 * Creates a panel with a user's name and adds all tasks associated with
@@ -64,14 +64,14 @@ public class UserView extends JPanel {
 	 *            is the TaskView to add to the task list
 	 */
 	public void addTask(TaskView task) {
-		this.tasks.add(task);
+		tasks.add(task);
 	}
 
 	/**
 	 * Removes a task from the task list
 	 */
 	public void removeTask(TaskView task) {
-		this.tasks.remove(task); // TODO: will this work? Write a test
+		tasks.remove(task); // TODO: will this work? Write a test
 	}
 
 	public void addController(ActionListener controller) {
