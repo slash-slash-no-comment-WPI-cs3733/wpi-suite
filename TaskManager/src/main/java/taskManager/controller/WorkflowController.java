@@ -32,7 +32,8 @@ public class WorkflowController {
 	/**
 	 * Constructor for the WorkflowController, gets all the stages from the
 	 * WorkflowView, creates the corresponding StageView and StageControllers,
-	 * and adds the StageViews to the UI.
+	 * and adds the StageViews to the UI. Polls the server every 1 second until
+	 * it receives the workflow model.
 	 * 
 	 * @param view
 	 *            the corresponding WorkflowView object
