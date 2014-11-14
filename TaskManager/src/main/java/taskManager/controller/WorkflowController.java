@@ -51,8 +51,10 @@ public class WorkflowController {
 					try {
 						sleep(1000);
 						fetch();
+					} catch (NullPointerException e) {
+						// this is expected, do nothing
 					} catch (Exception e) {
-						// do nothing
+						e.printStackTrace();
 					}
 				}
 			}
