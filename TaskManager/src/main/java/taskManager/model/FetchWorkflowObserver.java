@@ -60,7 +60,6 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 		// Allow calling with null controller to permit testing without
 		// controller
 		if (controller != null) {
-			controller.setInitialized(true);
 			controller.reloadData();
 		}
 

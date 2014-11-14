@@ -59,7 +59,7 @@ public class ManageStageController implements ActionListener {
 
 			stages = model.getStages();
 			for (StageModel s : model.getStages()) {
-				if (s.getName() == stageID) {
+				if (s.getName().equals(stageID)) {
 					stage = s;
 					break;
 				}
