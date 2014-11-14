@@ -35,15 +35,6 @@ public class SaveTest {
 	}
 
 	@Test
-	public void saveLoad() {
-		WorkflowModel wf = new WorkflowModel("wf1");
-		StageModel stage = new StageModel(wf, "stage1");
-		TaskModel model = new TaskModel("model1", stage);
-
-		model.save();
-	}
-
-	@Test
 	public void modelJSON() {
 		WorkflowModel wf = new WorkflowModel("wf1");
 		StageModel stage = new StageModel(wf, "stage1");
