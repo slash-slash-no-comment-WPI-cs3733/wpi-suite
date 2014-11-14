@@ -27,7 +27,7 @@ public class WorkflowController {
 	private final WorkflowView view;
 	private final WorkflowModel model;
 
-	private boolean initialized;
+	public static boolean alive = true;
 
 	/**
 	 * Constructor for the WorkflowController, gets all the stages from the
@@ -44,10 +44,9 @@ public class WorkflowController {
 		this.view = view;
 		this.model = model;
 
-		this.initialized = false;
 		Thread thread = new Thread() {
 			public void run() {
-				while (!initialized) {
+				while (alive) {
 					try {
 						sleep(1000);
 						fetch();
@@ -60,6 +59,7 @@ public class WorkflowController {
 			}
 		};
 		thread.setName("polling");
+		thread.setDaemon(true);
 		thread.start();
 
 		reloadData();
@@ -95,20 +95,5 @@ public class WorkflowController {
 	 */
 	public void fetch() {
 		model.update(this);
-	}
-
-	/**
-	 * @return If we have successfully received data from the server
-	 */
-	public boolean isInitialized() {
-		return initialized;
-	}
-
-	/**
-	 * @param initialized
-	 * 
-	 */
-	public void setInitialized(boolean initialized) {
-		this.initialized = initialized;
 	}
 }

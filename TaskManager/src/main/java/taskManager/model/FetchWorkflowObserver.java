@@ -20,6 +20,8 @@ import edu.wpi.cs.wpisuitetng.network.models.ResponseModel;
  */
 public class FetchWorkflowObserver extends GenericRequestObserver {
 
+	public static boolean ignoreNextResponse = false;
+
 	WorkflowModel model;
 	WorkflowController controller;
 
@@ -42,6 +44,13 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 	 */
 	@Override
 	public void responseSuccess(IRequest iReq) {
+
+		if (ignoreNextResponse) {
+			System.out.println("Ignoring response due to recent local chagnes");
+			ignoreNextResponse = false;
+			return;
+		}
+
 		ResponseModel response = iReq.getResponse();
 		String body = response.getBody();
 		System.out.println("Response:" + body);
@@ -60,7 +69,6 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 		// Allow calling with null controller to permit testing without
 		// controller
 		if (controller != null) {
-			controller.setInitialized(true);
 			controller.reloadData();
 		}
 
