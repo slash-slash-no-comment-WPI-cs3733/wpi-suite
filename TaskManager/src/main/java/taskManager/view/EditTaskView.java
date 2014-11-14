@@ -22,6 +22,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
@@ -36,11 +37,6 @@ import taskManager.controller.EditTaskController;
  *
  */
 
-// TODO
-// Need Access to
-// Tasks
-// Stages
-// Users
 public class EditTaskView extends JPanel {
 
 	/**
@@ -55,7 +51,7 @@ public class EditTaskView extends JPanel {
 	private JButton submitComment;
 
 	private JTextField titleField;
-	private JTextField descripField;
+	private JTextArea descripArea;
 	private JTextField dateField;
 	private JTextField estEffortField;
 	private JTextField actEffortField;
@@ -65,16 +61,19 @@ public class EditTaskView extends JPanel {
 
 	private EditTaskController controller;
 
+	/**
+	 * Creates a Edit Task Panel so that you can change all of the values of a
+	 * task: Title Description Due Date Estimated Effort Actual Effort Adding
+	 * Comments
+	 */
 	public EditTaskView() {
-		// TODO
-		// When Task added make EditTask take in a Task called currTask
 
 		Dimension nt_panelSize = getPreferredSize();
 		nt_panelSize.width = 625; // TODO
 		nt_panelSize.height = 500; // Decide size
 		setPreferredSize(nt_panelSize);
 
-		setBorder(BorderFactory.createTitledBorder("New Task"));
+		setBorder(BorderFactory.createTitledBorder("Edit Task"));
 
 		// JLabels
 		JLabel nt_titleLabel = new JLabel("Title ");
@@ -92,9 +91,16 @@ public class EditTaskView extends JPanel {
 		JTextField nt_titleField = new JTextField(25);
 		nt_titleField.setEditable(true);
 		this.titleField = nt_titleField;
-		JTextField nt_descriptionField = new JTextField(25);
-		nt_descriptionField.setEditable(true);
-		this.descripField = nt_descriptionField;
+		JTextArea nt_descriptionArea = new JTextArea(2, 25);
+		nt_descriptionArea.setEditable(true);
+		this.descripArea = nt_descriptionArea;
+		nt_descriptionArea.setLineWrap(true);
+		JScrollPane nt_descriptionScrollPane = new JScrollPane(
+				nt_descriptionArea);
+		nt_descriptionScrollPane
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		nt_descriptionScrollPane
+				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		JTextField nt_dueDateField = new JTextField(25);
 		nt_dueDateField.setEditable(true);
 		nt_dueDateField.setName("due_date");
@@ -111,25 +117,10 @@ public class EditTaskView extends JPanel {
 		nt_commentsField.setEditable(true);
 		nt_commentsField.setName("comments");
 		this.commentsField = nt_estimatedEffortField;
-		// TODO
-		// When task is added switch to these
-		// JTextField nt_titleField = new JTextField(currTask.getTitle, 25);
-		// JTextField nt_descriptionField = new
-		// JTextField(currTask.getDescription, 25);
-		// JTextField nt_dueDateField = new JTextField(currTask.getDueDate, 25);
-		// JTextField nt_estimatedEffortField = new
-		// JTextField(currTask.getEstimatedEffort, 10);
-		// JTextField nt_actualEffortField = new
-		// JTextField(currTask.getActualEffort, 10);
-		// JTextField nt_commentsField = new JTextField(25);
 
 		// JTextArea
 		// TODO
 		// Get to add users
-		// TODO
-		// When task is added switch/include this
-		// String[] nt_currUsersList = currTask.getUsers().getName();
-		// JList<String> nt_usersList = new JList<String>(nt_currUsersList);
 		JList<String> nt_usersList = new JList<String>();
 		nt_usersList.setVisibleRowCount(3);
 		nt_usersList.setFixedCellWidth(this.getWidth() * 2 / 5);
@@ -171,9 +162,6 @@ public class EditTaskView extends JPanel {
 		this.cancel.setName("cancel");
 
 		// Combo Box for Stage
-		// TODO
-		// Options are currently fixed
-		// Need access to stages, preferably in a list
 		JComboBox<String> nt_stagesBoxes = new JComboBox<String>();
 		nt_stagesBoxes.setName("stages");
 		this.stages = nt_stagesBoxes;
@@ -184,7 +172,7 @@ public class EditTaskView extends JPanel {
 
 		// First Column ////
 
-		newTaskGridBag.anchor = GridBagConstraints.LINE_START;
+		newTaskGridBag.anchor = GridBagConstraints.FIRST_LINE_START;
 
 		newTaskGridBag.weightx = 0.15;
 		newTaskGridBag.weighty = 0.077;
@@ -233,7 +221,7 @@ public class EditTaskView extends JPanel {
 		add(nt_titleField, newTaskGridBag);
 
 		newTaskGridBag.gridy = 1;
-		add(nt_descriptionField, newTaskGridBag);
+		add(nt_descriptionScrollPane, newTaskGridBag);
 
 		newTaskGridBag.gridy = 2;
 		add(nt_dueDateField, newTaskGridBag);
@@ -326,8 +314,8 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the text in the description field
 	 */
-	public JTextField getDescription() {
-		return descripField;
+	public JTextArea getDescription() {
+		return descripArea;
 	}
 
 	/**
@@ -378,7 +366,7 @@ public class EditTaskView extends JPanel {
 	 *            the text in the description field
 	 */
 	public void setDescription(String d) {
-		this.descripField.setText(d);
+		this.descripArea.setText(d);
 	}
 
 	/**
@@ -428,12 +416,15 @@ public class EditTaskView extends JPanel {
 	 */
 	public void resetFields() {
 		this.titleField.setText("");
-		this.descripField.setText("");
+		this.descripArea.setText("");
 		this.estEffortField.setText("");
 		this.actEffortField.setText("");
 		this.dateField.setText("");
 	}
 
+	/*
+	 * @see javax.swing.JComponent#setVisible(boolean)
+	 */
 	@Override
 	public void setVisible(boolean visible) {
 		if (visible && controller != null) {
