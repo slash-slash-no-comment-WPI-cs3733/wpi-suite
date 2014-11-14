@@ -51,13 +51,18 @@ public class EditTaskView extends JPanel {
 	private JTextField estEffortField;
 	private JTextField actEffortField;
 	private JTextField commentsField;
+	
+	public enum Mode {
+		CREATE,
+		EDIT;
+	}
 
 	private JComboBox<String> stages;
 
 	private EditTaskController controller;
 
-	public EditTaskView() {
-		// TODO
+	public EditTaskView(Mode mode) {
+		// TODO: User Mode to switch between create and edit views
 		// When Task added make EditTask take in a Task called currTask
 
 		Dimension nt_panelSize = getPreferredSize();

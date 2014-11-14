@@ -16,7 +16,11 @@ import taskManager.JanewayModule;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
+import taskManager.view.EditTaskView.Mode;
+import taskManager.view.EditTaskView;
 import taskManager.view.TaskView;
+import taskManager.controller.EditTaskController;
+import taskManager.controller.TabController;
 
 /**
  * Controller for Tasks.
@@ -30,6 +34,7 @@ public class TaskController implements ActionListener {
 	private final TaskModel model;
 	private StageModel sm;
 	private WorkflowModel wfm;
+	private TabController tabC;
 
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
@@ -41,6 +46,7 @@ public class TaskController implements ActionListener {
 	 *            the corresponding TaskModel object
 	 */
 	public TaskController(TaskView view, TaskModel model) {
+		this.tabC = JanewayModule.tabC;
 		this.view = view;
 		this.model = model;
 		this.sm = model.getStage();
@@ -49,24 +55,23 @@ public class TaskController implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// sets the text fields to the values of the task
+		EditTaskView etv = new EditTaskView(Mode.EDIT);
+		tabC.addTaskTab(etv, Mode.EDIT);
 
 		// uses the title field to hold the unique id
-		JanewayModule.etv.getTitle().setName(this.model.getID());
+		etv.getTitle().setName(this.model.getID());
 
 		// uses description field to hold the name of the stage
-		JanewayModule.etv.getDescription().setName(
+		etv.getDescription().setName(
 				this.model.getStage().getName());
 
 		// populate editable fields with this tasks info
-		JanewayModule.etv.setTitle(model.getName());
-		JanewayModule.etv.setDescription(model.getDescription());
-		JanewayModule.etv.setDate(model.getDueDate());
-		JanewayModule.etv.setEstEffort(model.getEstimatedEffort());
-		JanewayModule.etv.setActEffort(model.getActualEffort());
+		etv.setTitle(model.getName());
+		etv.setDescription(model.getDescription());
+		etv.setDate(model.getDueDate());
+		etv.setEstEffort(model.getEstimatedEffort());
+		etv.setActEffort(model.getActualEffort());
 
-		JanewayModule.wfv.setVisible(false);
-		JanewayModule.etv.setVisible(true);
 
 		// figures out the index of the stage, then sets the drop down to the
 		// stage at that index
@@ -74,7 +79,7 @@ public class TaskController implements ActionListener {
 		List<StageModel> stages = this.wfm.getStages();
 		for (int i = 0; i < stages.size(); i++) {
 			if (stages.get(i) == this.sm) {
-				JanewayModule.etv.setStageDropdown(i);
+				etv.setStageDropdown(i);
 				break;
 			}
 		}

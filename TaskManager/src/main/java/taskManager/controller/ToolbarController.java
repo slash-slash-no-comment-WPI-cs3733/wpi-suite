@@ -12,13 +12,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
-import javax.swing.JPanel;
 
-import taskManager.view.EditTaskView;
-import taskManager.view.ManageStageView;
-import taskManager.view.ManageUsersView;
-import taskManager.view.ToolbarView;
-import taskManager.view.WorkflowView;
+import taskManager.view.TabView;
+import taskManager.view.Tab;
+import taskManager.JanewayModule;
 
 /**
  * Description A controller for the toolbar view
@@ -27,38 +24,17 @@ import taskManager.view.WorkflowView;
  */
 public class ToolbarController implements ActionListener {
 
-//	private final ToolbarView toolbarView;
-//	private final WorkflowView workflowView;
-//	// TODO: change JPanels to correct view objects
-//	private final ManageStageView manageStagesView;
-//	private final ManageUsersView manageUsersView;
-//	private final EditTaskView newTaskView;
-//	private final JPanel statisticsView;
+	private final TabView tv;
+	private final TabController tc;
 
 	/**
 	 * 
-	 * @param view
-	 *            the toolbar view to be listened to
-	 * @param wfv
-	 *            the workflow view to be switched to
-	 * @param msv
-	 *            the manageStages view to be switched to
-	 * @param muv
-	 *            the manageUsers view to be switched to
-	 * @param ntv
-	 *            the newTask view to be switched to
-	 * @param sv
-	 *            the statistics view to be switched to
+	 * @param tv
+	 *            tabView used to add tabs to the tab-bar
 	 */
-	public ToolbarController(){//ToolbarView view, WorkflowView wfv,
-//			ManageStageView msv, ManageUsersView muv, EditTaskView ntv,
-//			JPanel sv) {
-//		this.toolbarView = view;
-//		this.workflowView = wfv;
-//		this.manageStagesView = msv;
-//		this.manageUsersView = muv;
-//		this.newTaskView = ntv;
-//		this.statisticsView = sv;
+	public ToolbarController(TabView tv) {
+		this.tv = tv;
+		this.tc = JanewayModule.tabC;
 	}
 
 	@Override
@@ -68,41 +44,15 @@ public class ToolbarController implements ActionListener {
 			String name = ((JButton) button).getName();
 			switch (name) {
 			case "createTask":
-//				workflowView.setVisible(false);
-//				manageUsersView.setVisible(false);
-//				manageStagesView.setVisible(false);
-//				statisticsView.setVisible(false);
-//				newTaskView.getTitle().setName("000000");
-//				newTaskView.setVisible(true);
+				this.tc.addCreateTaskTab();
 				break;
 			case "manageStages":
-//				workflowView.setVisible(false);
-//				manageUsersView.setVisible(false);
-//				statisticsView.setVisible(false);
-//				newTaskView.setVisible(false);
-//				manageStagesView.setVisible(true);
+				this.tc.addManageStagesTab();
 				break;
 			case "manageUsers":
-//				workflowView.setVisible(false);
-//				manageStagesView.setVisible(false);
-//				statisticsView.setVisible(false);
-//				newTaskView.setVisible(false);
-//				manageUsersView.setVisible(true);
+				this.tc.addManageUsersTab();
 				break;
-			case "statistics":
-//				workflowView.setVisible(false);
-//				manageUsersView.setVisible(false);
-//				manageStagesView.setVisible(false);
-//				newTaskView.setVisible(false);
-//				statisticsView.setVisible(true);
-				break;
-
-			case "workflow":
-//				manageUsersView.setVisible(false);
-//				manageStagesView.setVisible(false);
-//				newTaskView.setVisible(false);
-//				statisticsView.setVisible(false);
-//				workflowView.setVisible(true);
+			case "reports":
 				break;
 			}
 		}

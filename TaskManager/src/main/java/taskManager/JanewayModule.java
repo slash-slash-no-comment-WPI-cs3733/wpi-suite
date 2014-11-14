@@ -18,6 +18,7 @@ import taskManager.controller.EditTaskController;
 import taskManager.controller.ManageStageController;
 import taskManager.controller.ToolbarController;
 import taskManager.controller.WorkflowController;
+import taskManager.controller.TabController;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
@@ -41,72 +42,16 @@ public class JanewayModule implements IJanewayModule {
 
 	// The tabs used by this module
 	private final ArrayList<JanewayTabModel> tabs;
-	public static final WorkflowView wfv = new WorkflowView();
-	public static final ManageStageView msv = new ManageStageView();
-	public static final ManageUsersView muv = new ManageUsersView();
-	public static final EditTaskView etv = new EditTaskView();
-	public static final JPanel sv = new JPanel();
+	private static final ToolbarView toolV = new ToolbarView();
+	private static final TabView tabV = new TabView();
+	public static final TabController tabC = new TabController(tabV);
 
 	/**
 	 * Construct a blank tab
 	 */
 	public JanewayModule() {
-//		// creates the workflow view
-//
-//		// TODO change JPanels to ManageUsersView, NewTaskView, StatisticsView
-//		// TODO move setVisible(false) into view constructors?
-//
-//		// create workflow view
-//		wfv.setVisible(true);
-//
-//		// create manage stages view
-//		msv.setVisible(false);
-//
-//		// ManageUsers window
-//		muv.setVisible(false);
-//
-//		// create new task view
-//		etv.setVisible(false);
-//
-//		// create statistics view
-//		sv.setVisible(false);
-//
-//		// create a new workflow model
-//		final WorkflowModel wfm = new WorkflowModel();
-//
-//		// give it the default stages
-//		StageModel newStage = new StageModel(wfm, "New", false);
-//		StageModel startedStage = new StageModel(wfm, "Scheduled", false);
-//		StageModel progressStage = new StageModel(wfm, "In Progress", false);
-//		StageModel completeStage = new StageModel(wfm, "Complete", false);
-//
-//		// create the controller for the view
-//		wfv.setController(new WorkflowController(wfv, wfm));
-//		msv.setController(new ManageStageController(msv, wfm));
-//		etv.setController(new EditTaskController(wfm));
-//
-//		// adds all views to one panel
-//		JPanel allPanels = new JPanel();
-//		allPanels.add(wfv);
-//		allPanels.add(msv);
-//		allPanels.add(muv);
-//		allPanels.add(etv);
-//		allPanels.add(sv);
-		
-		// I think this is silly. The only reason TabView needs wfv is so it has the same instance
-		// that OnLaunch is setting up. 
-		// Ideally the four permanent stages could be setup in WorkflowView
-//		new OnLaunch(wfv);
-		TabView tabV = new TabView();
+		toolV.setController(new ToolbarController(tabV));
 
-		// Create the toolbar view
-		ToolbarView toolV = new ToolbarView();
-//		ToolbarController tc = new ToolbarController(toolV, wfv, msv, muv, etv, sv);
-		toolV.setController(new ToolbarController());
-
-		// this adds the menu and the main panel to the pre-configured janeway
-		// module view.
-		// It uses the spring layout
 		tabs = new ArrayList<JanewayTabModel>();
 		JanewayTabModel tab = new JanewayTabModel("Task Manager",
 

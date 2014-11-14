@@ -7,10 +7,12 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JTabbedPane;
 
+import taskManager.JanewayModule;
 import taskManager.view.WorkflowView;
 import taskManager.view.ManageStageView;
 import taskManager.view.ManageUsersView;
 import taskManager.controller.ClosableTab;
+import taskManager.controller.TabController;
 import taskManager.controller.WorkflowController;
 import taskManager.model.WorkflowModel;
 
@@ -22,8 +24,10 @@ public class TabView extends JTabbedPane {
 
 	private Boolean manageUsersTabOut = false;
 	private Boolean manageStagesTabOut = false;
+	private TabController tabC;
 
 	public TabView() {
+		this.tabC = JanewayModule.tabC;
 		setTabPlacement(TOP);
 		setTabLayoutPolicy(SCROLL_TAB_LAYOUT);
 		setBorder(BorderFactory.createEmptyBorder(5, 3, 3, 3));
@@ -32,9 +36,12 @@ public class TabView extends JTabbedPane {
 		WorkflowModel wfm = new WorkflowModel();
 		wfv.setController(new WorkflowController(wfv, wfm));
 
-		addTab("Workflow", new ImageIcon(), wfv, "Workflow");
+		this.addTab("Workflow", new ImageIcon(), wfv, "Workflow");
 	}
 
+	/**
+	 * Can't find what uses this.
+	 */
 	@Override
 	public void insertTab(String title, Icon icon, Component component,
 			String tip, int index) {

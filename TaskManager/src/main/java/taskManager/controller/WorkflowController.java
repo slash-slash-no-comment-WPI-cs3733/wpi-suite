@@ -40,10 +40,12 @@ public class WorkflowController {
 	public WorkflowController(WorkflowView view, WorkflowModel model) {
 		this.view = view;
 		this.model = model;
-		
+
+		// necessary to add these stages to workflowView (don't know/how)
 		StageModel newStage = new StageModel(this.model, "New", false);
 		StageModel startedStage = new StageModel(this.model, "Scheduled", false);
-		StageModel progressStage = new StageModel(this.model, "In Progress", false);
+		StageModel progressStage = new StageModel(this.model, "In Progress",
+				false);
 		StageModel completeStage = new StageModel(this.model, "Complete", false);
 
 		reloadData();

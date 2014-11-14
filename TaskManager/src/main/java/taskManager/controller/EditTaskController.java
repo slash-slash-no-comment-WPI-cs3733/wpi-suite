@@ -26,7 +26,6 @@ public class EditTaskController implements ActionListener {
 
 	private final EditTaskView etv;
 	private final WorkflowModel wfm;
-	private final WorkflowView wfv;
 
 	private String taskID;
 
@@ -35,10 +34,9 @@ public class EditTaskController implements ActionListener {
 	 * 
 	 * @param etv
 	 */
-	public EditTaskController(WorkflowModel wfm) {
-		this.etv = JanewayModule.etv;
+	public EditTaskController(WorkflowModel wfm, EditTaskView etv) {
+		this.etv = etv;
 		this.wfm = wfm;
-		this.wfv = JanewayModule.wfv;
 
 		reloadData();
 	}
@@ -97,7 +95,6 @@ public class EditTaskController implements ActionListener {
 					// moves the task to that stage
 					wfm.moveTask(t, currentStage, desiredStage);
 					t.setStage(desiredStage);
-					this.returnToWorkflowView();
 					this.setTaskID("000000");
 				} else {
 
@@ -126,7 +123,6 @@ public class EditTaskController implements ActionListener {
 				// makes all the fields blank again
 				etv.resetFields();
 				// exit the edit view, this refreshes the workflow
-				this.returnToWorkflowView();
 				break;
 
 			case "delete":
@@ -135,7 +131,6 @@ public class EditTaskController implements ActionListener {
 						.getSelectedItem());
 				TaskModel task = s.findTaskByID(taskID);
 				s.getTasks().remove(task);
-				this.returnToWorkflowView();
 				etv.resetFields();
 				break;
 
@@ -151,7 +146,6 @@ public class EditTaskController implements ActionListener {
 
 			case "cancel":
 				// go back to workflow view
-				this.returnToWorkflowView();
 				etv.resetFields();
 				break;
 
@@ -174,13 +168,7 @@ public class EditTaskController implements ActionListener {
 		}
 	}
 
-	/**
-	 * switches back to workflow view
-	 */
-	private void returnToWorkflowView() {
-		this.etv.setVisible(false);
-		this.wfv.setVisible(true);
-	}
+
 
 	/**
 	 * Enter the task id that will be edited
