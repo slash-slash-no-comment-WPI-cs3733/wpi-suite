@@ -40,6 +40,7 @@ import taskManager.controller.EditTaskController;
 public class EditTaskView extends JPanel {
 
 	public static final String STAGES = "stages";
+	public static final String REQUIREMENTS = "requirements";
 	public static final String CANCEL = "cancel";
 	public static final String SAVE = "save";
 	public static final String ADD_REQ = "addReq";
@@ -69,6 +70,7 @@ public class EditTaskView extends JPanel {
 	private JTextField commentsField;
 
 	private JComboBox<String> stages;
+	private JComboBox<String> requirements;
 
 	private EditTaskController controller;
 
@@ -143,8 +145,10 @@ public class EditTaskView extends JPanel {
 		// TODO
 		// Comment Pane
 
-		// TODO
 		// Requirement Pane
+		JComboBox<String> nt_requirementBoxes = new JComboBox<String>();
+		requirements = nt_requirementBoxes;
+		requirements.setName(REQUIREMENTS);
 
 		// JButtons
 		// Delete Task and close the window
@@ -259,9 +263,9 @@ public class EditTaskView extends JPanel {
 		// List of Comments
 		// newTaskGridBag.gridy = 8;
 
-		// TODO
 		// List of Requirements
-		// newTaskGridBag.gridy = 9;
+		newTaskGridBag.gridy = 9;
+		add(nt_requirementBoxes, newTaskGridBag);
 
 		// Third Column ////
 
@@ -359,6 +363,10 @@ public class EditTaskView extends JPanel {
 
 	public JComboBox<String> getStages() {
 		return stages;
+	}
+
+	public JComboBox<String> getRequirements() {
+		return requirements;
 	}
 
 	/**

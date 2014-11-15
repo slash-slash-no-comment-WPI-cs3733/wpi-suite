@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -17,6 +18,8 @@ import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.WorkflowView;
+import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
+import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
 
 /**
  * @author Beth Martino
@@ -153,7 +156,7 @@ public class EditTaskController implements ActionListener {
 
 			case EditTaskView.ADD_REQ:
 				// add a requirement to this task
-				System.out.println("You've pressed the add requirement button");
+
 				break;
 
 			case EditTaskView.CANCEL:
@@ -178,6 +181,14 @@ public class EditTaskController implements ActionListener {
 		stages.removeAllItems();
 		for (StageModel stage : wfm.getStages()) {
 			stages.addItem(stage.getName());
+		}
+
+		List<Requirement> reqs = RequirementModel.getInstance()
+				.getRequirements();
+		JComboBox<String> requirements = etv.getRequirements();
+		requirements.removeAllItems();
+		for (Requirement req : reqs) {
+			requirements.addItem(req.getName());
 		}
 	}
 
