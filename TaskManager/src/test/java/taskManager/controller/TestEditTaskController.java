@@ -74,7 +74,7 @@ public class TestEditTaskController {
 		// enter information for a new task
 		getTitleBoxFixture().enterText("New Task");
 		getDescriptionBoxFixture().enterText("a sample task used for testing");
-		etv.getDate().setDate(Calendar.getInstance().getTime());
+		etv.getDateField().setDate(Calendar.getInstance().getTime());
 		fixture.textBox("est_effort").enterText("3");
 
 		// save the task
