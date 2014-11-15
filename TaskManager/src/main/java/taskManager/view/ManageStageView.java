@@ -28,6 +28,12 @@ import taskManager.controller.ManageStageController;
  */
 public class ManageStageView extends JPanel {
 
+	public static final String ADD_NEW_STAGE = "Add new stage";
+	public static final String NEW_STAGE_NAME = "New Stage Name";
+	public static final String MOVE_DOWN = "Move Down";
+	public static final String MOVE_UP = "Move Up";
+	public static final String DELETE = "Delete";
+
 	private ManageStageController controller;
 
 	private List<JButton> buttonsWithoutAController;
@@ -146,11 +152,11 @@ public class ManageStageView extends JPanel {
 		panel.add(new JLabel(name));
 
 		// add buttons
-		JButton delButton = newButtonWithListener("Delete");
+		JButton delButton = newButtonWithListener(DELETE);
 		delButton.setEnabled(removable);
 		panel.add(delButton);
-		panel.add(newButtonWithListener("Move Up"));
-		panel.add(newButtonWithListener("Move Down"));
+		panel.add(newButtonWithListener(MOVE_UP));
+		panel.add(newButtonWithListener(MOVE_DOWN));
 		return panel;
 	}
 
@@ -180,15 +186,15 @@ public class ManageStageView extends JPanel {
 	private JPanel addNewStagePanel() {
 		JPanel panel = new JPanel();
 		text = new JTextField();
-		text.setName("newStageName");
+		text.setName(NEW_STAGE_NAME);
 
 		// both of these need to be set for it to become that size
 		text.setPreferredSize(new Dimension(200, 25));
 		text.setSize(new Dimension(200, 25));
 
-		text.setText("New Stage Name");
+		text.setText(NEW_STAGE_NAME);
 		panel.add(text);
-		panel.add(newButtonWithListener("Add new stage"));
+		panel.add(newButtonWithListener(ADD_NEW_STAGE));
 		return panel;
 	}
 }
