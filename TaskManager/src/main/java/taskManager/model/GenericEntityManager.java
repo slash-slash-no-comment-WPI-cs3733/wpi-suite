@@ -21,7 +21,10 @@ import edu.wpi.cs.wpisuitetng.modules.EntityManager;
 import edu.wpi.cs.wpisuitetng.modules.Model;
 
 /**
- * Description
+ * A class to run on the server and interact with the data store. Different
+ * network requests will call different sub-methods.
+ * 
+ * @see https://github.com/WPI-Suite/wpi-suite/wiki/Networking-with-janeway
  *
  * @author Sam Khalandovsky
  * @version Nov 10, 2014
