@@ -46,6 +46,8 @@ public class TaskView extends JPanel implements ITaskView {
 	 *            the due date of the task
 	 * @param estEffort
 	 *            the estimated effort for the task
+	 * @param taskID
+	 *            The ID of the task being displayed
 	 */
 	public TaskView(String name, Date duedate, int estEffort, String taskID) {
 		// organizes the data in a vertical list

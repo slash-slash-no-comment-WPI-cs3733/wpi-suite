@@ -90,10 +90,10 @@ public class EditTaskView extends JPanel {
 		// sets all text fields editable and adds them to global variables
 		JTextField nt_titleField = new JTextField(25);
 		nt_titleField.setEditable(true);
-		this.titleField = nt_titleField;
+		titleField = nt_titleField;
 		JTextArea nt_descriptionArea = new JTextArea(2, 25);
 		nt_descriptionArea.setEditable(true);
-		this.descripArea = nt_descriptionArea;
+		descripArea = nt_descriptionArea;
 		nt_descriptionArea.setLineWrap(true);
 		JScrollPane nt_descriptionScrollPane = new JScrollPane(
 				nt_descriptionArea);
@@ -104,19 +104,19 @@ public class EditTaskView extends JPanel {
 		JTextField nt_dueDateField = new JTextField(25);
 		nt_dueDateField.setEditable(true);
 		nt_dueDateField.setName("due_date");
-		this.dateField = nt_dueDateField;
+		dateField = nt_dueDateField;
 		JTextField nt_estimatedEffortField = new JTextField(10);
 		nt_estimatedEffortField.setEditable(true);
 		nt_estimatedEffortField.setName("est_effort");
-		this.estEffortField = nt_estimatedEffortField;
+		estEffortField = nt_estimatedEffortField;
 		JTextField nt_actualEffortField = new JTextField(10);
 		nt_actualEffortField.setEditable(true);
 		nt_actualEffortField.setName("act_effort");
-		this.actEffortField = nt_actualEffortField;
+		actEffortField = nt_actualEffortField;
 		JTextField nt_commentsField = new JTextField(25);
 		nt_commentsField.setEditable(true);
 		nt_commentsField.setName("comments");
-		this.commentsField = nt_estimatedEffortField;
+		commentsField = nt_estimatedEffortField;
 
 		// JTextArea
 		// TODO
@@ -138,33 +138,34 @@ public class EditTaskView extends JPanel {
 		// JButtons
 		// Delete Task and close the window
 		JButton nt_deleteBtn = new JButton("Delete");
-		this.delete = nt_deleteBtn;
-		this.delete.setName("delete");
+		delete = nt_deleteBtn;
+		delete.setName("delete");
 		// Add user to list
 		JButton nt_addUsersBtn = new JButton("Add Users");
-		this.addUser = nt_addUsersBtn;
-		this.addUser.setName("addUser");
+		addUser = nt_addUsersBtn;
+		addUser.setName("addUser");
 		// Add comment to comments
 		JButton nt_submitCommentBtn = new JButton("Submit Comment");
-		this.submitComment = nt_submitCommentBtn;
-		this.submitComment.setName("submitComment");
+		submitComment = nt_submitCommentBtn;
+		submitComment.setName("submitComment");
 		// add requirement
 		JButton nt_addRequirementBtn = new JButton("Add Requirement");
-		this.addReq = nt_addRequirementBtn;
-		this.addReq.setName("addReq");
+		addReq = nt_addRequirementBtn;
+		addReq.setName("addReq");
 		// saves all the data and closes the window
 		JButton nt_saveBtn = new JButton("Save");
-		this.save = nt_saveBtn;
-		this.save.setName("save");
+		save = nt_saveBtn;
+		save.setName("save");
 		// closes the window without saving
 		JButton nt_cancelBtn = new JButton("Cancel");
-		this.cancel = nt_cancelBtn;
-		this.cancel.setName("cancel");
+		cancel = nt_cancelBtn;
+		cancel.setName("cancel");
 
 		// Combo Box for Stage
 		JComboBox<String> nt_stagesBoxes = new JComboBox<String>();
+
 		nt_stagesBoxes.setName("stages");
-		this.stages = nt_stagesBoxes;
+		stages = nt_stagesBoxes;
 
 		setLayout(new GridBagLayout());
 
@@ -292,12 +293,12 @@ public class EditTaskView extends JPanel {
 	 */
 	public void setController(EditTaskController controller) {
 		this.controller = controller;
-		this.cancel.addActionListener(controller);
-		this.save.addActionListener(controller);
-		this.addUser.addActionListener(controller);
-		this.addReq.addActionListener(controller);
-		this.submitComment.addActionListener(controller);
-		this.delete.addActionListener(controller);
+		cancel.addActionListener(controller);
+		save.addActionListener(controller);
+		addUser.addActionListener(controller);
+		addReq.addActionListener(controller);
+		submitComment.addActionListener(controller);
+		delete.addActionListener(controller);
 	}
 
 	/**
@@ -352,11 +353,11 @@ public class EditTaskView extends JPanel {
 	/**
 	 * sets the text in the title field
 	 * 
-	 * @param the
-	 *            text in the title field
+	 * @param d
+	 *            the text in the title field
 	 */
 	public void setTitle(String d) {
-		this.titleField.setText(d);
+		titleField.setText(d);
 	}
 
 	/**
@@ -366,7 +367,7 @@ public class EditTaskView extends JPanel {
 	 *            the text in the description field
 	 */
 	public void setDescription(String d) {
-		this.descripArea.setText(d);
+		descripArea.setText(d);
 	}
 
 	/**
@@ -377,7 +378,7 @@ public class EditTaskView extends JPanel {
 	 */
 	public void setDate(Date d) {
 		SimpleDateFormat q = new SimpleDateFormat("MM/dd/yyyy");
-		this.dateField.setText(q.format(d));
+		dateField.setText(q.format(d));
 	}
 
 	/**
@@ -387,7 +388,7 @@ public class EditTaskView extends JPanel {
 	 *            the value to set the estimated effort field to
 	 */
 	public void setEstEffort(Integer i) {
-		this.estEffortField.setText(i.toString());
+		estEffortField.setText(i.toString());
 	}
 
 	/**
@@ -397,7 +398,7 @@ public class EditTaskView extends JPanel {
 	 *            the value to set the actual effort field to
 	 */
 	public void setActEffort(Integer i) {
-		this.actEffortField.setText(i.toString());
+		actEffortField.setText(i.toString());
 	}
 
 	/**
@@ -407,19 +408,20 @@ public class EditTaskView extends JPanel {
 	 *            the index of the stage in the workflow
 	 */
 	public void setStageDropdown(int n) {
-		String p = this.stages.getItemAt(n);
-		this.stages.setSelectedItem(p);
+		String p = stages.getItemAt(n);
+		stages.setSelectedItem(p);
 	}
 
 	/**
 	 * makes all of the text fields blank
 	 */
 	public void resetFields() {
-		this.titleField.setText("");
-		this.descripArea.setText("");
-		this.estEffortField.setText("");
-		this.actEffortField.setText("");
-		this.dateField.setText("");
+
+		titleField.setText("");
+		descripArea.setText("");
+		estEffortField.setText("");
+		actEffortField.setText("");
+		dateField.setText("");
 	}
 
 	/*

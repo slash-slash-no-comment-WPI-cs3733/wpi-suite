@@ -30,7 +30,11 @@ public class ManageStageController implements ActionListener {
 
 	/**
 	 * Creates a new ManageStageController with the given view and model
-	 *
+	 * 
+	 * @param view
+	 *            View associated with this controller.
+	 * @param model
+	 *            The data associated with this controller.
 	 */
 	public ManageStageController(ManageStageView view, WorkflowModel model) {
 		this.view = view;
@@ -59,7 +63,7 @@ public class ManageStageController implements ActionListener {
 
 			stages = model.getStages();
 			for (StageModel s : model.getStages()) {
-				if (s.getName() == stageID) {
+				if (s.getName().equals(stageID)) {
 					stage = s;
 					break;
 				}
@@ -70,7 +74,8 @@ public class ManageStageController implements ActionListener {
 			case "Delete":
 				if (stage.isRemovable()) {
 					view.removeStage(stageID);
-					model.getStages().removeIf(s -> s.getName() == stageID);
+					model.getStages()
+							.removeIf(s -> s.getName().equals(stageID));
 					// refresh the view
 					view.updateUI();
 				}

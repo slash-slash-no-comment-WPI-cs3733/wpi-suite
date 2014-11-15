@@ -34,6 +34,15 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 
 	Class<T> type;
 
+	/**
+	 * 
+	 * Description
+	 *
+	 * @param db
+	 *            The database
+	 * @param type
+	 *            class this EntityManager stores
+	 */
 	public GenericEntityManager(Data db, Class<T> type) {
 		this.db = db;
 		this.type = type;
@@ -42,8 +51,8 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 	/**
 	 * Saves a Model when received from a client
 	 * 
-	 * @see edu.wpi.cs.wpisuitetng.modules.EntityManager#makeEntity(edu.wpi.cs.
-	 *      wpisuitetng.Session, java.lang.String)
+	 * @see edu.wpi.cs.wpisuitetng.modules.EntityManager#makeEntity(edu.wpi.cs.wpisuitetng.Session,
+	 *      java.lang.String)
 	 */
 	@Override
 	public T makeEntity(Session s, String content) throws BadRequestException,

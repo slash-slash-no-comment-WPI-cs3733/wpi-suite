@@ -36,7 +36,7 @@ public class WorkflowView extends JPanel implements IWorkflowView {
 	}
 
 	/**
-	 * @param name
+	 * @param stv
 	 *            of the new stage to be added creates a new scroll panel to
 	 *            house the stage view object sets the size and border
 	 */
@@ -77,7 +77,7 @@ public class WorkflowView extends JPanel implements IWorkflowView {
 			// goes through all of the stage views it contains until it finds
 			// the one that matches the name
 			for (int i = 1; i == this.getComponents().length; i++) {
-				if (this.getComponent(i).getName() == name) {
+				if (this.getComponent(i).getName().equals(name)) {
 					return (StageView) this.getComponent(i);
 				} else {
 					// do nothing, keep checking
