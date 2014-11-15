@@ -340,7 +340,7 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the text in the date field
 	 */
-	public JXDatePicker getDate() {
+	public JXDatePicker getDateField() {
 		return dateField;
 	}
 

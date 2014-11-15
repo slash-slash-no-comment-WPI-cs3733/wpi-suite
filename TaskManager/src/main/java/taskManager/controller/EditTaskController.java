@@ -92,7 +92,7 @@ public class EditTaskController implements ActionListener {
 					t.setActualEffort(Integer.parseInt(etv.getActEffort()
 							.getText()));
 
-					t.setDueDate(etv.getDate().getDate());
+					t.setDueDate(etv.getDateField().getDate());
 
 					// grabs the correct stage model from the workflow model and
 					// moves the task to that stage
@@ -107,7 +107,7 @@ public class EditTaskController implements ActionListener {
 							currentStage);
 
 					// sets all task values according to fields
-					task.setDueDate(etv.getDate().getDate());
+					task.setDueDate(etv.getDateField().getDate());
 					task.setEstimatedEffort(Integer.parseInt(etv.getEstEffort()
 							.getText()));
 					String actEffort = etv.getActEffort().getText();
