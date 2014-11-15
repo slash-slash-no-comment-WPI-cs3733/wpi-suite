@@ -6,16 +6,13 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
-package taskManager.controller;
+package taskManager;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 import edu.wpi.cs.wpisuitetng.network.Network;
 import edu.wpi.cs.wpisuitetng.network.Request;
@@ -26,7 +23,7 @@ import edu.wpi.cs.wpisuitetng.network.models.IRequest;
 import edu.wpi.cs.wpisuitetng.network.models.ResponseModel;
 
 /**
- * Description
+ * Allows the tests to login
  *
  * @author Jon Sorrells
  */
@@ -37,31 +34,86 @@ public class TestLogin {
 	private static final String username = "admin";
 	private static final String password = "password";
 	private static final String url = "http://localhost:8080/WPISuite/API";
+	private static final int maxLoginWait = 5; // in seconds
 
-	@BeforeClass
-	public static void setup() {
-		sendLoginRequest();
+	/**
+	 * login as admin on localhost, timeout of 5 seconds
+	 *
+	 */
+	public static void login() {
+		login(username, password, url, maxLoginWait);
 	}
 
-	@Test
-	public void someTest() {
+	/**
+	 * login as admin on localhost
+	 * 
+	 * @param maxLoginWait
+	 *            the timeout
+	 */
+	public static void login(int maxLoginWait) {
+		login(username, password, url, maxLoginWait);
+	}
+
+	/**
+	 * login on localhost, timeout of 5 seconds
+	 * 
+	 * @param username
+	 *            the user to login as
+	 * @param password
+	 *            that user's password
+	 */
+	public static void login(String username, String password) {
+		login(username, password, url, maxLoginWait);
+	}
+
+	/**
+	 * timeout of 5 seconds
+	 * 
+	 * @param username
+	 *            the user to login as
+	 * @param password
+	 *            that user's password
+	 * @param url
+	 *            the server to login to
+	 */
+	public static void login(String username, String password, String url) {
+		login(username, password, url, maxLoginWait);
+	}
+
+	/**
+	 * 
+	 * @param username
+	 *            the user to login as
+	 * @param password
+	 *            that user's password
+	 * @param url
+	 *            the server to login to
+	 * @param maxLoginWait
+	 *            the timeout
+	 */
+	public static void login(String username, String password, String url,
+			int maxLoginWait) {
+		sendLoginRequest(username, password, url);
 		// wait to login
-		for (int i = 0; i < 10 && !loggedIn; i++) {
+		for (int i = 0; i < maxLoginWait && !loggedIn; i++) {
 			try {
-				java.lang.Thread.sleep(500);
+				java.lang.Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		assertTrue(loggedIn);
+		if (!loggedIn) {
+			fail("Unable to login.  Is your server running?");
+		}
 	}
 
 	/**
 	 * mostly copied from Janeway
 	 *
 	 */
-	public static void sendLoginRequest() {
+	public static void sendLoginRequest(String username, String password,
+			String url) {
 		// Form the basic auth string
 		String basicAuth = "Basic ";
 		String credentials = username + ":" + password;
