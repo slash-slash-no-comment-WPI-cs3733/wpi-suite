@@ -11,18 +11,20 @@ public class TaskInputController implements KeyListener {
 	EditTaskView etv = JanewayModule.etv;
 
 	public TaskInputController() {
-
+		this.checkFields();
 	}
 
 	/**
 	 * checks to see if the edit task fields aren't empty and meet the
-	 * requirements
+	 * requirements. If a field doesn't meet the requirements, display an error
 	 */
 	private boolean checkFields() {
 		boolean titleValid = true;
 		boolean descriptionValid = true;
 		boolean estEffortValid = true;
-		boolean actEffortValid = true;
+
+		// checks each required field and determines if it meets the
+		// requirements for that field
 		if (etv.getTitle().getText().isEmpty()) {
 			titleValid = false;
 		}
@@ -31,24 +33,21 @@ public class TaskInputController implements KeyListener {
 		}
 		// TODO add est effort min and max
 		if (etv.getEstEffort().getText().isEmpty()) {
-			descriptionValid = false;
+			estEffortValid = false;
 		}
-		if (etv.getActEffort().getText().isEmpty()
-				&& etv.getActEffort().isVisible()) {
-			descriptionValid = false;
-		}
-		return titleValid && descriptionValid && estEffortValid
-				&& actEffortValid;
+
+		// display the errors
+		etv.setTitleErrorVisible(!titleValid);
+		etv.setDescriptionErrorVisible(!descriptionValid);
+		etv.setEstEffortErrorVisible(!estEffortValid);
+
+		return titleValid && descriptionValid && estEffortValid;
 
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		if (this.checkFields()) {
-			etv.enableSave();
-		} else {
-			etv.disableSave();
-		}
+
 	}
 
 	@Override
@@ -58,7 +57,11 @@ public class TaskInputController implements KeyListener {
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
+		if (this.checkFields()) {
+			etv.enableSave();
+		} else {
+			etv.disableSave();
+		}
 	}
 
 }

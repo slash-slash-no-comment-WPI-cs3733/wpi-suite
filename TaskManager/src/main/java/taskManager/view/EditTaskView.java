@@ -58,6 +58,10 @@ public class EditTaskView extends JPanel {
 	private JTextField actEffortField;
 	private JTextField commentsField;
 
+	private JLabel titleError;
+	private JLabel descriptionError;
+	private JLabel estimatedEffortError;
+
 	private JComboBox<String> stages;
 
 	private EditTaskController controller;
@@ -86,6 +90,17 @@ public class EditTaskView extends JPanel {
 		JLabel nt_actualEffortLabel = new JLabel("Actual Effort ");
 		JLabel nt_commentsLabel = new JLabel("Comments ");
 		JLabel nt_requirementLabel = new JLabel("Requirements ");
+		JLabel nt_titleLabel_error = new JLabel("Title is required");
+
+		nt_titleLabel_error.setVisible(false);
+		titleError = nt_titleLabel_error;
+		JLabel nt_descriptionLabel_error = new JLabel("Description is required");
+		nt_descriptionLabel_error.setVisible(false);
+		descriptionError = nt_descriptionLabel_error;
+		JLabel nt_estimatedEffortLabel_error = new JLabel(
+				"Estimated Effort is required");
+		nt_estimatedEffortLabel_error.setVisible(false);
+		estimatedEffortError = nt_estimatedEffortLabel_error;
 
 		// JTextFields
 		// sets all text fields editable and adds them to global variables
@@ -257,12 +272,21 @@ public class EditTaskView extends JPanel {
 		// Third Column ////
 
 		newTaskGridBag.anchor = GridBagConstraints.CENTER;
-		newTaskGridBag.weightx = 0.15;
+		newTaskGridBag.weightx = 0.18;
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridx = 2;
 
+		newTaskGridBag.gridy = 0;
+		add(nt_titleLabel_error, newTaskGridBag);
+
+		newTaskGridBag.gridy = 1;
+		add(nt_descriptionLabel_error, newTaskGridBag);
+
 		newTaskGridBag.gridy = 4;
 		add(nt_addUsersBtn, newTaskGridBag);
+
+		newTaskGridBag.gridy = 5;
+		add(nt_estimatedEffortLabel_error, newTaskGridBag);
 
 		newTaskGridBag.gridy = 7;
 		add(nt_submitCommentBtn, newTaskGridBag);
@@ -425,6 +449,39 @@ public class EditTaskView extends JPanel {
 	public void setStageDropdown(int n) {
 		String p = stages.getItemAt(n);
 		stages.setSelectedItem(p);
+	}
+
+	/**
+	 * Sets the title error visible or invisible
+	 * 
+	 * @param v
+	 *            true will make the title error visible, false will make the
+	 *            title error invisible
+	 */
+	public void setTitleErrorVisible(boolean v) {
+		titleError.setVisible(v);
+	}
+
+	/**
+	 * Sets the description error visible or invisible
+	 * 
+	 * @param v
+	 *            true will make the description error visible, false will make
+	 *            the description error invisible
+	 */
+	public void setDescriptionErrorVisible(boolean v) {
+		descriptionError.setVisible(v);
+	}
+
+	/**
+	 * Sets the estimated effort error visible or invisible
+	 * 
+	 * @param v
+	 *            true will make the estimated effort error visible, false will
+	 *            make the estimated effort error invisible
+	 */
+	public void setEstEffortErrorVisible(boolean v) {
+		estimatedEffortError.setVisible(v);
 	}
 
 	/**
