@@ -41,8 +41,8 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 	/**
 	 * Saves a Model when received from a client
 	 * 
-	 * @see edu.wpi.cs.wpisuitetng.modules.EntityManager#makeEntity(edu.wpi.cs.
-	 *      wpisuitetng.Session, java.lang.String)
+	 * @see edu.wpi.cs.wpisuitetng.modules.EntityManager#makeEntity(edu.wpi.cs.wpisuitetng.Session,
+	 *      java.lang.String)
 	 */
 	@Override
 	public T makeEntity(Session s, String content) throws BadRequestException,
@@ -62,11 +62,13 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 	@Override
 	public T[] getEntity(Session s, String id) throws NotFoundException,
 			WPISuiteException {
-		List<Model> response = db.retrieve(type, "id", id, s.getProject());
-		T[] tasks = response.toArray((T[]) Array.newInstance(type, 0));
+		final List<Model> response = db
+				.retrieve(type, "id", id, s.getProject());
+		final T[] tasks = response.toArray((T[]) Array.newInstance(type, 0));
 
 		if (tasks.length < 1 || tasks[0] == null) {
-			throw new NotFoundException();
+			throw new NotFoundException(
+					"Cannot find task list or first entry is null.");
 		}
 		return tasks;
 	}
@@ -78,7 +80,7 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 	 */
 	@Override
 	public T[] getAll(Session s) throws WPISuiteException {
-		List<Model> tasks;
+		final List<Model> tasks;
 		try {
 			tasks = db.retrieveAll(type.newInstance(), s.getProject());
 		} catch (InstantiationException | IllegalAccessException e) {
@@ -97,11 +99,11 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 	@Override
 	public T update(Session s, String content) throws WPISuiteException {
 		// deserialize
-		T newModel = AbstractJsonableModel.fromJson(content, type);
+		final T newModel = AbstractJsonableModel.fromJson(content, type);
 
 		// check if object already exists
-		List<Model> existingModels = db.retrieve(type, "id", newModel.getID(),
-				s.getProject());
+		final List<Model> existingModels = db.retrieve(type, "id",
+				newModel.getID(), s.getProject());
 		if (existingModels.size() < 1 || existingModels.get(0) == null) {
 			save(s, newModel); // if it doesn't exist, save it
 		} else {
@@ -130,7 +132,7 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 	 */
 	@Override
 	public boolean deleteEntity(Session s, String id) throws WPISuiteException {
-		T task = getEntity(s, id)[0];
+		final T task = getEntity(s, id)[0];
 		return (db.delete(task) != null);
 	}
 

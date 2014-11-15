@@ -25,8 +25,8 @@ import org.junit.Test;
  */
 public class WorkflowModelTest {
 	public void verifyWorkflow(WorkflowModel a, WorkflowModel b) {
-		assertTrue("Workflows have different names",
-				a.getID().equals(b.getID()));
+		assertTrue("Workflows have different names", a.getID()
+				.equals(b.getID()));
 		List<StageModel> aStages = a.getStages();
 		List<StageModel> bStages = b.getStages();
 		if (aStages.size() != bStages.size()) {
@@ -59,7 +59,8 @@ public class WorkflowModelTest {
 	}
 
 	public void verifyTask(TaskModel a, TaskModel b) {
-		assertTrue("Tasks have different names", a.getName().equals(b.getName()));
+		assertTrue("Tasks have different names", a.getName()
+				.equals(b.getName()));
 		assertTrue("Tasks have different IDs", a.getID().equals(b.getID()));
 		assertTrue(a.getDescription().equals(b.getDescription()));
 		// Could verify more, but this should be sufficient for test purposes.
@@ -68,7 +69,6 @@ public class WorkflowModelTest {
 	@Test
 	public void basicStageOperations() {
 		WorkflowModel wm = new WorkflowModel("Workflow");
-		System.out.println(wm.getName());
 		StageModel sm1 = new StageModel(wm, "Stage1");
 		StageModel sm2 = new StageModel(wm, "Stage2");
 		StageModel sm3 = new StageModel(wm, "Stage3");
@@ -87,7 +87,6 @@ public class WorkflowModelTest {
 			revorder = s.toJson() + revorder;
 		}
 		assertEquals("Stages did not move properly", inorder, revorder);
-		System.out.println(wm.getName());
 		WorkflowModel wmcpy = AbstractJsonableModel.fromJson(wm.toJson(),
 				WorkflowModel.class);
 		verifyWorkflow(wm, wmcpy);

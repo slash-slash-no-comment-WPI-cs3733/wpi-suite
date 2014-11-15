@@ -22,24 +22,49 @@ public abstract class AbstractJsonableModel<T> extends AbstractModel {
 
 	private String id;
 
-	static private GenericRequestObserver observer = new GenericRequestObserver();
+	private static GenericRequestObserver observer = new GenericRequestObserver();
 
+	/**
+	 * Constructor with unique id
+	 *
+	 * @param id
+	 */
 	public AbstractJsonableModel(String id) {
 		this.id = id;
 	}
 
+	/**
+	 * Null constructor
+	 *
+	 */
 	public AbstractJsonableModel() {
 		this(null);
 	}
 
+	/**
+	 * Gets the item id
+	 *
+	 * @return the id
+	 */
 	public String getID() {
 		return id;
 	}
 
+	/**
+	 * Returns a Request Observer for the object
+	 *
+	 * @return the GenericRequestObserver
+	 */
 	public GenericRequestObserver getObserver() {
 		return observer;
 	}
 
+	/**
+	 * Set the object's id
+	 *
+	 * @param id
+	 *            the new id
+	 */
 	protected void setID(String id) {
 		this.id = id;
 	}
@@ -51,6 +76,15 @@ public abstract class AbstractJsonableModel<T> extends AbstractModel {
 	 */
 	protected abstract void makeIdenticalTo(T model);
 
+	/**
+	 * Deserialize an object of type from json
+	 *
+	 * @param json
+	 *            The serialized json
+	 * @param type
+	 *            The object class to convert to
+	 * @return the deserialized object
+	 */
 	public static <T> T fromJson(String json, Class<T> type) {
 		final Gson parser = new Gson();
 		return parser.fromJson(json, type);

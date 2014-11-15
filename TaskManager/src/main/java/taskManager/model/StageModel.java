@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.gson.Gson;
-
 import edu.wpi.cs.wpisuitetng.network.Network;
 import edu.wpi.cs.wpisuitetng.network.Request;
 import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
@@ -38,6 +36,7 @@ import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
  */
 public class StageModel extends AbstractJsonableModel<StageModel> {
 
+	// Generic logger
 	private static final Logger logger = Logger.getLogger(StageModel.class
 			.getName());
 
@@ -223,7 +222,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 * @param id
 	 *            The id of the task to look for
 	 *
-	 * 
+	 *
 	 * @return the task if found, null otherwise.
 	 */
 	public boolean containsTaskByID(String id) {
@@ -281,6 +280,12 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 */
 	public void addTask(int index, TaskModel task) {
 		taskList.add(index, task);
+		// task.save();
+	}
+
+	public void moveTask(int index, TaskModel task) {
+		taskList.remove(task);
+		addTask(index, task);
 	}
 
 	/**
@@ -367,9 +372,28 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 */
 	public void makeIdenticalTo(StageModel stage) {
 		setID(stage.getID());
-		taskList = stage.getTasks();
+		synchronizeTaskList(taskList);
 		name = stage.getName();
 		workflow = stage.getWorkflow();
+	}
+
+	// We are synchronizing this list with the database.
+	// For each element, if it already exists in the database, we need to update
+	// the pointer in the list to point to the object in the database.
+	// If it doesn't exist, we should save it.
+	private void synchronizeTaskList(List<TaskModel> taskList) {
+		for (TaskModel task : taskList) {
+			TaskModel savedTask = workflow.findTaskByID(task.getID());
+			if (savedTask == null) {
+				// The task does not yet exist in the database.
+				task.save();
+			} else {
+				// This effectively changes the pointer that taskB contains to
+				// now reference an element in the database.
+				savedTask.makeIdenticalTo(task);
+				task = savedTask;
+			}
+		}
 	}
 
 	@Override
