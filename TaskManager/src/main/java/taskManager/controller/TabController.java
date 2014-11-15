@@ -88,7 +88,7 @@ public class TabController {
 	 */
 	public Tab addTaskTab(EditTaskView tv, EditTaskView.Mode mode) {
 		Tab tab = addTab();
-		if (mode == EditTaskView.Mode.CREATE){
+		if (mode == EditTaskView.Mode.CREATE) {
 			tab.setTitle("Create a Task");
 		} else if (mode == EditTaskView.Mode.EDIT) {
 			tab.setTitle("Edit a Task");
@@ -124,15 +124,20 @@ public class TabController {
 	/**
 	 * Adds a tab that allows the user to manage stages
 	 * 
-	 * @return The created Tab
+	 * @return The created Tab or null if there is already a ManageStageView tab
+	 *         visible
 	 */
 	public Tab addManageStagesTab() {
-		ManageStageView msv = new ManageStageView();
-		Tab tab = addTab();
-		tab.setTitle("Manage Stages");
-		tab.setComponent(msv);
-		msv.requestFocus();
-		return tab;
+		if (!view.manageStagesTabOut) {
+			ManageStageView msv = new ManageStageView();
+			Tab tab = addTab();
+			tab.setTitle("Manage Stages");
+			tab.setComponent(msv);
+			msv.requestFocus();
+			view.manageStagesTabOut = true;
+			return tab;
+		}
+		return null;
 	}
 
 	/**
@@ -141,12 +146,16 @@ public class TabController {
 	 * @return The created Tab
 	 */
 	public Tab addManageUsersTab() {
-		ManageUsersView muv = new ManageUsersView();
-		Tab tab = addTab();
-		tab.setTitle("Manage Users");
-		tab.setComponent(muv);
-		muv.requestFocus();
-		return tab;
+		if (!view.manageUsersTabOut) {
+			ManageUsersView muv = new ManageUsersView();
+			Tab tab = addTab();
+			tab.setTitle("Manage Users");
+			tab.setComponent(muv);
+			muv.requestFocus();
+			view.manageUsersTabOut = true;
+			return tab;
+		}
+		return null;
 	}
 
 	/**

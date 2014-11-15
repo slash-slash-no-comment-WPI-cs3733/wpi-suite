@@ -22,8 +22,9 @@ import taskManager.model.WorkflowModel;
  */
 public class TabView extends JTabbedPane {
 
-	private Boolean manageUsersTabOut = false;
-	private Boolean manageStagesTabOut = false;
+	// TabView keeps track of which tabs are visible/out
+	public Boolean manageUsersTabOut = false;
+	public Boolean manageStagesTabOut = false;
 	private TabController tabC;
 
 	public TabView() {
@@ -49,20 +50,21 @@ public class TabView extends JTabbedPane {
 		// the Workflow tab cannot be closed
 		if (!(component instanceof WorkflowView)) {
 			// You can only have one manageUsers or manageStage view out at once
-			if (component instanceof ManageUsersView) {
-				if (manageUsersTabOut) { // There is already a manageUsers tab
-					return;
-				}
-				this.manageUsersTabOut = true;
-			}
-			if (component instanceof ManageStageView) {
-				if (manageStagesTabOut) { // There is already a manageStages tab
-					return;
-				}
-				this.manageStagesTabOut = true;
-			}
-
-			setTabComponentAt(index, new ClosableTab(this));
+			// if (component instanceof ManageUsersView) {
+			// if (manageUsersTabOut) { // There is already a manageUsers tab
+			// return;
+			// }
+			// this.manageUsersTabOut = true;
+			// }
+			// if (component instanceof ManageStageView) {
+			// if (manageStagesTabOut) { // There is already a manageStages tab
+			// return;
+			// }
+			// this.manageStagesTabOut = true;
+			// }
+			ClosableTab ct = new ClosableTab(this, component);
+			ct.setTabView(this);
+			setTabComponentAt(index, ct);
 		}
 	}
 
@@ -79,6 +81,18 @@ public class TabView extends JTabbedPane {
 		super.setComponentAt(index, component);
 		fireStateChanged(); // hack to make sure toolbar knows if component
 							// changes
+	}
+
+	// used by controllers to remotely tell TabView when a ManageUsers tab is
+	// created or removed
+	public void setManageUsersTabOut(Boolean b) {
+		this.manageUsersTabOut = b;
+	}
+
+	// used by controllers to remotely tell TabView when a ManageStages tab is
+	// created or removed
+	public void setManageStagesTabOut(Boolean b) {
+		this.manageUsersTabOut = b;
 	}
 
 }
