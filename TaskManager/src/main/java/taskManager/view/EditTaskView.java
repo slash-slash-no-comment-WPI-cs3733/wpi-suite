@@ -27,6 +27,7 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
 import taskManager.controller.EditTaskController;
+import taskManager.controller.TaskInputController;
 
 /**
  *  Edit panel for a new task
@@ -156,6 +157,7 @@ public class EditTaskView extends JPanel {
 		JButton nt_saveBtn = new JButton("Save");
 		save = nt_saveBtn;
 		save.setName("save");
+		this.disableSave();
 		// closes the window without saving
 		JButton nt_cancelBtn = new JButton("Cancel");
 		cancel = nt_cancelBtn;
@@ -302,6 +304,19 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
+	 * Adds the action listener (controller) to this view
+	 * 
+	 * @param controller
+	 *            the controller to be attached to this view
+	 */
+	public void setFieldController(TaskInputController controller) {
+		titleField.addKeyListener(controller);
+		descripArea.addKeyListener(controller);
+		estEffortField.addKeyListener(controller);
+		actEffortField.addKeyListener(controller);
+	}
+
+	/**
 	 * Gets the text in the title field
 	 * 
 	 * @return the text in the title field
@@ -422,6 +437,20 @@ public class EditTaskView extends JPanel {
 		estEffortField.setText("");
 		actEffortField.setText("");
 		dateField.setText("");
+	}
+
+	/**
+	 * enables the ability to click the save button
+	 */
+	public void enableSave() {
+		this.save.setEnabled(true);
+	}
+
+	/**
+	 * disables the ability to click the save button
+	 */
+	public void disableSave() {
+		this.save.setEnabled(false);
 	}
 
 	/*
