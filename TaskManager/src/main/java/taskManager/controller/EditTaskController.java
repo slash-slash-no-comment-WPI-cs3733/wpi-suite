@@ -75,7 +75,7 @@ public class EditTaskController implements ActionListener {
 
 			switch (name) {
 
-			case "save":
+			case EditTaskView.SAVE:
 				// find the appropriate stage
 				// create new task
 
@@ -128,7 +128,7 @@ public class EditTaskController implements ActionListener {
 				wfm.save();
 				break;
 
-			case "delete":
+			case EditTaskView.DELETE:
 				// delete this task
 				StageModel s = wfm.findStageByName((String) etv.getStages()
 						.getSelectedItem());
@@ -141,23 +141,23 @@ public class EditTaskController implements ActionListener {
 				wfm.save();
 				break;
 
-			case "addUser":
+			case EditTaskView.ADD_USER:
 				// add a user to this task
 				System.out.println("You've pressed the add user button");
 				break;
 
-			case "addReq":
+			case EditTaskView.ADD_REQ:
 				// add a requirement to this task
 				System.out.println("You've pressed the add requirement button");
 				break;
 
-			case "cancel":
+			case EditTaskView.CANCEL:
 				// go back to workflow view
 				this.returnToWorkflowView();
 				etv.resetFields();
 				break;
 
-			case "submitComment":
+			case EditTaskView.SUBMIT_COMMENT:
 				// creates a new activity
 				System.out.println("You've pressed the submit comment button");
 				break;

@@ -71,7 +71,7 @@ public class ToolbarController implements ActionListener {
 		if (button instanceof JButton) {
 			String name = ((JButton) button).getName();
 			switch (name) {
-			case "createTask":
+			case ToolbarView.CREATE_TASK:
 				workflowView.setVisible(false);
 				manageUsersView.setVisible(false);
 				manageStagesView.setVisible(false);
@@ -79,21 +79,21 @@ public class ToolbarController implements ActionListener {
 				newTaskView.getTitle().setName("000000");
 				newTaskView.setVisible(true);
 				break;
-			case "manageStages":
+			case ToolbarView.MANAGE_STAGES:
 				workflowView.setVisible(false);
 				manageUsersView.setVisible(false);
 				statisticsView.setVisible(false);
 				newTaskView.setVisible(false);
 				manageStagesView.setVisible(true);
 				break;
-			case "manageUsers":
+			case ToolbarView.MANAGE_USERS:
 				workflowView.setVisible(false);
 				manageStagesView.setVisible(false);
 				statisticsView.setVisible(false);
 				newTaskView.setVisible(false);
 				manageUsersView.setVisible(true);
 				break;
-			case "statistics":
+			case ToolbarView.STATISTICS:
 				workflowView.setVisible(false);
 				manageUsersView.setVisible(false);
 				manageStagesView.setVisible(false);
@@ -101,7 +101,7 @@ public class ToolbarController implements ActionListener {
 				statisticsView.setVisible(true);
 				break;
 
-			case "workflow":
+			case ToolbarView.WORKFLOW:
 				manageUsersView.setVisible(false);
 				manageStagesView.setVisible(false);
 				newTaskView.setVisible(false);
@@ -109,7 +109,7 @@ public class ToolbarController implements ActionListener {
 				workflowView.setVisible(true);
 				break;
 
-			case "refresh":
+			case ToolbarView.REFRESH:
 				workflowController.fetch();
 			}
 		}
