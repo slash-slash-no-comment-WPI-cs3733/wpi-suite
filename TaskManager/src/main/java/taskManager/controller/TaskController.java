@@ -57,14 +57,12 @@ public class TaskController implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		// TODO: Populate with data?
 		EditTaskView etv = new EditTaskView(Mode.EDIT);
-		tabC.addTaskTab(etv, Mode.EDIT);
 
 		// uses the title field to hold the unique id
 		etv.getTitle().setName(this.model.getID());
 
 		// uses description field to hold the name of the stage
-		etv.getDescription().setName(
-				this.model.getStage().getName());
+		etv.getDescription().setName(this.model.getStage().getName());
 
 		// populate editable fields with this tasks info
 		etv.setTitle(model.getName());
@@ -72,7 +70,6 @@ public class TaskController implements ActionListener {
 		etv.setDate(model.getDueDate());
 		etv.setEstEffort(model.getEstimatedEffort());
 		etv.setActEffort(model.getActualEffort());
-
 
 		// figures out the index of the stage, then sets the drop down to the
 		// stage at that index
@@ -84,5 +81,7 @@ public class TaskController implements ActionListener {
 				break;
 			}
 		}
+
+		tabC.addTaskTab(etv, Mode.EDIT);
 	}
 }
