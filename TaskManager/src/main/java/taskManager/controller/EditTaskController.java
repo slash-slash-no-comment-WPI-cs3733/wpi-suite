@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 
 import taskManager.JanewayModule;
 import taskManager.model.StageModel;
@@ -52,6 +53,7 @@ public class EditTaskController implements ActionListener {
 
 			taskID = etv.getTitle().getName();
 
+			// checks if the task already exists
 			boolean exists = false;
 			StageModel currentStage = wfm.findStageByName("New");
 			for (StageModel stage : wfm.getStages()) {
@@ -64,6 +66,7 @@ public class EditTaskController implements ActionListener {
 				}
 			}
 
+			// grabs the stage that we want to move to
 			StageModel desiredStage = wfm.findStageByName((String) etv
 					.getStages().getSelectedItem());
 
@@ -79,56 +82,71 @@ public class EditTaskController implements ActionListener {
 					TaskModel t = currentStage.findTaskByID(taskID);
 
 					// updates text fields
-					t.setName(etv.getTitle().getText());
-					t.setDescription(etv.getDescription().getText());
-					t.setEstimatedEffort(Integer.parseInt(etv.getEstEffort()
-							.getText()));
-					t.setActualEffort(Integer.parseInt(etv.getActEffort()
-							.getText()));
-
-					// formats the date
-					SimpleDateFormat d = new SimpleDateFormat("MM/dd/yyyy");
-					try {
-						t.setDueDate(d.parse(etv.getDate().getText()));
-					} catch (ParseException e1) {
-						// TODO think of something to go here
+					if (etv.getTitle().getText().isEmpty()
+							|| etv.getDescription().getText().isEmpty()
+							|| etv.getEstEffort().getText().isEmpty()) {
+						JOptionPane
+								.showMessageDialog(etv,
+										"Title, description and estimated effort are required");
+					} else {
+						t.setName(etv.getTitle().getText());
+						t.setDescription(etv.getDescription().getText());
+						t.setEstimatedEffort(Integer.parseInt(etv
+								.getEstEffort().getText()));
+						t.setActualEffort(Integer.parseInt(etv.getActEffort()
+								.getText()));
+						// formats the date
+						SimpleDateFormat d = new SimpleDateFormat("MM/dd/yyyy");
+						try {
+							t.setDueDate(d.parse(etv.getDate().getText()));
+						} catch (ParseException e1) {
+							// TODO think of something to go here
+						}
+						// moves the task to the selected stage
+						etv.resetFields();
+						wfm.moveTask(t, currentStage, desiredStage);
+						t.setStage(desiredStage);
+						this.returnToWorkflowView();
+						this.setTaskID("000000");
+						JOptionPane.showMessageDialog(etv, "this is the title"
+								+ etv.getTitle().getText());
 					}
 
-					// grabs the correct stage model from the workflow model and
-					// moves the task to that stage
-					wfm.moveTask(t, currentStage, desiredStage);
-					t.setStage(desiredStage);
-					this.returnToWorkflowView();
-					this.setTaskID("000000");
 				} else {
 
-					// creates a new task model
-					TaskModel task = new TaskModel(etv.getTitle().getText(),
-							currentStage);
+					if (etv.getTitle().getText().isEmpty()
+							|| etv.getDescription().getText().isEmpty()
+							|| etv.getEstEffort().getText().isEmpty()) {
+						JOptionPane
+								.showMessageDialog(etv,
+										"Title, description and estimated effort are required");
+					} else {
+						// creates a new task model
+						TaskModel task = new TaskModel(
+								etv.getTitle().getText(), currentStage);
 
-					// sets all task values according to fields
-					SimpleDateFormat d = new SimpleDateFormat("MM/dd/yyyy");
-					try {
-						task.setDueDate(d.parse(etv.getDate().getText()));
-					} catch (ParseException p) {
-						p.printStackTrace();
+						// sets all task values according to fields
+						SimpleDateFormat d = new SimpleDateFormat("MM/dd/yyyy");
+						try {
+							task.setDueDate(d.parse(etv.getDate().getText()));
+						} catch (ParseException p) {
+							p.printStackTrace();
+						}
+						task.setEstimatedEffort(Integer.parseInt(etv
+								.getEstEffort().getText()));
+						String actEffort = etv.getActEffort().getText();
+						try {
+							task.setActualEffort(Integer.parseInt(actEffort));
+						} catch (java.lang.NumberFormatException e2) {
+							// TODO: handle error
+						}
+						task.setDescription(etv.getDescription().getText());
+						// makes all the fields blank again
+						etv.resetFields();
+						// exit the edit view, this refreshes the workflow
+						this.returnToWorkflowView();
 					}
-					task.setEstimatedEffort(Integer.parseInt(etv.getEstEffort()
-							.getText()));
-					String actEffort = etv.getActEffort().getText();
-					try {
-						task.setActualEffort(Integer.parseInt(actEffort));
-					} catch (java.lang.NumberFormatException e2) {
-						// TODO: handle error
-					}
-					task.setDescription(etv.getDescription().getText());
 				}
-
-				// makes all the fields blank again
-				etv.resetFields();
-				// exit the edit view, this refreshes the workflow
-				this.returnToWorkflowView();
-
 				// Save entire workflow whenever a task is saved
 				wfm.save();
 				break;
