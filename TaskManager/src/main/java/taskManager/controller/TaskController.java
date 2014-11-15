@@ -77,5 +77,6 @@ public class TaskController implements ActionListener {
 				break;
 			}
 		}
+		JanewayModule.etv.setStageSelectorEnabled(true);
 	}
 }

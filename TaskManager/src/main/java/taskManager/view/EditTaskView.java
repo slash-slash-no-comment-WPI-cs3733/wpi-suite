@@ -496,6 +496,17 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
+	 * Sets the stage selector enabled or disabled
+	 * 
+	 * @param v
+	 *            true will make the stage selector enabled, false will make the
+	 *            stage selector disabled
+	 */
+	public void setStageSelectorEnabled(boolean v) {
+		stages.setEnabled(v);
+	}
+
+	/**
 	 * makes all of the text fields blank
 	 */
 	public void resetFields() {

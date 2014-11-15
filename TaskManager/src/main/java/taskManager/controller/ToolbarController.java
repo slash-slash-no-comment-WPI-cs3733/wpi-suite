@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import taskManager.JanewayModule;
 import taskManager.view.EditTaskView;
 import taskManager.view.ManageStageView;
 import taskManager.view.ManageUsersView;
@@ -78,6 +79,8 @@ public class ToolbarController implements ActionListener {
 				statisticsView.setVisible(false);
 				newTaskView.getTitle().setName("000000");
 				newTaskView.setVisible(true);
+				EditTaskView etv = JanewayModule.etv;
+				etv.setStageSelectorEnabled(false);
 				break;
 			case ToolbarView.MANAGE_STAGES:
 				workflowView.setVisible(false);
