@@ -18,7 +18,7 @@ import taskManager.view.Tab;
 import taskManager.JanewayModule;
 
 /**
- * Description A controller for the toolbar view
+ * A controller for the toolbar view
  *
  * @author Beth Martino
  */
@@ -54,6 +54,9 @@ public class ToolbarController implements ActionListener {
 				break;
 			case "reports":
 				break;
+
+			case "refresh":
+				workflowController.fetch();
 			}
 		}
 	}

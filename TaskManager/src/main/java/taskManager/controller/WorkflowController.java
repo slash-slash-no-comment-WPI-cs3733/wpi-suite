@@ -27,10 +27,13 @@ public class WorkflowController {
 	private final WorkflowView view;
 	private final WorkflowModel model;
 
+	public static boolean alive = true;
+
 	/**
 	 * Constructor for the WorkflowController, gets all the stages from the
 	 * WorkflowView, creates the corresponding StageView and StageControllers,
-	 * and adds the StageViews to the UI.
+	 * and adds the StageViews to the UI. Polls the server every 1 second until
+	 * it receives the workflow model.
 	 * 
 	 * @param view
 	 *            the corresponding WorkflowView object
@@ -41,12 +44,31 @@ public class WorkflowController {
 		this.view = view;
 		this.model = model;
 
+
 		// necessary to add these stages to workflowView (don't know/how)
 		StageModel newStage = new StageModel(this.model, "New", false);
 		StageModel startedStage = new StageModel(this.model, "Scheduled", false);
 		StageModel progressStage = new StageModel(this.model, "In Progress",
 				false);
 		StageModel completeStage = new StageModel(this.model, "Complete", false);
+
+		Thread thread = new Thread() {
+			public void run() {
+				while (alive) {
+					try {
+						sleep(1000);
+						fetch();
+					} catch (NullPointerException e) {
+						// this is expected, do nothing
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+		thread.setName("polling");
+		thread.setDaemon(true);
+		thread.start();
 
 		reloadData();
 	}
@@ -70,5 +92,16 @@ public class WorkflowController {
 			// add stage view to workflow
 			view.addStageView(stv);
 		}
+		view.revalidate();
+		view.repaint();
+	}
+
+	/**
+	 * Asks the model to pull from the server. When the server responds, model
+	 * data is updated and reloadData is called.
+	 *
+	 */
+	public void fetch() {
+		model.update(this);
 	}
 }

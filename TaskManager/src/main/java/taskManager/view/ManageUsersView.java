@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2012-2014 -- WPI Suite
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
+
 package taskManager.view;
 
 import java.awt.Color;
@@ -6,6 +15,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -25,7 +35,7 @@ public class ManageUsersView extends JPanel {
 	private static final long serialVersionUID = -4921811814567755329L;
 	// TODO: Change ActionListener to ManageUsersController when it exists
 	private ActionListener controller;
-	private ArrayList<UserView> usersList = new ArrayList<UserView>();
+	private List<UserView> usersList = new ArrayList<UserView>();
 	private JPanel window;
 	private JLabel title;
 	// JPanel's on the window
@@ -42,7 +52,7 @@ public class ManageUsersView extends JPanel {
 		title = new JLabel("Manage Users");
 		title.setFont(new Font("Serif", Font.PLAIN, 15));
 		window = new JPanel();
-		this.window.setLayout(new FlowLayout());
+		window.setLayout(new FlowLayout());
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
 		// Users panel
@@ -90,15 +100,23 @@ public class ManageUsersView extends JPanel {
 		tasksBlock.add(tasks);
 
 		// Add panels to the window
-		this.window.add(usersBlock);
-		this.window.add(buttons);
-		this.window.add(tasksBlock);
+		window.add(usersBlock);
+		window.add(buttons);
+		window.add(tasksBlock);
 
 		// Add title and window to this
 		this.add(title);
 		this.add(window);
 	}
 
+	/**
+	 * 
+	 * Sets this view's Controller. This method should probably be named
+	 * setController.
+	 *
+	 * @param controller
+	 *            The new controller (that implements ActionListener)
+	 */
 	public void addController(ActionListener controller) {
 		this.controller = controller;
 	}

@@ -49,8 +49,8 @@ public class TaskController implements ActionListener {
 		this.tabC = JanewayModule.tabC;
 		this.view = view;
 		this.model = model;
-		this.sm = model.getStage();
-		this.wfm = sm.getWorkflow();
+		sm = model.getStage();
+		wfm = sm.getWorkflow();
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class TaskController implements ActionListener {
 		// figures out the index of the stage, then sets the drop down to the
 		// stage at that index
 
-		List<StageModel> stages = this.wfm.getStages();
+		List<StageModel> stages = wfm.getStages();
 		for (int i = 0; i < stages.size(); i++) {
 			if (stages.get(i) == this.sm) {
 				etv.setStageDropdown(i);

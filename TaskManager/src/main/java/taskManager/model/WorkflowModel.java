@@ -11,8 +11,16 @@ package taskManager.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
+import taskManager.controller.WorkflowController;
+
+import com.google.gson.Gson;
+
+import edu.wpi.cs.wpisuitetng.network.Network;
+import edu.wpi.cs.wpisuitetng.network.Request;
+import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
 
 /**
  * An entire program workflow. Contains a number of {@link StageModel Stages}.
@@ -22,16 +30,26 @@ import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
  * @author Ezra Davis
  * @version Nov 6, 2014
  */
-public class WorkflowModel extends AbstractModel {
+public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
+	// List of stages in the workflow.
 	List<StageModel> stageList;
 	String name;
+
+	private static final Logger logger = Logger.getLogger(WorkflowModel.class
+			.getName());
 
 	/**
 	 * Constructor for WorkflowModel.
 	 */
-	public WorkflowModel() {
+	public WorkflowModel(String name) {
+		// set ID
+		super(name);
 		stageList = new ArrayList<StageModel>();
 		// TODO Add default stages
+	}
+
+	public WorkflowModel() {
+		this("defaultWorkflow");
 	}
 
 	/**
@@ -61,6 +79,7 @@ public class WorkflowModel extends AbstractModel {
 	 */
 	public void moveStage(int index, StageModel s) {
 		if (!stageList.contains(s)) {
+			logger.log(Level.WARNING, "Stage not in workflow");
 			throw new IllegalArgumentException(
 					"Stage being moved must already be in the workflow.");
 		}
@@ -74,7 +93,7 @@ public class WorkflowModel extends AbstractModel {
 		}
 		stageList.remove(s);
 		stageList.add(index, s);
-		return;
+		logger.log(Level.FINER, "Stage " + s.getName() + " moved.");
 	}
 
 	/**
@@ -98,6 +117,7 @@ public class WorkflowModel extends AbstractModel {
 	 */
 	public void addStage(StageModel newStage, int index) {
 		stageList.add(index, newStage);
+		logger.log(Level.FINER, "Stage " + newStage.getName() + " added.");
 	}
 
 	/**
@@ -105,6 +125,7 @@ public class WorkflowModel extends AbstractModel {
 	 *
 	 * @param stage
 	 *            the stage to look for
+	 *
 	 * 
 	 * @return if the workflow contains the given stage
 	 */
@@ -118,6 +139,7 @@ public class WorkflowModel extends AbstractModel {
 	 *
 	 * @param stage
 	 *            the name of the stage
+	 *
 	 * 
 	 * @return the StageModel, null if non-existent
 	 */
@@ -135,12 +157,13 @@ public class WorkflowModel extends AbstractModel {
 	 *
 	 * @param newID
 	 *            a potential ID
+	 * 
 	 * @return a unique ID
 	 */
 	public String findUniqueTaskID(String newID) {
 		for (StageModel stage : stageList) {
 			for (TaskModel task : stage.getTasks()) {
-				if (task.getID() == newID) {
+				if (task.getID().equals(newID)) {
 					// Append '#' when conflicts appear
 					return findUniqueTaskID(newID + '#');
 				}
@@ -169,51 +192,111 @@ public class WorkflowModel extends AbstractModel {
 	 * @param toStage
 	 *            The stage moving to
 	 *
-	 * 
-	 * @return int error code, 1: task not found, 2: From stage not found, 3: To
-	 *         stage not found.
 	 */
-	public int moveTask(TaskModel task, StageModel fromStage, StageModel toStage) {
+	public void moveTask(TaskModel task, StageModel fromStage,
+			StageModel toStage) {
 		if (!stageList.contains(toStage)) {
-			// TODO: Log to stage non-existence
-			addStage(toStage);
+			logger.log(Level.WARNING,
+					"Tried to move a task to a non-existant stage.");
+			throw new IllegalArgumentException("No such target stage");
 		}
 		if (!stageList.contains(fromStage)) {
-			// TODO: Log from stage non-existence
-			return 2;
+			logger.log(Level.WARNING,
+					"Tried to move a task from a non-existant stage.");
+			throw new IndexOutOfBoundsException("No such source stage.");
 		}
 		if (!fromStage.containsTask(task)) {
-			// TODO: Log task non-existence
-			return 1;
+			logger.log(Level.WARNING,
+					"Tried to move a task that does not exist.");
+			throw new IndexOutOfBoundsException("No such task.");
 		}
-		toStage.addTask(task); // TODO: Check for duplicate on addition?
+		final ActivityModel movedTask = new ActivityModel("Moved task",
+				ActivityModel.activityModelType.MOVE);
+		toStage.addTask(task);
 		fromStage.removeTask(task);
-		return 0;
+		task.addActivity(movedTask);
+		logger.log(Level.FINER, "Moved task successfully.");
 	}
 
+	/**
+	 * Changes this workflowmodel to be identical to the inputed workflow model,
+	 * while maintaining the pointer
+	 *
+	 * @param workflow
+	 *            The workflow to copy
+	 */
 	public void makeIdenticalTo(WorkflowModel workflow) {
+		setID(workflow.getID());
 		stageList = workflow.getStages();
 		name = workflow.getName();
 	}
 
+	/**
+	 * Rebuild the stage->workflow and task->stage references for all objects in
+	 * workflow
+	 *
+	 */
+	public void rebuildAllRefs() {
+		for (StageModel stage : stageList) {
+			stage.setWorkflow(this);
+			stage.rebuildTaskRefs();
+		}
+	}
+
 	@Override
 	public void save() {
-		// TODO Auto-generated method stub
+		// Tell the fetch observer to ignore the next server response, because
+		// it may not have these changes yet
+		FetchWorkflowObserver.ignoreNextResponse = true;
+
+		final Request request = Network.getInstance().makeRequest(
+				"taskmanager/workflow", HttpMethod.POST);
+		request.setBody(toJson());
+		System.out.println("Saving: " + toJson());
+		request.addObserver(getObserver());
+		request.send();
 	}
 
 	@Override
 	public void delete() {
-		// TODO Auto-generated method stub
+		final Request request = Network.getInstance().makeRequest(
+				"taskmanager/workflow", HttpMethod.DELETE);
+		request.setBody(toJson());
+		System.out.println("Deleting: " + toJson());
+		request.addObserver(getObserver());
+		request.send();
 	}
 
 	/**
-	 * Serializes this Workflow model into a JSON string.
-	 *
-	 * @return the JSON representation of this Workflow
+	 * Retrieve all workspaces
+	 * 
+	 * @param controller
+	 *            The active workflow controller.
 	 */
+	public void update(WorkflowController controller) {
+		final Request request = Network.getInstance().makeRequest(
+				"taskmanager/workflow/" + getID(), HttpMethod.GET);
+		request.addObserver(new FetchWorkflowObserver(this, controller));
+		request.send();
+	}
+
 	@Override
 	public String toJson() {
-		return null;
+		final Gson gson = new Gson();
+		return gson.toJson(this);
+	}
+
+	/**
+	 * Static method for deserializing object from JSON
+	 *
+	 * @param serialized
+	 *            JSON string
+	 * 
+	 * @return the deserialized TaskModel
+	 */
+	public static WorkflowModel fromJson(String serialized) {
+		final Gson gson = new Gson();
+		return gson.fromJson(serialized, WorkflowModel.class);
 	}
 
 	/**

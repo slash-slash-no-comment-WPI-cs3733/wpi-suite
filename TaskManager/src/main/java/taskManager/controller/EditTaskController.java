@@ -32,7 +32,8 @@ public class EditTaskController implements ActionListener {
 	/**
 	 * Constructor, attaches the edit task view to this controller
 	 * 
-	 * @param etv
+	 * @param wfm
+	 *            The workflowModel that belongs to this controller.
 	 */
 	public EditTaskController(WorkflowModel wfm, EditTaskView etv) {
 		this.etv = etv;
@@ -95,6 +96,7 @@ public class EditTaskController implements ActionListener {
 					// moves the task to that stage
 					wfm.moveTask(t, currentStage, desiredStage);
 					t.setStage(desiredStage);
+					this.returnToWorkflowView();
 					this.setTaskID("000000");
 				} else {
 
@@ -123,6 +125,10 @@ public class EditTaskController implements ActionListener {
 				// makes all the fields blank again
 				etv.resetFields();
 				// exit the edit view, this refreshes the workflow
+				this.returnToWorkflowView();
+
+				// Save entire workflow whenever a task is saved
+				wfm.save();
 				break;
 
 			case "delete":
@@ -132,6 +138,9 @@ public class EditTaskController implements ActionListener {
 				TaskModel task = s.findTaskByID(taskID);
 				s.getTasks().remove(task);
 				etv.resetFields();
+
+				// Save entire workflow whenever a task is deleted
+				wfm.save();
 				break;
 
 			case "addUser":
@@ -168,7 +177,14 @@ public class EditTaskController implements ActionListener {
 		}
 	}
 
-
+	/**
+	 * switches back to workflow view
+	 */
+	 needs fixing;
+	private void returnToWorkflowView() {
+		etv.setVisible(false);
+		wfv.setVisible(true);
+	}
 
 	/**
 	 * Enter the task id that will be edited
@@ -177,7 +193,7 @@ public class EditTaskController implements ActionListener {
 	 *            the id that new task info will be saved to
 	 */
 	public void setTaskID(String id) {
-		this.taskID = id;
+		taskID = id;
 	}
 
 }

@@ -1,6 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2012-2014 -- WPI Suite
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
+
 package taskManager.view;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
@@ -16,7 +25,7 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 public class UserList extends JPanel {
 
 	private static final long serialVersionUID = -6637385817228659411L;
-	private ArrayList<UserView> usersList;
+	private List<UserView> usersList;
 
 	public UserList() {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -47,8 +56,11 @@ public class UserList extends JPanel {
 
 	/**
 	 * Removes a user from the user list
+	 * 
+	 * @param user
+	 *            User to be removed
 	 */
 	public void removeUser(UserView user) {
-		this.usersList.remove(user); // TODO: will this work? Write a test
+		usersList.remove(user); // TODO: will this work? Write a test
 	}
 }
