@@ -10,7 +10,6 @@ import java.text.SimpleDateFormat;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JOptionPane;
 
 import taskManager.JanewayModule;
 import taskManager.model.StageModel;
@@ -96,13 +95,15 @@ public class EditTaskController implements ActionListener {
 						// TODO think of something to go here
 					}
 					// moves the task to the selected stage
-					etv.resetFields();
-					wfm.moveTask(t, currentStage, desiredStage);
+
 					t.setStage(desiredStage);
-					this.returnToWorkflowView();
+					// save the edited task to the database
+					t.save();
+					wfm.moveTask(t, currentStage, desiredStage);
+					// save the workflow because we may have moved the task
+					wfm.save();
 					this.setTaskID("000000");
-					JOptionPane.showMessageDialog(etv, "this is the title"
-							+ etv.getTitle().getText());
+
 				} else {
 					// creates a new task model
 					TaskModel task = new TaskModel(etv.getTitle().getText(),
@@ -124,12 +125,12 @@ public class EditTaskController implements ActionListener {
 						// TODO: handle error
 					}
 					task.setDescription(etv.getDescription().getText());
-					// makes all the fields blank again
-					etv.resetFields();
-					// exit the edit view, this refreshes the workflow
-					this.returnToWorkflowView();
-
 				}
+
+				// exits edit task view
+				this.returnToWorkflowView();
+				// makes all of the fields blank again
+				etv.resetFields();
 				// Save entire workflow whenever a task is saved
 				wfm.save();
 				break;
