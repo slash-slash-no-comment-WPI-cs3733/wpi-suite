@@ -39,6 +39,17 @@ import taskManager.controller.EditTaskController;
 
 public class EditTaskView extends JPanel {
 
+	public static final String STAGES = "stages";
+	public static final String CANCEL = "cancel";
+	public static final String SAVE = "save";
+	public static final String ADD_REQ = "addReq";
+	public static final String SUBMIT_COMMENT = "submitComment";
+	public static final String ADD_USER = "addUser";
+	public static final String DELETE = "delete";
+	public static final String COMMENTS = "comments";
+	public static final String ACT_EFFORT = "act_effort";
+	public static final String EST_EFFORT = "est_effort";
+	public static final String DUE_DATE = "due_date";
 	/**
 	 * 
 	 */
@@ -103,19 +114,19 @@ public class EditTaskView extends JPanel {
 				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		JTextField nt_dueDateField = new JTextField(25);
 		nt_dueDateField.setEditable(true);
-		nt_dueDateField.setName("due_date");
+		nt_dueDateField.setName(DUE_DATE);
 		dateField = nt_dueDateField;
 		JTextField nt_estimatedEffortField = new JTextField(10);
 		nt_estimatedEffortField.setEditable(true);
-		nt_estimatedEffortField.setName("est_effort");
+		nt_estimatedEffortField.setName(EST_EFFORT);
 		estEffortField = nt_estimatedEffortField;
 		JTextField nt_actualEffortField = new JTextField(10);
 		nt_actualEffortField.setEditable(true);
-		nt_actualEffortField.setName("act_effort");
+		nt_actualEffortField.setName(ACT_EFFORT);
 		actEffortField = nt_actualEffortField;
 		JTextField nt_commentsField = new JTextField(25);
 		nt_commentsField.setEditable(true);
-		nt_commentsField.setName("comments");
+		nt_commentsField.setName(COMMENTS);
 		commentsField = nt_estimatedEffortField;
 
 		// JTextArea
@@ -139,32 +150,32 @@ public class EditTaskView extends JPanel {
 		// Delete Task and close the window
 		JButton nt_deleteBtn = new JButton("Delete");
 		delete = nt_deleteBtn;
-		delete.setName("delete");
+		delete.setName(DELETE);
 		// Add user to list
 		JButton nt_addUsersBtn = new JButton("Add Users");
 		addUser = nt_addUsersBtn;
-		addUser.setName("addUser");
+		addUser.setName(ADD_USER);
 		// Add comment to comments
 		JButton nt_submitCommentBtn = new JButton("Submit Comment");
 		submitComment = nt_submitCommentBtn;
-		submitComment.setName("submitComment");
+		submitComment.setName(SUBMIT_COMMENT);
 		// add requirement
 		JButton nt_addRequirementBtn = new JButton("Add Requirement");
 		addReq = nt_addRequirementBtn;
-		addReq.setName("addReq");
+		addReq.setName(ADD_REQ);
 		// saves all the data and closes the window
 		JButton nt_saveBtn = new JButton("Save");
 		save = nt_saveBtn;
-		save.setName("save");
+		save.setName(SAVE);
 		// closes the window without saving
 		JButton nt_cancelBtn = new JButton("Cancel");
 		cancel = nt_cancelBtn;
-		cancel.setName("cancel");
+		cancel.setName(CANCEL);
 
 		// Combo Box for Stage
 		JComboBox<String> nt_stagesBoxes = new JComboBox<String>();
 
-		nt_stagesBoxes.setName("stages");
+		nt_stagesBoxes.setName(STAGES);
 		stages = nt_stagesBoxes;
 
 		setLayout(new GridBagLayout());

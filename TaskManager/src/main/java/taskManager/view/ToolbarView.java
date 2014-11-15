@@ -22,6 +22,12 @@ import taskManager.controller.ToolbarController;
 @SuppressWarnings("serial")
 public class ToolbarView extends JToolBar implements IToolbarView {
 
+	public static final String REFRESH = "refresh";
+	public static final String STATISTICS = "statistics";
+	public static final String MANAGE_USERS = "manageUsers";
+	public static final String MANAGE_STAGES = "manageStages";
+	public static final String CREATE_TASK = "createTask";
+	public static final String WORKFLOW = "workflow";
 	// toolbar information
 	private JButton createTask;
 	private JButton manageUsers;
@@ -56,17 +62,17 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 
 		// Construct the buttons
 		workflow = new JButton("Workflow");
-		workflow.setName("workflow");
+		workflow.setName(WORKFLOW);
 		createTask = new JButton("Create Task");
-		createTask.setName("createTask");
+		createTask.setName(CREATE_TASK);
 		manageStages = new JButton("Manage Stages");
-		manageStages.setName("manageStages");
+		manageStages.setName(MANAGE_STAGES);
 		manageUsers = new JButton("Manage Users");
-		manageUsers.setName("manageUsers");
+		manageUsers.setName(MANAGE_USERS);
 		statistics = new JButton("Statistics");
-		statistics.setName("statistics");
+		statistics.setName(STATISTICS);
 		refresh = new JButton("Refresh");
-		refresh.setName("refresh");
+		refresh.setName(REFRESH);
 
 		// Construct the project title
 		projectName = new JLabel("Project Title"); // TODO(sswartz): update this
