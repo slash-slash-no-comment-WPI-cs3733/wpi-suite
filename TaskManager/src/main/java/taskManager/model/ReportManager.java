@@ -73,9 +73,10 @@ public class ReportManager {
 	 *            The user to give data about
 	 * @param task
 	 *            The task they completed
-	
+	 * 
 	 * @throws IllegalStateException
-	 *             if the task is not correctly formed. */
+	 *             if the task is not correctly formed.
+	 */
 	public void userFinishedTask(User user, TaskModel task)
 			throws IllegalStateException {
 		if (!trackingUser(user)) {
@@ -122,8 +123,9 @@ public class ReportManager {
 	 *
 	 * @param user
 	 *            The user we may be tracking
-	
-	 * @return If we are tracking them */
+	 * 
+	 * @return If we are tracking them
+	 */
 	public boolean trackingUser(User user) {
 		return data.containsKey(user.getName());
 	}
@@ -145,8 +147,9 @@ public class ReportManager {
 	 *
 	 * @param user
 	 *            The user to get data about
-	
-	 * @return the average amount of work done per task */
+	 * 
+	 * @return the average amount of work done per task
+	 */
 	public double getUserAverageEffort(User user) {
 		final UserReport userData = getUserData(user);
 		return (double) userData.actualEffort / userData.numCompleted;
@@ -158,8 +161,9 @@ public class ReportManager {
 	 * 
 	 * @param user
 	 *            The user to get data about
-	
-	 * @return the average quality of that user's estimations */
+	 * 
+	 * @return the average quality of that user's estimations
+	 */
 	public double getAverageEstimateQuality(User user) {
 		final UserReport userData = getUserData(user);
 		return userData.getAverageEstimateQuality();
@@ -167,12 +171,14 @@ public class ReportManager {
 
 	/**
 	 * The standard deviation of differences between a user's estimated effort
-	 * and their actual effort. Sign is not maintained.
+	 * and their actual effort. Sign is not maintained. Note: We're using the
+	 * population standard deviation.
 	 * 
 	 * @param user
 	 *            the user to get data about
-	
-	 * @return the standard deviation of the quality of that user's estimations */
+	 * 
+	 * @return the standard deviation of the quality of that user's estimations
+	 */
 	public double getStdDevEstimateQuality(User user) {
 		final UserReport userData = getUserData(user);
 		final double averageEstimate = userData.getAverageEstimateQuality();
@@ -180,5 +186,17 @@ public class ReportManager {
 				/ userData.numCompleted - averageEstimate * averageEstimate);
 		// This calcuates the standard deviation. The proof is left as an
 		// exercise to the reader.
+	}
+
+	/**
+	 * 
+	 * Gets the number of tasks a user has completed
+	 *
+	 * @param user
+	 *            what user we're asking about
+	 * @return the count of all tasks a user has finished
+	 */
+	public double getTasksCompleted(User user) {
+		return getUserData(user).numCompleted;
 	}
 }
