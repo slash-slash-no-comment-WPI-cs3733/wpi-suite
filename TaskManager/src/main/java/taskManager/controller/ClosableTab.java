@@ -73,5 +73,9 @@ public class ClosableTab extends JPanel implements ActionListener {
 	public void setTabView(TabView tv) {
 		this.tv = tv;
 	}
+	
+	public void close() {
+		this.actionPerformed(null);
+	}
 
 }

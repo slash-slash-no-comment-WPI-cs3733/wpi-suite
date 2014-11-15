@@ -56,7 +56,8 @@ public class ToolbarController implements ActionListener {
 				break;
 
 			case "refresh":
-				workflowController.fetch();
+				tv.refreshWorkflow();
+				break;
 			}
 		}
 	}

@@ -26,6 +26,8 @@ public class TabView extends JTabbedPane {
 	public Boolean manageUsersTabOut = false;
 	public Boolean manageStagesTabOut = false;
 	private TabController tabC;
+	// Because the workflow is a permanent tab, tabview should keep track of it
+	private WorkflowController wfc;
 
 	public TabView() {
 		this.tabC = JanewayModule.tabC;
@@ -35,7 +37,8 @@ public class TabView extends JTabbedPane {
 		// Create a workflow view, controller, and model
 		WorkflowView wfv = new WorkflowView();
 		WorkflowModel wfm = new WorkflowModel();
-		wfv.setController(new WorkflowController(wfv, wfm));
+		wfc = new WorkflowController(wfv, wfm);
+		wfv.setController(wfc);
 
 		this.addTab("Workflow", new ImageIcon(), wfv, "Workflow");
 	}
@@ -49,20 +52,10 @@ public class TabView extends JTabbedPane {
 		super.insertTab(title, icon, component, tip, index);
 		// the Workflow tab cannot be closed
 		if (!(component instanceof WorkflowView)) {
-			// You can only have one manageUsers or manageStage view out at once
-			// if (component instanceof ManageUsersView) {
-			// if (manageUsersTabOut) { // There is already a manageUsers tab
-			// return;
-			// }
-			// this.manageUsersTabOut = true;
-			// }
-			// if (component instanceof ManageStageView) {
-			// if (manageStagesTabOut) { // There is already a manageStages tab
-			// return;
-			// }
-			// this.manageStagesTabOut = true;
-			// }
 			ClosableTab ct = new ClosableTab(this, component);
+			if (component instanceof EditTaskView) {
+				((EditTaskView)component).controller.cTab = ct;
+			}
 			ct.setTabView(this);
 			setTabComponentAt(index, ct);
 		}
@@ -93,6 +86,10 @@ public class TabView extends JTabbedPane {
 	// created or removed
 	public void setManageStagesTabOut(Boolean b) {
 		this.manageUsersTabOut = b;
+	}
+	
+	public void refreshWorkflow(){
+		wfc.fetch();
 	}
 
 }

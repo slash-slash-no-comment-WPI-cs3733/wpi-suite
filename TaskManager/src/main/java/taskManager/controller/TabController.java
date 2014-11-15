@@ -13,6 +13,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.Icon;
 import javax.swing.event.ChangeListener;
 
+import taskManager.model.WorkflowModel;
 import taskManager.view.TabView;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
@@ -93,6 +94,8 @@ public class TabController {
 		} else if (mode == EditTaskView.Mode.EDIT) {
 			tab.setTitle("Edit a Task");
 		}
+		EditTaskController etc = new EditTaskController(new WorkflowModel(), tv, tab);
+		tv.setController(etc);
 		tab.setComponent(tv);
 		tv.requestFocus();
 		return tab;
