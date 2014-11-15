@@ -85,7 +85,7 @@ public class TabView extends JTabbedPane {
 	// used by controllers to remotely tell TabView when a ManageStages tab is
 	// created or removed
 	public void setManageStagesTabOut(Boolean b) {
-		this.manageUsersTabOut = b;
+		this.manageStagesTabOut = b;
 	}
 	
 	public void refreshWorkflow(){
