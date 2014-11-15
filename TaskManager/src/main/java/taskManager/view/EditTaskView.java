@@ -12,7 +12,7 @@ package taskManager.view;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
@@ -25,6 +25,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+
+import org.jdesktop.swingx.JXDatePicker;
 
 import taskManager.controller.EditTaskController;
 
@@ -52,7 +54,7 @@ public class EditTaskView extends JPanel {
 
 	private JTextField titleField;
 	private JTextArea descripArea;
-	private JTextField dateField;
+	private JXDatePicker dateField;
 	private JTextField estEffortField;
 	private JTextField actEffortField;
 	private JTextField commentsField;
@@ -101,10 +103,6 @@ public class EditTaskView extends JPanel {
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		nt_descriptionScrollPane
 				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		JTextField nt_dueDateField = new JTextField(25);
-		nt_dueDateField.setEditable(true);
-		nt_dueDateField.setName("due_date");
-		dateField = nt_dueDateField;
 		JTextField nt_estimatedEffortField = new JTextField(10);
 		nt_estimatedEffortField.setEditable(true);
 		nt_estimatedEffortField.setName("est_effort");
@@ -117,6 +115,12 @@ public class EditTaskView extends JPanel {
 		nt_commentsField.setEditable(true);
 		nt_commentsField.setName("comments");
 		commentsField = nt_estimatedEffortField;
+
+		// adds calendar
+		JXDatePicker nt_dueDateField = new JXDatePicker();
+		nt_dueDateField.setName("due_date");
+		this.dateField = nt_dueDateField;
+		dateField.setDate(Calendar.getInstance().getTime());
 
 		// JTextArea
 		// TODO
@@ -324,7 +328,7 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the text in the date field
 	 */
-	public JTextField getDate() {
+	public JXDatePicker getDate() {
 		return dateField;
 	}
 
@@ -377,8 +381,7 @@ public class EditTaskView extends JPanel {
 	 *            the text in the date field
 	 */
 	public void setDate(Date d) {
-		SimpleDateFormat q = new SimpleDateFormat("MM/dd/yyyy");
-		dateField.setText(q.format(d));
+		dateField.setDate(d);
 	}
 
 	/**
@@ -421,7 +424,7 @@ public class EditTaskView extends JPanel {
 		descripArea.setText("");
 		estEffortField.setText("");
 		actEffortField.setText("");
-		dateField.setText("");
+		dateField.setDate(Calendar.getInstance().getTime());
 	}
 
 	/*
