@@ -8,10 +8,10 @@ package taskManager.view;
  *
  */
 public interface IStageView {
-	
+
 	/**
 	 * @return the name of the class
 	 */
-	public String getName();
+	String getName();
 
 }

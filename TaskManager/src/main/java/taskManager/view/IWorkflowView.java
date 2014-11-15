@@ -8,11 +8,11 @@ package taskManager.view;
  *
  */
 public interface IWorkflowView {
-	
+
 	/**
 	 * 
 	 * @return the name of the class
 	 */
-	public String getName();
+	String getName();
 
 }

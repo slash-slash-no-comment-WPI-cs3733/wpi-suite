@@ -27,10 +27,13 @@ public class WorkflowController {
 	private final WorkflowView view;
 	private final WorkflowModel model;
 
+	public static boolean alive = true;
+
 	/**
 	 * Constructor for the WorkflowController, gets all the stages from the
 	 * WorkflowView, creates the corresponding StageView and StageControllers,
-	 * and adds the StageViews to the UI.
+	 * and adds the StageViews to the UI. Polls the server every 1 second until
+	 * it receives the workflow model.
 	 * 
 	 * @param view
 	 *            the corresponding WorkflowView object
@@ -40,6 +43,24 @@ public class WorkflowController {
 	public WorkflowController(WorkflowView view, WorkflowModel model) {
 		this.view = view;
 		this.model = model;
+
+		Thread thread = new Thread() {
+			public void run() {
+				while (alive) {
+					try {
+						sleep(1000);
+						fetch();
+					} catch (NullPointerException e) {
+						// this is expected, do nothing
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+		thread.setName("polling");
+		thread.setDaemon(true);
+		thread.start();
 
 		reloadData();
 	}

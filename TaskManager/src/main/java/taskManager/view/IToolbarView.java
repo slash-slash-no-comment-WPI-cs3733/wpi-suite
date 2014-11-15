@@ -8,9 +8,9 @@ package taskManager.view;
  *
  */
 public interface IToolbarView {
-	/*
+	/**
 	 * @return a string containing the name of the class
 	 */
-	public String getName();
+	String getName();
 
 }

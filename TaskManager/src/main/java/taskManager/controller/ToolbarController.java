@@ -50,17 +50,19 @@ public class ToolbarController implements ActionListener {
 	 *            the newTask view to be switched to
 	 * @param sv
 	 *            the statistics view to be switched to
+	 * @param wfc
+	 *            The active workflow controller
 	 */
 	public ToolbarController(ToolbarView view, WorkflowView wfv,
 			ManageStageView msv, ManageUsersView muv, EditTaskView ntv,
 			JPanel sv, WorkflowController wfc) {
-		this.toolbarView = view;
-		this.workflowView = wfv;
-		this.manageStagesView = msv;
-		this.manageUsersView = muv;
-		this.newTaskView = ntv;
-		this.statisticsView = sv;
-		this.workflowController = wfc;
+		toolbarView = view;
+		workflowView = wfv;
+		manageStagesView = msv;
+		manageUsersView = muv;
+		newTaskView = ntv;
+		statisticsView = sv;
+		workflowController = wfc;
 	}
 
 	@Override
