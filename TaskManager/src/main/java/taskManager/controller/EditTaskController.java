@@ -24,7 +24,7 @@ import taskManager.view.EditTaskView;
 import taskManager.view.WorkflowView;
 
 /**
- * The conrtoller for the task editing and new task view
+ * The controller for the task editing and new task view
  * 
  * @author Beth Martino
  *
