@@ -53,21 +53,6 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	}
 
 	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
 	 * Moves a stage currently in the WorkFlowModel to the given position on its
 	 * list.
 	 *
@@ -228,7 +213,6 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	public void makeIdenticalTo(WorkflowModel workflow) {
 		setID(workflow.getID());
 		stageList = workflow.getStages();
-		name = workflow.getName();
 	}
 
 	/**

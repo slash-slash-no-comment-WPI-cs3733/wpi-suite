@@ -1,10 +1,13 @@
 package taskManager.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Before;
@@ -33,7 +36,9 @@ public class TestWorkflowModel {
 
 	@Test
 	public void testToJson() {
-		assertTrue(wf.toJson().matches("task1|task 2|duplicateNamedTask"));
+		assertTrue(wf.toJson().contains("task 2"));
+		assertTrue(wf.toJson().contains("task1"));
+		assertTrue(wf.toJson().contains("duplicateNamedTask"));
 		assertTrue(wf.toJson().contains("stage1"));
 	}
 
@@ -48,26 +53,17 @@ public class TestWorkflowModel {
 	}
 
 	@Test
-	public void testGetName() {
-		assertEquals("wf1", wf.getName());
-	}
-
-	@Test
-	public void testSetName() {
-		wf.setName("New name");
-		assertEquals("New name", wf.getName());
-	}
-
-	@Test
 	public void testMoveStage() {
 		StageModel newStage = new StageModel(wf, "new stage");
 		wf.addStage(newStage);
-		List<StageModel> unmovedStageList = wf.getStages();
+		List<StageModel> unmovedStageList = new LinkedList<StageModel>(
+				wf.getStages());
 		wf.moveStage(0, newStage);
 
-		assertTrue(wf.getStages().get(0).equals(unmovedStageList.get(1)));
+		assertTrue(wf.getStages().get(0)
+				.equals(unmovedStageList.get(unmovedStageList.size() - 1)));
 		assertTrue(wf.getStages().get(1).equals(unmovedStageList.get(0)));
-
+		assertEquals(unmovedStageList.size(), wf.getStages().size());
 	}
 
 	@Test
@@ -79,17 +75,29 @@ public class TestWorkflowModel {
 
 	@Test
 	public void testAddStageStageModelInt() {
-		fail("Not yet implemented");
+		StageModel newStage = new StageModel(wf, "new stage");
+		wf.addStage(newStage, 2);
+		assertTrue(wf.getStages().contains(newStage));
+		assertTrue(wf.getStages().get(2).equals(newStage));
 	}
 
 	@Test
 	public void testHasStage() {
-		fail("Not yet implemented");
+		StageModel newStage = new StageModel(wf, "new stage");
+		wf.addStage(newStage, 2);
+		assertTrue(wf.hasStage(newStage));
+		assertTrue(wf.hasStage(wf.getStages().get(0)));
+		assertFalse(wf.hasStage(new StageModel()));
 	}
 
 	@Test
 	public void testFindStageByName() {
-		fail("Not yet implemented");
+		StageModel newStage = new StageModel(wf, "new stage");
+		wf.addStage(newStage, 2);
+
+		assertNull(wf.findStageByName("non-existent stage"));
+		assertEquals(wf.getStages().get(0), wf.findStageByName("stage1"));
+		assertEquals(newStage, wf.findStageByName("new stage"));
 	}
 
 	@Test
@@ -109,7 +117,11 @@ public class TestWorkflowModel {
 
 	@Test
 	public void testMakeIdenticalToWorkflowModel() {
-		fail("Not yet implemented");
+		WorkflowModel newWf = new WorkflowModel();
+		newWf.makeIdenticalTo(wf);
+		assertEquals(wf.getID(), newWf.getID());
+		assertEquals(wf.getStages(), newWf.getStages());
+		assertEquals(wf.getObserver(), newWf.getObserver());
 	}
 
 	@Test
