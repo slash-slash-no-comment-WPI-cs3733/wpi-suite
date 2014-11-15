@@ -340,7 +340,7 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the text in the date field
 	 */
-	public JXDatePicker getDate() {
+	public JXDatePicker getDateField() {
 		return dateField;
 	}
 
@@ -425,6 +425,20 @@ public class EditTaskView extends JPanel {
 	public void setStageDropdown(int n) {
 		String p = stages.getItemAt(n);
 		stages.setSelectedItem(p);
+	}
+
+	/**
+	 * disables the delete button
+	 */
+	public void disableDelete() {
+		this.delete.setEnabled(false);
+	}
+
+	/**
+	 * enables the delete button
+	 */
+	public void enableDelete() {
+		this.delete.setEnabled(true);
 	}
 
 	/**

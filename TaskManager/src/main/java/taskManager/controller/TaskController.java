@@ -16,6 +16,7 @@ import taskManager.JanewayModule;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
+import taskManager.view.EditTaskView;
 import taskManager.view.TaskView;
 
 /**
@@ -30,6 +31,7 @@ public class TaskController implements ActionListener {
 	private final TaskModel model;
 	private StageModel sm;
 	private WorkflowModel wfm;
+	private final EditTaskView etv = JanewayModule.etv;
 
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
@@ -49,13 +51,14 @@ public class TaskController implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// sets the text fields to the values of the task
+		// makes the delete button unclickable
+		etv.enableDelete();
 
 		// uses the title field to hold the unique id
-		JanewayModule.etv.getTitle().setName(model.getID());
+		etv.getTitle().setName(model.getID());
 
 		// uses description field to hold the name of the stage
-		JanewayModule.etv.getDescription().setName(model.getStage().getName());
+		etv.getDescription().setName(model.getStage().getName());
 
 		// populate editable fields with this tasks info
 		JanewayModule.etv.setTitle(model.getName());

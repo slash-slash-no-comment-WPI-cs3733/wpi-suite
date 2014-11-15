@@ -86,6 +86,7 @@ public class EditTaskController implements ActionListener {
 					// moves the task to that stage on the model level
 					wfm.moveTask(task, currentStage, desiredStage);
 					wfm.save();
+
 					this.setTaskID("000000");
 				}
 				// if creating a new task
@@ -94,6 +95,7 @@ public class EditTaskController implements ActionListener {
 					TaskModel task = new TaskModel(etv.getTitle().getText(),
 							currentStage);
 					this.setTaskData(task, wfm.findStageByName("New"));
+
 				}
 
 				// exit the edit view, this refreshes the workflow
@@ -181,7 +183,7 @@ public class EditTaskController implements ActionListener {
 		t.setDescription(etv.getDescription().getText());
 		t.setEstimatedEffort(Integer.parseInt(etv.getEstEffort().getText()));
 		t.setActualEffort(Integer.parseInt(etv.getActEffort().getText()));
-		t.setDueDate(etv.getDate().getDate());
+		t.setDueDate(etv.getDateField().getDate());
 		t.setStage(s);
 		t.save();
 	}
