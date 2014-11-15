@@ -1,12 +1,16 @@
-/**
- * 
- */
+/*******************************************************************************
+ * Copyright (c) 2012-2014 -- WPI Suite
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
+
 package taskManager.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -19,6 +23,8 @@ import taskManager.view.EditTaskView;
 import taskManager.view.WorkflowView;
 
 /**
+ * The controller for editing and creating new tasks
+ * 
  * @author Beth Martino
  *
  */
@@ -86,13 +92,7 @@ public class EditTaskController implements ActionListener {
 					t.setActualEffort(Integer.parseInt(etv.getActEffort()
 							.getText()));
 
-					// formats the date
-					SimpleDateFormat d = new SimpleDateFormat("MM/dd/yyyy");
-					try {
-						t.setDueDate(d.parse(etv.getDate().getText()));
-					} catch (ParseException e1) {
-						// TODO think of something to go here
-					}
+					t.setDueDate(etv.getDateField().getDate());
 
 					// grabs the correct stage model from the workflow model and
 					// moves the task to that stage
@@ -107,12 +107,7 @@ public class EditTaskController implements ActionListener {
 							currentStage);
 
 					// sets all task values according to fields
-					SimpleDateFormat d = new SimpleDateFormat("MM/dd/yyyy");
-					try {
-						task.setDueDate(d.parse(etv.getDate().getText()));
-					} catch (ParseException p) {
-						p.printStackTrace();
-					}
+					task.setDueDate(etv.getDateField().getDate());
 					task.setEstimatedEffort(Integer.parseInt(etv.getEstEffort()
 							.getText()));
 					String actEffort = etv.getActEffort().getText();

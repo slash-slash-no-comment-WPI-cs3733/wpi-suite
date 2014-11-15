@@ -10,7 +10,7 @@ package taskManager.controller;
 
 import static org.junit.Assert.assertEquals;
 
-import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.JFrame;
@@ -74,7 +74,7 @@ public class TestEditTaskController {
 		// enter information for a new task
 		getTitleBoxFixture().enterText("New Task");
 		getDescriptionBoxFixture().enterText("a sample task used for testing");
-		fixture.textBox("due_date").enterText("11/11/2011");
+		etv.getDateField().setDate(Calendar.getInstance().getTime());
 		fixture.textBox("est_effort").enterText("3");
 
 		// save the task
@@ -108,7 +108,8 @@ public class TestEditTaskController {
 		// edit the task
 		getTitleBoxFixture().deleteText().enterText("renamed task");
 		getDescriptionBoxFixture().deleteText().enterText("new description");
-		fixture.textBox("due_date").deleteText().enterText("11/11/2011");
+		Date d = new Date(5 * 60 * 60 * 1000);
+		etv.setDate(d);
 		fixture.textBox("est_effort").deleteText().enterText("4");
 		fixture.textBox("act_effort").deleteText().enterText("8");
 
@@ -123,9 +124,7 @@ public class TestEditTaskController {
 		// verify the fields of the task got saved correctly
 		TaskModel newTask = stage.findTaskByName("renamed task").get(0);
 		assertEquals(newTask.getDescription(), "new description");
-		assertEquals(
-				new SimpleDateFormat("MM/dd/yyyy").format(newTask.getDueDate()),
-				"11/11/2011");
+		assertEquals(newTask.getDueDate(), d);
 		assertEquals(newTask.getEstimatedEffort(), 4);
 		assertEquals(newTask.getActualEffort(), 8);
 	}
@@ -155,7 +154,7 @@ public class TestEditTaskController {
 		StageModel stage = wfm.getStages().get(2);
 		TaskModel task = new TaskModel("New Task", stage);
 		task.setDescription("test description");
-		task.setDueDate(new Date(12345));
+		task.setDueDate(Calendar.getInstance().getTime());
 		task.setEstimatedEffort(5);
 		task.setActualEffort(7);
 
@@ -176,8 +175,6 @@ public class TestEditTaskController {
 	private void verifyTask(TaskModel task) {
 		getTitleBoxFixture().requireText(task.getName());
 		getDescriptionBoxFixture().requireText(task.getDescription());
-		fixture.textBox("due_date").requireText(
-				new SimpleDateFormat("MM/dd/yyyy").format(task.getDueDate()));
 		fixture.textBox("est_effort").requireText(
 				Integer.toString(task.getEstimatedEffort()));
 		fixture.textBox("act_effort").requireText(
