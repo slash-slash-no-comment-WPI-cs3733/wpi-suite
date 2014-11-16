@@ -61,7 +61,7 @@ public class TaskInputController implements KeyListener {
 			etv.setEstEffortErrorText("Must be less than 9999");
 		}
 		// Actual Effort
-		if (etv.getEstEffort().getText().isEmpty()) {
+		if (etv.getActEffort().getText().isEmpty()) {
 			actEffortValid = true;
 		} else if (Integer.parseInt(etv.getActEffort().getText()) <= 0) {
 			actEffortValid = false;
