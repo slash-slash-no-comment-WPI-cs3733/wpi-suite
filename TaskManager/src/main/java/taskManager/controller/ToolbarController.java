@@ -72,6 +72,7 @@ public class ToolbarController implements ActionListener {
 			String name = ((JButton) button).getName();
 			switch (name) {
 			case ToolbarView.CREATE_TASK:
+				newTaskView.disableDelete();
 				workflowView.setVisible(false);
 				manageUsersView.setVisible(false);
 				manageStagesView.setVisible(false);

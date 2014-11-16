@@ -428,6 +428,20 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
+	 * disables the delete button
+	 */
+	public void disableDelete() {
+		this.delete.setEnabled(false);
+	}
+
+	/**
+	 * enables the delete button
+	 */
+	public void enableDelete() {
+		this.delete.setEnabled(true);
+	}
+
+	/**
 	 * makes all of the text fields blank
 	 */
 	public void resetFields() {
