@@ -10,6 +10,8 @@ package taskManager.model;
 
 import org.junit.Test;
 
+import taskManager.TestLogin;
+
 /**
  * Some basic tests
  *
