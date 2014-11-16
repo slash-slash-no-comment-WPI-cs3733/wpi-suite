@@ -75,10 +75,10 @@ public class TestEditTaskController {
 		getTitleBoxFixture().enterText("New Task");
 		getDescriptionBoxFixture().enterText("a sample task used for testing");
 		etv.getDateField().setDate(Calendar.getInstance().getTime());
-		fixture.textBox("est_effort").enterText("3");
+		fixture.textBox(EditTaskView.EST_EFFORT).enterText("3");
 
 		// save the task
-		fixture.button("save").click();
+		fixture.button(EditTaskView.SAVE).click();
 
 		// verify the task got saved
 		StageModel stage = wfm.findStageByName("New");
@@ -110,11 +110,11 @@ public class TestEditTaskController {
 		getDescriptionBoxFixture().deleteText().enterText("new description");
 		Date d = new Date(5 * 60 * 60 * 1000);
 		etv.setDate(d);
-		fixture.textBox("est_effort").deleteText().enterText("4");
-		fixture.textBox("act_effort").deleteText().enterText("8");
+		fixture.textBox(EditTaskView.EST_EFFORT).deleteText().enterText("4");
+		fixture.textBox(EditTaskView.ACT_EFFORT).deleteText().enterText("8");
 
 		// save the task
-		fixture.button("save").click();
+		fixture.button(EditTaskView.SAVE).click();
 
 		// verify the task got saved (and not duplicated)
 		StageModel stage = wfm.findStageByName(task.getStage().getName());
@@ -133,8 +133,8 @@ public class TestEditTaskController {
 	public void testMoveTask() {
 		TaskModel task = createAndLoadTask();
 
-		fixture.comboBox("stages").selectItem(0);
-		fixture.button("save").click();
+		fixture.comboBox(EditTaskView.STAGES).selectItem(0);
+		fixture.button(EditTaskView.SAVE).click();
 
 		assertEquals(task.getStage().getName(), stageNames[0]);
 	}
@@ -175,11 +175,12 @@ public class TestEditTaskController {
 	private void verifyTask(TaskModel task) {
 		getTitleBoxFixture().requireText(task.getName());
 		getDescriptionBoxFixture().requireText(task.getDescription());
-		fixture.textBox("est_effort").requireText(
+		fixture.textBox(EditTaskView.EST_EFFORT).requireText(
 				Integer.toString(task.getEstimatedEffort()));
-		fixture.textBox("act_effort").requireText(
+		fixture.textBox(EditTaskView.ACT_EFFORT).requireText(
 				Integer.toString(task.getActualEffort()));
-		fixture.comboBox("stages").requireSelection(task.getStage().getName());
+		fixture.comboBox(EditTaskView.STAGES).requireSelection(
+				task.getStage().getName());
 	}
 
 	/**
