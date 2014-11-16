@@ -69,6 +69,9 @@ public class EditTaskController implements ActionListener {
 
 			StageModel desiredStage = wfm.findStageByName((String) etv
 					.getStages().getSelectedItem());
+			Requirement requirement = RequirementModel.getInstance()
+					.getRequirementByName(
+							(String) etv.getRequirements().getSelectedItem());
 
 			switch (name) {
 
@@ -101,6 +104,7 @@ public class EditTaskController implements ActionListener {
 					// moves the task to that stage
 					wfm.moveTask(t, currentStage, desiredStage);
 					t.setStage(desiredStage);
+					t.setReq(requirement);
 					this.returnToWorkflowView();
 					this.setTaskID("000000");
 				} else {
@@ -125,6 +129,7 @@ public class EditTaskController implements ActionListener {
 						// TODO: handle error
 					}
 					task.setDescription(etv.getDescription().getText());
+					task.setReq(requirement);
 				}
 
 				// makes all the fields blank again
@@ -187,6 +192,7 @@ public class EditTaskController implements ActionListener {
 				.getRequirements();
 		JComboBox<String> requirements = etv.getRequirements();
 		requirements.removeAllItems();
+		requirements.addItem("[None]");
 		for (Requirement req : reqs) {
 			requirements.addItem(req.getName());
 		}

@@ -17,6 +17,7 @@ import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.TaskView;
+import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 
 /**
  * Controller for Tasks.
@@ -29,6 +30,7 @@ public class TaskController implements ActionListener {
 	private final TaskView view;
 	private final TaskModel model;
 	private StageModel sm;
+	private Requirement req;
 	private WorkflowModel wfm;
 
 	/**
@@ -44,6 +46,7 @@ public class TaskController implements ActionListener {
 		this.view = view;
 		this.model = model;
 		sm = model.getStage();
+		req = model.getReq();
 		wfm = sm.getWorkflow();
 	}
 
@@ -77,5 +80,8 @@ public class TaskController implements ActionListener {
 				break;
 			}
 		}
+
+		// set the requirement dropdown
+		JanewayModule.etv.getRequirements().setSelectedItem(req.getName());
 	}
 }

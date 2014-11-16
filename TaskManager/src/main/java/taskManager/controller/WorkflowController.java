@@ -47,12 +47,32 @@ public class WorkflowController {
 
 		Thread thread = new Thread() {
 			public void run() {
-				GetRequirementsController reqController = GetRequirementsController
-						.getInstance();
 				while (alive) {
 					try {
 						sleep(1000);
 						fetch();
+					} catch (NullPointerException e) {
+						// this is expected, do nothing
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+		thread.setName("workflow polling");
+		thread.setDaemon(true);
+		thread.start();
+
+		// a separate thread for requirement polling, because if we poll
+		// requirements once per second, the event dispatch thread gets stuck
+		// and the program never ends
+		Thread thread2 = new Thread() {
+			public void run() {
+				GetRequirementsController reqController = GetRequirementsController
+						.getInstance();
+				while (alive) {
+					try {
+						sleep(3000);
 						reqController.retrieveRequirements();
 					} catch (NullPointerException e) {
 						// this is expected, do nothing
@@ -62,9 +82,9 @@ public class WorkflowController {
 				}
 			}
 		};
-		thread.setName("polling");
-		thread.setDaemon(true);
-		thread.start();
+		thread2.setName("requirement polling");
+		thread2.setDaemon(true);
+		thread2.start();
 
 		reloadData();
 	}
