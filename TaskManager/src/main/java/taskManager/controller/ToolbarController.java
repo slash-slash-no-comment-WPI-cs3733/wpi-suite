@@ -13,9 +13,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-import taskManager.view.TabView;
-import taskManager.view.Tab;
 import taskManager.JanewayModule;
+import taskManager.view.TabPaneView;
 
 /**
  * A controller for the toolbar view
@@ -24,17 +23,17 @@ import taskManager.JanewayModule;
  */
 public class ToolbarController implements ActionListener {
 
-	private final TabView tv;
-	private final TabController tc;
+	private final TabPaneView tabPaneV;
+	private final TabPaneController tabPaneC;
 
 	/**
 	 * 
-	 * @param tv
+	 * @param tabV
 	 *            tabView used to add tabs to the tab-bar
 	 */
-	public ToolbarController(TabView tv) {
-		this.tv = tv;
-		this.tc = JanewayModule.tabC;
+	public ToolbarController(TabPaneView tabV) {
+		this.tabPaneV = tabV;
+		this.tabPaneC = JanewayModule.tabPaneC;
 	}
 
 	@Override
@@ -44,19 +43,19 @@ public class ToolbarController implements ActionListener {
 			String name = ((JButton) button).getName();
 			switch (name) {
 			case "createTask":
-				this.tc.addCreateTaskTab();
+				this.tabPaneC.addCreateTaskTab();
 				break;
 			case "manageStages":
-				this.tc.addManageStagesTab();
+				this.tabPaneC.addManageStagesTab();
 				break;
 			case "manageUsers":
-				this.tc.addManageUsersTab();
+				this.tabPaneC.addManageUsersTab();
 				break;
 			case "reports":
 				break;
 
 			case "refresh":
-				tv.refreshWorkflow();
+				tabPaneV.refreshWorkflow();
 				break;
 			}
 		}

@@ -12,21 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
-import javax.swing.JPanel;
 
-import taskManager.controller.EditTaskController;
-import taskManager.controller.ManageStageController;
+import taskManager.controller.TabPaneController;
 import taskManager.controller.ToolbarController;
-import taskManager.controller.WorkflowController;
-import taskManager.controller.TabController;
-import taskManager.model.StageModel;
-import taskManager.model.WorkflowModel;
-import taskManager.view.EditTaskView;
-import taskManager.view.ManageStageView;
-import taskManager.view.ManageUsersView;
+import taskManager.view.TabPaneView;
 import taskManager.view.ToolbarView;
-import taskManager.view.WorkflowView;
-import taskManager.view.TabView;
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
 import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
 
@@ -43,19 +33,20 @@ public class JanewayModule implements IJanewayModule {
 	// The tabs used by this module
 	private final ArrayList<JanewayTabModel> tabs;
 	private static final ToolbarView toolV = new ToolbarView();
-	private static final TabView tabV = new TabView();
-	public static final TabController tabC = new TabController(tabV);
+	private static final TabPaneView tabPaneV = new TabPaneView();
+	public static final TabPaneController tabPaneC = new TabPaneController(
+			tabPaneV);
 
 	/**
 	 * Construct a blank tab
 	 */
 	public JanewayModule() {
-		toolV.setController(new ToolbarController(tabV));
+		toolV.setController(new ToolbarController(tabPaneV));
 
 		tabs = new ArrayList<JanewayTabModel>();
 		JanewayTabModel tab = new JanewayTabModel("Task Manager",
 
-		new ImageIcon(), toolV, tabV);
+		new ImageIcon(), toolV, tabPaneV);
 		tabs.add(tab);
 	}
 

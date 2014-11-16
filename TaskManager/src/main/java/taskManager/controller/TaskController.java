@@ -20,7 +20,7 @@ import taskManager.view.EditTaskView.Mode;
 import taskManager.view.EditTaskView;
 import taskManager.view.TaskView;
 import taskManager.controller.EditTaskController;
-import taskManager.controller.TabController;
+import taskManager.controller.TabPaneController;
 
 /**
  * Controller for Tasks.
@@ -34,7 +34,7 @@ public class TaskController implements ActionListener {
 	private final TaskModel model;
 	private StageModel sm;
 	private WorkflowModel wfm;
-	private TabController tabC;
+	private TabPaneController tabPaneC;
 
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
@@ -46,7 +46,7 @@ public class TaskController implements ActionListener {
 	 *            the corresponding TaskModel object
 	 */
 	public TaskController(TaskView view, TaskModel model) {
-		this.tabC = JanewayModule.tabC;
+		this.tabPaneC = JanewayModule.tabPaneC;
 		this.view = view;
 		this.model = model;
 		sm = model.getStage();
@@ -82,6 +82,6 @@ public class TaskController implements ActionListener {
 			}
 		}
 
-		tabC.addTaskTab(etv, Mode.EDIT);
+		tabPaneC.addEditTaskTab(etv);
 	}
 }

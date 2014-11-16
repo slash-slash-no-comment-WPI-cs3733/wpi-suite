@@ -16,7 +16,6 @@ import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
-import taskManager.view.Tab;
 import taskManager.view.WorkflowView;
 
 /**
@@ -27,7 +26,6 @@ public class EditTaskController implements ActionListener {
 
 	private final EditTaskView etv;
 	private final WorkflowModel wfm;
-	public ClosableTab cTab;
 
 	private String taskID;
 
@@ -37,7 +35,7 @@ public class EditTaskController implements ActionListener {
 	 * @param wfm
 	 *            The workflowModel that belongs to this controller.
 	 */
-	public EditTaskController(WorkflowModel wfm, EditTaskView etv, Tab t) {
+	public EditTaskController(WorkflowModel wfm, EditTaskView etv) {
 		this.etv = etv;
 		this.wfm = wfm;
 
@@ -183,7 +181,7 @@ public class EditTaskController implements ActionListener {
 	 * switches back to workflow view
 	 */
 	private void returnToWorkflowView() {
-		cTab.close();
+		JanewayModule.tabPaneC.removeTabByComponent(etv);
 	}
 
 	/**

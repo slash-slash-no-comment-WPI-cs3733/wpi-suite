@@ -35,7 +35,7 @@ import taskManager.view.EditTaskView;
  */
 public class TestEditTaskController {
 
-	private static EditTaskView etv = JanewayModule.etv;
+	private static EditTaskView etv;
 	private static WorkflowModel wfm;
 
 	private final String[] stageNames = { "New", "second", "third", "fourth" };
@@ -46,7 +46,8 @@ public class TestEditTaskController {
 	public static void setupOnce() {
 		// create the edit task controller
 		wfm = new WorkflowModel();
-		etv.setController(new EditTaskController(wfm));
+		etv = new EditTaskView(EditTaskView.Mode.CREATE);
+		etv.setController(new EditTaskController(wfm, etv));
 	}
 
 	@Before
