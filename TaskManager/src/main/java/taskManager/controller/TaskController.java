@@ -10,7 +10,8 @@ package taskManager.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
+
+import javax.swing.JComboBox;
 
 import taskManager.JanewayModule;
 import taskManager.model.StageModel;
@@ -61,30 +62,31 @@ public class TaskController implements ActionListener {
 		etv.getDescription().setName(model.getStage().getName());
 
 		// populate editable fields with this tasks info
-		JanewayModule.etv.setTitle(model.getName());
-		JanewayModule.etv.setDescription(model.getDescription());
-		JanewayModule.etv.setDate(model.getDueDate());
-		JanewayModule.etv.setEstEffort(model.getEstimatedEffort());
-		JanewayModule.etv.setActEffort(model.getActualEffort());
+		etv.setTitle(model.getName());
+		etv.setDescription(model.getDescription());
+		etv.setDate(model.getDueDate());
+		etv.setEstEffort(model.getEstimatedEffort());
+		etv.setActEffort(model.getActualEffort());
 
 		JanewayModule.wfv.setVisible(false);
 
 		// figures out the index of the stage, then sets the drop down to the
 		// stage at that index
-
-		List<StageModel> stages = wfm.getStages();
-		for (int i = 0; i < stages.size(); i++) {
-			if (stages.get(i) == sm) {
-				JanewayModule.etv.setStageDropdown(i);
+		etv.setVisible(true);
+		JComboBox<String> stages = etv.getStages();
+		for (int i = 0; i < stages.getItemCount(); i++) {
+			if (etv.getStages().getItemAt(i) == sm.getName()) {
+				etv.setStageDropdown(i);
 				break;
 			}
 		}
+
 		// Enable stage dropdown when editing a task.
-		JanewayModule.etv.setStageSelectorEnabled(true);
+		etv.getStages().setSelectedItem(model.getStage());
+		etv.setStageSelectorEnabled(true);
 
 		// Enable save button when editing a task.
-		JanewayModule.etv.enableSave();
+		etv.enableSave();
 
-		JanewayModule.etv.setVisible(true);
 	}
 }

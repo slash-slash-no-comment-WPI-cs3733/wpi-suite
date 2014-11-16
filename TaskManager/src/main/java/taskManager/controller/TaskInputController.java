@@ -26,6 +26,7 @@ public class TaskInputController implements KeyListener {
 	EditTaskView etv = JanewayModule.etv;
 
 	public TaskInputController() {
+
 	}
 
 	/**
