@@ -575,7 +575,7 @@ public class EditTaskView extends JPanel {
 	 */
 	@Override
 	public void setVisible(boolean visible) {
-		if (visible) {
+		if (visible && titleField.getKeyListeners().length > 0) {
 			TaskInputController tic = (TaskInputController) titleField
 					.getKeyListeners()[0];
 			tic.checkFields();
