@@ -67,7 +67,7 @@ public class TestManageStageController {
 				"New Stage" };
 
 		// add a new stage named New Stage
-		fixture.textBox("newStageName").deleteText().enterText("New Stage");
+		fixture.textBox("New Stage Name").deleteText().enterText("New Stage");
 		fixture.button("Add new stage").click();
 
 		checkStages(result);
