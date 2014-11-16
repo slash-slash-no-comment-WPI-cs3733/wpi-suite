@@ -50,25 +50,41 @@ public class TaskInputController implements KeyListener {
 			descriptionValid = false;
 		}
 		// Estimated Effort
-		if (etv.getEstEffort().getText().isEmpty()) {
+		try {
+			if (etv.getEstEffort().getText().isEmpty()) {
+				estEffortValid = false;
+				etv.setEstEffortErrorText("Estimated Effort is required");
+			} else if (Integer.parseInt(etv.getEstEffort().getText()) <= 0) {
+				estEffortValid = false;
+				etv.setEstEffortErrorText("Must be greater than 0");
+			} else if (Integer.parseInt(etv.getEstEffort().getText()) > 9999) {
+				estEffortValid = false;
+				etv.setEstEffortErrorText("Must be less than 9999");
+			}
+		} catch (NumberFormatException e) {
 			estEffortValid = false;
-			etv.setEstEffortErrorText("Estimated Effort is required");
-		} else if (Integer.parseInt(etv.getEstEffort().getText()) <= 0) {
-			estEffortValid = false;
-			etv.setEstEffortErrorText("Must be greater than 0");
-		} else if (Integer.parseInt(etv.getEstEffort().getText()) > 9999) {
-			estEffortValid = false;
-			etv.setEstEffortErrorText("Must be less than 9999");
+			etv.setEstEffortErrorText("Must be a number value");
 		}
+
 		// Actual Effort
-		if (etv.getActEffort().getText().isEmpty()) {
-			actEffortValid = true;
-		} else if (Integer.parseInt(etv.getActEffort().getText()) <= 0) {
-			actEffortValid = false;
-			etv.setActualEffortErrorText("Must be greater than 0");
-		} else if (Integer.parseInt(etv.getActEffort().getText()) > 9999) {
-			actEffortValid = false;
-			etv.setActualEffortErrorText("Must be less than 9999");
+		String stage = etv.getStages().getSelectedItem().toString();
+		if (stage == "Complete") {
+			try {
+				if (etv.getActEffort().getText().isEmpty()) {
+					actEffortValid = true;
+				} else if (Integer.parseInt(etv.getActEffort().getText()) <= 0) {
+					actEffortValid = false;
+					etv.setActualEffortErrorText("Must be greater than 0");
+				} else if (Integer.parseInt(etv.getActEffort().getText()) > 9999) {
+					actEffortValid = false;
+					etv.setActualEffortErrorText("Must be less than 9999");
+				}
+			} catch (NumberFormatException e) {
+				actEffortValid = false;
+				etv.setActualEffortErrorText("Must be a number");
+			}
+		} else {
+			etv.getActEffort().setEnabled(false);
 		}
 
 		// display the errors

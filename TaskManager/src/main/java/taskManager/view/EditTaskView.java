@@ -474,6 +474,7 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
+	 * 
 	 * Sets the title error visible or invisible
 	 * 
 	 * @param v
@@ -546,6 +547,20 @@ public class EditTaskView extends JPanel {
 	 */
 	public void setStageSelectorEnabled(boolean v) {
 		stages.setEnabled(v);
+	}
+
+	/**
+	 * disables the delete button
+	 */
+	public void disableDelete() {
+		this.delete.setEnabled(false);
+	}
+
+	/**
+	 * enables the delete button
+	 */
+	public void enableDelete() {
+		this.delete.setEnabled(true);
 	}
 
 	/**

@@ -86,6 +86,7 @@ public class EditTaskController implements ActionListener {
 					// moves the task to that stage on the model level
 					wfm.moveTask(task, currentStage, desiredStage);
 					wfm.save();
+
 					this.setTaskID("000000");
 				}
 				// if creating a new task
@@ -180,7 +181,11 @@ public class EditTaskController implements ActionListener {
 		t.setName(etv.getTitle().getText());
 		t.setDescription(etv.getDescription().getText());
 		t.setEstimatedEffort(Integer.parseInt(etv.getEstEffort().getText()));
-		t.setActualEffort(Integer.parseInt(etv.getActEffort().getText()));
+		try {
+			t.setActualEffort(Integer.parseInt(etv.getActEffort().getText()));
+		} catch (java.lang.NumberFormatException e2) {
+			// TODO: handle error
+		}
 		t.setDueDate(etv.getDateField().getDate());
 		t.setStage(s);
 		t.save();
