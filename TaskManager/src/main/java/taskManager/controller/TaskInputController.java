@@ -26,38 +26,59 @@ public class TaskInputController implements KeyListener {
 	EditTaskView etv = JanewayModule.etv;
 
 	public TaskInputController() {
-		this.checkFields();
 	}
 
 	/**
 	 * checks to see if the edit task fields aren't empty and meet the
 	 * requirements. If a field doesn't meet the requirements, display an error
 	 */
-	private boolean checkFields() {
+	public boolean checkFields() {
 		boolean titleValid = true;
 		boolean descriptionValid = true;
 		boolean estEffortValid = true;
+		boolean actEffortValid = true;
 
 		// checks each required field and determines if it meets the
 		// requirements for that field
+
+		// Title
 		if (etv.getTitle().getText().isEmpty()) {
 			titleValid = false;
 		}
+		// Description
 		if (etv.getDescription().getText().isEmpty()) {
 			descriptionValid = false;
 		}
-		// TODO add est effort min and max
+		// Estimated Effort
 		if (etv.getEstEffort().getText().isEmpty()) {
 			estEffortValid = false;
+			etv.setEstEffortErrorText("Estimated Effort is required");
+		} else if (Integer.parseInt(etv.getEstEffort().getText()) <= 0) {
+			estEffortValid = false;
+			etv.setEstEffortErrorText("Must be greater than 0");
+		} else if (Integer.parseInt(etv.getEstEffort().getText()) > 9999) {
+			estEffortValid = false;
+			etv.setEstEffortErrorText("Must be less than 9999");
+		}
+		// Actual Effort
+		if (etv.getEstEffort().getText().isEmpty()) {
+			actEffortValid = true;
+		} else if (Integer.parseInt(etv.getActEffort().getText()) <= 0) {
+			actEffortValid = false;
+			etv.setActualEffortErrorText("Must be greater than 0");
+		} else if (Integer.parseInt(etv.getActEffort().getText()) > 9999) {
+			actEffortValid = false;
+			etv.setActualEffortErrorText("Must be less than 9999");
 		}
 
 		// display the errors
 		etv.setTitleErrorVisible(!titleValid);
 		etv.setDescriptionErrorVisible(!descriptionValid);
 		etv.setEstEffortErrorVisible(!estEffortValid);
+		etv.setActualEffortErrorVisible(!actEffortValid);
 
-		return titleValid && descriptionValid && estEffortValid;
-
+		return titleValid && descriptionValid && estEffortValid
+				&& actEffortValid;
 	}
 
 	@Override

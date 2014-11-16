@@ -72,6 +72,7 @@ public class EditTaskView extends JPanel {
 	private JLabel titleError;
 	private JLabel descriptionError;
 	private JLabel estimatedEffortError;
+	private JLabel actualEffortError;
 
 	private JComboBox<String> stages;
 
@@ -101,8 +102,8 @@ public class EditTaskView extends JPanel {
 		JLabel nt_actualEffortLabel = new JLabel("Actual Effort ");
 		JLabel nt_commentsLabel = new JLabel("Comments ");
 		JLabel nt_requirementLabel = new JLabel("Requirements ");
-		JLabel nt_titleLabel_error = new JLabel("Title is required");
 
+		JLabel nt_titleLabel_error = new JLabel("Title is required");
 		nt_titleLabel_error.setVisible(false);
 		titleError = nt_titleLabel_error;
 		JLabel nt_descriptionLabel_error = new JLabel("Description is required");
@@ -112,6 +113,9 @@ public class EditTaskView extends JPanel {
 				"Estimated Effort is required");
 		nt_estimatedEffortLabel_error.setVisible(false);
 		estimatedEffortError = nt_estimatedEffortLabel_error;
+		JLabel nt_actualEffortLabel_error = new JLabel("");
+		nt_actualEffortLabel_error.setVisible(false);
+		actualEffortError = nt_actualEffortLabel_error;
 
 		// JTextFields
 		// sets all text fields editable and adds them to global variables
@@ -298,6 +302,9 @@ public class EditTaskView extends JPanel {
 
 		newTaskGridBag.gridy = 5;
 		add(nt_estimatedEffortLabel_error, newTaskGridBag);
+
+		newTaskGridBag.gridy = 6;
+		add(nt_actualEffortLabel_error, newTaskGridBag);
 
 		newTaskGridBag.gridy = 7;
 		add(nt_submitCommentBtn, newTaskGridBag);
@@ -496,6 +503,37 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
+	 * Sets the estimated effort error text
+	 * 
+	 * @param text
+	 *            the text to set the error
+	 */
+	public void setEstEffortErrorText(String text) {
+		estimatedEffortError.setText(text);
+	}
+
+	/**
+	 * Sets the actual effort error visible or invisible
+	 * 
+	 * @param v
+	 *            true will make the actual effort error visible, false will
+	 *            make the actual effort error invisible
+	 */
+	public void setActualEffortErrorVisible(boolean v) {
+		actualEffortError.setVisible(v);
+	}
+
+	/**
+	 * Sets the actual effort error text
+	 * 
+	 * @param text
+	 *            the text to set the error
+	 */
+	public void setActualEffortErrorText(String text) {
+		actualEffortError.setText(text);
+	}
+
+	/**
 	 * Sets the stage selector enabled or disabled
 	 * 
 	 * @param v
@@ -537,6 +575,11 @@ public class EditTaskView extends JPanel {
 	 */
 	@Override
 	public void setVisible(boolean visible) {
+		if (visible) {
+			TaskInputController tic = (TaskInputController) titleField
+					.getKeyListeners()[0];
+			tic.checkFields();
+		}
 		if (visible && controller != null) {
 			controller.reloadData();
 		}

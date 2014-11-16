@@ -104,8 +104,6 @@ public class EditTaskController implements ActionListener {
 					// moves the task to the selected stage
 
 					t.setStage(desiredStage);
-					// save the edited task to the database
-					t.save();
 					wfm.moveTask(t, currentStage, desiredStage);
 					// save the workflow because we may have moved the task
 					wfm.save();

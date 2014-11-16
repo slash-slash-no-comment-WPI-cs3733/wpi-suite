@@ -65,7 +65,6 @@ public class TaskController implements ActionListener {
 		JanewayModule.etv.setActEffort(model.getActualEffort());
 
 		JanewayModule.wfv.setVisible(false);
-		JanewayModule.etv.setVisible(true);
 
 		// figures out the index of the stage, then sets the drop down to the
 		// stage at that index
@@ -77,6 +76,12 @@ public class TaskController implements ActionListener {
 				break;
 			}
 		}
+		// Enable stage dropdown when editing a task.
 		JanewayModule.etv.setStageSelectorEnabled(true);
+
+		// Enable save button when editing a task.
+		JanewayModule.etv.enableSave();
+
+		JanewayModule.etv.setVisible(true);
 	}
 }

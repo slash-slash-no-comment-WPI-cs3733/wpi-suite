@@ -96,4 +96,14 @@ public class WorkflowController {
 	public void fetch() {
 		model.update(this);
 	}
+
+	/**
+	 * 
+	 * Returns the workflow model.
+	 *
+	 * @return the WorkflowModel
+	 */
+	public WorkflowModel getModel() {
+		return model;
+	}
 }
