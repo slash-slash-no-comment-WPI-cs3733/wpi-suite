@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
+import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
 import edu.wpi.cs.wpisuitetng.network.Network;
 import edu.wpi.cs.wpisuitetng.network.Request;
 import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
@@ -66,7 +67,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	private List<ActivityModel> activities;
 
 	// Associated requirement that this task corresponds to
-	private Requirement req;
+	private int reqID;
 
 	/**
 	 * Constructor assigns name, task id, and stage.
@@ -206,7 +207,12 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 * @return the requirement
 	 */
 	public Requirement getReq() {
-		return req;
+		for (Requirement req : RequirementModel.getInstance().getRequirements()) {
+			if (req.getId() == reqID) {
+				return req;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -214,7 +220,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 *            the requirement to set
 	 */
 	public void setReq(Requirement req) {
-		this.req = req;
+		this.reqID = req.getId();
 	}
 
 	/**
@@ -293,7 +299,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		estimatedEffort = task.getEstimatedEffort();
 		actualEffort = task.getActualEffort();
 		activities = task.getActivities();
-		req = task.getReq();
+		reqID = task.getReq().getId();
 	}
 
 	@Override
