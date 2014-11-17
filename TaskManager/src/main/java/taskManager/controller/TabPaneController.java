@@ -22,15 +22,22 @@ public class TabPaneController {
 
 	public void addCreateTaskTab() {
 		addTab("Create Task",  new EditTaskView(Mode.CREATE), true);
+		int index = tabPaneV.getTabCount()-1;
+		tabPaneV.setSelectedIndex(index);
 	}
 
 	public void addEditTaskTab(EditTaskView etv) {
 		addTab("Edit Task",  new EditTaskView(Mode.EDIT), true);
+		int index = tabPaneV.getTabCount()-1;
+		tabPaneV.setSelectedIndex(index);
 	}
 
 	public void addManageStagesTab() {
 		if(!manageStagesTabOpen){
-			addTab("Manage Stages",  new ManageStageView(), true);
+			ManageStageView view = new ManageStageView();
+			addTab("Manage Stages", view, true);
+			int index = tabPaneV.getTabCount()-1;
+			tabPaneV.setSelectedIndex(index);
 			manageStagesTabOpen = true;
 		}
 	}
@@ -38,6 +45,8 @@ public class TabPaneController {
 	public void addManageUsersTab() {
 		if(!manageUsersTabOpen){
 			addTab("Manage Users",  new ManageUsersView(), true);
+			int index = tabPaneV.getTabCount()-1;
+			tabPaneV.setSelectedIndex(index);
 			manageUsersTabOpen = true;
 		}
 	}
@@ -58,5 +67,18 @@ public class TabPaneController {
 			tabPaneV.remove(component);;
 		}
 	}
+	
+	/**
+     * Changes the selected tab to the tab with the given index
+     * 
+     * @param tabIndex the index of the tab to select
+     */
+    private void switchToTab(int tabIndex) {
+        try {
+            tabPaneV.setSelectedIndex(tabIndex);
+        } catch (IndexOutOfBoundsException e) {
+            // an invalid tab was requested, do nothing
+        }
+    }
 
 }

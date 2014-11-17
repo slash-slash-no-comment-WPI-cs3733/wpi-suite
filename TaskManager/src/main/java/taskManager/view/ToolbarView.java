@@ -62,8 +62,8 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 		manageStages.setName("manageStages");
 		manageUsers = new JButton("Manage Users");
 		manageUsers.setName("manageUsers");
-		statistics = new JButton("Statistics");
-		statistics.setName("statistics");
+		statistics = new JButton("Reports");
+		statistics.setName("reports");
 		refresh = new JButton("Refresh");
 		refresh.setName("refresh");
 
