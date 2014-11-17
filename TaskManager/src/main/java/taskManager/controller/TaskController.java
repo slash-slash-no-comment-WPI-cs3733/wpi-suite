@@ -68,6 +68,7 @@ public class TaskController implements ActionListener {
 		etv.setEstEffort(model.getEstimatedEffort());
 		etv.setActEffort(model.getActualEffort());
 
+		// changes the view from workflow to edit
 		JanewayModule.wfv.setVisible(false);
 		etv.setVisible(true);
 

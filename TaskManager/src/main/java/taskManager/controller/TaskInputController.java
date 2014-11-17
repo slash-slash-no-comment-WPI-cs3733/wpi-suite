@@ -26,7 +26,6 @@ import taskManager.view.EditTaskView;
 public class TaskInputController implements KeyListener, FocusListener {
 
 	private final EditTaskView etv = JanewayModule.etv;
-	private boolean isComplete = false;
 
 	public TaskInputController() {
 
@@ -57,7 +56,7 @@ public class TaskInputController implements KeyListener, FocusListener {
 		try {
 			if (etv.getEstEffort().getText().isEmpty()) {
 				estEffortValid = false;
-				etv.setEstEffortErrorText("Estimated Effort is required");
+				etv.setEstEffortErrorText("This is a required field");
 			} else if (Integer.parseInt(etv.getEstEffort().getText()) <= 0) {
 				estEffortValid = false;
 				etv.setEstEffortErrorText("Must be greater than 0");

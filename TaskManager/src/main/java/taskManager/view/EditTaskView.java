@@ -105,10 +105,11 @@ public class EditTaskView extends JPanel {
 		JLabel nt_commentsLabel = new JLabel("Comments ");
 		JLabel nt_requirementLabel = new JLabel("Requirements ");
 
-		JLabel nt_titleLabel_error = new JLabel("Title is required");
+		JLabel nt_titleLabel_error = new JLabel("This a required field");
 		nt_titleLabel_error.setVisible(false);
 		titleError = nt_titleLabel_error;
-		JLabel nt_descriptionLabel_error = new JLabel("Description is required");
+		JLabel nt_descriptionLabel_error = new JLabel(
+				"This is a required field");
 		nt_descriptionLabel_error.setVisible(false);
 		descriptionError = nt_descriptionLabel_error;
 		JLabel nt_estimatedEffortLabel_error = new JLabel(
