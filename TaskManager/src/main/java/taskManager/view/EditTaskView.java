@@ -53,6 +53,7 @@ public class EditTaskView extends JPanel {
 	public static final String ACT_EFFORT = "act_effort";
 	public static final String EST_EFFORT = "est_effort";
 	public static final String DUE_DATE = "due_date";
+	public static final String NO_REQ = "[None]";
 	/**
 	 * 
 	 */

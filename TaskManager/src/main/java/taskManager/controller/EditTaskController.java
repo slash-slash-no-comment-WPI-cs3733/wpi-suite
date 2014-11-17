@@ -190,7 +190,7 @@ public class EditTaskController implements ActionListener {
 				.getRequirements();
 		JComboBox<String> requirements = etv.getRequirements();
 		requirements.removeAllItems();
-		requirements.addItem("[None]");
+		requirements.addItem(EditTaskView.NO_REQ);
 		for (Requirement req : reqs) {
 			requirements.addItem(req.getName());
 		}

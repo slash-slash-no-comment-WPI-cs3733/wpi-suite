@@ -88,7 +88,8 @@ public class TaskController implements ActionListener {
 		if (req != null) {
 			JanewayModule.etv.getRequirements().setSelectedItem(req.getName());
 		} else {
-			JanewayModule.etv.getRequirements().setSelectedItem("[None]");
+			JanewayModule.etv.getRequirements().setSelectedItem(
+					EditTaskView.NO_REQ);
 		}
 	}
 }

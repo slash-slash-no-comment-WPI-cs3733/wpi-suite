@@ -27,6 +27,8 @@ import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
+import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
+import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
 
 /**
  * Tests for the edit task controller
@@ -137,6 +139,51 @@ public class TestEditTaskController {
 		fixture.button(EditTaskView.SAVE).click();
 
 		assertEquals(task.getStage().getName(), stageNames[0]);
+	}
+
+	@Test
+	public void testAddRequirement() {
+		// create a requirement
+		Requirement req = new Requirement();
+		req.setName("test requirement");
+		RequirementModel.getInstance().addRequirement(req);
+
+		TaskModel task = createAndLoadTask();
+
+		// make sure it has no requirement yet
+		fixture.comboBox(EditTaskView.REQUIREMENTS).requireSelection(
+				EditTaskView.NO_REQ);
+
+		// add a requirement to the task
+		fixture.comboBox(EditTaskView.REQUIREMENTS).selectItem(req.getName());
+		fixture.button(EditTaskView.SAVE).click();
+
+		// make sure the task got the requirement
+		assertEquals(task.getReq().getName(), req.getName());
+	}
+
+	@Test
+	public void testLoadRequirement() {
+		Requirement req = new Requirement();
+		req.setName("test requirement");
+		RequirementModel.getInstance().addRequirement(req);
+
+		// add a task with a requirement
+		StageModel stage = wfm.getStages().get(2);
+		TaskModel task = new TaskModel("New Task", stage);
+		task.setDescription("test description");
+		task.setDueDate(Calendar.getInstance().getTime());
+		task.setEstimatedEffort(5);
+		task.setActualEffort(7);
+		task.setReq(req);
+
+		// load the edit view
+		TaskController tc = new TaskController(null, task);
+		tc.actionPerformed(null);
+
+		// make sure the requirement displays properly
+		fixture.comboBox(EditTaskView.REQUIREMENTS).requireSelection(
+				req.getName());
 	}
 
 	@After
