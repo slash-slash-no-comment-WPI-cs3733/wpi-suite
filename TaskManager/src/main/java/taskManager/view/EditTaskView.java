@@ -43,7 +43,7 @@ public class EditTaskView extends JPanel {
 	public static final String REQUIREMENTS = "requirements";
 	public static final String CANCEL = "cancel";
 	public static final String SAVE = "save";
-	public static final String ADD_REQ = "addReq";
+	public static final String VIEW_REQ = "viewReq";
 	public static final String SUBMIT_COMMENT = "submitComment";
 	public static final String ADD_USER = "addUser";
 	public static final String DELETE = "delete";
@@ -97,7 +97,7 @@ public class EditTaskView extends JPanel {
 		JLabel nt_estimatedEffortLabel = new JLabel("Estimated Effort ");
 		JLabel nt_actualEffortLabel = new JLabel("Actual Effort ");
 		JLabel nt_commentsLabel = new JLabel("Comments ");
-		JLabel nt_requirementLabel = new JLabel("Requirements ");
+		JLabel nt_requirementLabel = new JLabel("Requirement ");
 
 		// JTextFields
 		// sets all text fields editable and adds them to global variables
@@ -164,9 +164,9 @@ public class EditTaskView extends JPanel {
 		submitComment = nt_submitCommentBtn;
 		submitComment.setName(SUBMIT_COMMENT);
 		// add requirement
-		JButton nt_addRequirementBtn = new JButton("Add Requirement");
+		JButton nt_addRequirementBtn = new JButton("View Requirement");
 		addReq = nt_addRequirementBtn;
-		addReq.setName(ADD_REQ);
+		addReq.setName(VIEW_REQ);
 		// saves all the data and closes the window
 		JButton nt_saveBtn = new JButton("Save");
 		save = nt_saveBtn;

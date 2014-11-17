@@ -67,7 +67,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	private List<ActivityModel> activities;
 
 	// Associated requirement that this task corresponds to
-	private int reqID;
+	private Integer reqID;
 
 	/**
 	 * Constructor assigns name, task id, and stage.
@@ -207,6 +207,9 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 * @return the requirement
 	 */
 	public Requirement getReq() {
+		if (reqID == null) {
+			return null;
+		}
 		for (Requirement req : RequirementModel.getInstance().getRequirements()) {
 			if (req.getId() == reqID) {
 				return req;
@@ -216,11 +219,22 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	}
 
 	/**
+	 * @return the id of the requirement
+	 */
+	public Integer getReqID() {
+		return reqID;
+	}
+
+	/**
 	 * @param req
 	 *            the requirement to set
 	 */
 	public void setReq(Requirement req) {
-		this.reqID = req.getId();
+		if (req != null) {
+			this.reqID = req.getId();
+		} else {
+			this.reqID = null;
+		}
 	}
 
 	/**
@@ -299,7 +313,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		estimatedEffort = task.getEstimatedEffort();
 		actualEffort = task.getActualEffort();
 		activities = task.getActivities();
-		reqID = task.getReq().getId();
+		reqID = task.getReqID();
 	}
 
 	@Override

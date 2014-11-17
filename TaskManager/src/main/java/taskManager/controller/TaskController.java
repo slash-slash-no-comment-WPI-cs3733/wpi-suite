@@ -82,6 +82,10 @@ public class TaskController implements ActionListener {
 		}
 
 		// set the requirement dropdown
-		JanewayModule.etv.getRequirements().setSelectedItem(req.getName());
+		if (req != null) {
+			JanewayModule.etv.getRequirements().setSelectedItem(req.getName());
+		} else {
+			JanewayModule.etv.getRequirements().setSelectedItem("[None]");
+		}
 	}
 }

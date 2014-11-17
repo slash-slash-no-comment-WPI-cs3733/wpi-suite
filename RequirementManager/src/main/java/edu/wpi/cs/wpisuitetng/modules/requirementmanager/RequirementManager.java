@@ -20,7 +20,6 @@ import edu.wpi.cs.wpisuitetng.modules.requirementmanager.view.MainView;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.view.ToolbarView;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.view.ViewEventController;
 
-
 /**
  * @author justinhess
  * @version $Revision: 1.0 $
@@ -28,10 +27,10 @@ import edu.wpi.cs.wpisuitetng.modules.requirementmanager.view.ViewEventControlle
 public class RequirementManager implements IJanewayModule {
 
 	private List<JanewayTabModel> tabs;
-	
-	/** 
+
+	/**
 	 * Constructor for Requirement Manager. Creates a main view that contains a
-	 *  toolbar on the top for each sub-tab. 
+	 * toolbar on the top for each sub-tab.
 	 */
 	public RequirementManager() {
 		tabs = new ArrayList<JanewayTabModel>();
@@ -41,31 +40,40 @@ public class RequirementManager implements IJanewayModule {
 
 		ViewEventController.getInstance().setMainView(mainPanel);
 		ViewEventController.getInstance().setToolBar(toolBar);
-		
 
-		// Create a tab model that contains the toolbar panel and the main content panel
-		JanewayTabModel tab1 = new JanewayTabModel(getName(), new ImageIcon(), toolBar, mainPanel);
+		// Create a tab model that contains the toolbar panel and the main
+		// content panel
+		JanewayTabModel tab1 = new JanewayTabModel(getName(), new ImageIcon(),
+				toolBar, mainPanel);
 
 		// Add the tab to the list of tabs owned by this module
 		tabs.add(tab1);
 	}
-	
+
 	/**
 	 * Returns the name of the Requirement manager tab.
-	
-	
-	 * @return String * @see edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule#getName() * @see edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule#getName()
+	 * 
+	 * 
+	 * @return String * @see
+	 *         edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule#getName() * @see
+	 *         edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule#getName()
 	 */
 	@Override
 	public String getName() {
 		return "Requirement Manager";
 	}
 
+	public static String staticGetName() {
+		return "Requirement Manager";
+	}
+
 	/**
 	 * Returns the tabs that make up the requirement manager.
-	
-	
-	 * @return List<JanewayTabModel> * @see edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule#getTabs() * @see edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule#getTabs()
+	 * 
+	 * 
+	 * @return List<JanewayTabModel> * @see
+	 *         edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule#getTabs() * @see
+	 *         edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule#getTabs()
 	 */
 	@Override
 	public List<JanewayTabModel> getTabs() {
@@ -73,4 +81,3 @@ public class RequirementManager implements IJanewayModule {
 	}
 
 }
-

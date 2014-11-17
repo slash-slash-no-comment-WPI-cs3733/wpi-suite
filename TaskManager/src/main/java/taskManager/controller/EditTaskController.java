@@ -3,6 +3,7 @@
  */
 package taskManager.controller;
 
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JTabbedPane;
 
 import taskManager.JanewayModule;
 import taskManager.model.StageModel;
@@ -18,8 +20,10 @@ import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.WorkflowView;
+import edu.wpi.cs.wpisuitetng.modules.requirementmanager.RequirementManager;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
+import edu.wpi.cs.wpisuitetng.modules.requirementmanager.view.ViewEventController;
 
 /**
  * @author Beth Martino
@@ -105,7 +109,6 @@ public class EditTaskController implements ActionListener {
 					wfm.moveTask(t, currentStage, desiredStage);
 					t.setStage(desiredStage);
 					t.setReq(requirement);
-					this.returnToWorkflowView();
 					this.setTaskID("000000");
 				} else {
 
@@ -159,9 +162,30 @@ public class EditTaskController implements ActionListener {
 				System.out.println("You've pressed the add user button");
 				break;
 
-			case EditTaskView.ADD_REQ:
-				// add a requirement to this task
+			case EditTaskView.VIEW_REQ:
+				// view requirement in requirement manager
 
+				if (requirement == null) {
+					// TODO: warn user that no requirement is selected
+					return;
+				}
+
+				// get the tab pane
+				// TODO: cleaner way of getting this
+				Container p1 = etv.getParent();
+				Container p2 = p1.getParent();
+				Container p3 = p2.getParent();
+				JTabbedPane tabPane = (JTabbedPane) p3;
+
+				// switch to the requirement manager tab
+				tabPane.setSelectedIndex(tabPane.indexOfTab(RequirementManager
+						.staticGetName()));
+
+				// open the requirement editor
+				ViewEventController.getInstance().editRequirement(
+						RequirementModel.getInstance().getRequirementByName(
+								(String) etv.getRequirements()
+										.getSelectedItem()));
 				break;
 
 			case EditTaskView.CANCEL:
