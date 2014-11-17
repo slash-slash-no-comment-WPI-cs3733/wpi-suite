@@ -142,17 +142,20 @@ public class EditTaskController implements ActionListener {
 				}
 
 				// get the tab pane
-				// TODO: cleaner way of getting this
-				Container p1 = etv.getParent();
-				Container p2 = p1.getParent();
-				Container p3 = p2.getParent();
-				JTabbedPane tabPane = (JTabbedPane) p3;
+				Container c = etv;
+				while (c != null) {
+					if ("Janeway Tab Pane".equals(c.getName())) {
+						break;
+					}
+					c = c.getParent();
+				}
+				JTabbedPane tabPane = (JTabbedPane) c;
 
 				// switch to the requirement manager tab
 				tabPane.setSelectedIndex(tabPane.indexOfTab(RequirementManager
 						.staticGetName()));
 
-				// open the requirement editor
+				// open the editor to this requirement
 				ViewEventController.getInstance().editRequirement(
 						RequirementModel.getInstance().getRequirementByName(
 								(String) etv.getRequirements()
