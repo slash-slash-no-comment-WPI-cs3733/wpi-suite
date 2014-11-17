@@ -1,13 +1,17 @@
-/**
- * 
- */
+/*******************************************************************************
+ * Copyright (c) 2012-2014 -- WPI Suite
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
+
 package taskManager.controller;
 
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -26,6 +30,8 @@ import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.view.ViewEventController;
 
 /**
+ * The controller for editing and creating a new task
+ * 
  * @author Beth Martino
  *
  */
@@ -59,6 +65,7 @@ public class EditTaskController implements ActionListener {
 
 			taskID = etv.getTitle().getName();
 
+			// check to see if the task exists in the workflow
 			boolean exists = false;
 			StageModel currentStage = wfm.findStageByName("New");
 			for (StageModel stage : wfm.getStages()) {
@@ -71,6 +78,7 @@ public class EditTaskController implements ActionListener {
 				}
 			}
 
+			// grabs the stage from the dropdow box
 			StageModel desiredStage = wfm.findStageByName((String) etv
 					.getStages().getSelectedItem());
 			Requirement requirement = RequirementModel.getInstance()
@@ -80,66 +88,30 @@ public class EditTaskController implements ActionListener {
 			switch (name) {
 
 			case EditTaskView.SAVE:
-				// find the appropriate stage
-				// create new task
-
+				// if editing
 				if (exists) {
-
 					// set the task to be edited
-					TaskModel t = currentStage.findTaskByID(taskID);
+					TaskModel task = currentStage.findTaskByID(taskID);
+					this.setTaskData(task, desiredStage, requirement);
+					// moves the task to that stage on the model level
+					wfm.moveTask(task, currentStage, desiredStage);
+					wfm.save();
 
-					// updates text fields
-					t.setName(etv.getTitle().getText());
-					t.setDescription(etv.getDescription().getText());
-					t.setEstimatedEffort(Integer.parseInt(etv.getEstEffort()
-							.getText()));
-					t.setActualEffort(Integer.parseInt(etv.getActEffort()
-							.getText()));
-
-					// formats the date
-					SimpleDateFormat d = new SimpleDateFormat("MM/dd/yyyy");
-					try {
-						t.setDueDate(d.parse(etv.getDate().getText()));
-					} catch (ParseException e1) {
-						// TODO think of something to go here
-					}
-
-					// grabs the correct stage model from the workflow model and
-					// moves the task to that stage
-					wfm.moveTask(t, currentStage, desiredStage);
-					t.setStage(desiredStage);
-					t.setReq(requirement);
 					this.setTaskID("000000");
-				} else {
-
+				}
+				// if creating a new task
+				else {
 					// creates a new task model
 					TaskModel task = new TaskModel(etv.getTitle().getText(),
 							currentStage);
-
-					// sets all task values according to fields
-					SimpleDateFormat d = new SimpleDateFormat("MM/dd/yyyy");
-					try {
-						task.setDueDate(d.parse(etv.getDate().getText()));
-					} catch (ParseException p) {
-						p.printStackTrace();
-					}
-					task.setEstimatedEffort(Integer.parseInt(etv.getEstEffort()
-							.getText()));
-					String actEffort = etv.getActEffort().getText();
-					try {
-						task.setActualEffort(Integer.parseInt(actEffort));
-					} catch (java.lang.NumberFormatException e2) {
-						// TODO: handle error
-					}
-					task.setDescription(etv.getDescription().getText());
-					task.setReq(requirement);
+					this.setTaskData(task, wfm.findStageByName("New"),
+							requirement);
 				}
 
-				// makes all the fields blank again
-				etv.resetFields();
 				// exit the edit view, this refreshes the workflow
 				this.returnToWorkflowView();
-
+				// makes all the fields blank again
+				etv.resetFields();
 				// Save entire workflow whenever a task is saved
 				wfm.save();
 				break;
@@ -150,11 +122,10 @@ public class EditTaskController implements ActionListener {
 						.getSelectedItem());
 				TaskModel task = s.findTaskByID(taskID);
 				s.getTasks().remove(task);
-				this.returnToWorkflowView();
-				etv.resetFields();
-
 				// Save entire workflow whenever a task is deleted
 				wfm.save();
+				this.returnToWorkflowView();
+				etv.resetFields();
 				break;
 
 			case EditTaskView.ADD_USER:
@@ -238,6 +209,28 @@ public class EditTaskController implements ActionListener {
 	 */
 	public void setTaskID(String id) {
 		taskID = id;
+	}
+
+	/**
+	 * sets the fields of the given task object to the values on the fields of
+	 * the edit task view and saves the task data
+	 * 
+	 * @param t
+	 *            the task to be edited
+	 */
+	private void setTaskData(TaskModel t, StageModel s, Requirement r) {
+		t.setName(etv.getTitle().getText());
+		t.setDescription(etv.getDescription().getText());
+		t.setEstimatedEffort(Integer.parseInt(etv.getEstEffort().getText()));
+		try {
+			t.setActualEffort(Integer.parseInt(etv.getActEffort().getText()));
+		} catch (java.lang.NumberFormatException e2) {
+			// TODO: handle error
+		}
+		t.setDueDate(etv.getDateField().getDate());
+		t.setStage(s);
+		t.setReq(r);
+		t.save();
 	}
 
 }

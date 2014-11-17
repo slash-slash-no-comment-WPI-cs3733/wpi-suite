@@ -10,7 +10,7 @@ package taskManager.controller;
 
 import static org.junit.Assert.assertEquals;
 
-import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.JFrame;
@@ -74,11 +74,11 @@ public class TestEditTaskController {
 		// enter information for a new task
 		getTitleBoxFixture().enterText("New Task");
 		getDescriptionBoxFixture().enterText("a sample task used for testing");
-		fixture.textBox("due_date").enterText("11/11/2011");
-		fixture.textBox("est_effort").enterText("3");
+		etv.getDateField().setDate(Calendar.getInstance().getTime());
+		fixture.textBox(EditTaskView.EST_EFFORT).enterText("3");
 
 		// save the task
-		fixture.button("save").click();
+		fixture.button(EditTaskView.SAVE).click();
 
 		// verify the task got saved
 		StageModel stage = wfm.findStageByName("New");
@@ -108,12 +108,13 @@ public class TestEditTaskController {
 		// edit the task
 		getTitleBoxFixture().deleteText().enterText("renamed task");
 		getDescriptionBoxFixture().deleteText().enterText("new description");
-		fixture.textBox("due_date").deleteText().enterText("11/11/2011");
-		fixture.textBox("est_effort").deleteText().enterText("4");
-		fixture.textBox("act_effort").deleteText().enterText("8");
+		Date d = new Date(5 * 60 * 60 * 1000);
+		etv.setDate(d);
+		fixture.textBox(EditTaskView.EST_EFFORT).deleteText().enterText("4");
+		fixture.textBox(EditTaskView.ACT_EFFORT).deleteText().enterText("8");
 
 		// save the task
-		fixture.button("save").click();
+		fixture.button(EditTaskView.SAVE).click();
 
 		// verify the task got saved (and not duplicated)
 		StageModel stage = wfm.findStageByName(task.getStage().getName());
@@ -123,9 +124,7 @@ public class TestEditTaskController {
 		// verify the fields of the task got saved correctly
 		TaskModel newTask = stage.findTaskByName("renamed task").get(0);
 		assertEquals(newTask.getDescription(), "new description");
-		assertEquals(
-				new SimpleDateFormat("MM/dd/yyyy").format(newTask.getDueDate()),
-				"11/11/2011");
+		assertEquals(newTask.getDueDate(), d);
 		assertEquals(newTask.getEstimatedEffort(), 4);
 		assertEquals(newTask.getActualEffort(), 8);
 	}
@@ -134,8 +133,8 @@ public class TestEditTaskController {
 	public void testMoveTask() {
 		TaskModel task = createAndLoadTask();
 
-		fixture.comboBox("stages").selectItem(0);
-		fixture.button("save").click();
+		fixture.comboBox(EditTaskView.STAGES).selectItem(0);
+		fixture.button(EditTaskView.SAVE).click();
 
 		assertEquals(task.getStage().getName(), stageNames[0]);
 	}
@@ -155,7 +154,7 @@ public class TestEditTaskController {
 		StageModel stage = wfm.getStages().get(2);
 		TaskModel task = new TaskModel("New Task", stage);
 		task.setDescription("test description");
-		task.setDueDate(new Date(12345));
+		task.setDueDate(Calendar.getInstance().getTime());
 		task.setEstimatedEffort(5);
 		task.setActualEffort(7);
 
@@ -176,13 +175,12 @@ public class TestEditTaskController {
 	private void verifyTask(TaskModel task) {
 		getTitleBoxFixture().requireText(task.getName());
 		getDescriptionBoxFixture().requireText(task.getDescription());
-		fixture.textBox("due_date").requireText(
-				new SimpleDateFormat("MM/dd/yyyy").format(task.getDueDate()));
-		fixture.textBox("est_effort").requireText(
+		fixture.textBox(EditTaskView.EST_EFFORT).requireText(
 				Integer.toString(task.getEstimatedEffort()));
-		fixture.textBox("act_effort").requireText(
+		fixture.textBox(EditTaskView.ACT_EFFORT).requireText(
 				Integer.toString(task.getActualEffort()));
-		fixture.comboBox("stages").requireSelection(task.getStage().getName());
+		fixture.comboBox(EditTaskView.STAGES).requireSelection(
+				task.getStage().getName());
 	}
 
 	/**

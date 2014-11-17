@@ -67,8 +67,9 @@ public class TestManageStageController {
 				"New Stage" };
 
 		// add a new stage named New Stage
-		fixture.textBox("newStageName").deleteText().enterText("New Stage");
-		fixture.button("Add new stage").click();
+		fixture.textBox(ManageStageView.NEW_STAGE_NAME).deleteText()
+				.enterText("New Stage");
+		fixture.button(ManageStageView.ADD_NEW_STAGE).click();
 
 		checkStages(result);
 	}
@@ -79,7 +80,7 @@ public class TestManageStageController {
 		final String[] result = { "first", "second", "fourth" };
 
 		// remove the stage named third
-		fixture.panel("third").button("Delete").click();
+		fixture.panel("third").button(ManageStageView.DELETE).click();
 
 		checkStages(result);
 
@@ -88,23 +89,24 @@ public class TestManageStageController {
 		msc.reloadData();
 
 		// make sure the delete button is disabled
-		fixture.panel("undeletable").button("Delete").requireDisabled();
+		fixture.panel("undeletable").button(ManageStageView.DELETE)
+				.requireDisabled();
 	}
 
 	@Test
 	public void testMoveStage() {
 		// move stage third up twice
-		fixture.panel("third").button("Move Up").click();
-		fixture.panel("third").button("Move Up").click();
+		fixture.panel("third").button(ManageStageView.MOVE_UP).click();
+		fixture.panel("third").button(ManageStageView.MOVE_UP).click();
 		String[] result = { "third", "first", "second", "fourth" };
 		checkStages(result);
 
 		// attempt to move fourth down (shouldn't do anything)
-		fixture.panel("fourth").button("Move Down").click();
+		fixture.panel("fourth").button(ManageStageView.MOVE_DOWN).click();
 		checkStages(result);
 
 		// move stage third down once
-		fixture.panel("second").button("Move Down").click();
+		fixture.panel("second").button(ManageStageView.MOVE_DOWN).click();
 		String[] result2 = { "third", "first", "fourth", "second" };
 		checkStages(result2);
 	}
