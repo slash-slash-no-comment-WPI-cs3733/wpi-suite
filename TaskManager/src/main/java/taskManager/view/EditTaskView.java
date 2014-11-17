@@ -364,6 +364,24 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
+	 * gets the save button object
+	 * 
+	 * @return the save button object
+	 */
+	public JButton getSaveButton() {
+		return this.save;
+	}
+
+	/**
+	 * gets the delete button object
+	 * 
+	 * @return the delete button object
+	 */
+	public JButton getDeleteButton() {
+		return this.delete;
+	}
+
+	/**
 	 * Gets the text in the title field
 	 * 
 	 * @return the title field
