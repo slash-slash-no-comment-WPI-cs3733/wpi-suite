@@ -1,10 +1,12 @@
 package taskManager.view;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import taskManager.controller.WorkflowController;
@@ -25,12 +27,14 @@ public class TabPaneView extends JTabbedPane {
 		WorkflowModel wfm = new WorkflowModel();
 		wfc = new WorkflowController(wfv, wfm);
 		wfv.setController(wfc);
+		
+		JScrollPane scroll = new JScrollPane(wfv);
+		scroll.setBorder(BorderFactory.createLineBorder(Color.black));
 
-		this.addTab("Workflow", new ImageIcon(), wfv, "Workflow");
+		this.addTab("Workflow", new ImageIcon(), scroll, "Workflow");
 	}
 
 	public void refreshWorkflow() {
 		wfc.fetch();
 	}
-
 }
