@@ -8,7 +8,6 @@ import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -28,6 +27,8 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import javax.swing.BorderFactory;
@@ -97,10 +98,81 @@ public class TestLayout extends JFrame {
 
 class StagePanel extends JPanel {
 
+	private JPanel placeholder;
+	private int lastIndex;
+	private List<Point> compCenters;
+
 	public StagePanel() {
 		// super();// TODO
 		this.setTransferHandler(new DDTransferHandler());
 		this.setDropTarget(new DropTarget(this, new StageDropListener(this)));
+
+		// add placeholder
+		placeholder = new JPanel();
+		placeholder.setBackground(Color.GRAY);
+		placeholder.setPreferredSize(new Dimension(100, 100));
+		placeholder.setVisible(false);
+		this.add(placeholder);
+	}
+
+	public void setPlaceholderSize(Dimension size) {
+		placeholder.setPreferredSize(size);
+	}
+
+	public void setPlaceholderVisible(boolean visible) {
+		placeholder.setVisible(visible);
+	}
+
+	public void setPlaceholderIndex(int index) {
+		index = Math.min(index, this.getComponentCount() - 1);
+		this.add(placeholder, index);
+		if (index != lastIndex) {
+			this.revalidate();
+			this.repaint();
+			lastIndex = index;
+		}
+	}
+
+	public void setPlaceholderPoint(Point point) {
+		setPlaceholderIndex(getInsertionIndex(point));
+	}
+
+	// do this while placeholder is invisible
+	public void calculateCenters() {
+		compCenters = new ArrayList<Point>();
+		for (Component comp : this.getComponents()) {
+			if (comp.isVisible()) {
+				compCenters.add(new Point((int) comp.getBounds().getCenterX(),
+						(int) comp.getBounds().getCenterY()));
+			}
+		}
+	}
+
+	public int getInsertionIndex(Point point) {
+		// Component[] components = this.getComponents();
+		// System.out.println(point);
+		double minDist = Double.MAX_VALUE;
+		int index = -1; // index of closest component
+		int i = 0;
+		for (Point center : compCenters) {
+			final double dist = Math.pow(point.x - center.x, 2)
+					+ Math.pow(point.y - center.y, 2);
+			System.out.println(dist);
+			if (dist < minDist) {
+				minDist = dist;
+				index = i;
+			}
+			i++;
+		}
+		System.out.println("Closest component" + Integer.toString(index));
+
+		if (index < 0) {
+			index = 0;
+		} else if (point.y > compCenters.get(index).y) {
+			index++;
+		}// TODO make general for horizontal?
+		System.out.println("Insert at " + Integer.toString(index));
+		return index;
 	}
 
 }
@@ -112,28 +184,32 @@ class TaskPanel extends JPanel implements Transferable {
 	private boolean dragActive;
 
 	public TaskPanel() {
-		this.addMouseMotionListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				mouseOffset = e.getPoint();
-				pos = TaskPanel.this.getLocationOnScreen();
-			}
-
-			public void mouseDragged(MouseEvent e) {
-				System.out.println("Mouse dragged");
-
-				dragActive = true;
-
-				JComponent comp = (JComponent) e.getSource();
-				TransferHandler handler = comp.getTransferHandler();
-				handler.exportAsDrag(comp, e, TransferHandler.COPY);// TODO
-																	// should be
-																	// move
-			}
-
-		});
+		TaskMouseListener listener = new TaskMouseListener();
+		this.addMouseListener(listener);
+		this.addMouseMotionListener(listener);
 
 		this.setTransferHandler(new DDTransferHandler());
 		this.setDropTarget(new DropTarget(this, new TaskDropListener(this)));
+	}
+
+	private class TaskMouseListener extends MouseAdapter {
+		public void mousePressed(MouseEvent e) {
+			System.out.println("Panel pressed");
+			mouseOffset = e.getPoint();
+			pos = TaskPanel.this.getLocationOnScreen();
+		}
+
+		public void mouseDragged(MouseEvent e) {
+			System.out.println("Mouse dragged");
+
+			dragActive = true;
+
+			JComponent comp = (JComponent) e.getSource();
+			TransferHandler handler = comp.getTransferHandler();
+			handler.exportAsDrag(comp, e, TransferHandler.COPY);// TODO
+																// should be
+																// move
+		}
 	}
 
 	public Point getOffset() {
@@ -216,17 +292,40 @@ class TaskDropListener extends DropTargetAdapter {
 
 	@Override
 	public void drop(DropTargetDropEvent e) {
-		Container parent = panel.getParent();
-		if (parent instanceof StagePanel) {
-			Point newPoint = SwingUtilities.convertPoint(e
-					.getDropTargetContext().getComponent(), e.getLocation(),
-					parent);
-			DropTargetDropEvent newE = new DropTargetDropEvent(
-					e.getDropTargetContext(), newPoint, e.getDropAction(),
-					e.getSourceActions());
+		DropTargetDropEvent newE = dispatchToParent(e);
+		if (panel.getParent() instanceof StagePanel) {
 			panel.getParent().getDropTarget().drop(newE);
 		}
+	}
 
+	@Override
+	public void dragOver(DropTargetDragEvent e) {
+		DropTargetDragEvent newE = dispatchToParent(e);
+		if (panel.getParent() instanceof StagePanel) {
+			panel.getParent().getDropTarget().dragOver(newE);
+		}
+	}
+
+	public DropTargetDropEvent dispatchToParent(DropTargetDropEvent e) {
+		Container parent = panel.getParent();
+
+		Point newPoint = SwingUtilities.convertPoint(e.getDropTargetContext()
+				.getComponent(), e.getLocation(), parent);
+		DropTargetDropEvent newE = new DropTargetDropEvent(
+				e.getDropTargetContext(), newPoint, e.getDropAction(),
+				e.getSourceActions());
+		return newE;
+	}
+
+	public DropTargetDragEvent dispatchToParent(DropTargetDragEvent e) {
+		Container parent = panel.getParent();
+
+		Point newPoint = SwingUtilities.convertPoint(e.getDropTargetContext()
+				.getComponent(), e.getLocation(), parent);
+		DropTargetDragEvent newE = new DropTargetDragEvent(
+				e.getDropTargetContext(), newPoint, e.getDropAction(),
+				e.getSourceActions());
+		return newE;
 	}
 }
 
@@ -256,60 +355,37 @@ class StageDropListener implements DropTargetListener {
 			return;
 		}
 
-		Component[] components = stage.getComponents();
-		Point point = e.getLocation();
-		System.out.println(point);
-		double minDist = Double.MAX_VALUE;
-		int index = -1; // index of closest component
-		int i = 0;
-		for (Component c : components) {
-			if (c.equals(transferredPanel)) {
-				continue; // don't consider yourself, it we're moving within a
-							// stage
-			}
-			final Rectangle bounds = c.getBounds();
-			// using square of distance
-			final double dist = Math.pow(point.x - bounds.getCenterX(), 2)
-					+ Math.pow(point.y - bounds.getCenterY(), 2);
-			System.out.println(dist);
-			if (dist < minDist) {
-				minDist = dist;
-				index = i;
-			}
-			i++;
-		}
-		System.out.println("Closest component" + Integer.toString(index));
+		int index = stage.getInsertionIndex(e.getLocation());
 
-		if (index < 0) {
-			index = 0;
-		} else if (point.y > components[index].getBounds().getCenterY()) {
-			index++;
-		}// TODO make general for horizontal?
-		System.out.println("Insert at " + Integer.toString(index));
 		stage.add(transferredPanel, index);
 		transferredPanel.setVisible(true);
+		stage.setPlaceholderVisible(false);
+		stage.calculateCenters();
 		transferredPanel.getParent().revalidate();
 		transferredPanel.getParent().repaint();
 		System.out.println(transferredPanel.getParent().getComponentCount());
 	}
 
 	@Override
-	public void dragEnter(DropTargetDragEvent arg0) {
-
+	public void dragEnter(DropTargetDragEvent e) {
+		System.out.println("Stage drag enter");
+		stage.calculateCenters();
 	}
 
 	@Override
-	public void dragExit(DropTargetEvent arg0) {
-
+	public void dragExit(DropTargetEvent e) {
+		stage.setPlaceholderVisible(false);
 	}
 
 	@Override
-	public void dragOver(DropTargetDragEvent arg0) {
+	public void dragOver(DropTargetDragEvent e) {
 		System.out.println("Stage drag over");
+		stage.setPlaceholderPoint(e.getLocation());
+		stage.setPlaceholderVisible(true);
 	}
 
 	@Override
-	public void dropActionChanged(DropTargetDragEvent arg0) {
+	public void dropActionChanged(DropTargetDragEvent e) {
 
 	}
 
@@ -322,14 +398,13 @@ class DDManager extends DragSourceAdapter {
 	private Icon dragIcon;
 	private DragImage dragImage;
 
-	private Container sourceParent;
+	private StagePanel sourceParent;
 
 	public DDManager() {
 		try {
 			taskPanelFlavor = new DataFlavor(
 					DataFlavor.javaJVMLocalObjectMimeType
 							+ ";class=taskManager.prototypeDnD.TaskPanel");
-			// TODO try more sensible constructor
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -341,8 +416,8 @@ class DDManager extends DragSourceAdapter {
 	public void dragMouseMoved(DragSourceDragEvent e) {
 		System.out.println("Dragging happening");
 		Component comp = e.getDragSourceContext().getComponent();
-		if (dragImage == null && comp instanceof JPanel) {
-			JPanel panel = (JPanel) comp;
+		if (dragImage == null && comp instanceof TaskPanel) {
+			TaskPanel panel = (TaskPanel) comp;
 
 			Point screen = e.getLocation();
 			Point origin = panel.getLocationOnScreen();
@@ -350,13 +425,20 @@ class DDManager extends DragSourceAdapter {
 			Point imageOffset = new Point(origin.x - screen.x, origin.y
 					- screen.y);
 
+			System.out.println(imageOffset);
+			// imageOffset = new Point(-10, -10);
+
+			imageOffset = new Point(-panel.getOffset().x, -panel.getOffset().y);
+
 			dragIcon = new PanelIcon(panel);
 			dragImage = new DragImage(panel, e.getLocation(), dragIcon,
 					imageOffset);
 
-			sourceParent = comp.getParent();
+			sourceParent = (StagePanel) comp.getParent();
 			// sourceParent.remove(comp);
 			comp.setVisible(false);
+			sourceParent.calculateCenters();
+			// sourceParent.setPlaceholderVisible(true);
 			// sourceParent.remove(comp);
 			sourceParent.revalidate();
 			sourceParent.repaint();

@@ -74,6 +74,7 @@ public class DragImage extends AbstractComponentDecorator {
 			Point screenLocation, Icon icon, Point imageOffset,
 			boolean trackFrames) {
 		super(root);
+		System.out.println("New DragImage at " + imageOffset.toString());
 		this.dragSource = dragSource;
 		this.icon = icon;
 		this.imageOffset = imageOffset;
