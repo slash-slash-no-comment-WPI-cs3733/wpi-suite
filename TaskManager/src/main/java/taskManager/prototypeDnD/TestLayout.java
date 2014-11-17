@@ -15,7 +15,6 @@ import java.awt.dnd.DragSource;
 import java.awt.dnd.DragSourceAdapter;
 import java.awt.dnd.DragSourceDragEvent;
 import java.awt.dnd.DragSourceDropEvent;
-import java.awt.dnd.DragSourceMotionListener;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDragEvent;
@@ -249,8 +248,7 @@ class TaskPanel extends JPanel implements Transferable {
 	}
 }
 
-class DDTransferHandler extends TransferHandler implements
-		DragSourceMotionListener {
+class DDTransferHandler extends TransferHandler {
 	// TODO super?
 
 	public Transferable createTransferable(JComponent comp) {
@@ -265,12 +263,6 @@ class DDTransferHandler extends TransferHandler implements
 			return (TaskPanel) comp;
 		}
 		return null;
-	}
-
-	@Override
-	public void dragMouseMoved(DragSourceDragEvent e) {
-		// TODO Not reached during normal drag
-		System.out.println("Drag handler mouse move");
 	}
 
 	public int getSourceActions(JComponent comp) {
