@@ -8,6 +8,8 @@
  *******************************************************************************/
 package taskManager.controller;
 
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -21,9 +23,10 @@ import taskManager.view.EditTaskView;
  * @author Stefan Alexander
  *
  */
-public class TaskInputController implements KeyListener {
+public class TaskInputController implements KeyListener, FocusListener {
 
-	EditTaskView etv = JanewayModule.etv;
+	private final EditTaskView etv = JanewayModule.etv;
+	private boolean isComplete = false;
 
 	public TaskInputController() {
 
@@ -67,15 +70,13 @@ public class TaskInputController implements KeyListener {
 			etv.setEstEffortErrorText("Must be a number value");
 		}
 
-		// Actual Effort
-		String stage = etv.getStages().getSelectedItem().toString();
-		if (stage == "Complete") {
+		if (etv.getActEffort().isEnabled()) {
 			try {
 				if (etv.getActEffort().getText().isEmpty()) {
 					actEffortValid = true;
-				} else if (Integer.parseInt(etv.getActEffort().getText()) <= 0) {
+				} else if (Integer.parseInt(etv.getActEffort().getText()) < 0) {
 					actEffortValid = false;
-					etv.setActualEffortErrorText("Must be greater than 0");
+					etv.setActualEffortErrorText("Can not be less than 0");
 				} else if (Integer.parseInt(etv.getActEffort().getText()) > 9999) {
 					actEffortValid = false;
 					etv.setActualEffortErrorText("Must be less than 9999");
@@ -84,8 +85,6 @@ public class TaskInputController implements KeyListener {
 				actEffortValid = false;
 				etv.setActualEffortErrorText("Must be a number");
 			}
-		} else {
-			etv.getActEffort().setEnabled(false);
 		}
 
 		// display the errors
@@ -110,6 +109,24 @@ public class TaskInputController implements KeyListener {
 
 	@Override
 	public void keyReleased(KeyEvent e) {
+		if (this.checkFields()) {
+			etv.enableSave();
+		} else {
+			etv.disableSave();
+		}
+	}
+
+	@Override
+	public void focusGained(FocusEvent e) {
+		if (this.checkFields()) {
+			etv.enableSave();
+		} else {
+			etv.disableSave();
+		}
+	}
+
+	@Override
+	public void focusLost(FocusEvent e) {
 		if (this.checkFields()) {
 			etv.enableSave();
 		} else {

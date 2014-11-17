@@ -366,48 +366,53 @@ public class EditTaskView extends JPanel {
 	/**
 	 * Gets the text in the title field
 	 * 
-	 * @return the text in the title field
+	 * @return the title field
 	 */
 	public JTextField getTitle() {
 		return titleField;
 	}
 
 	/**
-	 * Gets the text in the description field
+	 * Gets the description field
 	 * 
-	 * @return the text in the description field
+	 * @return the description field
 	 */
 	public JTextArea getDescription() {
 		return descripArea;
 	}
 
 	/**
-	 * Gets the text in the date field
+	 * Gets the date field
 	 * 
-	 * @return the text in the date field
+	 * @return the date field
 	 */
 	public JXDatePicker getDateField() {
 		return dateField;
 	}
 
 	/**
-	 * Gets the number in the estimated effort field
+	 * Gets the estimated effort field
 	 * 
-	 * @return the number in the estimated effort field
+	 * @return the estimated effort field
 	 */
 	public JTextField getEstEffort() {
 		return estEffortField;
 	}
 
 	/**
-	 * Gets the number in the actual effort field
+	 * Gets the actual effort field
 	 * 
-	 * @return the number in the actual effort field
+	 * @return the actual effort field
 	 */
 	public JTextField getActEffort() {
 		return actEffortField;
 	}
 
+	/**
+	 * gets the dropdown box in the view that contains all the stage names
+	 * 
+	 * @return the stages dropdown box
+	 */
 	public JComboBox<String> getStages() {
 		return stages;
 	}
@@ -469,9 +474,8 @@ public class EditTaskView extends JPanel {
 	 *            the index of the stage in the workflow
 	 */
 	public void setStageDropdown(int n) {
-		// String p = stages.getItemAt(n);
-		// stages.setSelectedItem(p);
-		stages.setSelectedIndex(n);
+		String p = stages.getItemAt(n);
+		stages.setSelectedItem(p);
 	}
 
 	/**
