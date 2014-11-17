@@ -122,6 +122,10 @@ class StagePanel extends JPanel {
 		placeholder.setVisible(visible);
 	}
 
+	public boolean isPlaceholderVisible() {
+		return placeholder.isVisible();
+	}
+
 	public void setPlaceholderIndex(int index) {
 		index = Math.min(index, this.getComponentCount() - 1);
 		this.add(placeholder, index);
@@ -136,7 +140,7 @@ class StagePanel extends JPanel {
 		setPlaceholderIndex(getInsertionIndex(point));
 	}
 
-	// do this while placeholder is invisible
+	// do this ONLY while placeholder is invisible!!! REALLY!!!
 	public void calculateCenters() {
 		compCenters = new ArrayList<Point>();
 		for (Component comp : this.getComponents()) {
@@ -284,7 +288,7 @@ class TaskDropListener extends DropTargetAdapter {
 
 	@Override
 	public void drop(DropTargetDropEvent e) {
-		DropTargetDropEvent newE = dispatchToParent(e);
+		DropTargetDropEvent newE = convertToParentCoords(e);
 		if (panel.getParent() instanceof StagePanel) {
 			panel.getParent().getDropTarget().drop(newE);
 		}
@@ -292,13 +296,13 @@ class TaskDropListener extends DropTargetAdapter {
 
 	@Override
 	public void dragOver(DropTargetDragEvent e) {
-		DropTargetDragEvent newE = dispatchToParent(e);
+		DropTargetDragEvent newE = convertToParentCoords(e);
 		if (panel.getParent() instanceof StagePanel) {
 			panel.getParent().getDropTarget().dragOver(newE);
 		}
 	}
 
-	public DropTargetDropEvent dispatchToParent(DropTargetDropEvent e) {
+	public DropTargetDropEvent convertToParentCoords(DropTargetDropEvent e) {
 		Container parent = panel.getParent();
 
 		Point newPoint = SwingUtilities.convertPoint(e.getDropTargetContext()
@@ -309,7 +313,7 @@ class TaskDropListener extends DropTargetAdapter {
 		return newE;
 	}
 
-	public DropTargetDragEvent dispatchToParent(DropTargetDragEvent e) {
+	public DropTargetDragEvent convertToParentCoords(DropTargetDragEvent e) {
 		Container parent = panel.getParent();
 
 		Point newPoint = SwingUtilities.convertPoint(e.getDropTargetContext()
@@ -340,6 +344,7 @@ class StageDropListener implements DropTargetListener {
 				transferredPanel = (TaskPanel) trans
 						.getTransferData(DDManager.taskPanelFlavor);
 			} catch (Exception ex) {
+				System.out.println(ex.getStackTrace());
 				return;
 			}
 
@@ -353,25 +358,33 @@ class StageDropListener implements DropTargetListener {
 		transferredPanel.setVisible(true);
 		stage.setPlaceholderVisible(false);
 		stage.calculateCenters();
-		transferredPanel.getParent().revalidate();
-		transferredPanel.getParent().repaint();
-		System.out.println(transferredPanel.getParent().getComponentCount());
+
+		stage.revalidate();
+		stage.repaint();
+
+		// System.out.println(transferredPanel.getParent().getComponentCount());
 	}
 
+	// Careful with this due to it being called after leaving a TaskPanel
 	@Override
 	public void dragEnter(DropTargetDragEvent e) {
 		System.out.println("Stage drag enter");
-		stage.calculateCenters();
+
 	}
 
+	// Careful with this due to it being called after entering a TaskPanel
 	@Override
 	public void dragExit(DropTargetEvent e) {
+		System.out.println("Stage drag exit");
 		stage.setPlaceholderVisible(false);
 	}
 
 	@Override
 	public void dragOver(DropTargetDragEvent e) {
 		System.out.println("Stage drag over");
+		if (!stage.isPlaceholderVisible()) {
+			stage.calculateCenters();
+		}
 		stage.setPlaceholderPoint(e.getLocation());
 		stage.setPlaceholderVisible(true);
 	}
