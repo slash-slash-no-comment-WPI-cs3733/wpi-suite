@@ -10,6 +10,7 @@
 package taskManager.view;
 
 import java.awt.Color;
+import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -38,6 +39,7 @@ public class TabPaneView extends JTabbedPane {
 		setTabPlacement(TOP);
 		setTabLayoutPolicy(SCROLL_TAB_LAYOUT);
 		setBorder(BorderFactory.createEmptyBorder(5, 3, 3, 3));
+		this.setSize(new Dimension(500, 500));
 
 		// Create a workflow view, controller, and model
 		WorkflowView wfv = new WorkflowView();

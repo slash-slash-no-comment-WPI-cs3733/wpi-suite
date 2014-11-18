@@ -12,6 +12,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -65,6 +66,11 @@ public class TestEditTaskController {
 
 		frame = new JFrame();
 		frame.add(JanewayModule.tabPaneC.getTabView());
+		// Need all of these to get the test frame to be the correct size
+		frame.setMinimumSize(new Dimension(800, 800));
+		frame.setSize(new Dimension(800, 800));
+		frame.setPreferredSize(new Dimension(800, 800));
+		frame.setMaximumSize(new Dimension(800, 800));
 
 		fixture = new FrameFixture(frame);
 
@@ -120,6 +126,8 @@ public class TestEditTaskController {
 
 		// verify the task got saved (and not duplicated)
 		StageModel stage = wfm.findStageByName(task.getStage().getName());
+		System.out.println(stage.findTaskByName("New Task").size());
+
 		assertEquals(stage.findTaskByName("New Task").size(), 0);
 		assertEquals(stage.findTaskByName("renamed task").size(), 1);
 

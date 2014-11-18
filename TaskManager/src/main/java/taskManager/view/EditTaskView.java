@@ -67,6 +67,7 @@ public class EditTaskView extends JPanel {
 	private JTextField estEffortField;
 	private JTextField actEffortField;
 	private JTextField commentsField;
+	private JPanel window;
 
 	private Mode mode;
 
@@ -83,13 +84,15 @@ public class EditTaskView extends JPanel {
 		// When Task added make EditTask take in a Task called currTask
 		this.mode = mode;
 
-		JPanel window = new JPanel();
+		window = new JPanel();
 		this.setLayout(new FlowLayout());
 
 		Dimension nt_panelSize = getPreferredSize();
-		nt_panelSize.width = 625; // TODO
+		nt_panelSize.width = 675; // TODO
 		nt_panelSize.height = 500; // Decide size
 		window.setPreferredSize(nt_panelSize);
+		this.setPreferredSize(nt_panelSize);
+		this.setMinimumSize(nt_panelSize);
 
 		// window.setBorder(BorderFactory.createTitledBorder(""));
 
@@ -274,7 +277,7 @@ public class EditTaskView extends JPanel {
 		// Third Column ////
 
 		newTaskGridBag.anchor = GridBagConstraints.LINE_START;
-		newTaskGridBag.weightx = 1.2;
+		newTaskGridBag.weightx = .5;
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridx = 2;
 
@@ -459,5 +462,10 @@ public class EditTaskView extends JPanel {
 			controller.reloadData();
 		}
 		super.setVisible(visible);
+	}
+
+	// Used for tests
+	public JPanel getWindow() {
+		return this.window;
 	}
 }
