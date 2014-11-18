@@ -178,18 +178,12 @@ public class TestEditTaskController {
 			fail("oh god what's going on");
 		}
 
+		etv.setController(new EditTaskController(wfm, etv));
 		fixture.cleanUp();
 		frame = new JFrame();
 		frame.add(etv);
 		fixture = new FrameFixture(frame);
 		fixture.show();
-		// frame.removeAll();
-		// frame.add(etv2);
-		// etv.revalidate();
-		// etv.setVisible(true);
-		// frame.revalidate();
-		// frame.repaint();
-		// etv.setVisible(true);
 
 		return task;
 	}

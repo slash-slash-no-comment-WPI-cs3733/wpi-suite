@@ -69,10 +69,9 @@ public class EditTaskView extends JPanel {
 	private JTextField estEffortField;
 	private JTextField actEffortField;
 	private JTextField commentsField;
-	
+
 	public enum Mode {
-		CREATE,
-		EDIT;
+		CREATE, EDIT;
 	}
 
 	private JComboBox<String> stages;
@@ -424,9 +423,8 @@ public class EditTaskView extends JPanel {
 	 * @param n
 	 *            the index of the stage in the workflow
 	 */
-	public void setStageDropdown(int n) {
-		String p = stages.getItemAt(n);
-		stages.setSelectedItem(p);
+	public void setStageDropdown(String s) {
+		stages.setSelectedItem(s);
 	}
 
 	/**

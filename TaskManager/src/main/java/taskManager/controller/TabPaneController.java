@@ -33,6 +33,7 @@ public class TabPaneController {
 	public void addEditTaskTab(EditTaskView etv) {
 		etv.setController(new EditTaskController(tabPaneV.getWorkflowModel(),
 				etv));
+		etv.controller.reloadData();
 		addTab("Edit Task", etv, true);
 		int index = tabPaneV.getTabCount() - 1;
 		tabPaneV.setSelectedIndex(index);

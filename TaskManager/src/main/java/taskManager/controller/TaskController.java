@@ -57,6 +57,8 @@ public class TaskController implements ActionListener {
 		// TODO: Populate with data?
 		EditTaskView etv = new EditTaskView(Mode.EDIT);
 
+		tabPaneC.addEditTaskTab(etv);
+
 		// uses the title field to hold the unique id
 		etv.getTitle().setName(this.model.getID());
 
@@ -76,13 +78,6 @@ public class TaskController implements ActionListener {
 		// stage at that index
 
 		List<StageModel> stages = wfm.getStages();
-		for (int i = 0; i < stages.size(); i++) {
-			if (stages.get(i) == this.sm) {
-				etv.setStageDropdown(i);
-				break;
-			}
-		}
-
-		tabPaneC.addEditTaskTab(etv);
+		etv.setStageDropdown(sm.getName());
 	}
 }
