@@ -55,6 +55,7 @@ public class TaskController implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+
 		// TODO: Populate with data?
 		EditTaskView etv = new EditTaskView(Mode.EDIT);
 
@@ -63,6 +64,9 @@ public class TaskController implements ActionListener {
 
 		// uses description field to hold the name of the stage
 		etv.getDescription().setName(this.model.getStage().getName());
+		// makes the delete button unclickable
+		etv.enableDelete();
+
 
 		// populate editable fields with this tasks info
 		etv.setTitle(model.getName());

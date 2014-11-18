@@ -10,6 +10,8 @@ package taskManager.model;
 
 import org.junit.Test;
 
+import taskManager.TestLogin;
+
 /**
  * Some basic tests
  *
@@ -32,6 +34,17 @@ public class SaveTest {
 	@Test
 	public void entityCreateTest() {
 		new GenericEntityManager<TaskModel>(null, TaskModel.class);
+	}
+
+	@Test
+	public void saveLoad() {
+		TestLogin.login();
+
+		WorkflowModel wf = new WorkflowModel("wf1");
+		StageModel stage = new StageModel(wf, "stage1");
+		TaskModel model = new TaskModel("model1", stage);
+
+		model.save();
 	}
 
 	@Test

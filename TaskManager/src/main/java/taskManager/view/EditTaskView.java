@@ -12,7 +12,7 @@ package taskManager.view;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
@@ -25,6 +25,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+
+import org.jdesktop.swingx.JXDatePicker;
 
 import taskManager.controller.EditTaskController;
 
@@ -39,6 +41,17 @@ import taskManager.controller.EditTaskController;
 
 public class EditTaskView extends JPanel {
 
+	public static final String STAGES = "stages";
+	public static final String CANCEL = "cancel";
+	public static final String SAVE = "save";
+	public static final String ADD_REQ = "addReq";
+	public static final String SUBMIT_COMMENT = "submitComment";
+	public static final String ADD_USER = "addUser";
+	public static final String DELETE = "delete";
+	public static final String COMMENTS = "comments";
+	public static final String ACT_EFFORT = "act_effort";
+	public static final String EST_EFFORT = "est_effort";
+	public static final String DUE_DATE = "due_date";
 	/**
 	 * 
 	 */
@@ -52,7 +65,7 @@ public class EditTaskView extends JPanel {
 
 	private JTextField titleField;
 	private JTextArea descripArea;
-	private JTextField dateField;
+	private JXDatePicker dateField;
 	private JTextField estEffortField;
 	private JTextField actEffortField;
 	private JTextField commentsField;
@@ -103,22 +116,25 @@ public class EditTaskView extends JPanel {
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		nt_descriptionScrollPane
 				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		JTextField nt_dueDateField = new JTextField(25);
-		nt_dueDateField.setEditable(true);
-		nt_dueDateField.setName("due_date");
-		dateField = nt_dueDateField;
+
 		JTextField nt_estimatedEffortField = new JTextField(10);
 		nt_estimatedEffortField.setEditable(true);
-		nt_estimatedEffortField.setName("est_effort");
+		nt_estimatedEffortField.setName(EST_EFFORT);
 		estEffortField = nt_estimatedEffortField;
 		JTextField nt_actualEffortField = new JTextField(10);
 		nt_actualEffortField.setEditable(true);
-		nt_actualEffortField.setName("act_effort");
+		nt_actualEffortField.setName(ACT_EFFORT);
 		actEffortField = nt_actualEffortField;
 		JTextField nt_commentsField = new JTextField(25);
 		nt_commentsField.setEditable(true);
-		nt_commentsField.setName("comments");
+		nt_commentsField.setName(COMMENTS);
 		commentsField = nt_estimatedEffortField;
+
+		// adds calendar
+		JXDatePicker nt_dueDateField = new JXDatePicker();
+		nt_dueDateField.setName("due_date");
+		this.dateField = nt_dueDateField;
+		dateField.setDate(Calendar.getInstance().getTime());
 
 		// JTextArea
 		// TODO
@@ -141,32 +157,32 @@ public class EditTaskView extends JPanel {
 		// Delete Task and close the window
 		JButton nt_deleteBtn = new JButton("Delete");
 		delete = nt_deleteBtn;
-		delete.setName("delete");
+		delete.setName(DELETE);
 		// Add user to list
 		JButton nt_addUsersBtn = new JButton("Add Users");
 		addUser = nt_addUsersBtn;
-		addUser.setName("addUser");
+		addUser.setName(ADD_USER);
 		// Add comment to comments
 		JButton nt_submitCommentBtn = new JButton("Submit Comment");
 		submitComment = nt_submitCommentBtn;
-		submitComment.setName("submitComment");
+		submitComment.setName(SUBMIT_COMMENT);
 		// add requirement
 		JButton nt_addRequirementBtn = new JButton("Add Requirement");
 		addReq = nt_addRequirementBtn;
-		addReq.setName("addReq");
+		addReq.setName(ADD_REQ);
 		// saves all the data and closes the window
 		JButton nt_saveBtn = new JButton("Save");
 		save = nt_saveBtn;
-		save.setName("save");
+		save.setName(SAVE);
 		// closes the window without saving
 		JButton nt_cancelBtn = new JButton("Cancel");
 		cancel = nt_cancelBtn;
-		cancel.setName("cancel");
+		cancel.setName(CANCEL);
 
 		// Combo Box for Stage
 		JComboBox<String> nt_stagesBoxes = new JComboBox<String>();
 
-		nt_stagesBoxes.setName("stages");
+		nt_stagesBoxes.setName(STAGES);
 		stages = nt_stagesBoxes;
 
 		setLayout(new GridBagLayout());
@@ -326,7 +342,7 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the text in the date field
 	 */
-	public JTextField getDate() {
+	public JXDatePicker getDateField() {
 		return dateField;
 	}
 
@@ -379,8 +395,7 @@ public class EditTaskView extends JPanel {
 	 *            the text in the date field
 	 */
 	public void setDate(Date d) {
-		SimpleDateFormat q = new SimpleDateFormat("MM/dd/yyyy");
-		dateField.setText(q.format(d));
+		dateField.setDate(d);
 	}
 
 	/**
@@ -415,6 +430,20 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
+	 * disables the delete button
+	 */
+	public void disableDelete() {
+		this.delete.setEnabled(false);
+	}
+
+	/**
+	 * enables the delete button
+	 */
+	public void enableDelete() {
+		this.delete.setEnabled(true);
+	}
+
+	/**
 	 * makes all of the text fields blank
 	 */
 	public void resetFields() {
@@ -423,7 +452,7 @@ public class EditTaskView extends JPanel {
 		descripArea.setText("");
 		estEffortField.setText("");
 		actEffortField.setText("");
-		dateField.setText("");
+		dateField.setDate(Calendar.getInstance().getTime());
 	}
 
 	/*

@@ -54,8 +54,13 @@ public class ToolbarController implements ActionListener {
 			case "reports":
 				break;
 
+				pick one
 			case "refresh":
 				tabPaneV.refreshWorkflow();
+				break;
+
+			case ToolbarView.REFRESH:
+				workflowController.fetch();
 				break;
 			}
 		}
