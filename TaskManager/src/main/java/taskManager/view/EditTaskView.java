@@ -12,8 +12,10 @@ package taskManager.view;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -82,6 +84,9 @@ public class EditTaskView extends JPanel {
 	private JComboBox<String> requirements;
 
 	private EditTaskController controller;
+	private ActivityView activityPane;
+
+	private List<String> activities;
 
 	/**
 	 * Creates a Edit Task Panel so that you can change all of the values of a
@@ -96,6 +101,8 @@ public class EditTaskView extends JPanel {
 		setPreferredSize(nt_panelSize);
 
 		setBorder(BorderFactory.createTitledBorder("Edit Task"));
+
+		activities = new ArrayList<String>();
 
 		// JLabels
 		JLabel nt_titleLabel = new JLabel("Title ");
@@ -150,7 +157,7 @@ public class EditTaskView extends JPanel {
 		JTextField nt_commentsField = new JTextField(25);
 		nt_commentsField.setEditable(true);
 		nt_commentsField.setName(COMMENTS);
-		commentsField = nt_estimatedEffortField;
+		commentsField = nt_commentsField;
 
 		// adds calendar
 		JXDatePicker nt_dueDateField = new JXDatePicker();
@@ -169,8 +176,8 @@ public class EditTaskView extends JPanel {
 		nt_usersScrollPane
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-		// TODO
 		// Comment Pane
+		activityPane = new ActivityView();
 
 		// Requirement Pane
 		JComboBox<String> nt_requirementBoxes = new JComboBox<String>();
@@ -287,9 +294,8 @@ public class EditTaskView extends JPanel {
 		newTaskGridBag.gridy = 7;
 		add(nt_commentsField, newTaskGridBag);
 
-		// TODO
-		// List of Comments
-		// newTaskGridBag.gridy = 8;
+		newTaskGridBag.gridy = 8;
+		add(activityPane, newTaskGridBag);
 
 		// List of Requirements
 		newTaskGridBag.gridy = 9;
@@ -635,6 +641,29 @@ public class EditTaskView extends JPanel {
 	 */
 	public void disableSave() {
 		this.save.setEnabled(false);
+	}
+
+	/**
+	 * 
+	 * Adds comment to the activities list and refreshes the activities panel.
+	 *
+	 */
+	public void addComment() {
+		activities.add(commentsField.getText());
+		setActivityText();
+	}
+
+	/**
+	 * 
+	 * Sets the activies panel according to the activies list.
+	 *
+	 */
+	public void setActivityText() {
+		activityPane.setMessage("");
+		for (String s : activities) {
+			String current = activityPane.getMessage().getText();
+			activityPane.setMessage(current + "User: " + s + "\n");
+		}
 	}
 
 	/*

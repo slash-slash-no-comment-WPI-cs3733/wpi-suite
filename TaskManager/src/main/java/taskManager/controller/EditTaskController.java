@@ -169,8 +169,8 @@ public class EditTaskController implements ActionListener {
 				break;
 
 			case EditTaskView.SUBMIT_COMMENT:
-				// creates a new activity
-				System.out.println("You've pressed the submit comment button");
+				// adds a comment activity
+				etv.addComment();
 				break;
 			}
 		}

@@ -23,7 +23,7 @@ import javax.swing.ScrollPaneConstants;
  *
  */
 public class ActivityView extends JPanel {
-	
+
 	public static final String USER_NAME = "user_name";
 	public static final String MESSAGE_BODY = "message_body";
 	public static final String MESSAGE_DATE = "message_date";
@@ -60,8 +60,10 @@ public class ActivityView extends JPanel {
 		message.setLineWrap(true);
 		message.setEditable(false);
 		JScrollPane messageScrollPane = new JScrollPane(message);
-		messageScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		messageScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		messageScrollPane
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		messageScrollPane
+				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
 		setLayout(new GridBagLayout());
 
