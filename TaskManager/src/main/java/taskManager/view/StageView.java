@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import taskManager.controller.StageController;
+import taskManager.prototypeDnD.StagePanel;
 
 /**
  * @author Beth Martino
@@ -32,7 +33,7 @@ public class StageView extends JPanel implements IStageView {
 	private static final long serialVersionUID = 1L;
 	private StageController controller;
 
-	JPanel tasks = new JPanel();
+	JPanel tasks = new StagePanel();
 	JScrollPane stage = new JScrollPane(tasks);
 
 	/**

@@ -13,6 +13,7 @@ import java.awt.FlowLayout;
 import javax.swing.JPanel;
 
 import taskManager.controller.WorkflowController;
+import taskManager.prototypeDnD.DDManager;
 
 /**
  * @author Beth Martino
@@ -29,6 +30,8 @@ public class WorkflowView extends JPanel implements IWorkflowView {
 	 * Constructor for WorkflowView.
 	 */
 	public WorkflowView() {
+
+		new DDManager();
 
 		// arranges the stages horizontally and evenly spaced
 		this.setLayout(new FlowLayout());

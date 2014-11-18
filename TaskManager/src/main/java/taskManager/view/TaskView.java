@@ -16,11 +16,11 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
 import taskManager.controller.TaskController;
+import taskManager.prototypeDnD.TaskPanel;
 
 /**
  * @author Beth Martino
@@ -28,7 +28,7 @@ import taskManager.controller.TaskController;
  * @version November 9, 2014
  */
 
-public class TaskView extends JPanel implements ITaskView {
+public class TaskView extends TaskPanel implements ITaskView {
 
 	private static final long serialVersionUID = 1L;
 

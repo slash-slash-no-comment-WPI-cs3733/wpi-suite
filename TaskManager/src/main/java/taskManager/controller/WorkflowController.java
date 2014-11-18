@@ -48,7 +48,7 @@ public class WorkflowController {
 			public void run() {
 				while (alive) {
 					try {
-						sleep(1000);
+						sleep(5000);
 						fetch();
 					} catch (NullPointerException e) {
 						// this is expected, do nothing
