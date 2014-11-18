@@ -19,7 +19,7 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.User;
  * @author Sam Khalandovsky
  * @version Nov 6, 2014
  */
-public class ActivityModel extends AbstractJsonableModel<ActivityModel> {
+public class ActivityModel {
 
 	// List of possible model types
 	/**
@@ -112,35 +112,6 @@ public class ActivityModel extends AbstractJsonableModel<ActivityModel> {
 	 */
 	public User getActor() {
 		return actor;
-	}
-
-	@Override
-	public void save() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void delete() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void makeIdenticalTo(ActivityModel activity) {
-		actor = activity.actor;
-		dateCreated = activity.dateCreated;
-		description = activity.description;
-		modelType = activity.modelType;
-	}
-
-	@Override
-	public Boolean identify(Object o) {
-		if (o instanceof ActivityModel) {
-			final ActivityModel toIdentify = (ActivityModel) o;
-			return toIdentify.getDateCreated() == dateCreated
-					&& toIdentify.getType() == modelType;
-		}
-		return false;
 	}
 
 }

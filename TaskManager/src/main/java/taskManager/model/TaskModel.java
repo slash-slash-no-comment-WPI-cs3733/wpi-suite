@@ -79,7 +79,6 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 */
 
 	public TaskModel(String name, StageModel stage) {
-
 		super(stage.getWorkflow().findUniqueTaskID(name));
 		final ActivityModel createTask = new ActivityModel("Created task "
 				+ name + " in stage " + stage.getName() + ".",
