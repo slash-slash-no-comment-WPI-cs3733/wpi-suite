@@ -19,6 +19,7 @@ import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.TaskView;
+import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 
 /**
  * Controller for Tasks.
@@ -31,6 +32,7 @@ public class TaskController implements ActionListener {
 	private final TaskView view;
 	private final TaskModel model;
 	private StageModel sm;
+	private Requirement req;
 	private WorkflowModel wfm;
 	private final EditTaskView etv = JanewayModule.etv;
 
@@ -47,6 +49,7 @@ public class TaskController implements ActionListener {
 		this.view = view;
 		this.model = model;
 		sm = model.getStage();
+		req = model.getReq();
 		wfm = sm.getWorkflow();
 	}
 
@@ -97,5 +100,12 @@ public class TaskController implements ActionListener {
 		// Enable save button when editing a task.
 		etv.enableSave();
 
+		// set the requirement dropdown
+		if (req != null) {
+			JanewayModule.etv.getRequirements().setSelectedItem(req.getName());
+		} else {
+			JanewayModule.etv.getRequirements().setSelectedItem(
+					EditTaskView.NO_REQ);
+		}
 	}
 }

@@ -43,9 +43,10 @@ import taskManager.controller.TaskInputController;
 public class EditTaskView extends JPanel {
 
 	public static final String STAGES = "stages";
+	public static final String REQUIREMENTS = "requirements";
 	public static final String CANCEL = "cancel";
 	public static final String SAVE = "save";
-	public static final String ADD_REQ = "addReq";
+	public static final String VIEW_REQ = "viewReq";
 	public static final String SUBMIT_COMMENT = "submitComment";
 	public static final String ADD_USER = "addUser";
 	public static final String DELETE = "delete";
@@ -53,6 +54,7 @@ public class EditTaskView extends JPanel {
 	public static final String ACT_EFFORT = "act_effort";
 	public static final String EST_EFFORT = "est_effort";
 	public static final String DUE_DATE = "due_date";
+	public static final String NO_REQ = "[None]";
 	/**
 	 * 
 	 */
@@ -77,6 +79,7 @@ public class EditTaskView extends JPanel {
 	private JLabel actualEffortError;
 
 	private JComboBox<String> stages;
+	private JComboBox<String> requirements;
 
 	private EditTaskController controller;
 
@@ -103,7 +106,7 @@ public class EditTaskView extends JPanel {
 		JLabel nt_estimatedEffortLabel = new JLabel("Estimated Effort ");
 		JLabel nt_actualEffortLabel = new JLabel("Actual Effort ");
 		JLabel nt_commentsLabel = new JLabel("Comments ");
-		JLabel nt_requirementLabel = new JLabel("Requirements ");
+		JLabel nt_requirementLabel = new JLabel("Requirement ");
 
 		JLabel nt_titleLabel_error = new JLabel("This a required field");
 		nt_titleLabel_error.setVisible(false);
@@ -169,8 +172,10 @@ public class EditTaskView extends JPanel {
 		// TODO
 		// Comment Pane
 
-		// TODO
 		// Requirement Pane
+		JComboBox<String> nt_requirementBoxes = new JComboBox<String>();
+		requirements = nt_requirementBoxes;
+		requirements.setName(REQUIREMENTS);
 
 		// JButtons
 		// Delete Task and close the window
@@ -186,9 +191,9 @@ public class EditTaskView extends JPanel {
 		submitComment = nt_submitCommentBtn;
 		submitComment.setName(SUBMIT_COMMENT);
 		// add requirement
-		JButton nt_addRequirementBtn = new JButton("Add Requirement");
+		JButton nt_addRequirementBtn = new JButton("View Requirement");
 		addReq = nt_addRequirementBtn;
-		addReq.setName(ADD_REQ);
+		addReq.setName(VIEW_REQ);
 		// saves all the data and closes the window
 		JButton nt_saveBtn = new JButton("Save");
 		save = nt_saveBtn;
@@ -286,9 +291,9 @@ public class EditTaskView extends JPanel {
 		// List of Comments
 		// newTaskGridBag.gridy = 8;
 
-		// TODO
 		// List of Requirements
-		// newTaskGridBag.gridy = 9;
+		newTaskGridBag.gridy = 9;
+		add(nt_requirementBoxes, newTaskGridBag);
 
 		// Third Column ////
 
@@ -435,6 +440,10 @@ public class EditTaskView extends JPanel {
 	 */
 	public JComboBox<String> getStages() {
 		return stages;
+	}
+
+	public JComboBox<String> getRequirements() {
+		return requirements;
 	}
 
 	/**
