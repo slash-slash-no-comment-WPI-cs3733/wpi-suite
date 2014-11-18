@@ -1,8 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2012-2014 -- WPI Suite
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
+
 package taskManager.view;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -12,8 +19,17 @@ import javax.swing.JTabbedPane;
 import taskManager.controller.WorkflowController;
 import taskManager.model.WorkflowModel;
 
+/**
+ * 
+ * The singleton TabPaneView creates the workflow tab and deals with adding and
+ * removing tabs
+ *
+ * @author Samee Swartz
+ * @version Nov 17, 2014
+ */
 public class TabPaneView extends JTabbedPane {
 
+	private static final long serialVersionUID = -4912871689110151496L;
 	// Because the workflow is a permanent tab, tabview should keep track of it
 	private WorkflowController wfc;
 	private WorkflowModel wfm;
@@ -28,7 +44,8 @@ public class TabPaneView extends JTabbedPane {
 		wfm = new WorkflowModel();
 		wfc = new WorkflowController(wfv, wfm);
 		wfv.setController(wfc);
-		
+
+		// Make workflow scrollable
 		JScrollPane scroll = new JScrollPane(wfv);
 		scroll.setBorder(BorderFactory.createLineBorder(Color.black));
 
@@ -38,7 +55,7 @@ public class TabPaneView extends JTabbedPane {
 	public void refreshWorkflow() {
 		wfc.fetch();
 	}
-	
+
 	public WorkflowModel getWorkflowModel() {
 		return wfm;
 	}

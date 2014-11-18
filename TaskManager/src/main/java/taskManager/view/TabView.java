@@ -1,9 +1,17 @@
+/*******************************************************************************
+ * Copyright (c) 2012-2014 -- WPI Suite
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
+
 package taskManager.view;
 
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Insets;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -16,6 +24,7 @@ import taskManager.JanewayModule;
 
 public class TabView extends JPanel implements ActionListener {
 
+	private static final long serialVersionUID = -5461050356588592448L;
 	private Component component;
 	private boolean closeable;
 
@@ -26,7 +35,7 @@ public class TabView extends JPanel implements ActionListener {
 		this.closeable = closeable;
 
 		setOpaque(false);
-		
+
 		final JLabel label = new JLabel(title);
 		label.setBorder(BorderFactory.createEmptyBorder(3, 0, 2, 7));
 		add(label);
@@ -50,8 +59,8 @@ public class TabView extends JPanel implements ActionListener {
 			JanewayModule.tabPaneC.removeTabByComponent(component);
 		}
 	}
-	
-	public Component getComponent(){
+
+	public Component getComponent() {
 		return component;
 	}
 

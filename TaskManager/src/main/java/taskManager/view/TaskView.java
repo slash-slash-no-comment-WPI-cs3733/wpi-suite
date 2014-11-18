@@ -28,7 +28,7 @@ import taskManager.controller.TaskController;
  * @version November 9, 2014
  */
 
-public class TaskView extends JPanel implements ITaskView {
+public class TaskView extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
