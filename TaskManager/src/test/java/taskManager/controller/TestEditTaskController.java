@@ -38,7 +38,8 @@ public class TestEditTaskController {
 	private static EditTaskView etv = JanewayModule.etv;
 	private static WorkflowModel wfm;
 
-	private final String[] stageNames = { "New", "second", "third", "fourth" };
+	private final String[] stageNames = { "New", "Scheduled", "In Progress",
+			"Complete" };
 
 	private FrameFixture fixture;
 
