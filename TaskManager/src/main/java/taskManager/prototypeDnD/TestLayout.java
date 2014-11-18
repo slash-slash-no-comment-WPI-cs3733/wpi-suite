@@ -262,7 +262,12 @@ class StageDropListener implements DropTargetListener {
 		}
 		Dimension placeholderSize = transferredPanel.getSize();
 
-		stage.drawPlaceholder(e.getLocation(), placeholderSize);
+		// only draw placeholder if task has been made invisible
+		// necessary to avoid flicker when placeholder is drawn before task is
+		// hidden
+		if (!transferredPanel.isVisible()) {
+			stage.drawPlaceholder(e.getLocation(), placeholderSize);
+		}
 	}
 
 	// Careful with this due to it being called after leaving a TaskPanel
