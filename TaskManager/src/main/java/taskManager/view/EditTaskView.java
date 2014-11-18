@@ -10,12 +10,12 @@
 package taskManager.view;
 
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -83,12 +83,15 @@ public class EditTaskView extends JPanel {
 		// When Task added make EditTask take in a Task called currTask
 		this.mode = mode;
 
+		JPanel window = new JPanel();
+		this.setLayout(new FlowLayout());
+
 		Dimension nt_panelSize = getPreferredSize();
 		nt_panelSize.width = 625; // TODO
 		nt_panelSize.height = 500; // Decide size
-		setPreferredSize(nt_panelSize);
+		window.setPreferredSize(nt_panelSize);
 
-		setBorder(BorderFactory.createTitledBorder(""));
+		// window.setBorder(BorderFactory.createTitledBorder(""));
 
 		// JLabels
 		JLabel nt_titleLabel = new JLabel("Title ");
@@ -184,48 +187,48 @@ public class EditTaskView extends JPanel {
 		nt_stagesBoxes.setName(STAGES);
 		stages = nt_stagesBoxes;
 
-		this.setLayout(new GridBagLayout());
+		window.setLayout(new GridBagLayout());
 
 		GridBagConstraints newTaskGridBag = new GridBagConstraints();
 
 		// First Column ////
 
-		newTaskGridBag.anchor = GridBagConstraints.FIRST_LINE_START;
+		newTaskGridBag.anchor = GridBagConstraints.LINE_START;
 
-		newTaskGridBag.weightx = 0.15;
+		newTaskGridBag.weightx = 0.6;
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridx = 0;
 
 		newTaskGridBag.gridy = 0;
-		add(nt_titleLabel, newTaskGridBag);
+		window.add(nt_titleLabel, newTaskGridBag);
 
 		newTaskGridBag.gridy = 1;
-		add(nt_descriptionLabel, newTaskGridBag);
+		window.add(nt_descriptionLabel, newTaskGridBag);
 
 		newTaskGridBag.gridy = 2;
-		add(nt_dueDateLabel, newTaskGridBag);
+		window.add(nt_dueDateLabel, newTaskGridBag);
 
 		newTaskGridBag.gridy = 3;
-		add(nt_stageLabel, newTaskGridBag);
+		window.add(nt_stageLabel, newTaskGridBag);
 
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridy = 4;
-		add(nt_usersLabel, newTaskGridBag);
+		window.add(nt_usersLabel, newTaskGridBag);
 
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridy = 5;
-		add(nt_estimatedEffortLabel, newTaskGridBag);
+		window.add(nt_estimatedEffortLabel, newTaskGridBag);
 
 		newTaskGridBag.gridy = 6;
-		add(nt_actualEffortLabel, newTaskGridBag);
+		window.add(nt_actualEffortLabel, newTaskGridBag);
 
 		newTaskGridBag.weighty = 0.10;
 		newTaskGridBag.gridy = 7;
-		add(nt_commentsLabel, newTaskGridBag);
+		window.add(nt_commentsLabel, newTaskGridBag);
 
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridy = 9;
-		add(nt_requirementLabel, newTaskGridBag);
+		window.add(nt_requirementLabel, newTaskGridBag);
 
 		// Second Column ////
 
@@ -235,30 +238,30 @@ public class EditTaskView extends JPanel {
 		newTaskGridBag.gridx = 1;
 
 		newTaskGridBag.gridy = 0;
-		add(nt_titleField, newTaskGridBag);
+		window.add(nt_titleField, newTaskGridBag);
 
 		newTaskGridBag.gridy = 1;
-		add(nt_descriptionScrollPane, newTaskGridBag);
+		window.add(nt_descriptionScrollPane, newTaskGridBag);
 
 		newTaskGridBag.gridy = 2;
-		add(nt_dueDateField, newTaskGridBag);
+		window.add(nt_dueDateField, newTaskGridBag);
 
 		newTaskGridBag.gridy = 3;
-		add(nt_stagesBoxes, newTaskGridBag);
+		window.add(nt_stagesBoxes, newTaskGridBag);
 
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridy = 4;
-		add(nt_usersScrollPane, newTaskGridBag);
+		window.add(nt_usersScrollPane, newTaskGridBag);
 
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridy = 5;
-		add(nt_estimatedEffortField, newTaskGridBag);
+		window.add(nt_estimatedEffortField, newTaskGridBag);
 
 		newTaskGridBag.gridy = 6;
-		add(nt_actualEffortField, newTaskGridBag);
+		window.add(nt_actualEffortField, newTaskGridBag);
 
 		newTaskGridBag.gridy = 7;
-		add(nt_commentsField, newTaskGridBag);
+		window.add(nt_commentsField, newTaskGridBag);
 
 		// TODO
 		// List of Comments
@@ -276,20 +279,13 @@ public class EditTaskView extends JPanel {
 		newTaskGridBag.gridx = 2;
 
 		newTaskGridBag.gridy = 4;
-		add(nt_addUsersBtn, newTaskGridBag);
+		window.add(nt_addUsersBtn, newTaskGridBag);
 
 		newTaskGridBag.gridy = 7;
-		add(nt_submitCommentBtn, newTaskGridBag);
+		window.add(nt_submitCommentBtn, newTaskGridBag);
 
 		newTaskGridBag.gridy = 9;
-		add(nt_addRequirementBtn, newTaskGridBag);
-
-		// Fourth Column ////
-
-		newTaskGridBag.anchor = GridBagConstraints.EAST;
-		newTaskGridBag.weightx = 1.5;
-		newTaskGridBag.weighty = 0.077;
-		newTaskGridBag.gridx = 3;
+		window.add(nt_addRequirementBtn, newTaskGridBag);
 
 		JPanel bottomBtns = new JPanel();
 		bottomBtns.add(nt_saveBtn);
@@ -297,8 +293,10 @@ public class EditTaskView extends JPanel {
 		if (this.mode == Mode.EDIT) {
 			bottomBtns.add(nt_deleteBtn);
 		}
-		newTaskGridBag.gridy = 10;
-		add(bottomBtns, newTaskGridBag);
+		newTaskGridBag.gridy = 11;
+		window.add(bottomBtns, newTaskGridBag);
+
+		this.add(window);
 	}
 
 	/**

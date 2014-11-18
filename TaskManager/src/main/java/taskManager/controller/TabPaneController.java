@@ -47,8 +47,7 @@ public class TabPaneController {
 	public void addCreateTaskTab() {
 		// Each press of create a new tab should launch a new createTaskTab
 		EditTaskView etv = new EditTaskView(Mode.CREATE);
-		etv.setController(new EditTaskController(this.tabPaneV
-				.getWorkflowModel(), etv));
+		etv.setController(new EditTaskController(etv));
 		addTab("Create Task", etv, true);
 		// Focuses on the new tab
 		int index = this.tabPaneV.getTabCount() - 1;
@@ -64,8 +63,7 @@ public class TabPaneController {
 	public void addEditTaskTab(EditTaskView etv) {
 		if (tabPaneV.indexOfComponent(etv) == -1) {
 			// Each press of create a new tab should launch a new createTaskTab
-			etv.setController(new EditTaskController(tabPaneV
-					.getWorkflowModel(), etv));
+			etv.setController(new EditTaskController(etv));
 			addTab("Edit Task", etv, true);
 		}
 		// Focuses on the new tab
@@ -83,8 +81,7 @@ public class TabPaneController {
 		// There should only be one tab for manageStages up at a time
 		if (!manageStagesTabOpen) {
 			ManageStageView view = new ManageStageView();
-			ManageStageController msc = new ManageStageController(view,
-					tabPaneV.getWorkflowModel());
+			ManageStageController msc = new ManageStageController(view);
 			view.setController(msc);
 			addTab("Manage Stages", view, true);
 			manageStagesTabOpen = true;

@@ -49,7 +49,7 @@ public class TaskController implements ActionListener {
 		this.view = view;
 		this.model = model;
 		sm = model.getStage();
-		wfm = sm.getWorkflow();
+		wfm = WorkflowModel.getInstance();
 		etv = new EditTaskView(Mode.EDIT);
 	}
 
