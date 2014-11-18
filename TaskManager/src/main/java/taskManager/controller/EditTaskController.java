@@ -40,9 +40,9 @@ public class EditTaskController implements ActionListener {
 	 * @param wfm
 	 *            The workflowModel that belongs to this controller.
 	 */
-	public EditTaskController(WorkflowModel wfm, EditTaskView etv) {
+	public EditTaskController(EditTaskView etv) {
 		this.etv = etv;
-		this.wfm = wfm;
+		this.wfm = WorkflowModel.getInstance();
 
 		reloadData();
 	}

@@ -31,7 +31,7 @@ public class TaskController implements ActionListener {
 	private final TaskView view;
 	private final TaskModel model;
 	private StageModel sm;
-	private WorkflowModel wfm;
+	private final WorkflowModel wfm;
 	private TabPaneController tabPaneC;
 
 	/**
@@ -48,7 +48,7 @@ public class TaskController implements ActionListener {
 		this.view = view;
 		this.model = model;
 		sm = model.getStage();
-		wfm = sm.getWorkflow();
+		wfm = WorkflowModel.getInstance();
 	}
 
 	@Override

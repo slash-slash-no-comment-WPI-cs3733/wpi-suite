@@ -38,7 +38,7 @@ import taskManager.view.EditTaskView;
 public class TestEditTaskController {
 
 	private static EditTaskView etv = new EditTaskView(EditTaskView.Mode.EDIT);
-	private static WorkflowModel wfm;
+	private static final WorkflowModel wfm = WorkflowModel.getInstance();
 
 	private final String[] stageNames = { "New", "second", "third", "fourth" };
 
@@ -48,8 +48,7 @@ public class TestEditTaskController {
 	@BeforeClass
 	public static void setupOnce() {
 		// create the edit task controller
-		wfm = new WorkflowModel();
-		etv.setController(new EditTaskController(wfm, etv));
+		etv.setController(new EditTaskController(etv));
 	}
 
 	@Before
@@ -58,14 +57,14 @@ public class TestEditTaskController {
 		wfm.makeIdenticalTo(new WorkflowModel());
 		// give it some stages
 		for (String name : stageNames) {
-			new StageModel(wfm, name, true);
+			new StageModel(name, true);
 		}
 
 		etv.resetFields();
 		etv.setVisible(true);
 
 		frame = new JFrame();
-		frame.add(etv);
+		frame.add(JanewayModule.tabPaneC.getTabView());
 
 		fixture = new FrameFixture(frame);
 
@@ -165,10 +164,6 @@ public class TestEditTaskController {
 		TaskController tc = new TaskController(null, task);
 		tc.actionPerformed(null);
 
-		// etv.setVisible(false);
-		frame.revalidate();
-		frame.repaint();
-
 		// EditTaskView etv2 = null;
 		Component c = JanewayModule.tabPaneC.getTabView()
 				.getSelectedComponent();
@@ -178,12 +173,11 @@ public class TestEditTaskController {
 			fail("oh god what's going on");
 		}
 
-		etv.setController(new EditTaskController(wfm, etv));
-		fixture.cleanUp();
-		frame = new JFrame();
-		frame.add(etv);
-		fixture = new FrameFixture(frame);
-		fixture.show();
+		// fixture.cleanUp();
+		// frame = new JFrame();
+		// frame.add(etv);
+		// fixture = new FrameFixture(frame);
+		// fixture.show();
 
 		return task;
 	}

@@ -40,17 +40,15 @@ public class WorkflowController {
 	 * @param model
 	 *            the corresponding WorkflowModel object
 	 */
-	public WorkflowController(WorkflowView view, WorkflowModel model) {
+	public WorkflowController(WorkflowView view) {
 		this.view = view;
-		this.model = model;
-
+		this.model = WorkflowModel.getInstance();
 
 		// necessary to add these stages to workflowView (don't know/how)
-		StageModel newStage = new StageModel(this.model, "New", false);
-		StageModel startedStage = new StageModel(this.model, "Scheduled", false);
-		StageModel progressStage = new StageModel(this.model, "In Progress",
-				false);
-		StageModel completeStage = new StageModel(this.model, "Complete", false);
+		// StageModel newStage = new StageModel("New", false);
+		// StageModel startedStage = new StageModel("Scheduled", false);
+		// StageModel progressStage = new StageModel("In Progress", false);
+		// StageModel completeStage = new StageModel("Complete", false);
 
 		Thread thread = new Thread() {
 			public void run() {

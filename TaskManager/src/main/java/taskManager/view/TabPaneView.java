@@ -1,8 +1,6 @@
 package taskManager.view;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -16,7 +14,7 @@ public class TabPaneView extends JTabbedPane {
 
 	// Because the workflow is a permanent tab, tabview should keep track of it
 	private WorkflowController wfc;
-	private WorkflowModel wfm;
+	private final WorkflowModel wfm;
 
 	public TabPaneView() {
 		setTabPlacement(TOP);
@@ -25,10 +23,10 @@ public class TabPaneView extends JTabbedPane {
 
 		// Create a workflow view, controller, and model
 		WorkflowView wfv = new WorkflowView();
-		wfm = new WorkflowModel();
-		wfc = new WorkflowController(wfv, wfm);
+		wfm = WorkflowModel.getInstance();
+		wfc = new WorkflowController(wfv);
 		wfv.setController(wfc);
-		
+
 		JScrollPane scroll = new JScrollPane(wfv);
 		scroll.setBorder(BorderFactory.createLineBorder(Color.black));
 
@@ -38,7 +36,7 @@ public class TabPaneView extends JTabbedPane {
 	public void refreshWorkflow() {
 		wfc.fetch();
 	}
-	
+
 	public WorkflowModel getWorkflowModel() {
 		return wfm;
 	}
