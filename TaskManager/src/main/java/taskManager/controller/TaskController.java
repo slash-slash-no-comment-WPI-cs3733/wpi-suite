@@ -8,8 +8,8 @@
  *******************************************************************************/
 package taskManager.controller;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.List;
 
 import taskManager.JanewayModule;
@@ -18,6 +18,7 @@ import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.TaskView;
+import taskManager.view.WorkflowView;
 
 /**
  * Controller for Tasks.
@@ -25,13 +26,14 @@ import taskManager.view.TaskView;
  * @author Stefan Alexander
  * @version November 9, 2014
  */
-public class TaskController implements ActionListener {
+public class TaskController implements MouseListener {
 
 	private final TaskView view;
 	private final TaskModel model;
 	private StageModel sm;
 	private WorkflowModel wfm;
 	private final EditTaskView etv = JanewayModule.etv;
+	private final WorkflowView wfv = JanewayModule.wfv;
 
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
@@ -50,8 +52,18 @@ public class TaskController implements ActionListener {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		// makes the delete button unclickable
+	public void mouseClicked(MouseEvent e) {
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// makes the delete button clickable
 		etv.enableDelete();
 
 		// uses the title field to hold the unique id
@@ -61,14 +73,14 @@ public class TaskController implements ActionListener {
 		etv.getDescription().setName(model.getStage().getName());
 
 		// populate editable fields with this tasks info
-		JanewayModule.etv.setTitle(model.getName());
-		JanewayModule.etv.setDescription(model.getDescription());
-		JanewayModule.etv.setDate(model.getDueDate());
-		JanewayModule.etv.setEstEffort(model.getEstimatedEffort());
-		JanewayModule.etv.setActEffort(model.getActualEffort());
+		etv.setTitle(model.getName());
+		etv.setDescription(model.getDescription());
+		etv.setDate(model.getDueDate());
+		etv.setEstEffort(model.getEstimatedEffort());
+		etv.setActEffort(model.getActualEffort());
 
-		JanewayModule.wfv.setVisible(false);
-		JanewayModule.etv.setVisible(true);
+		wfv.setVisible(false);
+		etv.setVisible(true);
 
 		// figures out the index of the stage, then sets the drop down to the
 		// stage at that index
@@ -80,5 +92,19 @@ public class TaskController implements ActionListener {
 				break;
 			}
 		}
+
 	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
 }

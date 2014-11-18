@@ -72,7 +72,7 @@ public class TaskView extends JPanel implements ITaskView {
 		this.add(new JLabel("Est Effort: " + estEffort));
 		edit = new JButton("Edit");
 		edit.setName(taskID);
-		this.add(edit);
+		// this.add(edit);
 
 	}
 
@@ -89,7 +89,7 @@ public class TaskView extends JPanel implements ITaskView {
 	 */
 	public void setController(TaskController controller) {
 		this.controller = controller;
-		edit.addActionListener(controller);
+		this.addMouseListener(this.controller);
 	}
 
 }

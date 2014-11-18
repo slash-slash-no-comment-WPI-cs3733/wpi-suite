@@ -160,7 +160,6 @@ public class TestEditTaskController {
 
 		// load the edit view
 		TaskController tc = new TaskController(null, task);
-		tc.actionPerformed(null);
 
 		return task;
 	}
