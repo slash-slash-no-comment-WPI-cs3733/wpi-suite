@@ -160,7 +160,7 @@ public class TestEditTaskController {
 
 		// load the edit view
 		TaskController tc = new TaskController(null, task);
-		tc.actionPerformed(null);
+		tc.mouseClicked(null);
 
 		return task;
 	}
