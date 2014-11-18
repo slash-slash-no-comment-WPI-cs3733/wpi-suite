@@ -1,6 +1,7 @@
 package taskManager.model;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,24 +20,37 @@ public class StageModelTest {
 	}
 
 	@Test
-	public void testTasklistSynchronization() {
+	public void testTasklistSynchronizationAddition() {
 		TaskModel task1 = new TaskModel("Task", stage);
-		task1.setEstimatedEffort(5);
-		TaskModel task2 = new TaskModel("Task", stage);
-		task2.setEstimatedEffort(6);
-		TaskModel task3 = new TaskModel("Task", stage);
-		TaskModel task4 = new TaskModel("Task", stage);
-		TaskModel task5 = new TaskModel("Task", stage);
+		wf = AbstractJsonableModel.fromJson(wf.toJson(), WorkflowModel.class);
 		wf.save();
-		stage.removeTask(task1);
-		task1.setEstimatedEffort(10);
-		stage.addTask(4, task1);
-		stage = AbstractJsonableModel
-				.fromJson(stage.toJson(), StageModel.class);
+		TaskModel task2 = new TaskModel("Task2", stage);
+		wf = AbstractJsonableModel.fromJson(wf.toJson(), WorkflowModel.class);
 		wf.save();
-		assertEquals(10, wf.findStageByName("Stage")
-				.findTaskByID(task1.getID()).getEstimatedEffort());
-		assertEquals(6, wf.findStageByName("Stage").findTaskByID(task2.getID())
-				.getEstimatedEffort());
+		assertNotNull(wf.findStageByName("Stage").findTaskByID("Task2"));
+	}
+
+	@Test
+	public void testTasklistSynchronizationDeletion() {
+		TaskModel task1 = new TaskModel("Task1", stage);
+		TaskModel task2 = new TaskModel("Task2", stage);
+		wf = AbstractJsonableModel.fromJson(wf.toJson(), WorkflowModel.class);
+		wf.save();
+		stage.removeTask(task2);
+		wf = AbstractJsonableModel.fromJson(wf.toJson(), WorkflowModel.class);
+		wf.save();
+		assertNull(wf.findStageByName("Stage").findTaskByID("Task2"));
+	}
+
+	@Test
+	public void testTasklistSynchronizationMove() {
+		StageModel stage2 = new StageModel(wf, "Stage 2");
+		TaskModel task1 = new TaskModel("Task1", stage);
+		TaskModel task2 = new TaskModel("Task2", stage);
+		wf = AbstractJsonableModel.fromJson(wf.toJson(), WorkflowModel.class);
+		wf.save();
+		wf.moveTask(task2, stage, stage2);
+		assertNull(wf.findStageByName("Stage").findTaskByID("Task2"));
+		assertNotNull(wf.findStageByName("Stage2").findTaskByID("Task2"));
 	}
 }
