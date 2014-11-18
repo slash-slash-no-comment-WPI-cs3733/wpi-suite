@@ -13,6 +13,9 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
+
 import taskManager.JanewayModule;
 import taskManager.view.EditTaskView;
 
@@ -23,7 +26,8 @@ import taskManager.view.EditTaskView;
  * @author Stefan Alexander
  *
  */
-public class TaskInputController implements KeyListener, FocusListener {
+public class TaskInputController implements KeyListener, FocusListener,
+		PopupMenuListener {
 
 	private final EditTaskView etv = JanewayModule.etv;
 
@@ -139,6 +143,31 @@ public class TaskInputController implements KeyListener, FocusListener {
 		} else {
 			etv.disableSave();
 		}
+	}
+
+	@Override
+	public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+		// TODO Auto-generated method stub
+		if (this.checkFields()) {
+			etv.enableSave();
+		} else {
+			etv.disableSave();
+		}
+	}
+
+	@Override
+	public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+		// TODO Auto-generated method stub
+		if (this.checkFields()) {
+			etv.enableSave();
+		} else {
+			etv.disableSave();
+		}
+	}
+
+	@Override
+	public void popupMenuCanceled(PopupMenuEvent e) {
+		// TODO Auto-generated method stub
 	}
 
 }

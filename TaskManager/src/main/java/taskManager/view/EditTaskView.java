@@ -362,7 +362,7 @@ public class EditTaskView extends JPanel {
 		descripArea.addKeyListener(controller);
 		estEffortField.addKeyListener(controller);
 		actEffortField.addKeyListener(controller);
-		stages.addFocusListener(controller);
+		stages.addPopupMenuListener(controller);
 	}
 
 	/**
