@@ -47,7 +47,6 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		// set ID
 		super(name);
 		stageList = new ArrayList<StageModel>();
-		// TODO Add default stages
 	}
 
 	public WorkflowModel() {
@@ -57,6 +56,10 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	public static WorkflowModel getInstance() {
 		if (instance == null) {
 			instance = new WorkflowModel();
+			new StageModel("New");
+			new StageModel("Scheduled");
+			new StageModel("In Progress");
+			new StageModel("Complete");
 		}
 		return instance;
 	}

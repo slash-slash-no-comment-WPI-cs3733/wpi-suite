@@ -101,9 +101,10 @@ public class EditTaskController implements ActionListener {
 				etv.resetFields();
 				// Save entire workflow whenever a task is saved
 				wfm.save();
+				returnToWorkflowView();
 				break;
 
-			case "delete":
+			case EditTaskView.DELETE:
 				// delete this task
 				StageModel s = wfm.findStageByName((String) etv.getStages()
 						.getSelectedItem());
@@ -113,6 +114,7 @@ public class EditTaskController implements ActionListener {
 
 				// Save entire workflow whenever a task is deleted
 				wfm.save();
+				returnToWorkflowView();
 				break;
 
 			case EditTaskView.ADD_USER:
@@ -128,6 +130,7 @@ public class EditTaskController implements ActionListener {
 			case EditTaskView.CANCEL:
 				// go back to workflow view
 				etv.resetFields();
+				returnToWorkflowView();
 				break;
 
 			case EditTaskView.SUBMIT_COMMENT:
