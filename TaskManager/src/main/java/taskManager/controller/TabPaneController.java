@@ -98,4 +98,8 @@ public class TabPaneController {
 		return tabPaneV;
 	}
 
+	public void reloadWorkflow() {
+		tabPaneV.reloadWorkflow();
+	}
+
 }

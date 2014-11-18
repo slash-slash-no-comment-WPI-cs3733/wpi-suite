@@ -101,7 +101,6 @@ public class EditTaskController implements ActionListener {
 				etv.resetFields();
 				// Save entire workflow whenever a task is saved
 				wfm.save();
-				returnToWorkflowView();
 				break;
 
 			case EditTaskView.DELETE:
@@ -157,6 +156,7 @@ public class EditTaskController implements ActionListener {
 	 */
 	private void returnToWorkflowView() {
 		JanewayModule.tabPaneC.removeTabByComponent(etv);
+		JanewayModule.tabPaneC.reloadWorkflow();
 	}
 
 	/**
