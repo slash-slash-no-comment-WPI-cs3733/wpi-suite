@@ -35,64 +35,38 @@ import taskManager.view.EditTaskView;
  */
 public class TestEditTaskController {
 
-	private static EditTaskView etv_create;
-	private static EditTaskView etv_edit;
-	private static WorkflowModel wfm_create;
-	private static WorkflowModel wfm_edit;
+	private static EditTaskView etv = new EditTaskView(EditTaskView.Mode.EDIT);
+	private static WorkflowModel wfm;
 
 	private final String[] stageNames = { "New", "second", "third", "fourth" };
 
-	private FrameFixture fixture_create;
-	private FrameFixture fixture_edit;
+	private FrameFixture fixture;
 
 	@BeforeClass
 	public static void setupOnce() {
 		// create the edit task controller
-		etv_create = new EditTaskView(EditTaskView.Mode.CREATE);
-		etv_edit = new EditTaskView(EditTaskView.Mode.EDIT);
-		wfm_create = new WorkflowModel();
-		wfm_edit = new WorkflowModel();
-		etv_create.setController(new EditTaskController(wfm_create, etv_create));
-		etv_edit.setController(new EditTaskController(wfm_edit, etv_edit));
+		wfm = new WorkflowModel();
+		etv.setController(new EditTaskController(wfm, etv));
 	}
 
 	@Before
 	public void setup() {
-		// Create
 		// create a new workflow model
-		wfm_create.makeIdenticalTo(new WorkflowModel());
+		wfm.makeIdenticalTo(new WorkflowModel());
 		// give it some stages
 		for (String name : stageNames) {
-			new StageModel(wfm_create, name, true);
+			new StageModel(wfm, name, true);
 		}
 
-		etv_create.resetFields();
-		etv_create.setVisible(true);
-		JFrame frame_create = new JFrame();
-		frame_create.add(etv_create);
-		fixture_create = new FrameFixture(frame_create);
-		fixture_create.show();
-		
-		// Edits
-		// create a new workflow model
-		wfm_edit.makeIdenticalTo(new WorkflowModel());
-		// give it some stages
-		for (String name : stageNames) {
-			new StageModel(wfm_edit, name, true);
-		}
+		etv.resetFields();
+		etv.setVisible(true);
 
-		etv_edit.resetFields();
-		etv_edit.setVisible(true);
+		JFrame frame = new JFrame();
+		frame.add(etv);
 
-		JFrame frame_edit = new JFrame();
-		frame_edit.add(etv_edit);
+		fixture = new FrameFixture(frame);
 
-		fixture_edit = new FrameFixture(frame_edit);
-
-		fixture_edit.show();
-		
-		frame_create.pack();
-		frame_edit.pack();
+		fixture.show();
 	}
 
 	@Test
@@ -100,14 +74,14 @@ public class TestEditTaskController {
 		// enter information for a new task
 		getTitleBoxFixture().enterText("New Task");
 		getDescriptionBoxFixture().enterText("a sample task used for testing");
-		etv_create.getDateField().setDate(Calendar.getInstance().getTime());
-		fixture_create.textBox(EditTaskView.EST_EFFORT).enterText("3");
+		etv.getDateField().setDate(Calendar.getInstance().getTime());
+		fixture.textBox(EditTaskView.EST_EFFORT).enterText("3");
 
 		// save the task
-		fixture_create.button(EditTaskView.SAVE).click();
+		fixture.button(EditTaskView.SAVE).click();
 
 		// verify the task got saved
-		StageModel stage = wfm_create.findStageByName("New");
+		StageModel stage = wfm.findStageByName("New");
 		assertEquals(stage.findTaskByName("New Task").size(), 1);
 	}
 
@@ -135,15 +109,15 @@ public class TestEditTaskController {
 		getTitleBoxFixture().deleteText().enterText("renamed task");
 		getDescriptionBoxFixture().deleteText().enterText("new description");
 		Date d = new Date(5 * 60 * 60 * 1000);
-		etv_create.setDate(d);
-		fixture_create.textBox(EditTaskView.EST_EFFORT).deleteText().enterText("4");
-		fixture_create.textBox(EditTaskView.ACT_EFFORT).deleteText().enterText("8");
+		etv.setDate(d);
+		fixture.textBox(EditTaskView.EST_EFFORT).deleteText().enterText("4");
+		fixture.textBox(EditTaskView.ACT_EFFORT).deleteText().enterText("8");
 
 		// save the task
-		fixture_create.button(EditTaskView.SAVE).click();
+		fixture.button(EditTaskView.SAVE).click();
 
 		// verify the task got saved (and not duplicated)
-		StageModel stage = wfm_create.findStageByName(task.getStage().getName());
+		StageModel stage = wfm.findStageByName(task.getStage().getName());
 		assertEquals(stage.findTaskByName("New Task").size(), 0);
 		assertEquals(stage.findTaskByName("renamed task").size(), 1);
 
@@ -159,16 +133,15 @@ public class TestEditTaskController {
 	public void testMoveTask() {
 		TaskModel task = createAndLoadTask();
 
-		fixture_create.comboBox(EditTaskView.STAGES).selectItem(0);
-		fixture_create.button(EditTaskView.SAVE).click();
+		fixture.comboBox(EditTaskView.STAGES).selectItem(0);
+		fixture.button(EditTaskView.SAVE).click();
 
 		assertEquals(task.getStage().getName(), stageNames[0]);
 	}
 
 	@After
 	public void cleanup() {
-		fixture_edit.cleanUp();
-		fixture_create.cleanUp();
+		fixture.cleanUp();
 	}
 
 	/**
@@ -178,7 +151,7 @@ public class TestEditTaskController {
 	 */
 	private TaskModel createAndLoadTask() {
 		// add a task
-		StageModel stage = wfm_create.getStages().get(2);
+		StageModel stage = wfm.getStages().get(2);
 		TaskModel task = new TaskModel("New Task", stage);
 		task.setDescription("test description");
 		task.setDueDate(Calendar.getInstance().getTime());
@@ -202,11 +175,11 @@ public class TestEditTaskController {
 	private void verifyTask(TaskModel task) {
 		getTitleBoxFixture().requireText(task.getName());
 		getDescriptionBoxFixture().requireText(task.getDescription());
-		fixture_create.textBox(EditTaskView.EST_EFFORT).requireText(
+		fixture.textBox(EditTaskView.EST_EFFORT).requireText(
 				Integer.toString(task.getEstimatedEffort()));
-		fixture_create.textBox(EditTaskView.ACT_EFFORT).requireText(
+		fixture.textBox(EditTaskView.ACT_EFFORT).requireText(
 				Integer.toString(task.getActualEffort()));
-		fixture_create.comboBox(EditTaskView.STAGES).requireSelection(
+		fixture.comboBox(EditTaskView.STAGES).requireSelection(
 				task.getStage().getName());
 	}
 
@@ -216,7 +189,7 @@ public class TestEditTaskController {
 	 * @return A fixture with the description text box as the target
 	 */
 	private JTextComponentFixture getDescriptionBoxFixture() {
-		return new JTextComponentFixture(fixture_create.robot, etv_create.getDescription());
+		return new JTextComponentFixture(fixture.robot, etv.getDescription());
 	}
 
 	/**
@@ -225,7 +198,7 @@ public class TestEditTaskController {
 	 * @return A fixture with the title text box as the target
 	 */
 	private JTextComponentFixture getTitleBoxFixture() {
-		return new JTextComponentFixture(fixture_create.robot, etv_create.getTitle());
+		return new JTextComponentFixture(fixture.robot, etv.getTitle());
 	}
 
 }
