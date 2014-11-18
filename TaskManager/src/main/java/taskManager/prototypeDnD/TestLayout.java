@@ -26,8 +26,6 @@ import java.awt.event.MouseEvent;
 import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import javax.swing.BorderFactory;
@@ -40,9 +38,16 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 
+/**
+ * 
+ * The example layout for Drag and drop
+ *
+ * @author Sam Khalandovsky
+ * @version Nov 17, 2014
+ */
 public class TestLayout extends JFrame {
 	JPanel root;
-	Random random = new Random();
+	Random random = new Random(); // Randomizing for colors...
 
 	public TestLayout() {
 		new DDManager();
@@ -93,91 +98,6 @@ public class TestLayout extends JFrame {
 		win.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		win.setVisible(true);
 	}
-}
-
-class StagePanel extends JPanel {
-
-	private JPanel placeholder;
-	private int lastIndex;
-	private List<Point> compCenters;
-
-	public StagePanel() {
-		// super();// TODO
-		this.setTransferHandler(new DDTransferHandler());
-		this.setDropTarget(new DropTarget(this, new StageDropListener(this)));
-
-		// add placeholder
-		placeholder = new JPanel();
-		placeholder.setBackground(Color.GRAY);
-		placeholder.setPreferredSize(new Dimension(100, 100));
-		placeholder.setVisible(false);
-		this.add(placeholder);
-	}
-
-	public void setPlaceholderSize(Dimension size) {
-		placeholder.setPreferredSize(size);
-	}
-
-	public void setPlaceholderVisible(boolean visible) {
-		placeholder.setVisible(visible);
-	}
-
-	public boolean isPlaceholderVisible() {
-		return placeholder.isVisible();
-	}
-
-	public void setPlaceholderIndex(int index) {
-		index = Math.min(index, this.getComponentCount() - 1);
-		this.add(placeholder, index);
-		if (index != lastIndex) {
-			this.revalidate();
-			this.repaint();
-			lastIndex = index;
-		}
-	}
-
-	public void setPlaceholderPoint(Point point) {
-		setPlaceholderIndex(getInsertionIndex(point));
-	}
-
-	// do this ONLY while placeholder is invisible!!! REALLY!!!
-	public void calculateCenters() {
-		compCenters = new ArrayList<Point>();
-		for (Component comp : this.getComponents()) {
-			if (comp.isVisible()) {
-				compCenters.add(new Point((int) comp.getBounds().getCenterX(),
-						(int) comp.getBounds().getCenterY()));
-			}
-		}
-	}
-
-	public int getInsertionIndex(Point point) {
-		// Component[] components = this.getComponents();
-		// System.out.println(point);
-		double minDist = Double.MAX_VALUE;
-		int index = -1; // index of closest component
-		int i = 0;
-		for (Point center : compCenters) {
-			final double dist = Math.pow(point.x - center.x, 2)
-					+ Math.pow(point.y - center.y, 2);
-			System.out.println(dist);
-			if (dist < minDist) {
-				minDist = dist;
-				index = i;
-			}
-			i++;
-		}
-		System.out.println("Closest component" + Integer.toString(index));
-
-		if (index < 0) {
-			index = 0;
-		} else if (point.y > compCenters.get(index).y) {
-			index++;
-		}// TODO make general for horizontal?
-		System.out.println("Insert at " + Integer.toString(index));
-		return index;
-	}
-
 }
 
 class TaskPanel extends JPanel implements Transferable {
@@ -252,6 +172,13 @@ class TaskPanel extends JPanel implements Transferable {
 	}
 }
 
+/**
+ * 
+ * Creates the transferable representation of TaskPanel.
+ *
+ * @author Sam Khalandovsky
+ * @version Nov 17, 2014
+ */
 class DDTransferHandler extends TransferHandler {
 	// TODO super?
 
@@ -279,6 +206,14 @@ class DDTransferHandler extends TransferHandler {
 
 }
 
+/**
+ * 
+ * The listener that triggers if a task is dropped on another task. Simply
+ * delegates calls to the stage's drop listener.
+ *
+ * @author Sam Khalandovsky
+ * @version Nov 17, 2014
+ */
 class TaskDropListener extends DropTargetAdapter {
 	private TaskPanel panel;
 
@@ -325,6 +260,15 @@ class TaskDropListener extends DropTargetAdapter {
 	}
 }
 
+/**
+ * 
+ * Listens to when a Task is dropped onto a stage. Adds the TaskPanel to its
+ * StagePanel.
+ *
+ * @author Sam Khalandovsky
+ * @author Ezra Davis
+ * @version Nov 17, 2014
+ */
 class StageDropListener implements DropTargetListener {
 
 	private StagePanel stage;
@@ -333,6 +277,9 @@ class StageDropListener implements DropTargetListener {
 		this.stage = stage;
 	}
 
+	/**
+	 * Drops a task onto the stage after making sure that it is a taskPanel.
+	 */
 	public void drop(DropTargetDropEvent e) {
 
 		System.out.println("Dropping");
@@ -352,41 +299,52 @@ class StageDropListener implements DropTargetListener {
 			return;
 		}
 
-		int index = stage.getInsertionIndex(e.getLocation());
+		stage.dropTask(transferredPanel, e.getLocation());
+	}
 
-		stage.add(transferredPanel, index);
-		transferredPanel.setVisible(true);
-		stage.setPlaceholderVisible(false);
-		stage.calculateCenters();
+	/**
+	 * Hides the placeholder when the Task is no longer being dragged above the
+	 * stage.
+	 * 
+	 * Careful with this due to it being called after entering a TaskPanel
+	 * 
+	 */
+	@Override
+	public void dragExit(DropTargetEvent e) {
+		System.out.println("Stage drag exit");
+		stage.hidePlaceholder();
+	}
 
-		stage.revalidate();
-		stage.repaint();
+	/**
+	 * Draws the placeholder on the stage when a task is being dragged above it.
+	 */
+	@Override
+	public void dragOver(DropTargetDragEvent e) {
+		System.out.println("Stage drag over");
 
-		// System.out.println(transferredPanel.getParent().getComponentCount());
+		// Getting placeholder's size & making sure it's a TaskPanel
+		Transferable trans = e.getTransferable();
+		TaskPanel transferredPanel;
+		if (trans.isDataFlavorSupported(DDManager.taskPanelFlavor)) {
+			try {
+				transferredPanel = (TaskPanel) trans
+						.getTransferData(DDManager.taskPanelFlavor);
+			} catch (Exception ex) {
+				System.out.println(ex.getStackTrace());
+				return;
+			}
+
+		} else { // Not a TaskPanel
+			return;
+		}
+		Dimension placeholderSize = transferredPanel.getSize();
+
+		stage.drawPlaceholder(e.getLocation(), placeholderSize);
 	}
 
 	// Careful with this due to it being called after leaving a TaskPanel
 	@Override
 	public void dragEnter(DropTargetDragEvent e) {
-		System.out.println("Stage drag enter");
-
-	}
-
-	// Careful with this due to it being called after entering a TaskPanel
-	@Override
-	public void dragExit(DropTargetEvent e) {
-		System.out.println("Stage drag exit");
-		stage.setPlaceholderVisible(false);
-	}
-
-	@Override
-	public void dragOver(DropTargetDragEvent e) {
-		System.out.println("Stage drag over");
-		if (!stage.isPlaceholderVisible()) {
-			stage.calculateCenters();
-		}
-		stage.setPlaceholderPoint(e.getLocation());
-		stage.setPlaceholderVisible(true);
 	}
 
 	@Override
@@ -396,6 +354,13 @@ class StageDropListener implements DropTargetListener {
 
 }
 
+/**
+ * 
+ * Draws the currently being dragged TaskPanel.
+ *
+ * @author Sam Khalandovsky
+ * @version Nov 17, 2014
+ */
 class DDManager extends DragSourceAdapter {
 
 	public static DataFlavor taskPanelFlavor;
@@ -442,7 +407,6 @@ class DDManager extends DragSourceAdapter {
 			sourceParent = (StagePanel) comp.getParent();
 			// sourceParent.remove(comp);
 			comp.setVisible(false);
-			sourceParent.calculateCenters();
 			// sourceParent.setPlaceholderVisible(true);
 			// sourceParent.remove(comp);
 			sourceParent.revalidate();
