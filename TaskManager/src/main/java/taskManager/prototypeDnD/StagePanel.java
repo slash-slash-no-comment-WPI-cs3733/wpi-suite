@@ -27,7 +27,7 @@ import javax.swing.JPanel;
  * @author Ezra Davis
  * @version Nov 17, 2014
  */
-class StagePanel extends JPanel {
+public class StagePanel extends JPanel {
 
 	private JPanel placeholder;
 	private int lastIndex;
