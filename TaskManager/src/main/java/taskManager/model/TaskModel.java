@@ -35,6 +35,7 @@ import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
 
 public class TaskModel extends AbstractJsonableModel<TaskModel> {
 
+	// Generic logger
 	private static final Logger logger = Logger.getLogger(TaskModel.class
 			.getName());
 
@@ -80,7 +81,8 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	public TaskModel(String name, StageModel stage) {
 
 		super(stage.getWorkflow().findUniqueTaskID(name));
-		final ActivityModel createTask = new ActivityModel("Created task",
+		final ActivityModel createTask = new ActivityModel("Created task "
+				+ name + " in stage " + stage.getName() + ".",
 				ActivityModel.activityModelType.CREATION);
 		this.name = name;
 
@@ -231,7 +233,8 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 *            new user to be added
 	 */
 	public void addAssigned(User user) {
-		final ActivityModel addUser = new ActivityModel("User added to task",
+		final ActivityModel addUser = new ActivityModel("User "
+				+ user.getName() + " added to task",
 				ActivityModel.activityModelType.USER_ADD, user);
 		assigned.add(user);
 		addActivity(addUser);
@@ -246,15 +249,15 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 *            to be removed
 	 */
 	public void removeAssigned(User user) {
-		final ActivityModel delUser = new ActivityModel(
-				"Removed user from task",
-				ActivityModel.activityModelType.USER_ADD, user);
 		if (!assigned.contains(user)) {
 			logger.log(Level.WARNING,
 					"Tried to remove a user from a task they were not assigned to.");
 			throw new IndexOutOfBoundsException("User not in suggested task");
 		}
 		assigned.remove(user);
+		final ActivityModel delUser = new ActivityModel("Removed user "
+				+ user.getName() + " from task " + name + ".",
+				ActivityModel.activityModelType.USER_ADD, user);
 		addActivity(delUser);
 		logger.log(Level.FINER, "Removed user " + user.getName()
 				+ " from task " + name + ".");
@@ -274,6 +277,17 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 */
 	public void addActivity(ActivityModel activity) {
 		activities.add(activity);
+	}
+
+	public void addComment(String comment, User user) {
+		final ActivityModel commentActivity = new ActivityModel(comment,
+				ActivityModel.activityModelType.COMMENT, user);
+		addActivity(commentActivity);
+	}
+
+	public void editActivity(int index, String newText) {
+		final ActivityModel toEdit = activities.get(index);
+		toEdit.setDescription(newText);
 	}
 
 	/**
