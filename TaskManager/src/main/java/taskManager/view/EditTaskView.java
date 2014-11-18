@@ -70,6 +70,9 @@ public class EditTaskView extends JPanel {
 	private JTextField actEffortField;
 	private JTextField commentsField;
 
+	private JList<String> usersList;
+	private JList<String> projectUsersList;
+
 	private JComboBox<String> stages;
 
 	private EditTaskController controller;
@@ -137,13 +140,12 @@ public class EditTaskView extends JPanel {
 		// JTextArea
 		// TODO
 		// Get to add users
-		JList<String> nt_usersList = new JList<String>();
-		nt_usersList.setVisibleRowCount(3);
-		nt_usersList.setFixedCellWidth(this.getWidth() * 2 / 5);
-		// usersField placed within scrollPan to maintain size
-		JScrollPane nt_usersScrollPane = new JScrollPane(nt_usersList);
-		nt_usersScrollPane
-				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		usersList = new JList<String>();
+		usersList.setVisibleRowCount(3);
+		usersList.setFixedCellWidth(this.getWidth() * 2 / 5);
+		projectUsersList = new JList<String>();
+		projectUsersList.setVisibleRowCount(3);
+		projectUsersList.setFixedCellWidth(this.getWidth() * 2 / 5);
 
 		// TODO
 		// Comment Pane
@@ -362,8 +364,31 @@ public class EditTaskView extends JPanel {
 		return actEffortField;
 	}
 
+	/**
+	 * get the dropdown box containing the stage names
+	 * 
+	 * @return the dropdown box containing the stage names
+	 */
 	public JComboBox<String> getStages() {
 		return stages;
+	}
+
+	/**
+	 * return the JList containing the assigned user names
+	 * 
+	 * @return the JList of assigned usernames
+	 */
+	public JList<String> getUsersList() {
+		return this.usersList;
+	}
+
+	/**
+	 * return the JList containing the project user names
+	 * 
+	 * @return the JLst of prohect user names
+	 */
+	public JList<String> getprojectUsersList() {
+		return this.projectUsersList;
 	}
 
 	/**
