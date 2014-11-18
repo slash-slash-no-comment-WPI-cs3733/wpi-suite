@@ -52,9 +52,7 @@ public class EditTaskView extends JPanel {
 	public static final String ACT_EFFORT = "act_effort";
 	public static final String EST_EFFORT = "est_effort";
 	public static final String DUE_DATE = "due_date";
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private JButton save;
 	private JButton cancel;
@@ -69,10 +67,11 @@ public class EditTaskView extends JPanel {
 	private JTextField estEffortField;
 	private JTextField actEffortField;
 	private JTextField commentsField;
-	
+
+	private Mode mode;
+
 	public enum Mode {
-		CREATE,
-		EDIT;
+		CREATE, EDIT;
 	}
 
 	private JComboBox<String> stages;
@@ -82,13 +81,14 @@ public class EditTaskView extends JPanel {
 	public EditTaskView(Mode mode) {
 		// TODO: User Mode to switch between create and edit views
 		// When Task added make EditTask take in a Task called currTask
+		this.mode = mode;
 
 		Dimension nt_panelSize = getPreferredSize();
 		nt_panelSize.width = 625; // TODO
 		nt_panelSize.height = 500; // Decide size
 		setPreferredSize(nt_panelSize);
 
-		setBorder(BorderFactory.createTitledBorder("Edit Task"));
+		setBorder(BorderFactory.createTitledBorder(""));
 
 		// JLabels
 		JLabel nt_titleLabel = new JLabel("Title ");
@@ -181,11 +181,10 @@ public class EditTaskView extends JPanel {
 
 		// Combo Box for Stage
 		JComboBox<String> nt_stagesBoxes = new JComboBox<String>();
-
 		nt_stagesBoxes.setName(STAGES);
 		stages = nt_stagesBoxes;
 
-		setLayout(new GridBagLayout());
+		this.setLayout(new GridBagLayout());
 
 		GridBagConstraints newTaskGridBag = new GridBagConstraints();
 
@@ -195,7 +194,6 @@ public class EditTaskView extends JPanel {
 
 		newTaskGridBag.weightx = 0.15;
 		newTaskGridBag.weighty = 0.077;
-
 		newTaskGridBag.gridx = 0;
 
 		newTaskGridBag.gridy = 0;
@@ -232,7 +230,7 @@ public class EditTaskView extends JPanel {
 		// Second Column ////
 
 		newTaskGridBag.anchor = GridBagConstraints.LINE_START;
-		newTaskGridBag.weightx = 0.3;
+		newTaskGridBag.weightx = 0.15;
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridx = 1;
 
@@ -272,8 +270,8 @@ public class EditTaskView extends JPanel {
 
 		// Third Column ////
 
-		newTaskGridBag.anchor = GridBagConstraints.CENTER;
-		newTaskGridBag.weightx = 0.15;
+		newTaskGridBag.anchor = GridBagConstraints.LINE_START;
+		newTaskGridBag.weightx = 1.2;
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridx = 2;
 
@@ -286,21 +284,21 @@ public class EditTaskView extends JPanel {
 		newTaskGridBag.gridy = 9;
 		add(nt_addRequirementBtn, newTaskGridBag);
 
-		newTaskGridBag.gridy = 10;
-		add(nt_saveBtn, newTaskGridBag);
-
 		// Fourth Column ////
 
-		newTaskGridBag.anchor = GridBagConstraints.LINE_START;
-		newTaskGridBag.weightx = 0.15;
+		newTaskGridBag.anchor = GridBagConstraints.EAST;
+		newTaskGridBag.weightx = 1.5;
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridx = 3;
 
-		newTaskGridBag.gridy = 0;
-		add(nt_deleteBtn, newTaskGridBag);
-
+		JPanel bottomBtns = new JPanel();
+		bottomBtns.add(nt_saveBtn);
+		bottomBtns.add(nt_cancelBtn);
+		if (this.mode == Mode.EDIT) {
+			bottomBtns.add(nt_deleteBtn);
+		}
 		newTaskGridBag.gridy = 10;
-		add(nt_cancelBtn, newTaskGridBag);
+		add(bottomBtns, newTaskGridBag);
 	}
 
 	/**

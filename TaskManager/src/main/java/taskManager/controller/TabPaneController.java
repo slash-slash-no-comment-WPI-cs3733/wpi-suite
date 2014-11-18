@@ -62,12 +62,14 @@ public class TabPaneController {
 	 * @param etv
 	 */
 	public void addEditTaskTab(EditTaskView etv) {
-		// Each press of create a new tab should launch a new createTaskTab
-		etv.setController(new EditTaskController(tabPaneV.getWorkflowModel(),
-				etv));
-		addTab("Edit Task", etv, true);
+		if (tabPaneV.indexOfComponent(etv) == -1) {
+			// Each press of create a new tab should launch a new createTaskTab
+			etv.setController(new EditTaskController(tabPaneV
+					.getWorkflowModel(), etv));
+			addTab("Edit Task", etv, true);
+		}
 		// Focuses on the new tab
-		int index = tabPaneV.getTabCount() - 1;
+		int index = tabPaneV.indexOfComponent(etv);
 		tabPaneV.setSelectedIndex(index);
 	}
 

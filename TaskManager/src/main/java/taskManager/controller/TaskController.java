@@ -16,11 +16,9 @@ import taskManager.JanewayModule;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
-import taskManager.view.EditTaskView.Mode;
 import taskManager.view.EditTaskView;
+import taskManager.view.EditTaskView.Mode;
 import taskManager.view.TaskView;
-import taskManager.controller.EditTaskController;
-import taskManager.controller.TabPaneController;
 
 /**
  * Controller for Tasks.
@@ -35,6 +33,7 @@ public class TaskController implements ActionListener {
 	private StageModel sm;
 	private WorkflowModel wfm;
 	private TabPaneController tabPaneC;
+	private EditTaskView etv;
 
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
@@ -51,13 +50,14 @@ public class TaskController implements ActionListener {
 		this.model = model;
 		sm = model.getStage();
 		wfm = sm.getWorkflow();
+		etv = new EditTaskView(Mode.EDIT);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		// etv.removeAll();
 
 		// TODO: Populate with data?
-		EditTaskView etv = new EditTaskView(Mode.EDIT);
 
 		// uses the title field to hold the unique id
 		etv.getTitle().setName(this.model.getID());
@@ -66,7 +66,6 @@ public class TaskController implements ActionListener {
 		etv.getDescription().setName(this.model.getStage().getName());
 		// makes the delete button unclickable
 		etv.enableDelete();
-
 
 		// populate editable fields with this tasks info
 		etv.setTitle(model.getName());
