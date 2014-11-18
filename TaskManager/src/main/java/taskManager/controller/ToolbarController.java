@@ -94,6 +94,15 @@ public class ToolbarController implements ActionListener {
 						break;
 					}
 				}
+
+				// Set actual effort field enabled only if the selected stage is
+				// "Complete"
+				if (JanewayModule.etv.getSelectedStage().equals("Complete")) {
+					JanewayModule.etv.getActEffort().setEnabled(true);
+				} else {
+					JanewayModule.etv.getActEffort().setEnabled(false);
+				}
+
 				JanewayModule.etv.setStageSelectorEnabled(false);
 
 				// Disable save button when creating a task.

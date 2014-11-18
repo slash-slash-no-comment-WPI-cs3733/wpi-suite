@@ -82,6 +82,14 @@ public class TaskController implements ActionListener {
 			}
 		}
 
+		// Set actual effort field enabled only if the selected stage is
+		// "Complete"
+		if (etv.getSelectedStage().equals("Complete")) {
+			etv.getActEffort().setEnabled(true);
+		} else {
+			etv.getActEffort().setEnabled(false);
+		}
+
 		// Enable stage dropdown when editing a task.
 		etv.getStages().setSelectedItem(model.getStage());
 		etv.setStageSelectorEnabled(true);
