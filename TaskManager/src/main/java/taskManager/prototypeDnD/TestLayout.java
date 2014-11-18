@@ -346,6 +346,8 @@ class DDManager extends DragSourceAdapter {
 		if (dragImage != null) {
 			dragImage.dispose();
 		}
+		Component droppedComp = e.getDragSourceContext().getComponent();
+		droppedComp.setVisible(true);
 		dragImage = null;
 		sourceParent = null;
 	}

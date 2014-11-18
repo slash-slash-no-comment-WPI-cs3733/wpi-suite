@@ -17,15 +17,7 @@ public class TaskPanel extends JPanel implements Transferable {
 
 	private Point mouseOffset;
 	private Point pos;
-
-	private static TaskPanel currentlyBeingDragged;
-
-	public void stopDraggingThings() {
-		if (!(currentlyBeingDragged == null)) {
-			currentlyBeingDragged.setVisible(true);
-			currentlyBeingDragged = null;
-		}
-	}
+	private boolean dragActive;
 
 	public TaskPanel() {
 		TaskMouseListener listener = new TaskMouseListener();
@@ -46,7 +38,7 @@ public class TaskPanel extends JPanel implements Transferable {
 		public void mouseDragged(MouseEvent e) {
 			System.out.println("Mouse dragged");
 
-			currentlyBeingDragged = TaskPanel.this;
+			dragActive = true;
 
 			JComponent comp = (JComponent) e.getSource();
 			TransferHandler handler = comp.getTransferHandler();
@@ -57,14 +49,12 @@ public class TaskPanel extends JPanel implements Transferable {
 	}
 
 	public void stopDragging() {
-		if (currentlyBeingDragged == TaskPanel.this) {
-			currentlyBeingDragged = null;
-		}
+		dragActive = false;
 		setVisible(true);
 	}
 
 	public boolean isBeingDragged() {
-		return (currentlyBeingDragged == TaskPanel.this);
+		return dragActive;
 	}
 
 	public Point getOffset() {
