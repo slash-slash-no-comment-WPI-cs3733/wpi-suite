@@ -9,17 +9,25 @@
 
 package taskManager.controller;
 
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JTabbedPane;
 
 import taskManager.JanewayModule;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
+import taskManager.view.WorkflowView;
+import edu.wpi.cs.wpisuitetng.modules.requirementmanager.RequirementManager;
+import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
+import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
+import edu.wpi.cs.wpisuitetng.modules.requirementmanager.view.ViewEventController;
 
 /**
  * The controller for editing and creating a new task
@@ -71,6 +79,9 @@ public class EditTaskController implements ActionListener {
 			// grabs the stage from the dropdow box
 			StageModel desiredStage = wfm.findStageByName((String) etv
 					.getStages().getSelectedItem());
+			Requirement requirement = RequirementModel.getInstance()
+					.getRequirementByName(
+							(String) etv.getRequirements().getSelectedItem());
 
 			switch (name) {
 
@@ -78,9 +89,8 @@ public class EditTaskController implements ActionListener {
 				// if editing
 				if (exists) {
 					// set the task to be edited
-
 					TaskModel task = currentStage.findTaskByID(taskID);
-					this.setTaskData(task, desiredStage);
+					this.setTaskData(task, desiredStage, requirement);
 					// moves the task to that stage on the model level
 					wfm.moveTask(task, currentStage, desiredStage);
 					wfm.save();
@@ -92,7 +102,8 @@ public class EditTaskController implements ActionListener {
 					// creates a new task model
 					TaskModel task = new TaskModel(etv.getTitle().getText(),
 							currentStage);
-					this.setTaskData(task, wfm.findStageByName("New"));
+					this.setTaskData(task, wfm.findStageByName("New"),
+							requirement);
 				}
 
 				// exit the edit view, this refreshes the workflow
@@ -121,9 +132,33 @@ public class EditTaskController implements ActionListener {
 				System.out.println("You've pressed the add user button");
 				break;
 
-			case EditTaskView.ADD_REQ:
-				// add a requirement to this task
-				System.out.println("You've pressed the add requirement button");
+			case EditTaskView.VIEW_REQ:
+				// view requirement in requirement manager
+
+				if (requirement == null) {
+					// TODO: warn user that no requirement is selected
+					return;
+				}
+
+				// get the tab pane
+				Container c = etv;
+				while (c != null) {
+					if ("Janeway Tab Pane".equals(c.getName())) {
+						break;
+					}
+					c = c.getParent();
+				}
+				JTabbedPane tabPane = (JTabbedPane) c;
+
+				// switch to the requirement manager tab
+				tabPane.setSelectedIndex(tabPane.indexOfTab(RequirementManager
+						.staticGetName()));
+
+				// open the editor to this requirement
+				ViewEventController.getInstance().editRequirement(
+						RequirementModel.getInstance().getRequirementByName(
+								(String) etv.getRequirements()
+										.getSelectedItem()));
 				break;
 
 			case EditTaskView.CANCEL:
@@ -148,6 +183,15 @@ public class EditTaskController implements ActionListener {
 		stages.removeAllItems();
 		for (StageModel stage : wfm.getStages()) {
 			stages.addItem(stage.getName());
+		}
+
+		List<Requirement> reqs = RequirementModel.getInstance()
+				.getRequirements();
+		JComboBox<String> requirements = etv.getRequirements();
+		requirements.removeAllItems();
+		requirements.addItem(EditTaskView.NO_REQ);
+		for (Requirement req : reqs) {
+			requirements.addItem(req.getName());
 		}
 	}
 
@@ -176,7 +220,7 @@ public class EditTaskController implements ActionListener {
 	 * @param t
 	 *            the task to be edited
 	 */
-	private void setTaskData(TaskModel t, StageModel s) {
+	private void setTaskData(TaskModel t, StageModel s, Requirement r) {
 		t.setName(etv.getTitle().getText());
 		t.setDescription(etv.getDescription().getText());
 		t.setEstimatedEffort(Integer.parseInt(etv.getEstEffort().getText()));
@@ -187,7 +231,8 @@ public class EditTaskController implements ActionListener {
 		}
 		t.setDueDate(etv.getDateField().getDate());
 		t.setStage(s);
-		wfm.save();
+		// wfm.save();
+		t.setReq(r);
 	}
 
 }

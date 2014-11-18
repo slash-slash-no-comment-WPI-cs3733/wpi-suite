@@ -14,6 +14,7 @@ import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
 import taskManager.view.WorkflowView;
+import edu.wpi.cs.wpisuitetng.modules.requirementmanager.controller.GetRequirementsController;
 
 /**
  * A controller for the workflow view
@@ -52,10 +53,13 @@ public class WorkflowController {
 
 		Thread thread = new Thread() {
 			public void run() {
+				GetRequirementsController reqController = GetRequirementsController
+						.getInstance();
 				while (alive) {
 					try {
-						sleep(1000);
+						sleep(5000);
 						fetch();
+						reqController.retrieveRequirements();
 					} catch (NullPointerException e) {
 						// this is expected, do nothing
 					} catch (Exception e) {
@@ -101,5 +105,15 @@ public class WorkflowController {
 	 */
 	public void fetch() {
 		model.update(this);
+	}
+
+	/**
+	 * 
+	 * Returns the workflow model.
+	 *
+	 * @return the WorkflowModel
+	 */
+	public WorkflowModel getModel() {
+		return model;
 	}
 }

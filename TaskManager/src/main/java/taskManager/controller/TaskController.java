@@ -10,7 +10,8 @@ package taskManager.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
+
+import javax.swing.JComboBox;
 
 import taskManager.JanewayModule;
 import taskManager.model.StageModel;
@@ -19,6 +20,7 @@ import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
 import taskManager.view.TaskView;
+import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 
 /**
  * Controller for Tasks.
@@ -49,8 +51,11 @@ public class TaskController implements ActionListener {
 		this.view = view;
 		this.model = model;
 		sm = model.getStage();
+
 		wfm = WorkflowModel.getInstance();
 		etv = new EditTaskView(Mode.EDIT);
+
+		req = model.getReq();
 	}
 
 	@Override
@@ -78,8 +83,33 @@ public class TaskController implements ActionListener {
 
 		// figures out the index of the stage, then sets the drop down to the
 		// stage at that index
+		JComboBox<String> stages = etv.getStages();
+		for (int i = 0; i < stages.getItemCount(); i++) {
+			if (etv.getStages().getItemAt(i) == sm.getName()) {
+				etv.setStageDropdown(i);
+				break;
+			}
+		}
 
-		List<StageModel> stages = wfm.getStages();
-		etv.setStageDropdown(sm.getName());
+		// Set actual effort field enabled only if the selected stage is
+		// "Complete"
+		if (etv.getSelectedStage().equals("Complete")) {
+			etv.getActEffort().setEnabled(true);
+		} else {
+			etv.getActEffort().setEnabled(false);
+		}
+
+		// Enable stage dropdown when editing a task.
+		etv.getStages().setSelectedItem(model.getStage());
+		etv.setStageSelectorEnabled(true);
+
+		// Enable save button when editing a task.
+		etv.enableSave();
+
+		// set the requirement dropdown
+		if (req != null) {
+			etv.getRequirements().setSelectedItem(req.getName());
+					EditTaskView.NO_REQ);
+		}
 	}
 }
