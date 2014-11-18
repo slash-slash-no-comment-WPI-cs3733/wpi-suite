@@ -135,10 +135,8 @@ class StagePanel extends JPanel {
 		}
 		compCenters = new ArrayList<Point>();
 		for (Component comp : this.getComponents()) {
-			if (comp.isVisible()) {
-				compCenters.add(new Point((int) comp.getBounds().getCenterX(),
-						(int) comp.getBounds().getCenterY()));
-			}
+			compCenters.add(new Point((int) comp.getBounds().getCenterX(),
+					(int) comp.getBounds().getCenterY()));
 		}
 	}
 
@@ -177,6 +175,11 @@ class StagePanel extends JPanel {
 			index++;
 		}// TODO make general for horizontal?
 		System.out.println("Insert at " + Integer.toString(index));
+
+		if (index >= compCenters.size()) {
+			index = compCenters.size() - 1;
+		}
+
 		return index;
 	}
 }
