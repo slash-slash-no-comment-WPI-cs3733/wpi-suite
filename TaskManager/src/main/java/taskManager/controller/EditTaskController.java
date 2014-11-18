@@ -11,8 +11,6 @@ package taskManager.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -22,7 +20,6 @@ import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
-import taskManager.view.WorkflowView;
 
 /**
  * The controller for editing and creating a new task
@@ -43,9 +40,9 @@ public class EditTaskController implements ActionListener {
 	 * @param wfm
 	 *            The workflowModel that belongs to this controller.
 	 */
-	public EditTaskController(WorkflowModel wfm, EditTaskView etv) {
+	public EditTaskController(EditTaskView etv) {
 		this.etv = etv;
-		this.wfm = wfm;
+		this.wfm = WorkflowModel.getInstance();
 
 		reloadData();
 	}
@@ -106,7 +103,7 @@ public class EditTaskController implements ActionListener {
 				wfm.save();
 				break;
 
-			case "delete":
+			case EditTaskView.DELETE:
 				// delete this task
 				StageModel s = wfm.findStageByName((String) etv.getStages()
 						.getSelectedItem());
@@ -116,6 +113,7 @@ public class EditTaskController implements ActionListener {
 
 				// Save entire workflow whenever a task is deleted
 				wfm.save();
+				returnToWorkflowView();
 				break;
 
 			case EditTaskView.ADD_USER:
@@ -131,6 +129,7 @@ public class EditTaskController implements ActionListener {
 			case EditTaskView.CANCEL:
 				// go back to workflow view
 				etv.resetFields();
+				returnToWorkflowView();
 				break;
 
 			case EditTaskView.SUBMIT_COMMENT:
@@ -157,6 +156,7 @@ public class EditTaskController implements ActionListener {
 	 */
 	private void returnToWorkflowView() {
 		JanewayModule.tabPaneC.removeTabByComponent(etv);
+		JanewayModule.tabPaneC.reloadWorkflow();
 	}
 
 	/**
@@ -187,7 +187,7 @@ public class EditTaskController implements ActionListener {
 		}
 		t.setDueDate(etv.getDateField().getDate());
 		t.setStage(s);
-		t.save();
+		wfm.save();
 	}
 
 }

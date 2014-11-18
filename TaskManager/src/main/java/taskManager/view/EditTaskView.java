@@ -422,9 +422,8 @@ public class EditTaskView extends JPanel {
 	 * @param n
 	 *            the index of the stage in the workflow
 	 */
-	public void setStageDropdown(int n) {
-		String p = stages.getItemAt(n);
-		stages.setSelectedItem(p);
+	public void setStageDropdown(String s) {
+		stages.setSelectedItem(s);
 	}
 
 	/**

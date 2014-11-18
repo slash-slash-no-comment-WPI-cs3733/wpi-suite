@@ -167,4 +167,12 @@ public class TabPaneController {
 		}
 	}
 
+	public TabPaneView getTabView() {
+		return tabPaneV;
+	}
+
+	public void reloadWorkflow() {
+		tabPaneV.reloadWorkflow();
+	}
+
 }
