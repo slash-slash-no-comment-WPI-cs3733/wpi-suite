@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 
 import taskManager.controller.EditTaskController;
 import taskManager.controller.ManageStageController;
+import taskManager.controller.TaskInputController;
 import taskManager.controller.ToolbarController;
 import taskManager.controller.WorkflowController;
 import taskManager.model.StageModel;
@@ -84,6 +85,7 @@ public class JanewayModule implements IJanewayModule {
 		wfv.setController(wfc);
 		msv.setController(new ManageStageController(msv, wfm));
 		etv.setController(new EditTaskController(wfm));
+		etv.setFieldController(new TaskInputController());
 
 		// adds all views to one panel
 		JPanel allPanels = new JPanel();

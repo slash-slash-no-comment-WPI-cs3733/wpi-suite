@@ -10,10 +10,14 @@ package taskManager.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import taskManager.JanewayModule;
+import taskManager.model.StageModel;
+import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.ManageStageView;
 import taskManager.view.ManageUsersView;
@@ -35,6 +39,7 @@ public class ToolbarController implements ActionListener {
 	private final EditTaskView newTaskView;
 	private final JPanel statisticsView;
 	private final WorkflowController workflowController;
+	private final WorkflowModel workflowModel;
 
 	/**
 	 * 
@@ -63,6 +68,7 @@ public class ToolbarController implements ActionListener {
 		newTaskView = ntv;
 		statisticsView = sv;
 		workflowController = wfc;
+		workflowModel = wfc.getModel();
 	}
 
 	@Override
@@ -78,6 +84,30 @@ public class ToolbarController implements ActionListener {
 				manageStagesView.setVisible(false);
 				statisticsView.setVisible(false);
 				newTaskView.getTitle().setName("000000");
+
+				// Set the dropdown menu to New stage and disable the menu.
+				StageModel newStage = workflowModel.findStageByName("New");
+				List<StageModel> stages = workflowModel.getStages();
+				for (int i = 0; i < stages.size(); i++) {
+					if (stages.get(i) == newStage) {
+						JanewayModule.etv.setStageDropdown(i);
+						break;
+					}
+				}
+
+				// Set actual effort field enabled only if the selected stage is
+				// "Complete"
+				if (JanewayModule.etv.getSelectedStage().equals("Complete")) {
+					JanewayModule.etv.getActEffort().setEnabled(true);
+				} else {
+					JanewayModule.etv.getActEffort().setEnabled(false);
+				}
+
+				JanewayModule.etv.setStageSelectorEnabled(false);
+
+				// Disable save button when creating a task.
+				JanewayModule.etv.disableSave();
+
 				newTaskView.setVisible(true);
 				break;
 			case ToolbarView.MANAGE_STAGES:
