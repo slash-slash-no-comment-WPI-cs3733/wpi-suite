@@ -41,6 +41,14 @@ public class TaskInputController implements KeyListener, FocusListener {
 		boolean estEffortValid = true;
 		boolean actEffortValid = true;
 
+		// Set actual effort field enabled only if the selected stage is
+		// "Complete"
+		if (etv.getSelectedStage().equals("Complete")) {
+			etv.getActEffort().setEnabled(true);
+		} else {
+			etv.getActEffort().setEnabled(false);
+		}
+
 		// checks each required field and determines if it meets the
 		// requirements for that field
 

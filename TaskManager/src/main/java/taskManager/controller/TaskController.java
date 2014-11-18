@@ -72,13 +72,6 @@ public class TaskController implements ActionListener {
 		JanewayModule.wfv.setVisible(false);
 		etv.setVisible(true);
 
-		// only allows you to edit the actual effort in complete
-		if (model.getStage() == wfm.findStageByName("Complete")) {
-			etv.getActEffort().setEnabled(true);
-		} else {
-			etv.getActEffort().setEnabled(false);
-		}
-
 		// figures out the index of the stage, then sets the drop down to the
 		// stage at that index
 		JComboBox<String> stages = etv.getStages();

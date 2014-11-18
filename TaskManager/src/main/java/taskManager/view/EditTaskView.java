@@ -362,6 +362,7 @@ public class EditTaskView extends JPanel {
 		descripArea.addKeyListener(controller);
 		estEffortField.addKeyListener(controller);
 		actEffortField.addKeyListener(controller);
+		stages.addFocusListener(controller);
 	}
 
 	/**
@@ -495,6 +496,16 @@ public class EditTaskView extends JPanel {
 	public void setStageDropdown(int n) {
 		String p = stages.getItemAt(n);
 		stages.setSelectedItem(p);
+	}
+
+	/**
+	 * 
+	 * Returns the selected stage name
+	 *
+	 * @return the selected stage as a String.
+	 */
+	public String getSelectedStage() {
+		return stages.getSelectedItem().toString();
 	}
 
 	/**

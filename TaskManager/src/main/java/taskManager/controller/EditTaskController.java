@@ -85,7 +85,6 @@ public class EditTaskController implements ActionListener {
 					this.setTaskData(task, desiredStage);
 					// moves the task to that stage on the model level
 					wfm.moveTask(task, currentStage, desiredStage);
-					task.save();
 					wfm.save();
 
 					this.setTaskID("000000");
@@ -189,7 +188,6 @@ public class EditTaskController implements ActionListener {
 		}
 		t.setDueDate(etv.getDateField().getDate());
 		t.setStage(s);
-		t.save();
 	}
 
 }
