@@ -110,8 +110,7 @@ public class ToolbarController implements ActionListener {
 				workflowView.setVisible(true);
 				break;
 
-			case ToolbarView.REFRESH:
-				workflowController.fetch();
+
 			}
 		}
 	}

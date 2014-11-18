@@ -8,7 +8,9 @@
  *******************************************************************************/
 package taskManager.view;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -67,11 +69,19 @@ public class TaskView extends JPanel implements ITaskView {
 		// adds the data to the view
 		// note: the Calendar.MONTH value ranges between 0-11 so here we add 1
 		// to the month.
-		this.add(new JLabel("Due Date: " + (date.get(Calendar.MONTH) + 1) + "/"
+		this.add(new JLabel("Name: " + name));
+		this.add(new JLabel("Due: " + (date.get(Calendar.MONTH) + 1) + "/"
 				+ date.get(Calendar.DATE) + "/" + (date.get(Calendar.YEAR))));
-		this.add(new JLabel("Est Effort: " + estEffort));
+	
+		
+		
+		
 		edit = new JButton("Edit");
+		edit.setMaximumSize(new Dimension(17, 15)); 
 		edit.setName(taskID);
+		edit.setFont(new Font("Edit", Font.PLAIN, 4));
+		edit.setForeground(Color.RED);
+		edit.setBackground(Color.red);
 		this.add(edit);
 
 	}
