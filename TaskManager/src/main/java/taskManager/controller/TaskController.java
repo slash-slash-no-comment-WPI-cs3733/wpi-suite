@@ -36,6 +36,7 @@ public class TaskController implements ActionListener {
 	private final WorkflowModel wfm;
 	private TabPaneController tabPaneC;
 	private EditTaskView etv;
+	private Requirement req;
 
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
@@ -109,7 +110,8 @@ public class TaskController implements ActionListener {
 		// set the requirement dropdown
 		if (req != null) {
 			etv.getRequirements().setSelectedItem(req.getName());
-					EditTaskView.NO_REQ);
+		} else {
+			etv.getRequirements().setSelectedItem(EditTaskView.NO_REQ);
 		}
 	}
 }

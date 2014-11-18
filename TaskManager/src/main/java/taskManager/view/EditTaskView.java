@@ -306,7 +306,7 @@ public class EditTaskView extends JPanel {
 
 		// List of Requirements
 		newTaskGridBag.gridy = 9;
-		add(nt_requirementBoxes, newTaskGridBag);
+		window.add(nt_requirementBoxes, newTaskGridBag);
 
 		// Third Column ////
 

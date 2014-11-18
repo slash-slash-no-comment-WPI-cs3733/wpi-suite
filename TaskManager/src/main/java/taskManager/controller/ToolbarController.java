@@ -10,7 +10,6 @@ package taskManager.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 
 import javax.swing.JButton;
 
@@ -47,26 +46,6 @@ public class ToolbarController implements ActionListener {
 			case ToolbarView.CREATE_TASK:
 
 				this.tabPaneC.addCreateTaskTab();
-
-	stuff here
-
-				// Set the dropdown menu to New stage and disable the menu.
-		//		StageModel newStage = workflowModel.findStageByName("New");
-		//		List<StageModel> stages = workflowModel.getStages();
-			//	for (int i = 0; i < stages.size(); i++) {
-				//	if (stages.get(i) == newStage) {
-				//		JanewayModule.etv.setStageDropdown(i);
-					//	break;
-				//	}
-				//}
-
-				
-					//JanewayModule.etv.getActEffort().setEnabled(false);
-
-				//JanewayModule.etv.setStageSelectorEnabled(false);
-
-				// Disable save button when creating a task.
-				//JanewayModule.etv.disableSave();
 
 				break;
 			case ToolbarView.MANAGE_STAGES:

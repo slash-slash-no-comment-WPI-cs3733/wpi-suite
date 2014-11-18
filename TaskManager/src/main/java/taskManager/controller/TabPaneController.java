@@ -10,7 +10,10 @@
 package taskManager.controller;
 
 import java.awt.Component;
+import java.util.List;
 
+import taskManager.model.StageModel;
+import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
 import taskManager.view.ManageStageView;
@@ -45,9 +48,26 @@ public class TabPaneController {
 	 *
 	 */
 	public void addCreateTaskTab() {
+
 		// Each press of create a new tab should launch a new createTaskTab
 		EditTaskView etv = new EditTaskView(Mode.CREATE);
 		etv.setController(new EditTaskController(etv));
+		etv.setFieldController(new TaskInputController(etv));
+		// Set the dropdown menu to New stage and disable the menu.
+		StageModel newStage = WorkflowModel.getInstance()
+				.findStageByName("New");
+		List<StageModel> stages = WorkflowModel.getInstance().getStages();
+		for (int i = 0; i < stages.size(); i++) {
+			if (stages.get(i) == newStage) {
+				etv.setStageDropdown(i);
+				break;
+			}
+		}
+		etv.getActEffort().setEnabled(false);
+		etv.setStageSelectorEnabled(false);
+		// Disable save button when creating a task.
+		etv.disableSave();
+
 		addTab("Create Task", etv, true);
 		// Focuses on the new tab
 		int index = this.tabPaneV.getTabCount() - 1;
@@ -64,6 +84,7 @@ public class TabPaneController {
 		if (tabPaneV.indexOfComponent(etv) == -1) {
 			// Each press of create a new tab should launch a new createTaskTab
 			etv.setController(new EditTaskController(etv));
+			etv.setFieldController(new TaskInputController(etv));
 			addTab("Edit Task", etv, true);
 		}
 		// Focuses on the new tab
