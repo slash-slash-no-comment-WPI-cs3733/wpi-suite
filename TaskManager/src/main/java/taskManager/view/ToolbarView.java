@@ -23,7 +23,7 @@ import taskManager.controller.ToolbarController;
 public class ToolbarView extends JToolBar implements IToolbarView {
 
 	public static final String REFRESH = "refresh";
-	public static final String STATISTICS = "statistics";
+	public static final String REPORT = "report";
 	public static final String MANAGE_USERS = "manageUsers";
 	public static final String MANAGE_STAGES = "manageStages";
 	public static final String CREATE_TASK = "createTask";
@@ -69,7 +69,7 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 		manageUsers = new JButton("Manage Users");
 		manageUsers.setName(MANAGE_USERS);
 		statistics = new JButton("Statistics");
-		statistics.setName(STATISTICS);
+		statistics.setName(REPORT);
 		refresh = new JButton("Refresh");
 		refresh.setName(REFRESH);
 

@@ -15,6 +15,7 @@ import javax.swing.JButton;
 
 import taskManager.JanewayModule;
 import taskManager.view.TabPaneView;
+import taskManager.view.ToolbarView;
 
 /**
  * A controller for the toolbar view
@@ -42,25 +43,20 @@ public class ToolbarController implements ActionListener {
 		if (button instanceof JButton) {
 			String name = ((JButton) button).getName();
 			switch (name) {
-			case "createTask":
+			case ToolbarView.CREATE_TASK:
 				this.tabPaneC.addCreateTaskTab();
 				break;
-			case "manageStages":
+			case ToolbarView.MANAGE_STAGES:
 				this.tabPaneC.addManageStagesTab();
 				break;
-			case "manageUsers":
+			case ToolbarView.MANAGE_USERS:
 				this.tabPaneC.addManageUsersTab();
 				break;
-			case "reports":
-				break;
-
-				pick one
-			case "refresh":
-				tabPaneV.refreshWorkflow();
+			case ToolbarView.REPORT:
 				break;
 
 			case ToolbarView.REFRESH:
-				workflowController.fetch();
+				tabPaneV.refreshWorkflow();
 				break;
 			}
 		}

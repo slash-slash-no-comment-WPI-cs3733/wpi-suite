@@ -21,13 +21,16 @@ public class TabPaneController {
 	}
 
 	public void addCreateTaskTab() {
-		addTab("Create Task",  new EditTaskView(Mode.CREATE), true);
-		int index = tabPaneV.getTabCount()-1;
-		tabPaneV.setSelectedIndex(index);
+		EditTaskView etv = new EditTaskView(Mode.CREATE);
+		etv.setController(new EditTaskController(this.tabPaneV.getWorkflowModel(), etv));
+		addTab("Create Task",  etv, true);
+		int index = this.tabPaneV.getTabCount()-1;
+		this.tabPaneV.setSelectedIndex(index);
 	}
-
+	// TODO: Make sure etv has a controller coming in
 	public void addEditTaskTab(EditTaskView etv) {
-		addTab("Edit Task",  new EditTaskView(Mode.EDIT), true);
+//		etv.setController(new EditTaskController(tabPaneV.getWorkflowModel(), etv));
+		addTab("Edit Task",  etv, true);
 		int index = tabPaneV.getTabCount()-1;
 		tabPaneV.setSelectedIndex(index);
 	}
@@ -35,6 +38,8 @@ public class TabPaneController {
 	public void addManageStagesTab() {
 		if(!manageStagesTabOpen){
 			ManageStageView view = new ManageStageView();
+			ManageStageController msc = new ManageStageController(view, tabPaneV.getWorkflowModel());
+			view.setController(msc);
 			addTab("Manage Stages", view, true);
 			int index = tabPaneV.getTabCount()-1;
 			tabPaneV.setSelectedIndex(index);
@@ -44,7 +49,9 @@ public class TabPaneController {
 
 	public void addManageUsersTab() {
 		if(!manageUsersTabOpen){
-			addTab("Manage Users",  new ManageUsersView(), true);
+			ManageUsersView muv = new ManageUsersView();
+//			ManageUsersController muc = new ManageUsersController(tabPaneV.getWorkflowModel(), muv);
+			addTab("Manage Users",  muv, true);
 			int index = tabPaneV.getTabCount()-1;
 			tabPaneV.setSelectedIndex(index);
 			manageUsersTabOpen = true;

@@ -16,6 +16,7 @@ public class TabPaneView extends JTabbedPane {
 
 	// Because the workflow is a permanent tab, tabview should keep track of it
 	private WorkflowController wfc;
+	private WorkflowModel wfm;
 
 	public TabPaneView() {
 		setTabPlacement(TOP);
@@ -24,7 +25,7 @@ public class TabPaneView extends JTabbedPane {
 
 		// Create a workflow view, controller, and model
 		WorkflowView wfv = new WorkflowView();
-		WorkflowModel wfm = new WorkflowModel();
+		wfm = new WorkflowModel();
 		wfc = new WorkflowController(wfv, wfm);
 		wfv.setController(wfc);
 		
@@ -36,5 +37,9 @@ public class TabPaneView extends JTabbedPane {
 
 	public void refreshWorkflow() {
 		wfc.fetch();
+	}
+	
+	public WorkflowModel getWorkflowModel() {
+		return wfm;
 	}
 }
