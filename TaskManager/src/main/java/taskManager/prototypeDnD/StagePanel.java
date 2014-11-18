@@ -14,8 +14,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.dnd.DropTarget;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JPanel;
 
@@ -31,7 +31,7 @@ class StagePanel extends JPanel {
 
 	private JPanel placeholder;
 	private int lastIndex;
-	private List<Point> compCenters;
+	private Map<Component, Point> compCenters;
 
 	/**
 	 * 
@@ -133,10 +133,12 @@ class StagePanel extends JPanel {
 			throw new IllegalStateException(
 					"Can't calculate panel centers when placholder is visible!");
 		}
-		compCenters = new ArrayList<Point>();
+		compCenters = new HashMap<Component, Point>();
 		for (Component comp : this.getComponents()) {
-			compCenters.add(new Point((int) comp.getBounds().getCenterX(),
-					(int) comp.getBounds().getCenterY()));
+			if (comp.isVisible()) {
+				compCenters.put(comp, new Point((int) comp.getBounds()
+						.getCenterX(), (int) comp.getBounds().getCenterY()));
+			}
 		}
 	}
 
@@ -155,31 +157,55 @@ class StagePanel extends JPanel {
 		// Component[] components = this.getComponents();
 		// System.out.println(point);
 		double minDist = Double.MAX_VALUE;
-		int index = -1; // index of closest component
-		int i = 0;
-		for (Point center : compCenters) {
+		Component closest = null;
+		for (Component comp : compCenters.keySet()) {
+			Point center = compCenters.get(comp);
 			final double dist = Math.pow(point.x - center.x, 2)
 					+ Math.pow(point.y - center.y, 2);
 			System.out.println(dist);
 			if (dist < minDist) {
 				minDist = dist;
-				index = i;
+				closest = comp;
 			}
-			i++;
 		}
+
+		int index = getComponentIndex(closest);
+
+		// pretend placeholder is not there when picking drop index
+		if (getComponentIndex(placeholder) < index) {
+			index--;
+		}
+
 		System.out.println("Closest component" + Integer.toString(index));
 
 		if (index < 0) {
 			index = 0;
-		} else if (point.y > compCenters.get(index).y) {
+		} else if (point.y > compCenters.get(closest).y) {
 			index++;
 		}// TODO make general for horizontal?
 		System.out.println("Insert at " + Integer.toString(index));
-
-		if (index >= compCenters.size()) {
-			index = compCenters.size() - 1;
-		}
+		/*
+		 * if (index >= compCenters.size()) { index = compCenters.size() - 1; }
+		 */
 
 		return index;
 	}
+
+	/**
+	 * Helper method to get index of component
+	 *
+	 * @param comp
+	 *            component to lookup
+	 * @return index
+	 */
+	private int getComponentIndex(Component comp) {
+		for (int i = 0; i < getComponentCount(); i++) {
+			if (getComponent(i).equals(comp)) {
+				return i;
+			}
+		}
+		return -1;
+
+	}
+
 }
