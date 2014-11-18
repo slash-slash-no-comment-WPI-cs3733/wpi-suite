@@ -176,9 +176,9 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 *            the estimatedEffort to set
 	 */
 	public void setEstimatedEffort(int estimatedEffort) {
-		if (estimatedEffort <= 0) {
+		if (estimatedEffort <= 0 || estimatedEffort > 999) {
 			throw new IllegalArgumentException(
-					"estimatedEffort must be non-negative");
+					"estimatedEffort must be non-negative and less than 999");
 		}
 		this.estimatedEffort = estimatedEffort;
 	}
@@ -195,9 +195,9 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 *            the actualEffort to set
 	 */
 	public void setActualEffort(int actualEffort) {
-		if (actualEffort < 0) {
+		if (actualEffort < 0 || actualEffort > 999) {
 			throw new IllegalArgumentException(
-					"actualEffort must be non-negative");
+					"actualEffort must be non-negative and less than 999");
 		}
 		this.actualEffort = actualEffort;
 	}

@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
+import javax.swing.UIManager;
 
 import taskManager.controller.ToolbarController;
 
@@ -76,7 +77,7 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 
 		// Construct the project title
 		projectName = new JLabel("Project Title"); // TODO(sswartz): update this
-		projectName.setFont(new Font("Serif", Font.BOLD, 20));
+		projectName.setFont(new Font("TextField.font", Font.BOLD, 20));
 
 		// Add buttons to the content panel
 		title.add(projectName);

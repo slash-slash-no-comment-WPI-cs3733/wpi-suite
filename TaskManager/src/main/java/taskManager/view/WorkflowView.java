@@ -8,12 +8,34 @@
  *******************************************************************************/
 package taskManager.view;
 
+import java.awt.Color;
+import java.awt.Dimension;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+
+import taskManager.controller.StageController;
+
 import java.awt.FlowLayout;
 
 import javax.swing.JPanel;
 
 import taskManager.controller.WorkflowController;
 
+import java.awt.Color;
+import java.awt.Dimension;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
+import taskManager.controller.StageController;
 /**
  * @author Beth Martino
  * @version November 9, 2014
@@ -25,6 +47,8 @@ public class WorkflowView extends JPanel implements IWorkflowView {
 
 	private WorkflowController controller;
 
+	private JScrollBar hScroll;
+
 	/**
 	 * Constructor for WorkflowView.
 	 */
@@ -32,7 +56,8 @@ public class WorkflowView extends JPanel implements IWorkflowView {
 
 		// arranges the stages horizontally and evenly spaced
 		this.setLayout(new FlowLayout());
-
+		// sets a horizontal scrollbar in the case of many stages
+		hScroll = new JScrollBar(JScrollBar.HORIZONTAL, 30, 20, 0, 300);
 	}
 
 	/**

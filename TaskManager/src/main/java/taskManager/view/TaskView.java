@@ -8,6 +8,16 @@
  *******************************************************************************/
 package taskManager.view;
 
+import java.awt.Color;
+import java.awt.Dimension;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
+import taskManager.controller.StageController;
 import java.awt.Dimension;
 import java.util.Calendar;
 import java.util.Date;
@@ -21,8 +31,28 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
 import taskManager.controller.TaskController;
+import java.awt.Color;
+import java.awt.Dimension;
 
-/**
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
+import taskManager.controller.StageController;
+
+import java.awt.Color;
+import java.awt.Dimension;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
+import taskManager.controller.StageController;/**
+/*
  * @author Beth Martino
  * @author Stefan Alexander
  * @version November 9, 2014
@@ -33,6 +63,7 @@ public class TaskView extends JPanel implements ITaskView {
 	private static final long serialVersionUID = 1L;
 
 	private JButton edit;
+	private JButton delete;
 
 	private TaskController controller;
 
@@ -67,12 +98,16 @@ public class TaskView extends JPanel implements ITaskView {
 		// adds the data to the view
 		// note: the Calendar.MONTH value ranges between 0-11 so here we add 1
 		// to the month.
+		delete = new JButton("X");
+		delete.setName(taskID);
+		this.add(delete);
 		this.add(new JLabel("Due Date: " + (date.get(Calendar.MONTH) + 1) + "/"
 				+ date.get(Calendar.DATE) + "/" + (date.get(Calendar.YEAR))));
 		this.add(new JLabel("Est Effort: " + estEffort));
 		edit = new JButton("Edit");
 		edit.setName(taskID);
 		this.add(edit);
+
 
 	}
 
@@ -92,4 +127,5 @@ public class TaskView extends JPanel implements ITaskView {
 		edit.addActionListener(controller);
 	}
 
-}
+	}
+
