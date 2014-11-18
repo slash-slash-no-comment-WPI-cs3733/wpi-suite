@@ -500,12 +500,16 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * 
-	 * Returns the selected stage name
+	 * Returns the selected stage name. If the selected item cannot be retrieved
+	 * returns an empty string.
 	 *
 	 * @return the selected stage as a String.
 	 */
 	public String getSelectedStage() {
-		return stages.getSelectedItem().toString();
+		if (stages.getSelectedItem() != null) {
+			return stages.getSelectedItem().toString();
+		}
+		return "";
 	}
 
 	/**

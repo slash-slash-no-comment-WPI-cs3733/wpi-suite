@@ -96,7 +96,7 @@ public class TestEditTaskController {
 		fixture.textBox(EditTaskView.EST_EFFORT).enterText("3");
 
 		assertEquals(etv.getSaveButton().isEnabled(), true);
-		assertEquals(etv.getActEffort().isEnabled(), true);
+		assertEquals(etv.getActEffort().isEnabled(), false);
 
 		getTitleBoxFixture().deleteText();
 		assertEquals(etv.getSaveButton().isEnabled(), false);
