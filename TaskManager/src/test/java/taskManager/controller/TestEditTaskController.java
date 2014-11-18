@@ -9,7 +9,9 @@
 package taskManager.controller;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
+import java.awt.Component;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -41,6 +43,7 @@ public class TestEditTaskController {
 	private final String[] stageNames = { "New", "second", "third", "fourth" };
 
 	private FrameFixture fixture;
+	private JFrame frame;
 
 	@BeforeClass
 	public static void setupOnce() {
@@ -61,7 +64,7 @@ public class TestEditTaskController {
 		etv.resetFields();
 		etv.setVisible(true);
 
-		JFrame frame = new JFrame();
+		frame = new JFrame();
 		frame.add(etv);
 
 		fixture = new FrameFixture(frame);
@@ -161,6 +164,32 @@ public class TestEditTaskController {
 		// load the edit view
 		TaskController tc = new TaskController(null, task);
 		tc.actionPerformed(null);
+
+		// etv.setVisible(false);
+		frame.revalidate();
+		frame.repaint();
+
+		// EditTaskView etv2 = null;
+		Component c = JanewayModule.tabPaneC.getTabView()
+				.getSelectedComponent();
+		if (c instanceof EditTaskView) {
+			etv = (EditTaskView) c;
+		} else {
+			fail("oh god what's going on");
+		}
+
+		fixture.cleanUp();
+		frame = new JFrame();
+		frame.add(etv);
+		fixture = new FrameFixture(frame);
+		fixture.show();
+		// frame.removeAll();
+		// frame.add(etv2);
+		// etv.revalidate();
+		// etv.setVisible(true);
+		// frame.revalidate();
+		// frame.repaint();
+		// etv.setVisible(true);
 
 		return task;
 	}
