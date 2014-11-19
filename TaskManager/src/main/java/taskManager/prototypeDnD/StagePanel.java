@@ -12,11 +12,16 @@ package taskManager.prototypeDnD;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.dnd.DropTarget;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 /**
@@ -29,7 +34,7 @@ import javax.swing.JPanel;
  */
 public class StagePanel extends JPanel {
 
-	private JPanel placeholder;
+	private JLabel placeholder;
 	private int lastIndex;
 	private Map<Component, Point> compCenters;
 
@@ -44,9 +49,22 @@ public class StagePanel extends JPanel {
 		this.setDropTarget(new DropTarget(this, new StageDropListener(this)));
 
 		// add placeholder
-		placeholder = new JPanel();
-		placeholder.setBackground(Color.GRAY);
-		placeholder.setPreferredSize(new Dimension(100, 100));
+		// placeholder = new JPanel();
+		// placeholder.setBackground(Color.GRAY);
+
+		Image image = new BufferedImage(130, 80, BufferedImage.TYPE_INT_ARGB);
+		Graphics g = image.getGraphics();
+		g = g.create();
+		g.setColor(Color.GRAY);
+		g.fillRect(0, 0, 200, 100);
+		placeholder = new JLabel(new ImageIcon(image));
+		placeholder.setAlignmentX(CENTER_ALIGNMENT);
+
+		// placeholder.setPreferredSize(new Dimension(200, 100));
+		// placeholder.setMaximumSize(new Dimension(200, 100));
+		// placeholder.setMinimumSize(new Dimension(200, 100));
+		// placeholder.setSize(new Dimension(200, 100));
+		// this.setMinimumSize(new Dimension(300, 100));
 		placeholder.setVisible(false);
 		this.add(placeholder);
 	}

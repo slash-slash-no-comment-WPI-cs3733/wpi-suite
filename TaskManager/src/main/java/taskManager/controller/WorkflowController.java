@@ -67,7 +67,7 @@ public class WorkflowController {
 				while (alive) {
 					try {
 						sleep(5000);
-						fetch();
+						// fetch();
 						reqController.retrieveRequirements();
 					} catch (NullPointerException e) {
 						// this is expected, do nothing

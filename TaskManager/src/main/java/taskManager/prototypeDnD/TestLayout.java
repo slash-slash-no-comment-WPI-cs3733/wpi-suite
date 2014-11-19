@@ -3,7 +3,8 @@ package taskManager.prototypeDnD;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Point;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DropTargetAdapter;
@@ -11,6 +12,8 @@ import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
+import java.awt.image.BufferedImage;
+import java.util.Date;
 import java.util.Random;
 
 import javax.swing.BorderFactory;
@@ -21,6 +24,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
+
+import taskManager.view.TaskView;
 
 /**
  * 
@@ -44,8 +49,14 @@ public class TestLayout extends JFrame {
 
 		for (int i = 0; i < 3; i++) {
 			JPanel stage = new StagePanel();
-			// stage.setLayout(new BoxLayout(stage, BoxLayout.Y_AXIS));
-			stage.setLayout(new FlowLayout());
+			stage.setLayout(new BoxLayout(stage, BoxLayout.Y_AXIS));
+			// stage.setLayout(new FlowLayout());
+
+			// stage.setLayout(new GridLayout(0, 1));
+			// GridBagConstraints gbc = new GridBagConstraints();
+			// gbc.gridwidth = GridBagConstraints.REMAINDER;
+			// gbc.weighty = 1.0;
+
 			stage.setPreferredSize(new Dimension(200, 450));
 			// stage.setMinimumSize(new Dimension(175, 450));
 			// stage.setSize(new Dimension(175, 450));
@@ -53,18 +64,20 @@ public class TestLayout extends JFrame {
 
 			stage.add(new JLabel("StageWithAName"));
 			for (int j = 0; j < 3; j++) {
-
-				TaskPanel task = new TaskPanel();
-
-				task.setLayout(new BoxLayout(task, BoxLayout.Y_AXIS));
-				task.add(new JLabel("Task" + Integer.toString(j)));
-				task.add(new JLabel(Integer.toString(i) + " "
-						+ Integer.toString(j)));
-				task.add(new JLabel(Integer.toString(i) + " "
-						+ Integer.toString(j)));
-				task.setBackground(new Color(random.nextFloat(), random
-						.nextFloat(), random.nextFloat()));
-				task.setPreferredSize(new Dimension(100, 100));
+				/*
+				 * TaskPanel task = new TaskPanel();
+				 * 
+				 * task.setLayout(new BoxLayout(task, BoxLayout.Y_AXIS));
+				 * task.add(new JLabel("Task" + Integer.toString(j)));
+				 * task.add(new JLabel(Integer.toString(i) + " " +
+				 * Integer.toString(j))); task.add(new
+				 * JLabel(Integer.toString(i) + " " + Integer.toString(j)));
+				 * task.setBackground(new Color(random.nextFloat(), random
+				 * .nextFloat(), random.nextFloat())); task.setPreferredSize(new
+				 * Dimension(100, 100));
+				 */
+				TaskPanel task = new TaskView("Task", new Date(), 10, "id");
+				task.setAlignmentX(CENTER_ALIGNMENT);
 				stage.add(task);
 
 			}
@@ -103,7 +116,19 @@ class DDTransferHandler extends TransferHandler {
 			// parent.revalidate();
 			// parent.repaint();
 
-			return (TaskPanel) comp;
+			TaskPanel panel = (TaskPanel) comp;
+
+			// Create drag images
+			Image image = new BufferedImage(panel.getWidth(),
+					panel.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			Graphics g = image.getGraphics();
+			g = g.create();
+			// g.translate(panel.getWidth(), panel.getHeight());
+			panel.paint(g);
+			panel.getTransferHandler().setDragImage(image);
+			panel.getTransferHandler().setDragImageOffset(panel.getOffset());
+
+			return panel;
 		}
 		return null;
 	}

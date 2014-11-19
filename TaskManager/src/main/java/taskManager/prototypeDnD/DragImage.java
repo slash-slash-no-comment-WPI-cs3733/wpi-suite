@@ -138,6 +138,8 @@ public class DragImage extends AbstractComponentDecorator {
 				.convertPoint(getComponent(), x, y, dragSource);
 		if (origin == null)
 			origin = location;
+		System.out.println("Icon width:"
+				+ Integer.toString(icon.getIconWidth()));
 		setDecorationBounds(x, y, icon.getIconWidth(), icon.getIconHeight());
 	}
 

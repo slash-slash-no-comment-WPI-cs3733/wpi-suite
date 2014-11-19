@@ -34,7 +34,9 @@ public class StageView extends JPanel {
 	private StageController controller;
 
 	JPanel tasks = new StagePanel();
-	JScrollPane stage = new JScrollPane(tasks);
+	JScrollPane stage = new JScrollPane(tasks,
+			JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+			JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
 	/**
 	 * 
@@ -52,6 +54,11 @@ public class StageView extends JPanel {
 
 		// organizes the tasks in a vertical list
 		tasks.setLayout(new BoxLayout(tasks, BoxLayout.Y_AXIS));
+		// tasks.setLayout(new FlowLayout());
+		// tasks.setMinimumSize(new Dimension(175, 450));
+		// tasks.setSize(new Dimension(175, 450));
+		// tasks.setPreferredSize(new Dimension(175, 450));
+		// tasks.setMaximumSize(new Dimension(175, 450));
 
 		// creates the label for the name of the stage and adds it to the block
 		JPanel label = new JPanel();
@@ -62,7 +69,9 @@ public class StageView extends JPanel {
 		this.add(label);
 
 		// creates the scroll containing the stage view and adds it to the block
-		stage = new JScrollPane(tasks);
+		stage = new JScrollPane(tasks,
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		stage.setBorder(BorderFactory.createLineBorder(Color.black));
 		stage.setMinimumSize(new Dimension(175, 450));
 		stage.setSize(new Dimension(175, 450));
@@ -76,7 +85,9 @@ public class StageView extends JPanel {
 	 */
 	public void updateTasks() {
 		this.remove(stage);
-		stage = new JScrollPane(tasks);
+		stage = new JScrollPane(tasks,
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		stage.setBorder(BorderFactory.createLineBorder(Color.black));
 		stage.setMinimumSize(new Dimension(175, 350));
 		this.add(stage);
@@ -87,6 +98,7 @@ public class StageView extends JPanel {
 	 *            for new task view will be entered by the user
 	 */
 	public void addTaskView(TaskView tkv) {
+		tkv.setAlignmentX(CENTER_ALIGNMENT);
 		tasks.add(tkv);
 	}
 

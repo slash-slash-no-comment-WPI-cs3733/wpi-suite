@@ -62,8 +62,10 @@ public class DDManager extends DragSourceAdapter {
 			imageOffset = new Point(-panel.getOffset().x, -panel.getOffset().y);
 
 			dragIcon = new PanelIcon(panel);
-			dragImage = new DragImage(panel, e.getLocation(), dragIcon,
-					imageOffset);
+			System.out.println("New icon with width: "
+					+ dragIcon.getIconWidth());
+			// dragImage = new DragImage(panel, e.getLocation(), dragIcon,
+			// imageOffset);
 
 			sourceParent = (StagePanel) comp.getParent();
 			// sourceParent.remove(comp);
