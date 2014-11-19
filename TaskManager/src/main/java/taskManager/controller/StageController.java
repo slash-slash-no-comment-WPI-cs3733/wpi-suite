@@ -54,4 +54,8 @@ public class StageController {
 
 	}
 
+	public StageModel getModel() {
+		return model;
+	}
+
 }

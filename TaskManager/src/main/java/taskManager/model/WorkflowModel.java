@@ -206,7 +206,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 *
 	 */
 	public void moveTask(TaskModel task, StageModel fromStage,
-			StageModel toStage) {
+			StageModel toStage, int toIndex) {
 		if (!stageList.contains(toStage)) {
 			logger.log(Level.WARNING,
 					"Tried to move a task to a non-existant stage.");
@@ -224,10 +224,20 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		}
 		final ActivityModel movedTask = new ActivityModel("Moved task",
 				ActivityModel.activityModelType.MOVE);
-		toStage.addTask(task);
+
+		if (toIndex == -1) {
+			toStage.addTask(task);
+		} else {
+			toStage.addTask(toIndex, task);
+		}
 		fromStage.removeTask(task);
 		task.addActivity(movedTask);
 		logger.log(Level.FINER, "Moved task successfully.");
+	}
+
+	public void moveTask(TaskModel task, StageModel fromStage,
+			StageModel toStage) {
+		moveTask(task, fromStage, toStage, -1);
 	}
 
 	/**

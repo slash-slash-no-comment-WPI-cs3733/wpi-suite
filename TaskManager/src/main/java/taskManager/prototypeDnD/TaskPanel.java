@@ -13,13 +13,18 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.TransferHandler;
 
+import taskManager.model.TaskModel;
+
 public class TaskPanel extends JPanel implements Transferable {
 
 	private Point mouseOffset;
 	private Point pos;
 	private boolean dragActive;
+	TaskModel model;
 
-	public TaskPanel() {
+	public TaskPanel(TaskModel model) {
+		this.model = model;
+
 		TaskMouseListener listener = new TaskMouseListener();
 		this.addMouseListener(listener);
 		this.addMouseMotionListener(listener);

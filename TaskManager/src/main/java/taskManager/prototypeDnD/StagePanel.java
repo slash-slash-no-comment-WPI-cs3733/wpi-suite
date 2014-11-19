@@ -24,6 +24,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import taskManager.model.StageModel;
+import taskManager.model.WorkflowModel;
+
 /**
  * The visible panel that contains tasks. It also manages the placeholder and
  * insertion index of the object being dragged.
@@ -37,14 +40,15 @@ public class StagePanel extends JPanel {
 	private JLabel placeholder;
 	private int lastIndex;
 	private Map<Component, Point> compCenters;
+	private StageModel model;
 
 	/**
 	 * 
 	 * Creates a StagePanel and initializes its placeholder.
 	 *
 	 */
-	public StagePanel() {
-		// super();// TODO
+	public StagePanel(StageModel model) {
+		this.model = model;
 		this.setTransferHandler(new DDTransferHandler());
 		this.setDropTarget(new DropTarget(this, new StageDropListener(this)));
 
@@ -79,8 +83,13 @@ public class StagePanel extends JPanel {
 	 *            Where (relative to the stage) the panel was dropped.
 	 */
 	public void dropTask(TaskPanel transferredPanel, Point dropLocation) {
+		int newIndex = getInsertionIndex(dropLocation);
 
-		add(transferredPanel, getInsertionIndex(dropLocation));
+		WorkflowModel.getInstance().moveTask(transferredPanel.getModel(),
+				((StagePanel) transferredPanel.getParent()).getModel(), model,
+				newIndex);
+
+		add(transferredPanel, newIndex);
 
 		transferredPanel.setVisible(true);
 		hidePlaceholder();
@@ -226,4 +235,7 @@ public class StagePanel extends JPanel {
 
 	}
 
+	public StageModel getModel() {
+		return model;
+	}
 }
