@@ -345,7 +345,7 @@ public class EditTaskView extends JPanel {
 		window.add(nt_refreshBtn, newTaskGridBag);
 
 		newTaskGridBag.gridy = 9;
-		window.add(requirements, newTaskGridBag);
+		window.add(addReq, newTaskGridBag);
 
 		JPanel bottomBtns = new JPanel();
 		bottomBtns.add(save);
