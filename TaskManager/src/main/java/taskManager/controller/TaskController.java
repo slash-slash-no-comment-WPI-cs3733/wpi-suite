@@ -52,7 +52,7 @@ public class TaskController implements MouseListener {
 		this.model = model;
 		sm = model.getStage();
 		req = model.getReq();
-		wfm = sm.getWorkflow();
+		wfm = WorkflowModel.getInstance();
 	}
 
 	@Override
