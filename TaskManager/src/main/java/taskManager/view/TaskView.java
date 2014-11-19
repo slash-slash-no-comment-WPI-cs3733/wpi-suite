@@ -9,7 +9,6 @@
 package taskManager.view;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -55,30 +54,29 @@ public class TaskView extends JPanel {
 		// organizes the data in a vertical list
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		final Border raisedbevel = BorderFactory.createRaisedBevelBorder();
-		final TitledBorder title = BorderFactory.createTitledBorder(
-				raisedbevel);
+		final TitledBorder title = BorderFactory
+				.createTitledBorder(raisedbevel);
 		title.setTitlePosition(TitledBorder.LEFT);
 		this.setBorder(title);
 		this.setMinimumSize(new Dimension(200, 100));
-	
-		
+
 		// MouseListener to change task color when task it hovered over
 		addMouseListener(new MouseAdapter() {
-            private Color background;
+			private Color background;
 
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                background = getBackground();
-                setBackground(Color.lightGray);
-                repaint();
-            }
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				background = getBackground();
+				setBackground(Color.lightGray);
+				repaint();
+			}
 
-            @Override
-            public void mouseExited(MouseEvent e) {
-                setBackground(background);
-            }
-        });
-//
+			@Override
+			public void mouseExited(MouseEvent e) {
+				setBackground(background);
+			}
+		});
+		//
 		// convert Date object to Calendar object to avoid using deprecated
 		// Date methods.
 		final Calendar date = Calendar.getInstance();
@@ -87,23 +85,24 @@ public class TaskView extends JPanel {
 		// adds the data to the view
 		// note: the Calendar.MONTH value ranges between 0-11 so here we add 1
 		// to the month.
-		
+
 		JLabel nameLabel = new JLabel();
-		JLabel dueLabel = new JLabel("Due: " + (date.get(Calendar.MONTH) + 1) + "/"
-				+ date.get(Calendar.DATE) + "/" + (date.get(Calendar.YEAR)));
-		
-		//This creates a maximum text-string length before the name gets truncated in the view
-		
+		JLabel dueLabel = new JLabel("Due: " + (date.get(Calendar.MONTH) + 1)
+				+ "/" + date.get(Calendar.DATE) + "/"
+				+ (date.get(Calendar.YEAR)));
+
+		// This creates a maximum text-string length before the name gets
+		// truncated in the view
+
 		nameLabel.setText("Average Name Length");
 		final Dimension size = nameLabel.getPreferredSize();
 
 		nameLabel.setMaximumSize(size);
 		nameLabel.setPreferredSize(size);
 		nameLabel.setText(name);
-		
+
 		this.add(nameLabel);
 		this.add(dueLabel);
-	
 
 	}
 
@@ -121,7 +120,7 @@ public class TaskView extends JPanel {
 	public void setController(TaskController controller) {
 		this.controller = controller;
 		addMouseListener(controller);
-		
+
 	}
 
 }
