@@ -10,11 +10,20 @@ package taskManager.controller;
 
 import java.util.List;
 
+import taskManager.JanewayModule;
+import taskManager.model.AbstractJsonableModel;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
 import taskManager.view.WorkflowView;
+import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.controller.GetRequirementsController;
+import edu.wpi.cs.wpisuitetng.network.Network;
+import edu.wpi.cs.wpisuitetng.network.Request;
+import edu.wpi.cs.wpisuitetng.network.RequestObserver;
+import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
+import edu.wpi.cs.wpisuitetng.network.models.IRequest;
+import edu.wpi.cs.wpisuitetng.network.models.ResponseModel;
 
 /**
  * A controller for the workflow view
@@ -71,6 +80,54 @@ public class WorkflowController {
 		thread.setName("polling");
 		thread.setDaemon(true);
 		thread.start();
+
+		// get project name once
+		Thread thread2 = new Thread() {
+			public void run() {
+				while (alive && (JanewayModule.project == null)) {
+					try {
+						final Request request = Network.getInstance()
+								.makeRequest("core/project", HttpMethod.GET);
+						request.addObserver(new RequestObserver() {
+
+							@Override
+							public void responseSuccess(IRequest iReq) {
+								ResponseModel response = iReq.getResponse();
+								String body = response.getBody();
+								System.out.println("Response:" + body);
+
+								JanewayModule.project = AbstractJsonableModel
+										.fromJson(body, Project[].class)[0];
+								JanewayModule.toolV
+										.setProjectName(JanewayModule.project
+												.getName());
+							}
+
+							@Override
+							public void responseError(IRequest iReq) {
+								// TODO Auto-generated method stub
+
+							}
+
+							@Override
+							public void fail(IRequest iReq, Exception exception) {
+								// TODO Auto-generated method stub
+
+							}
+						});
+						request.send();
+						sleep(5000);
+					} catch (NullPointerException e) {
+						// this is expected, do nothing
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+		thread2.setName("get project name");
+		thread2.setDaemon(true);
+		thread2.start();
 
 		reloadData();
 	}

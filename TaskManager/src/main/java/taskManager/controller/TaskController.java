@@ -8,6 +8,7 @@
  *******************************************************************************/
 package taskManager.controller;
 
+import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -37,6 +38,7 @@ public class TaskController implements MouseListener {
 	private TabPaneController tabPaneC;
 	private EditTaskView etv;
 	private Requirement req;
+	private Color background;
 
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
@@ -115,14 +117,6 @@ public class TaskController implements MouseListener {
 		} else {
 			etv.getRequirements().setSelectedItem(EditTaskView.NO_REQ);
 		}
-	}
-
-	public void MousePressed(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -133,14 +127,21 @@ public class TaskController implements MouseListener {
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent e) {
+	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-
+	public void mouseEntered(MouseEvent e) {
+		background = view.getBackground();
+		view.setBackground(Color.lightGray);
+		view.repaint();
 	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		view.setBackground(background);
+	}
+
 }

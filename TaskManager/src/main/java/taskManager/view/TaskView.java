@@ -8,10 +8,7 @@
  *******************************************************************************/
 package taskManager.view;
 
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -60,22 +57,6 @@ public class TaskView extends JPanel {
 		this.setBorder(title);
 		this.setMinimumSize(new Dimension(200, 100));
 
-		// MouseListener to change task color when task it hovered over
-		addMouseListener(new MouseAdapter() {
-			private Color background;
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				background = getBackground();
-				setBackground(Color.lightGray);
-				repaint();
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				setBackground(background);
-			}
-		});
 		//
 		// convert Date object to Calendar object to avoid using deprecated
 		// Date methods.
@@ -119,8 +100,6 @@ public class TaskView extends JPanel {
 	 */
 	public void setController(TaskController controller) {
 		this.controller = controller;
-		addMouseListener(controller);
-
+		this.addMouseListener(this.controller);
 	}
-
 }

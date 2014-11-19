@@ -32,6 +32,7 @@ public class TaskInputController implements KeyListener, FocusListener,
 
 	public TaskInputController(EditTaskView etv) {
 		this.etv = etv;
+		checkFields();
 	}
 
 	/**
