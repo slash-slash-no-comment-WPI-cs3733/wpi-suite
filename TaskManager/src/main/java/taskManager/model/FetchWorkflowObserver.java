@@ -21,6 +21,7 @@ import edu.wpi.cs.wpisuitetng.network.models.ResponseModel;
 public class FetchWorkflowObserver extends GenericRequestObserver {
 
 	public static boolean ignoreNextResponse = false;
+	public static boolean ignoreAllResponses = false;
 
 	final WorkflowModel model;
 	WorkflowController controller;
@@ -46,8 +47,12 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 	public void responseSuccess(IRequest iReq) {
 
 		if (ignoreNextResponse) {
-			System.out.println("Ignoring response due to recent local chagnes");
+			System.out.println("Ignoring response due to recent local changes");
 			ignoreNextResponse = false;
+			return;
+		}
+		if (ignoreAllResponses) {
+			System.out.println("Ignoring response due to global ignore flag");
 			return;
 		}
 

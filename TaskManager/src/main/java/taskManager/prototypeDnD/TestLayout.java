@@ -12,6 +12,7 @@ import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
+import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
 import java.util.Date;
 import java.util.Random;
@@ -25,6 +26,7 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 
+import taskManager.model.FetchWorkflowObserver;
 import taskManager.view.TaskView;
 
 /**
@@ -48,7 +50,7 @@ public class TestLayout extends JFrame {
 		root.setPreferredSize(new Dimension(900, 900));
 
 		for (int i = 0; i < 3; i++) {
-			JPanel stage = new StagePanel(null);
+			JPanel stage = new StagePanel();
 			stage.setLayout(new BoxLayout(stage, BoxLayout.Y_AXIS));
 			// stage.setLayout(new FlowLayout());
 
@@ -76,7 +78,7 @@ public class TestLayout extends JFrame {
 				 * .nextFloat(), random.nextFloat())); task.setPreferredSize(new
 				 * Dimension(100, 100));
 				 */
-				TaskPanel task = new TaskView("Task", new Date(), 10, "id");
+				TaskPanel task = new TaskView("Task", new Date(), 10, null);
 				task.setAlignmentX(CENTER_ALIGNMENT);
 				stage.add(task);
 
@@ -139,6 +141,21 @@ class DDTransferHandler extends TransferHandler {
 			return TransferHandler.COPY; // TODO should be move
 		}
 		return TransferHandler.NONE;
+	}
+
+	// Do all setup actions when drag is initiated
+	@Override
+	public void exportAsDrag(JComponent comp, InputEvent e, int action) {
+		FetchWorkflowObserver.ignoreAllResponses = true;
+		super.exportAsDrag(comp, e, action);
+	}
+
+	// Do all cleanup actions after drag is complete
+	@Override
+	protected void exportDone(JComponent source, Transferable data, int action) {
+		System.out.println("Export DONE");
+		FetchWorkflowObserver.ignoreAllResponses = false;
+		super.exportDone(source, data, action);
 	}
 
 }

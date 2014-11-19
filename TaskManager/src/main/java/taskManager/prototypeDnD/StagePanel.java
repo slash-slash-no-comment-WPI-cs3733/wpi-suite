@@ -25,6 +25,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import taskManager.model.StageModel;
+import taskManager.model.WorkflowModel;
+import taskManager.view.TaskView;
 
 /**
  * The visible panel that contains tasks. It also manages the placeholder and
@@ -46,8 +48,7 @@ public class StagePanel extends JPanel {
 	 * Creates a StagePanel and initializes its placeholder.
 	 *
 	 */
-	public StagePanel(StageModel model) {
-		this.model = model;
+	public StagePanel() {
 		this.setTransferHandler(new DDTransferHandler());
 		this.setDropTarget(new DropTarget(this, new StageDropListener(this)));
 
@@ -55,7 +56,7 @@ public class StagePanel extends JPanel {
 		// placeholder = new JPanel();
 		// placeholder.setBackground(Color.GRAY);
 
-		Image image = new BufferedImage(130, 80, BufferedImage.TYPE_INT_ARGB);
+		Image image = new BufferedImage(130, 30, BufferedImage.TYPE_INT_ARGB);
 		Graphics g = image.getGraphics();
 		g = g.create();
 		g.setColor(Color.GRAY);
@@ -84,9 +85,12 @@ public class StagePanel extends JPanel {
 	public void dropTask(TaskPanel transferredPanel, Point dropLocation) {
 		int newIndex = getInsertionIndex(dropLocation);
 
-		// WorkflowModel.getInstance().moveTask(transferredPanel.getModel(),
-		// ((StagePanel) transferredPanel.getParent()).getModel(), model,
-		// newIndex);
+		// TODO needs cleanup, maybe we need a separate controller?
+		WorkflowModel.getInstance().moveTask(
+				((TaskView) transferredPanel).getModel(),
+				((StagePanel) transferredPanel.getParent()).getModel(), model,
+				newIndex);
+		WorkflowModel.getInstance().save();
 
 		add(transferredPanel, newIndex);
 
@@ -236,5 +240,9 @@ public class StagePanel extends JPanel {
 
 	public StageModel getModel() {
 		return model;
+	}
+
+	public void setModel(StageModel model) {
+		this.model = model;
 	}
 }

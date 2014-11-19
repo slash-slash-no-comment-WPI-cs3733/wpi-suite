@@ -19,6 +19,7 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
 import taskManager.controller.TaskController;
+import taskManager.model.TaskModel;
 import taskManager.prototypeDnD.TaskPanel;
 
 /**
@@ -33,6 +34,7 @@ public class TaskView extends TaskPanel {
 	private static final long serialVersionUID = 1L;
 
 	private TaskController controller;
+	private TaskModel model;
 
 	/**
 	 * Constructor, creates a list-like view for the following information: the
@@ -47,7 +49,9 @@ public class TaskView extends TaskPanel {
 	 * @param taskID
 	 *            The ID of the task being displayed
 	 */
-	public TaskView(String name, Date duedate, int estEffort, String taskID) {
+	public TaskView(String name, Date duedate, int estEffort, TaskModel model) {
+		this.model = model; // TODO this should not be done!
+
 		// organizes the data in a vertical list
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		final Border raisedbevel = BorderFactory.createRaisedBevelBorder();
@@ -101,5 +105,9 @@ public class TaskView extends TaskPanel {
 	public void setController(TaskController controller) {
 		this.controller = controller;
 		this.addMouseListener(this.controller);
+	}
+
+	public TaskModel getModel() {
+		return model;
 	}
 }

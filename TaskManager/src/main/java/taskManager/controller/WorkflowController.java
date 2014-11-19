@@ -69,7 +69,7 @@ public class WorkflowController {
 				while (alive) {
 					try {
 						sleep(5000);
-						// fetch();
+						fetch();
 						reqController.retrieveRequirements();
 						final Request request = Network.getInstance()
 								.makeRequest("core/user", HttpMethod.GET);

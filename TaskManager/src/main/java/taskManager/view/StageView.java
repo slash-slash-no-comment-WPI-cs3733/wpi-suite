@@ -33,7 +33,7 @@ public class StageView extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private StageController controller;
 
-	JPanel tasks = new StagePanel(controller.getModel());
+	StagePanel tasks = new StagePanel();
 	JScrollPane stage = new JScrollPane(tasks,
 			JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 			JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -114,6 +114,7 @@ public class StageView extends JPanel {
 	 */
 	public void setController(StageController controller) {
 		this.controller = controller;
+		tasks.setModel(controller.getModel());
 	}
 
 	/**
