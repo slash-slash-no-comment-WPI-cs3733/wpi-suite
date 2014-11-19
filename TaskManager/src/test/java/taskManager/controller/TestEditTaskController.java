@@ -13,12 +13,10 @@ import static org.junit.Assert.fail;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 
 import org.fest.swing.fixture.FrameFixture;
 import org.fest.swing.fixture.JTextComponentFixture;
@@ -42,7 +40,7 @@ import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel
  */
 public class TestEditTaskController {
 
-	private static EditTaskView etv = new EditTaskView(EditTaskView.Mode.EDIT);
+	private static EditTaskView etv = null;
 	private static final WorkflowModel wfm = WorkflowModel.getInstance();
 
 	private final String[] stageNames = { "New", "Scheduled", "In Progress",
@@ -54,15 +52,19 @@ public class TestEditTaskController {
 	@BeforeClass
 	public static void setupOnce() {
 		// TestLogin.login();
-		// create the edit task controller
-		etv.setController(new EditTaskController(etv));
-		etv.setFieldController(new TaskInputController(etv));
+
 	}
 
 	@Before
 	public void setup() {
 		// create a new workflow model
 		wfm.makeIdenticalTo(new WorkflowModel());
+
+		// create the edit task controller
+		etv = new EditTaskView(EditTaskView.Mode.CREATE);
+		etv.setController(new EditTaskController(etv));
+		etv.setFieldController(new TaskInputController(etv));
+
 		// give it some stages
 		for (String name : stageNames) {
 			new StageModel(name, true);
@@ -86,6 +88,10 @@ public class TestEditTaskController {
 
 	@Test
 	public void testAddTask() {
+
+		// create a new edit task tab
+		JanewayModule.tabPaneC.addEditTaskTab(etv);
+
 		// enter information for a new task
 		getTitleBoxFixture().enterText("New Task");
 		getDescriptionBoxFixture().enterText("a sample task used for testing");
@@ -95,70 +101,46 @@ public class TestEditTaskController {
 		// save the task
 		fixture.button(EditTaskView.SAVE).click();
 
-		// run stuff in the same thread
-		try {
-			SwingUtilities.invokeAndWait(new Runnable() {
-				public void run() {
-					// verify the task got saved
-					StageModel stage = wfm.findStageByName("New");
-					assertEquals(stage.findTaskByName("New Task").size(), 1);
-				}
-			});
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		// verify the task got saved
+		StageModel stage = wfm.findStageByName("New");
+		assertEquals(stage.findTaskByName("New Task").size(), 1);
 	}
 
 	@Test
 	public void testInvalidTask() {
 
+		// create a new edit task tab
+		JanewayModule.tabPaneC.addEditTaskTab(etv);
+
 		getTitleBoxFixture().enterText("title");
-		getDescriptionBoxFixture().enterText("daefa");
+		getDescriptionBoxFixture().enterText("description");
 		etv.getDateField().setDate(Calendar.getInstance().getTime());
 		fixture.textBox(EditTaskView.EST_EFFORT).enterText("3");
 
-		assertEquals(etv.getSaveButton().isEnabled(), true);
-		assertEquals(etv.getActEffort().isEnabled(), false);
+		fixture.button(EditTaskView.SAVE).requireEnabled();
+		fixture.textBox(EditTaskView.ACT_EFFORT).requireDisabled();
 
 		getTitleBoxFixture().deleteText();
-		assertEquals(etv.getSaveButton().isEnabled(), false);
+		fixture.button(EditTaskView.SAVE).requireDisabled();
 
 		getTitleBoxFixture().enterText("title");
 		getDescriptionBoxFixture().deleteText();
-		assertEquals(etv.getSaveButton().isEnabled(), false);
+		fixture.button(EditTaskView.SAVE).requireDisabled();
 
-		getDescriptionBoxFixture().enterText("daefa");
+		getDescriptionBoxFixture().enterText("description");
 		fixture.textBox(EditTaskView.EST_EFFORT).deleteText();
-		assertEquals(etv.getSaveButton().isEnabled(), false);
+		fixture.button(EditTaskView.SAVE).requireDisabled();
 
 	}
 
 	@Test
 	public void testLoadTask() {
+
 		// create a task, and load the edit view with it
 		TaskModel task = createAndLoadTask();
 
-		// run stuff in the same thread
-		try {
-			SwingUtilities.invokeAndWait(new Runnable() {
-				public void run() {
-					// make sure the fields match up
-					verifyTask(task);
-					System.out.println("did stuff");
-				}
-			});
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		// make sure the fields match up
+		verifyTask(task);
 	}
 
 	@Test
@@ -176,69 +158,28 @@ public class TestEditTaskController {
 		// save the task
 		fixture.button(EditTaskView.SAVE).click();
 
-		// run stuff in the same thread
-		try {
-			SwingUtilities.invokeAndWait(new Runnable() {
-				public void run() {
-					// verify the task got saved (and not duplicated)
-					StageModel stage = wfm.findStageByName(task.getStage()
-							.getName());
+		StageModel stage = wfm.findStageByName(task.getStage().getName());
 
-					assertEquals(stage.findTaskByName("New Task").size(), 0);
-					assertEquals(stage.findTaskByName("renamed task").size(), 1);
+		assertEquals(stage.findTaskByName("New Task").size(), 0);
+		assertEquals(stage.findTaskByName("renamed task").size(), 1);
 
-					// verify the fields of the task got saved correctly
-					TaskModel newTask = stage.findTaskByName("renamed task")
-							.get(0);
-					assertEquals(newTask.getDescription(), "new description");
-					assertEquals(newTask.getDueDate(), d);
-					assertEquals(newTask.getEstimatedEffort(), 4);
-				}
-			});
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		// verify the fields of the task got saved correctly
+		TaskModel newTask = stage.findTaskByName("renamed task").get(0);
+		assertEquals(newTask.getDescription(), "new description");
+		assertEquals(newTask.getDueDate(), d);
+		assertEquals(newTask.getEstimatedEffort(), 4);
 	}
 
 	@Test
 	public void testMoveTask() {
 		TaskModel task = createAndLoadTask();
 
-		// run stuff in the same thread
-		try {
-			SwingUtilities.invokeAndWait(new Runnable() {
-				public void run() {
-					fixture.comboBox(EditTaskView.STAGES).selectItem(0);
-					fixture.button(EditTaskView.SAVE).click();
-				}
-			});
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		// move the task to a different stage
+		fixture.comboBox(EditTaskView.STAGES).selectItem(0);
+		fixture.button(EditTaskView.SAVE).click();
 
-		// run stuff in the same thread
-		try {
-			SwingUtilities.invokeAndWait(new Runnable() {
-				public void run() {
-					assertEquals(task.getStage().getName(), stageNames[0]);
-				}
-			});
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		// make sure the task got moved
+		assertEquals(task.getStage().getName(), stageNames[0]);
 
 	}
 
@@ -247,37 +188,10 @@ public class TestEditTaskController {
 
 		TaskModel task = createAndLoadTask();
 
-		// run stuff in the same thread
-		try {
-			SwingUtilities.invokeAndWait(new Runnable() {
-				public void run() {
-					fixture.textBox(EditTaskView.ACT_EFFORT).deleteText()
-							.enterText("4");
-					fixture.button(EditTaskView.SAVE).click();
-				}
-			});
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		fixture.textBox(EditTaskView.ACT_EFFORT).deleteText().enterText("4");
+		fixture.button(EditTaskView.SAVE).click();
 
-		// run stuff in the same thread
-		try {
-			SwingUtilities.invokeAndWait(new Runnable() {
-				public void run() {
-					assertEquals(task.getActualEffort(), 4);
-				}
-			});
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		assertEquals(task.getActualEffort(), 4);
 
 	}
 
@@ -288,6 +202,7 @@ public class TestEditTaskController {
 		req.setName("test requirement");
 		RequirementModel.getInstance().addRequirement(req);
 
+		// create a task
 		TaskModel task = createAndLoadTask();
 
 		// make sure it has no requirement yet
@@ -298,26 +213,13 @@ public class TestEditTaskController {
 		fixture.comboBox(EditTaskView.REQUIREMENTS).selectItem(req.getName());
 		fixture.button(EditTaskView.SAVE).click();
 
-		// run stuff in the same thread
-		try {
-			SwingUtilities.invokeAndWait(new Runnable() {
-				public void run() {
-					// make sure the task got the requirement
-					assertEquals(task.getReq().getName(), req.getName());
-				}
-			});
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		// make sure the task got the requirement
+		assertEquals(task.getReq().getName(), req.getName());
 	}
 
 	@Test
 	public void testLoadRequirement() {
+		// create a requirement
 		Requirement req = new Requirement();
 		req.setName("test requirement");
 		RequirementModel.getInstance().addRequirement(req);
@@ -335,28 +237,20 @@ public class TestEditTaskController {
 		TaskController tc = new TaskController(null, task);
 		tc.mouseClicked(null);
 
-		// run stuff in the same thread
-		try {
-			SwingUtilities.invokeAndWait(new Runnable() {
-				public void run() {
-					// make sure the requirement displays properly
-					fixture.comboBox(EditTaskView.REQUIREMENTS)
-							.requireSelection(req.getName());
-				}
-			});
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		// make sure the requirement displays properly
+		fixture.comboBox(EditTaskView.REQUIREMENTS).requireSelection(
+				req.getName());
 
 	}
 
 	@After
 	public void cleanup() {
 		fixture.cleanUp();
+		etv = null;
+		// remove all tabs
+		for (Component c : JanewayModule.tabPaneC.getTabView().getComponents()) {
+			JanewayModule.tabPaneC.removeTabByComponent(c);
+		}
 	}
 
 	/**
@@ -365,6 +259,7 @@ public class TestEditTaskController {
 	 * @return the created task
 	 */
 	private TaskModel createAndLoadTask() {
+
 		// add a task
 		StageModel stage = wfm.getStages().get(3);
 		TaskModel task = new TaskModel("New Task", stage);
@@ -376,8 +271,6 @@ public class TestEditTaskController {
 		// load the edit view
 		TaskController tc = new TaskController(null, task);
 		tc.mouseClicked(null);
-
-		// EditTaskView etv2 = null;
 		Component c = JanewayModule.tabPaneC.getTabView()
 				.getSelectedComponent();
 		if (c instanceof EditTaskView) {
@@ -385,8 +278,6 @@ public class TestEditTaskController {
 		} else {
 			fail("oh god what's going on");
 		}
-
-		etv.setVisible(true);
 
 		return task;
 	}
