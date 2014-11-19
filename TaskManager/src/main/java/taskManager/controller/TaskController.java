@@ -111,6 +111,8 @@ public class TaskController implements ActionListener {
 		etv.setActivities(tskActivities);
 		etv.setActivitiesPanel(tskActivities);
 
+		etv.setRefreshEnabled(true);
+
 		// set the requirement dropdown
 		if (req != null) {
 			JanewayModule.etv.getRequirements().setSelectedItem(req.getName());

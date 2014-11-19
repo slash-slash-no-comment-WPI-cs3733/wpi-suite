@@ -95,9 +95,11 @@ public class EditTaskController implements ActionListener {
 					// set the task to be edited
 					task = currentStage.findTaskByID(taskID);
 					this.setTaskData(task, desiredStage, requirement);
-					// moves the task to that stage on the model level
-					wfm.moveTask(task, currentStage, desiredStage);
-					wfm.save();
+
+					// Move task if stages are not equal.
+					if (!currentStage.getName().equals(desiredStage.getName())) {
+						wfm.moveTask(task, currentStage, desiredStage);
+					}
 
 					this.setTaskID("000000");
 				}
@@ -109,7 +111,7 @@ public class EditTaskController implements ActionListener {
 							requirement);
 				}
 
-				// Added the newly added activities.
+				// Add the newly added activities.
 				List<ActivityModel> newActivities = etv.getNewActivities();
 				for (ActivityModel act : newActivities) {
 					task.addActivity(act);
@@ -178,6 +180,19 @@ public class EditTaskController implements ActionListener {
 			case EditTaskView.SUBMIT_COMMENT:
 				// adds a comment activity
 				etv.addComment();
+				break;
+
+			case EditTaskView.REFRESH:
+				if (exists) {
+					// Clear the activities list.
+					etv.clearActivities();
+
+					// set activities pane
+					task = currentStage.findTaskByID(taskID);
+					List<ActivityModel> tskActivities = task.getActivities();
+					etv.setActivities(tskActivities);
+					etv.setActivitiesPanel(tskActivities);
+				}
 				break;
 			}
 		}

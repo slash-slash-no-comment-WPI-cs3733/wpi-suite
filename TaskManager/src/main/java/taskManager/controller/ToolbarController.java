@@ -106,6 +106,7 @@ public class ToolbarController implements ActionListener {
 				}
 
 				JanewayModule.etv.setStageSelectorEnabled(false);
+				JanewayModule.etv.setRefreshEnabled(false);
 
 				// Clear all activities, reset fields.
 				JanewayModule.etv.clearActivities();

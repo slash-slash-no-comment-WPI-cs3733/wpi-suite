@@ -59,6 +59,7 @@ public class EditTaskView extends JPanel {
 	public static final String EST_EFFORT = "est_effort";
 	public static final String DUE_DATE = "due_date";
 	public static final String NO_REQ = "[None]";
+	public static final String REFRESH = "refresh";
 	/**
 	 * 
 	 */
@@ -69,6 +70,7 @@ public class EditTaskView extends JPanel {
 	private JButton delete;
 	private JButton addReq;
 	private JButton submitComment;
+	private JButton refreshActivities;
 
 	private JTextField titleField;
 	private JTextArea descripArea;
@@ -214,6 +216,9 @@ public class EditTaskView extends JPanel {
 		JButton nt_cancelBtn = new JButton("Cancel");
 		cancel = nt_cancelBtn;
 		cancel.setName(CANCEL);
+		JButton nt_refreshBtn = new JButton("Refresh");
+		refreshActivities = nt_refreshBtn;
+		refreshActivities.setName(REFRESH);
 
 		// Combo Box for Stage
 		JComboBox<String> nt_stagesBoxes = new JComboBox<String>();
@@ -330,6 +335,9 @@ public class EditTaskView extends JPanel {
 		newTaskGridBag.gridy = 7;
 		add(nt_submitCommentBtn, newTaskGridBag);
 
+		newTaskGridBag.gridy = 8;
+		add(nt_refreshBtn, newTaskGridBag);
+
 		newTaskGridBag.gridy = 9;
 		add(nt_addRequirementBtn, newTaskGridBag);
 
@@ -364,6 +372,7 @@ public class EditTaskView extends JPanel {
 		addReq.addActionListener(controller);
 		submitComment.addActionListener(controller);
 		delete.addActionListener(controller);
+		refreshActivities.addActionListener(controller);
 	}
 
 	/**
@@ -622,6 +631,16 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
+	 * 
+	 * Sets the refreshActivities to enabled/disabled.
+	 *
+	 * @param boolean for whether or not to enable.
+	 */
+	public void setRefreshEnabled(Boolean b) {
+		refreshActivities.setEnabled(b);
+	}
+
+	/**
 	 * makes all of the text fields blank
 	 */
 	public void resetFields() {
@@ -659,7 +678,7 @@ public class EditTaskView extends JPanel {
 		activities.add(act);
 		newActivities.add(act);
 		commentsField.setText("");
-		setActivitiesPanel(activities);
+		reloadActivitiesPanel();
 	}
 
 	/**
@@ -726,11 +745,23 @@ public class EditTaskView extends JPanel {
 		return newActivities;
 	}
 
+	/**
+	 * 
+	 * Clears the activities.
+	 *
+	 */
 	public void clearActivities() {
 		activities.clear();
 		newActivities.clear();
 	}
 
+	/**
+	 * 
+	 * Adds an activity.
+	 *
+	 * @param the
+	 *            activity.
+	 */
 	public void addActivity(ActivityModel act) {
 		activities.add(act);
 	}
