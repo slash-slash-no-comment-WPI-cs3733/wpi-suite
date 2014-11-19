@@ -55,6 +55,8 @@ public class TaskController implements MouseListener {
 
 		wfm = WorkflowModel.getInstance();
 		etv = new EditTaskView(Mode.EDIT);
+		etv.setController(new EditTaskController(etv));
+		etv.setFieldController(new TaskInputController(etv));
 
 		req = model.getReq();
 	}
@@ -64,8 +66,6 @@ public class TaskController implements MouseListener {
 		// etv.removeAll();
 
 		// TODO: Populate with data?
-
-		tabPaneC.addEditTaskTab(etv);
 
 		// uses the title field to hold the unique id
 		etv.getTitle().setName(this.model.getID());
@@ -113,7 +113,7 @@ public class TaskController implements MouseListener {
 		} else {
 			etv.getRequirements().setSelectedItem(EditTaskView.NO_REQ);
 		}
-
+		tabPaneC.addEditTaskTab(etv);
 	}
 
 	@Override
@@ -137,6 +137,5 @@ public class TaskController implements MouseListener {
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-
 	}
 }
