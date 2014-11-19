@@ -16,7 +16,6 @@ import java.awt.event.KeyListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
-import taskManager.JanewayModule;
 import taskManager.view.EditTaskView;
 
 /**
@@ -29,10 +28,10 @@ import taskManager.view.EditTaskView;
 public class TaskInputController implements KeyListener, FocusListener,
 		PopupMenuListener {
 
-	private final EditTaskView etv = JanewayModule.etv;
+	private final EditTaskView etv;
 
-	public TaskInputController() {
-
+	public TaskInputController(EditTaskView etv) {
+		this.etv = etv;
 	}
 
 	/**

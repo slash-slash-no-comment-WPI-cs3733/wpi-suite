@@ -27,7 +27,7 @@ import taskManager.controller.StageController;
  * @author Beth Martino
  * @version November 9, 2014
  */
-public class StageView extends JPanel implements IStageView {
+public class StageView extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	private StageController controller;
