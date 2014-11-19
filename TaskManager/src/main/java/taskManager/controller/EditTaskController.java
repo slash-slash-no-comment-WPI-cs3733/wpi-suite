@@ -132,9 +132,10 @@ public class EditTaskController implements ActionListener {
 
 			case EditTaskView.ADD_USER:
 				// add a user to this task
-				String[] toAdd = etv.getProjectUsersList().getSelected();
-				for (String name : toAdd) {
-					etv.getUsersList().add(name);
+				List<String> toAdd = etv.getProjectUsersList()
+						.getSelectedValuesList();
+				for (String userName : toAdd) {
+					// etv.getUsersList().add(userName);
 				}
 				break;
 
@@ -244,12 +245,21 @@ public class EditTaskController implements ActionListener {
 		t.setReq(r);
 	}
 
+	/**
+	 * returns the user object with the given name from the list of project
+	 * users
+	 * 
+	 * @param name
+	 *            the name of the user to find
+	 * @return the user with the given name
+	 */
 	private User findUserByName(String name) {
-		for (User u : users) {
+		for (User u : JanewayModule.users) {
 			if (u.getName().equals(name)) {
 				return u;
 			}
 		}
+		return null;
 	}
 
 }

@@ -462,7 +462,7 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the JLst of prohect user names
 	 */
-	public JList<String> getprojectUsersList() {
+	public JList<String> getProjectUsersList() {
 		return this.projectUsersList;
 	}
 

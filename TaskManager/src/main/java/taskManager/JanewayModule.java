@@ -28,6 +28,7 @@ import taskManager.view.ToolbarView;
 import taskManager.view.WorkflowView;
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
 import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
+import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
  * The JanewayModule for the task manager
@@ -46,6 +47,7 @@ public class JanewayModule implements IJanewayModule {
 	public static final ManageUsersView muv = new ManageUsersView();
 	public static final EditTaskView etv = new EditTaskView();
 	public static final JPanel sv = new JPanel();
+	public static User[] users = {};
 
 	/**
 	 * Construct a blank tab
