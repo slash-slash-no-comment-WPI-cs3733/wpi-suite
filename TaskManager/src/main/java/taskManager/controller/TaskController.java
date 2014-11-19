@@ -8,6 +8,7 @@
  *******************************************************************************/
 package taskManager.controller;
 
+import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -44,6 +45,7 @@ public class TaskController implements MouseListener {
 	private Requirement req;
 	private final User[] projectUsers = JanewayModule.users;
 	private Set<String> assignedUsers;
+	private Color background;
 
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
@@ -72,6 +74,8 @@ public class TaskController implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		// makes the delete button unclickable
+		etv.enableDelete();
 		// etv.removeAll();
 
 		// TODO: Populate with data?
@@ -90,6 +94,8 @@ public class TaskController implements MouseListener {
 		etv.setDate(model.getDueDate());
 		etv.setEstEffort(model.getEstimatedEffort());
 		etv.setActEffort(model.getActualEffort());
+
+		tabPaneC.addEditTaskTab(etv);
 
 		// figures out the index of the stage, then sets the drop down to the
 		// stage at that index
@@ -152,7 +158,7 @@ public class TaskController implements MouseListener {
 		} else {
 			etv.getRequirements().setSelectedItem(EditTaskView.NO_REQ);
 		}
-		tabPaneC.addEditTaskTab(etv);
+
 	}
 
 	@Override
@@ -169,12 +175,14 @@ public class TaskController implements MouseListener {
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-
+		background = view.getBackground();
+		view.setBackground(Color.lightGray);
+		view.repaint();
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
+		view.setBackground(background);
 	}
+
 }

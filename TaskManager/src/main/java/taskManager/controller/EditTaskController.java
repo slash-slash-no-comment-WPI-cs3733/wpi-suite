@@ -128,10 +128,8 @@ public class EditTaskController implements ActionListener {
 
 			case EditTaskView.DELETE:
 				// delete this task
-				StageModel s = wfm.findStageByName((String) etv.getStages()
-						.getSelectedItem());
-				task = s.findTaskByID(taskID);
-				s.getTasks().remove(task);
+				task = currentStage.findTaskByID(taskID);
+				currentStage.getTasks().remove(task);
 				etv.resetFields();
 
 				// Save entire workflow whenever a task is deleted

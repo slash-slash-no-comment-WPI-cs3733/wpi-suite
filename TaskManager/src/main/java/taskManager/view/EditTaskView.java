@@ -9,6 +9,7 @@
 
 package taskManager.view;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -141,54 +142,45 @@ public class EditTaskView extends JPanel {
 		JLabel nt_commentsLabel = new JLabel("Comments ");
 		JLabel nt_requirementLabel = new JLabel("Requirement ");
 
-		JLabel nt_titleLabel_error = new JLabel("This a required field");
-		nt_titleLabel_error.setVisible(false);
-		titleError = nt_titleLabel_error;
-		JLabel nt_descriptionLabel_error = new JLabel(
-				"This is a required field");
-		nt_descriptionLabel_error.setVisible(false);
-		descriptionError = nt_descriptionLabel_error;
-		JLabel nt_estimatedEffortLabel_error = new JLabel(
-				"Estimated Effort is required");
-		nt_estimatedEffortLabel_error.setVisible(false);
-		estimatedEffortError = nt_estimatedEffortLabel_error;
-		JLabel nt_actualEffortLabel_error = new JLabel("");
-		nt_actualEffortLabel_error.setVisible(false);
-		actualEffortError = nt_actualEffortLabel_error;
+		titleError = new JLabel("This a required field");
+		titleError.setVisible(false);
+		titleError.setForeground(Color.RED);
+		descriptionError = new JLabel("This is a required field");
+		descriptionError.setVisible(false);
+		descriptionError.setForeground(Color.RED);
+		estimatedEffortError = new JLabel("This is a required field");
+		estimatedEffortError.setVisible(false);
+		estimatedEffortError.setForeground(Color.RED);
+		actualEffortError = new JLabel("");
+		actualEffortError.setVisible(false);
+		actualEffortError.setForeground(Color.RED);
 
 		// JTextFields
 		// sets all text fields editable and adds them to global variables
-		JTextField nt_titleField = new JTextField(25);
-		nt_titleField.setEditable(true);
-		titleField = nt_titleField;
-		JTextArea nt_descriptionArea = new JTextArea(2, 25);
-		nt_descriptionArea.setEditable(true);
-		descripArea = nt_descriptionArea;
-		nt_descriptionArea.setLineWrap(true);
-		JScrollPane nt_descriptionScrollPane = new JScrollPane(
-				nt_descriptionArea);
+		titleField = new JTextField(25);
+		titleField.setEditable(true);
+		descripArea = new JTextArea(2, 25);
+		descripArea.setEditable(true);
+		descripArea.setLineWrap(true);
+		JScrollPane nt_descriptionScrollPane = new JScrollPane(descripArea);
 		nt_descriptionScrollPane
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		nt_descriptionScrollPane
 				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
-		JTextField nt_estimatedEffortField = new JTextField(10);
-		nt_estimatedEffortField.setEditable(true);
-		nt_estimatedEffortField.setName(EST_EFFORT);
-		estEffortField = nt_estimatedEffortField;
-		JTextField nt_actualEffortField = new JTextField(10);
-		nt_actualEffortField.setEditable(true);
-		nt_actualEffortField.setName(ACT_EFFORT);
-		actEffortField = nt_actualEffortField;
-		JTextField nt_commentsField = new JTextField(25);
-		nt_commentsField.setEditable(true);
-		nt_commentsField.setName(COMMENTS);
-		commentsField = nt_commentsField;
+		estEffortField = new JTextField(10);
+		estEffortField.setEditable(true);
+		estEffortField.setName(EST_EFFORT);
+		actEffortField = new JTextField(10);
+		actEffortField.setEditable(true);
+		actEffortField.setName(ACT_EFFORT);
+		commentsField = new JTextField(25);
+		commentsField.setEditable(true);
+		commentsField.setName(COMMENTS);
 
 		// adds calendar
-		JXDatePicker nt_dueDateField = new JXDatePicker();
-		nt_dueDateField.setName("due_date");
-		this.dateField = nt_dueDateField;
+		dateField = new JXDatePicker();
+		dateField.setName("due_date");
 		dateField.setDate(Calendar.getInstance().getTime());
 
 		// JTextArea
@@ -288,13 +280,13 @@ public class EditTaskView extends JPanel {
 		newTaskGridBag.gridx = 1;
 
 		newTaskGridBag.gridy = 0;
-		window.add(nt_titleField, newTaskGridBag);
+		window.add(titleField, newTaskGridBag);
 
 		newTaskGridBag.gridy = 1;
 		window.add(nt_descriptionScrollPane, newTaskGridBag);
 
 		newTaskGridBag.gridy = 2;
-		window.add(nt_dueDateField, newTaskGridBag);
+		window.add(dateField, newTaskGridBag);
 
 		newTaskGridBag.gridy = 3;
 		window.add(stages, newTaskGridBag);
@@ -305,13 +297,13 @@ public class EditTaskView extends JPanel {
 
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridy = 5;
-		window.add(nt_estimatedEffortField, newTaskGridBag);
+		window.add(estEffortField, newTaskGridBag);
 
 		newTaskGridBag.gridy = 6;
-		window.add(nt_actualEffortField, newTaskGridBag);
+		window.add(actEffortField, newTaskGridBag);
 
 		newTaskGridBag.gridy = 7;
-		window.add(nt_commentsField, newTaskGridBag);
+		window.add(commentsField, newTaskGridBag);
 
 		newTaskGridBag.gridy = 8;
 		window.add(activityPane, newTaskGridBag);
@@ -328,10 +320,10 @@ public class EditTaskView extends JPanel {
 		newTaskGridBag.gridx = 2;
 
 		newTaskGridBag.gridy = 0;
-		window.add(nt_titleLabel_error, newTaskGridBag);
+		window.add(titleError, newTaskGridBag);
 
 		newTaskGridBag.gridy = 1;
-		window.add(nt_descriptionLabel_error, newTaskGridBag);
+		window.add(descriptionError, newTaskGridBag);
 
 		JPanel userButtons = new JPanel();
 		userButtons.setLayout(new BoxLayout(userButtons, BoxLayout.Y_AXIS));
@@ -341,10 +333,10 @@ public class EditTaskView extends JPanel {
 		window.add(userButtons, newTaskGridBag);
 
 		newTaskGridBag.gridy = 5;
-		window.add(nt_estimatedEffortLabel_error, newTaskGridBag);
+		window.add(estimatedEffortError, newTaskGridBag);
 
 		newTaskGridBag.gridy = 6;
-		window.add(nt_actualEffortLabel_error, newTaskGridBag);
+		window.add(actualEffortError, newTaskGridBag);
 
 		newTaskGridBag.gridy = 7;
 		window.add(submitComment, newTaskGridBag);
