@@ -25,6 +25,7 @@ import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.WorkflowView;
+import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.RequirementManager;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
@@ -241,6 +242,14 @@ public class EditTaskController implements ActionListener {
 			t.addAssigned(findUserByName(name.toString()));
 		}
 		t.setReq(r);
+	}
+
+	private User findUserByName(String name) {
+		for (User u : users) {
+			if (u.getName().equals(name)) {
+				return u;
+			}
+		}
 	}
 
 }
