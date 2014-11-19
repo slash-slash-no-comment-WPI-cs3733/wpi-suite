@@ -69,15 +69,6 @@ public class TabPaneController {
 			}
 		}
 
-		// fills the user lists
-		ArrayList<String> projectUserNames = new ArrayList<String>();
-		for (User u : JanewayModule.users) {
-			String name = u.getUsername();
-			projectUserNames.add(name);
-		}
-
-		etv.getProjectUsersList().addAllToList(projectUserNames);
-
 		etv.getActEffort().setEnabled(false);
 		etv.setStageSelectorEnabled(false);
 		etv.setRefreshEnabled(false);
@@ -105,6 +96,16 @@ public class TabPaneController {
 		etv.addActivity(new ActivityModel("Created Task",
 				activityModelType.CREATION));
 		etv.reloadActivitiesPanel();
+
+		// fills the user lists
+		ArrayList<String> projectUserNames = new ArrayList<String>();
+		for (User u : JanewayModule.users) {
+			String name = u.getUsername();
+			if (!projectUserNames.contains(name)) {
+				projectUserNames.add(name);
+			}
+		}
+		etv.getProjectUsersList().addAllToList(projectUserNames);
 	}
 
 	/**
