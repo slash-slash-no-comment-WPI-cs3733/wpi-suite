@@ -219,7 +219,7 @@ public class TestEditTaskController {
 
 		// load the edit view
 		TaskController tc = new TaskController(null, task);
-		tc.actionPerformed(null);
+		tc.mouseClicked(null);
 
 		// make sure the requirement displays properly
 		fixture.comboBox(EditTaskView.REQUIREMENTS).requireSelection(
@@ -247,7 +247,6 @@ public class TestEditTaskController {
 
 		// load the edit view
 		TaskController tc = new TaskController(null, task);
-		tc.actionPerformed(null);
 
 		// EditTaskView etv2 = null;
 		Component c = JanewayModule.tabPaneC.getTabView()

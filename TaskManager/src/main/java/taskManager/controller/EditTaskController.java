@@ -93,7 +93,6 @@ public class EditTaskController implements ActionListener {
 					// moves the task to that stage on the model level
 					wfm.moveTask(task, currentStage, desiredStage);
 					wfm.save();
-
 					this.setTaskID("000000");
 				}
 				// if creating a new task

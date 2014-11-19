@@ -70,9 +70,6 @@ public class TaskView extends JPanel {
 		this.add(new JLabel("Due Date: " + (date.get(Calendar.MONTH) + 1) + "/"
 				+ date.get(Calendar.DATE) + "/" + (date.get(Calendar.YEAR))));
 		this.add(new JLabel("Est Effort: " + estEffort));
-		edit = new JButton("Edit");
-		edit.setName(taskID);
-		this.add(edit);
 
 	}
 
@@ -89,7 +86,7 @@ public class TaskView extends JPanel {
 	 */
 	public void setController(TaskController controller) {
 		this.controller = controller;
-		edit.addActionListener(controller);
+		this.addMouseListener(this.controller);
 	}
 
 }
