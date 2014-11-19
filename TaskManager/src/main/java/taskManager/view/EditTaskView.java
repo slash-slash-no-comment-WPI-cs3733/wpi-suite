@@ -13,8 +13,10 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -30,6 +32,8 @@ import org.jdesktop.swingx.JXDatePicker;
 
 import taskManager.controller.EditTaskController;
 import taskManager.controller.TaskInputController;
+import taskManager.model.ActivityModel;
+import taskManager.model.ActivityModel.activityModelType;
 
 /**
  *  Edit panel for a new task
@@ -55,6 +59,7 @@ public class EditTaskView extends JPanel {
 	public static final String EST_EFFORT = "est_effort";
 	public static final String DUE_DATE = "due_date";
 	public static final String NO_REQ = "[None]";
+	public static final String REFRESH = "refresh";
 	/**
 	 * 
 	 */
@@ -65,6 +70,7 @@ public class EditTaskView extends JPanel {
 	private JButton delete;
 	private JButton addReq;
 	private JButton submitComment;
+	private JButton refreshActivities;
 
 	private JTextField titleField;
 	private JTextArea descripArea;
@@ -88,7 +94,11 @@ public class EditTaskView extends JPanel {
 	private JComboBox<String> stages;
 	private JComboBox<String> requirements;
 
-	public EditTaskController controller;
+	private EditTaskController controller;
+	private ActivityView activityPane;
+
+	private List<ActivityModel> activities;
+	private List<ActivityModel> newActivities;
 
 	/**
 	 * Creates a Edit Task Panel so that you can change all of the values of a
@@ -111,6 +121,9 @@ public class EditTaskView extends JPanel {
 		this.setMinimumSize(nt_panelSize);
 
 		// window.setBorder(BorderFactory.createTitledBorder(""));
+
+		activities = new ArrayList<ActivityModel>();
+		newActivities = new ArrayList<ActivityModel>();
 
 		// JLabels
 		JLabel nt_titleLabel = new JLabel("Title ");
@@ -165,7 +178,7 @@ public class EditTaskView extends JPanel {
 		JTextField nt_commentsField = new JTextField(25);
 		nt_commentsField.setEditable(true);
 		nt_commentsField.setName(COMMENTS);
-		commentsField = nt_estimatedEffortField;
+		commentsField = nt_commentsField;
 
 		// adds calendar
 		JXDatePicker nt_dueDateField = new JXDatePicker();
@@ -184,8 +197,8 @@ public class EditTaskView extends JPanel {
 		nt_usersScrollPane
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-		// TODO
 		// Comment Pane
+		activityPane = new ActivityView();
 
 		// Requirement Pane
 		JComboBox<String> nt_requirementBoxes = new JComboBox<String>();
@@ -218,6 +231,9 @@ public class EditTaskView extends JPanel {
 		JButton nt_cancelBtn = new JButton("Cancel");
 		cancel = nt_cancelBtn;
 		cancel.setName(CANCEL);
+		JButton nt_refreshBtn = new JButton("Refresh");
+		refreshActivities = nt_refreshBtn;
+		refreshActivities.setName(REFRESH);
 
 		// Combo Box for Stage
 		JComboBox<String> nt_stagesBoxes = new JComboBox<String>();
@@ -300,9 +316,8 @@ public class EditTaskView extends JPanel {
 		newTaskGridBag.gridy = 7;
 		window.add(nt_commentsField, newTaskGridBag);
 
-		// TODO
-		// List of Comments
-		// newTaskGridBag.gridy = 8;
+		newTaskGridBag.gridy = 8;
+		window.add(activityPane, newTaskGridBag);
 
 		// List of Requirements
 		newTaskGridBag.gridy = 9;
@@ -333,6 +348,9 @@ public class EditTaskView extends JPanel {
 		newTaskGridBag.gridy = 7;
 		window.add(nt_submitCommentBtn, newTaskGridBag);
 
+		newTaskGridBag.gridy = 8;
+		window.add(nt_refreshBtn, newTaskGridBag);
+
 		newTaskGridBag.gridy = 9;
 		window.add(nt_addRequirementBtn, newTaskGridBag);
 
@@ -362,6 +380,7 @@ public class EditTaskView extends JPanel {
 		addReq.addActionListener(controller);
 		submitComment.addActionListener(controller);
 		delete.addActionListener(controller);
+		refreshActivities.addActionListener(controller);
 	}
 
 	/**
@@ -620,6 +639,16 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
+	 * 
+	 * Sets the refreshActivities to enabled/disabled.
+	 *
+	 * @param boolean for whether or not to enable.
+	 */
+	public void setRefreshEnabled(Boolean b) {
+		refreshActivities.setEnabled(b);
+	}
+
+	/**
 	 * makes all of the text fields blank
 	 */
 	public void resetFields() {
@@ -629,6 +658,7 @@ public class EditTaskView extends JPanel {
 		estEffortField.setText("");
 		actEffortField.setText("");
 		dateField.setDate(Calendar.getInstance().getTime());
+		activityPane.setMessage("");
 	}
 
 	/**
@@ -645,6 +675,109 @@ public class EditTaskView extends JPanel {
 		this.save.setEnabled(false);
 	}
 
+	/**
+	 * 
+	 * Adds comment to the activities list and refreshes the activities panel.
+	 *
+	 */
+	public void addComment() {
+		ActivityModel act = new ActivityModel(commentsField.getText(),
+				activityModelType.COMMENT);
+		activities.add(act);
+		newActivities.add(act);
+		commentsField.setText("");
+		reloadActivitiesPanel();
+	}
+
+	/**
+	 * 
+	 * Sets the activies panel according to the activities list.
+	 *
+	 * @param activities
+	 */
+	public void setActivitiesPanel(List<ActivityModel> activities) {
+		List<ActivityModel> tskActivitiesCopy = new ArrayList<ActivityModel>(
+				activities);
+		activityPane.setMessage("");
+		for (ActivityModel act : tskActivitiesCopy) {
+			String current = activityPane.getMessage().getText();
+			switch (act.getType()) {
+			case CREATION:
+				activityPane.setMessage(current + act.getDescription() + "\n");
+				break;
+			case MOVE:
+				activityPane.setMessage(current + act.getDescription() + "\n");
+				break;
+			case COMPLETION:
+				activityPane.setMessage(current + act.getDescription() + "\n");
+				break;
+			case USER_ADD:
+				activityPane.setMessage(current + act.getDescription() + "\n");
+				break;
+			case USER_REMOVE:
+				activityPane.setMessage(current + act.getDescription() + "\n");
+				break;
+			case COMMENT:
+				activityPane.setMessage(current + "User: "
+						+ act.getDescription() + "\n");
+				break;
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * Reloads the activities panel.
+	 *
+	 */
+	public void reloadActivitiesPanel() {
+		setActivitiesPanel(activities);
+	}
+
+	/**
+	 * 
+	 * Sets activities.
+	 *
+	 * @param act
+	 */
+	public void setActivities(List<ActivityModel> act) {
+		List<ActivityModel> tskActivitiesCopy = new ArrayList<ActivityModel>(
+				act);
+		activityPane.setMessage("");
+		activities = tskActivitiesCopy;
+	}
+
+	/**
+	 * 
+	 * Returns the new activities.
+	 *
+	 * @return
+	 */
+	public List<ActivityModel> getNewActivities() {
+		return newActivities;
+	}
+
+	/**
+	 * 
+	 * Clears the activities.
+	 *
+	 */
+	public void clearActivities() {
+		activities.clear();
+		newActivities.clear();
+	}
+
+	/**
+	 * 
+	 * Adds an activity.
+	 *
+	 * @param the
+	 *            activity.
+	 */
+	public void addActivity(ActivityModel act) {
+		activities.add(act);
+	}
+
 	/*
 	 * @see javax.swing.JComponent#setVisible(boolean)
 	 */
@@ -654,6 +787,7 @@ public class EditTaskView extends JPanel {
 			TaskInputController tic = (TaskInputController) titleField
 					.getKeyListeners()[0];
 			tic.checkFields();
+			reloadActivitiesPanel();
 		}
 		if (visible && controller != null) {
 			controller.reloadData();

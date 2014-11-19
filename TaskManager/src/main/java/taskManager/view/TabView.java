@@ -27,12 +27,14 @@ public class TabView extends JPanel implements ActionListener {
 	private static final long serialVersionUID = -5461050356588592448L;
 	private Component component;
 	private boolean closeable;
+	private TabPaneView tabPaneV;
 
 	public TabView(String title, Component component, boolean closeable) {
 		super(new FlowLayout(FlowLayout.LEFT, 0, 0));
 
 		this.component = component;
 		this.closeable = closeable;
+		this.tabPaneV = JanewayModule.getTabPaneView();
 
 		setOpaque(false);
 
@@ -58,6 +60,8 @@ public class TabView extends JPanel implements ActionListener {
 		if (closeable) {
 			JanewayModule.tabPaneC.removeTabByComponent(component);
 		}
+		tabPaneV.reloadWorkflow();
+		tabPaneV.setSelectedIndex(0);
 	}
 
 	public Component getComponent() {

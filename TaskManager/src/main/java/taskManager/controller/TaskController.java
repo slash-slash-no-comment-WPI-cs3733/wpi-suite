@@ -11,10 +11,12 @@ package taskManager.controller;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.List;
 
 import javax.swing.JComboBox;
 
 import taskManager.JanewayModule;
+import taskManager.model.ActivityModel;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
@@ -57,6 +59,8 @@ public class TaskController implements MouseListener {
 
 		wfm = WorkflowModel.getInstance();
 		etv = new EditTaskView(Mode.EDIT);
+		etv.setController(new EditTaskController(etv));
+		etv.setFieldController(new TaskInputController(etv));
 
 		req = model.getReq();
 	}
@@ -68,8 +72,6 @@ public class TaskController implements MouseListener {
 		// etv.removeAll();
 
 		// TODO: Populate with data?
-
-		tabPaneC.addEditTaskTab(etv);
 
 		// uses the title field to hold the unique id
 		etv.getTitle().setName(this.model.getID());
@@ -85,6 +87,8 @@ public class TaskController implements MouseListener {
 		etv.setDate(model.getDueDate());
 		etv.setEstEffort(model.getEstimatedEffort());
 		etv.setActEffort(model.getActualEffort());
+
+		tabPaneC.addEditTaskTab(etv);
 
 		// figures out the index of the stage, then sets the drop down to the
 		// stage at that index
@@ -110,6 +114,16 @@ public class TaskController implements MouseListener {
 
 		// Enable save button when editing a task.
 		etv.enableSave();
+
+		// Clear the activities list.
+		etv.clearActivities();
+
+		// set activities pane
+		List<ActivityModel> tskActivities = model.getActivities();
+		etv.setActivities(tskActivities);
+		etv.setActivitiesPanel(tskActivities);
+
+		etv.setRefreshEnabled(true);
 
 		// set the requirement dropdown
 		if (req != null) {
