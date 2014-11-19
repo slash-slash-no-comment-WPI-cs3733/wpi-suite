@@ -67,4 +67,14 @@ public class JanewayModule implements IJanewayModule {
 	public List<JanewayTabModel> getTabs() {
 		return tabs;
 	}
+
+	/**
+	 * 
+	 * Returns the tabPaneView
+	 *
+	 * @return tabPaneV
+	 */
+	public static TabPaneView getTabPaneView() {
+		return tabPaneV;
+	}
 }
