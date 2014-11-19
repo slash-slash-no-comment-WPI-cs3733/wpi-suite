@@ -51,19 +51,20 @@ public class DDManager extends DragSourceAdapter {
 			TaskPanel panel = (TaskPanel) comp;
 
 			Point screen = e.getLocation();
-			Point origin = panel.getLocationOnScreen();
+			// Point origin = panel.getLocationOnScreen();
 
-			Point imageOffset = new Point(origin.x - screen.x, origin.y
-					- screen.y);
+			// Point imageOffset = new Point(origin.x - screen.x, origin.y
+			// - screen.y);
 
-			System.out.println(imageOffset);
+			// System.out.println(imageOffset);
 			// imageOffset = new Point(-10, -10);
 
-			imageOffset = new Point(-panel.getOffset().x, -panel.getOffset().y);
+			Point imageOffset = new Point(-panel.getOffset().x,
+					-panel.getOffset().y);
 
-			dragIcon = new PanelIcon(panel);
-			System.out.println("New icon with width: "
-					+ dragIcon.getIconWidth());
+			// dragIcon = new PanelIcon(panel);
+			// System.out.println("New icon with width: "
+			// + dragIcon.getIconWidth());
 			// dragImage = new DragImage(panel, e.getLocation(), dragIcon,
 			// imageOffset);
 
