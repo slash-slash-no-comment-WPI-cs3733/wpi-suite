@@ -20,6 +20,7 @@ import javax.swing.JComboBox;
 import javax.swing.JTabbedPane;
 
 import taskManager.JanewayModule;
+import taskManager.model.ActivityModel;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
@@ -88,23 +89,32 @@ public class EditTaskController implements ActionListener {
 			switch (name) {
 
 			case EditTaskView.SAVE:
+				TaskModel task;
 				// if editing
 				if (exists) {
 					// set the task to be edited
-					TaskModel task = currentStage.findTaskByID(taskID);
+					task = currentStage.findTaskByID(taskID);
 					this.setTaskData(task, desiredStage, requirement);
-					// moves the task to that stage on the model level
-					wfm.moveTask(task, currentStage, desiredStage);
-					wfm.save();
+
+					// Move task if stages are not equal.
+					if (!currentStage.getName().equals(desiredStage.getName())) {
+						wfm.moveTask(task, currentStage, desiredStage);
+					}
+
 					this.setTaskID("000000");
 				}
 				// if creating a new task
 				else {
 					// creates a new task model
-					TaskModel task = new TaskModel(etv.getTitle().getText(),
-							currentStage);
+					task = new TaskModel(etv.getTitle().getText(), currentStage);
 					this.setTaskData(task, wfm.findStageByName("New"),
 							requirement);
+				}
+
+				// Add the newly added activities.
+				List<ActivityModel> newActivities = etv.getNewActivities();
+				for (ActivityModel act : newActivities) {
+					task.addActivity(act);
 				}
 
 				// exit the edit view, this refreshes the workflow
@@ -119,7 +129,7 @@ public class EditTaskController implements ActionListener {
 				// delete this task
 				StageModel s = wfm.findStageByName((String) etv.getStages()
 						.getSelectedItem());
-				TaskModel task = s.findTaskByID(taskID);
+				task = s.findTaskByID(taskID);
 				s.getTasks().remove(task);
 				etv.resetFields();
 
@@ -137,9 +147,9 @@ public class EditTaskController implements ActionListener {
 
 			case EditTaskView.REMOVE_USER:
 				// add a user to this task
-				int toRemove = etv.getUsersList().getSelectedIndex();
+				int indexToRemove = etv.getUsersList().getSelectedIndex();
 				String nameToRemove = etv.getUsersList().getSelectedValue();
-				etv.getUsersList().removeFromList(toRemove);
+				etv.getUsersList().removeFromList(indexToRemove);
 				this.toRemove.add(nameToRemove);
 				break;
 
@@ -179,8 +189,21 @@ public class EditTaskController implements ActionListener {
 				break;
 
 			case EditTaskView.SUBMIT_COMMENT:
-				// creates a new activity
-				System.out.println("You've pressed the submit comment button");
+				// adds a comment activity
+				etv.addComment();
+				break;
+
+			case EditTaskView.REFRESH:
+				if (exists) {
+					// Clear the activities list.
+					etv.clearActivities();
+
+					// set activities pane
+					task = currentStage.findTaskByID(taskID);
+					List<ActivityModel> tskActivities = task.getActivities();
+					etv.setActivities(tskActivities);
+					etv.setActivitiesPanel(tskActivities);
+				}
 				break;
 			}
 		}
@@ -246,6 +269,7 @@ public class EditTaskController implements ActionListener {
 		t.setDueDate(etv.getDateField().getDate());
 		// sets the stage from the dropdown
 		t.setStage(s);
+
 		// adds or removes users
 		if (!etv.getUsersList().isEmpty()) {
 			for (String name : etv.getUsersList().getAllValues()) {
@@ -254,7 +278,7 @@ public class EditTaskController implements ActionListener {
 		}
 		for (String n : this.toRemove) {
 			if (t.getAssigned().contains(n)) {
-				t.getAssigned().remove(n);
+				t.removeAssigned(findUserByName(n));
 			}
 		}
 		t.setReq(r);

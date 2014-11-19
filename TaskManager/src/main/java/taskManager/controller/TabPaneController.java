@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import taskManager.JanewayModule;
+import taskManager.model.ActivityModel;
+import taskManager.model.ActivityModel.activityModelType;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
@@ -78,6 +80,7 @@ public class TabPaneController {
 
 		etv.getActEffort().setEnabled(false);
 		etv.setStageSelectorEnabled(false);
+		etv.setRefreshEnabled(false);
 		// Disable save button when creating a task.
 		etv.disableSave();
 
@@ -85,24 +88,50 @@ public class TabPaneController {
 		// Focuses on the new tab
 		int index = this.tabPaneV.getTabCount() - 1;
 		this.tabPaneV.setSelectedIndex(index);
+
+		// Set actual effort field enabled only if the selected stage is
+		// "Complete"
+		if (etv.getSelectedStage().equals("Complete")) {
+			etv.getActEffort().setEnabled(true);
+		} else {
+			etv.getActEffort().setEnabled(false);
+		}
+
+		// Clear all activities, reset fields.
+		etv.clearActivities();
+		etv.resetFields();
+
+		// Add Created Task activity and reload panel.
+		etv.addActivity(new ActivityModel("Created Task",
+				activityModelType.CREATION));
+		etv.reloadActivitiesPanel();
 	}
 
 	/**
 	 * 
-	 * Creates and adds a new tab to edit a task.
+	 * Creates and adds a new tab to edit a task. If the edit tab is already out
+	 * for the given task if focuses on that tab instead of creating a new one
 	 *
 	 * @param etv
 	 */
 	public void addEditTaskTab(EditTaskView etv) {
-		if (tabPaneV.indexOfComponent(etv) == -1) {
-			// Each press of create a new tab should launch a new createTaskTab
-			etv.setController(new EditTaskController(etv));
-			etv.setFieldController(new TaskInputController(etv));
-			addTab("Edit Task", etv, true);
+		boolean exists = false;
+		EditTaskView etv2 = null;
+		for (Component c : tabPaneV.getComponents()) {
+			if (c instanceof EditTaskView) {
+				etv2 = (EditTaskView) c;
+				if (etv2.getTitle().getName().equals(etv.getTitle().getName())) {
+					exists = true;
+					break;
+				}
+			}
 		}
-		// Focuses on the new tab
-		int index = tabPaneV.indexOfComponent(etv);
-		tabPaneV.setSelectedIndex(index);
+		if (exists) {
+			tabPaneV.setSelectedComponent(etv2);
+		} else {
+			addTab("Edit Task", etv, true);
+			tabPaneV.setSelectedComponent(etv);
+		}
 	}
 
 	/**

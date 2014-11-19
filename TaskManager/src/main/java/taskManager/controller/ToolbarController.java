@@ -44,9 +44,7 @@ public class ToolbarController implements ActionListener {
 			String name = ((JButton) button).getName();
 			switch (name) {
 			case ToolbarView.CREATE_TASK:
-
 				this.tabPaneC.addCreateTaskTab();
-
 				break;
 			case ToolbarView.MANAGE_STAGES:
 				this.tabPaneC.addManageStagesTab();

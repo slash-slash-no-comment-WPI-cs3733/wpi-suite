@@ -11,11 +11,13 @@ package taskManager.controller;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.JComboBox;
 
 import taskManager.JanewayModule;
+import taskManager.model.ActivityModel;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
@@ -60,6 +62,8 @@ public class TaskController implements MouseListener {
 
 		wfm = WorkflowModel.getInstance();
 		etv = new EditTaskView(Mode.EDIT);
+		etv.setController(new EditTaskController(etv));
+		etv.setFieldController(new TaskInputController(etv));
 
 		assignedUsers = model.getAssigned();
 
@@ -71,8 +75,6 @@ public class TaskController implements MouseListener {
 		// etv.removeAll();
 
 		// TODO: Populate with data?
-
-		tabPaneC.addEditTaskTab(etv);
 
 		// uses the title field to hold the unique id
 		etv.getTitle().setName(this.model.getID());
@@ -131,13 +133,23 @@ public class TaskController implements MouseListener {
 		// Enable save button when editing a task.
 		etv.enableSave();
 
+		// Clear the activities list.
+		etv.clearActivities();
+
+		// set activities pane
+		List<ActivityModel> tskActivities = model.getActivities();
+		etv.setActivities(tskActivities);
+		etv.setActivitiesPanel(tskActivities);
+
+		etv.setRefreshEnabled(true);
+
 		// set the requirement dropdown
 		if (req != null) {
 			etv.getRequirements().setSelectedItem(req.getName());
 		} else {
 			etv.getRequirements().setSelectedItem(EditTaskView.NO_REQ);
 		}
-
+		tabPaneC.addEditTaskTab(etv);
 	}
 
 	@Override
@@ -161,6 +173,5 @@ public class TaskController implements MouseListener {
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-
 	}
 }
