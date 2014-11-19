@@ -8,6 +8,7 @@
  *******************************************************************************/
 package taskManager.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
@@ -25,7 +26,7 @@ public class ActivityModel {
 	/**
 	 */
 	public enum activityModelType {
-		CREATION, MOVE, COMPLETION, USER_ADD, USER_REMOVE, COMMENT
+		CREATION, MOVE, RENAME, COMPLETION, USER_ADD, USER_REMOVE, COMMENT
 	};
 
 	// Actual type of this model
@@ -39,6 +40,9 @@ public class ActivityModel {
 
 	// User who took the action; null for system activities
 	private User actor;
+
+	private final SimpleDateFormat dateFormat = new SimpleDateFormat(
+			"M/d H:m:s: ");
 
 	/**
 	 * Constructor for activities with no user actor/unknown user actor
@@ -90,7 +94,7 @@ public class ActivityModel {
 	 * @return the contents
 	 */
 	public String getDescription() {
-		return description;
+		return dateFormat.format(dateCreated) + description;
 	}
 
 	/**

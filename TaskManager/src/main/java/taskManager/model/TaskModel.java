@@ -116,7 +116,11 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 *            name.
 	 */
 	public void setName(String name) {
+		final ActivityModel rename = new ActivityModel("Renamed task from \""
+				+ this.name + "\" to \"" + name + "\".",
+				ActivityModel.activityModelType.RENAME);
 		this.name = name;
+		addActivity(rename);
 	}
 
 	/**
