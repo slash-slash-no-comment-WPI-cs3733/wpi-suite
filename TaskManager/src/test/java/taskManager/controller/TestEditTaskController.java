@@ -27,6 +27,8 @@ import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
+import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
+import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
 
 /**
  * Tests for the edit task controller
@@ -48,6 +50,7 @@ public class TestEditTaskController {
 		// create the edit task controller
 		wfm = new WorkflowModel();
 		etv.setController(new EditTaskController(wfm));
+		etv.setFieldController(new TaskInputController());
 	}
 
 	@Before
@@ -88,8 +91,26 @@ public class TestEditTaskController {
 
 	@Test
 	public void testInvalidTask() {
-		// TODO: attempt to create a task with invalid/missing values
-		// then verify save button is disabled
+
+		getTitleBoxFixture().enterText("title");
+		getDescriptionBoxFixture().enterText("daefa");
+		etv.getDateField().setDate(Calendar.getInstance().getTime());
+		fixture.textBox(EditTaskView.EST_EFFORT).enterText("3");
+
+		assertEquals(etv.getSaveButton().isEnabled(), true);
+		assertEquals(etv.getActEffort().isEnabled(), false);
+
+		getTitleBoxFixture().deleteText();
+		assertEquals(etv.getSaveButton().isEnabled(), false);
+
+		getTitleBoxFixture().enterText("title");
+		getDescriptionBoxFixture().deleteText();
+		assertEquals(etv.getSaveButton().isEnabled(), false);
+
+		getDescriptionBoxFixture().enterText("daefa");
+		fixture.textBox(EditTaskView.EST_EFFORT).deleteText();
+		assertEquals(etv.getSaveButton().isEnabled(), false);
+
 	}
 
 	@Test
@@ -112,7 +133,6 @@ public class TestEditTaskController {
 		Date d = new Date(5 * 60 * 60 * 1000);
 		etv.setDate(d);
 		fixture.textBox(EditTaskView.EST_EFFORT).deleteText().enterText("4");
-		fixture.textBox(EditTaskView.ACT_EFFORT).deleteText().enterText("8");
 
 		// save the task
 		fixture.button(EditTaskView.SAVE).click();
@@ -127,7 +147,6 @@ public class TestEditTaskController {
 		assertEquals(newTask.getDescription(), "new description");
 		assertEquals(newTask.getDueDate(), d);
 		assertEquals(newTask.getEstimatedEffort(), 4);
-		assertEquals(newTask.getActualEffort(), 8);
 	}
 
 	@Test
@@ -138,6 +157,59 @@ public class TestEditTaskController {
 		fixture.button(EditTaskView.SAVE).click();
 
 		assertEquals(task.getStage().getName(), stageNames[0]);
+	}
+
+	@Test
+	public void testSetActualEffort() {
+		TaskModel task = createAndLoadTask();
+		fixture.textBox(EditTaskView.ACT_EFFORT).deleteText().enterText("4");
+		fixture.button(EditTaskView.SAVE).click();
+		assertEquals(task.getActualEffort(), 4);
+	}
+
+	@Test
+	public void testAddRequirement() {
+		// create a requirement
+		Requirement req = new Requirement();
+		req.setName("test requirement");
+		RequirementModel.getInstance().addRequirement(req);
+
+		TaskModel task = createAndLoadTask();
+
+		// make sure it has no requirement yet
+		fixture.comboBox(EditTaskView.REQUIREMENTS).requireSelection(
+				EditTaskView.NO_REQ);
+
+		// add a requirement to the task
+		fixture.comboBox(EditTaskView.REQUIREMENTS).selectItem(req.getName());
+		fixture.button(EditTaskView.SAVE).click();
+
+		// make sure the task got the requirement
+		assertEquals(task.getReq().getName(), req.getName());
+	}
+
+	@Test
+	public void testLoadRequirement() {
+		Requirement req = new Requirement();
+		req.setName("test requirement");
+		RequirementModel.getInstance().addRequirement(req);
+
+		// add a task with a requirement
+		StageModel stage = wfm.getStages().get(2);
+		TaskModel task = new TaskModel("New Task", stage);
+		task.setDescription("test description");
+		task.setDueDate(Calendar.getInstance().getTime());
+		task.setEstimatedEffort(5);
+		task.setActualEffort(7);
+		task.setReq(req);
+
+		// load the edit view
+		TaskController tc = new TaskController(null, task);
+		tc.mouseClicked(null);
+
+		// make sure the requirement displays properly
+		fixture.comboBox(EditTaskView.REQUIREMENTS).requireSelection(
+				req.getName());
 	}
 
 	@After
@@ -152,7 +224,7 @@ public class TestEditTaskController {
 	 */
 	private TaskModel createAndLoadTask() {
 		// add a task
-		StageModel stage = wfm.getStages().get(2);
+		StageModel stage = wfm.getStages().get(3);
 		TaskModel task = new TaskModel("New Task", stage);
 		task.setDescription("test description");
 		task.setDueDate(Calendar.getInstance().getTime());
