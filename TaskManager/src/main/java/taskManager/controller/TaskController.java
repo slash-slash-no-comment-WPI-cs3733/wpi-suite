@@ -84,6 +84,8 @@ public class TaskController implements MouseListener {
 		etv.setEstEffort(model.getEstimatedEffort());
 		etv.setActEffort(model.getActualEffort());
 
+		tabPaneC.addEditTaskTab(etv);
+
 		// figures out the index of the stage, then sets the drop down to the
 		// stage at that index
 		JComboBox<String> stages = etv.getStages();
@@ -125,7 +127,7 @@ public class TaskController implements MouseListener {
 		} else {
 			etv.getRequirements().setSelectedItem(EditTaskView.NO_REQ);
 		}
-		tabPaneC.addEditTaskTab(etv);
+
 	}
 
 	@Override
