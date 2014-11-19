@@ -229,8 +229,8 @@ public class EditTaskController implements ActionListener {
 		}
 		t.setDueDate(etv.getDateField().getDate());
 		t.setStage(s);
-		wfm.save();
 		t.setReq(r);
+		wfm.save();
 	}
 
 }
