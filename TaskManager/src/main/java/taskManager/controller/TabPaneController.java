@@ -76,20 +76,29 @@ public class TabPaneController {
 
 	/**
 	 * 
-	 * Creates and adds a new tab to edit a task.
+	 * Creates and adds a new tab to edit a task. If the edit tab is already out
+	 * for the given task if focuses on that tab instead of creating a new one
 	 *
 	 * @param etv
 	 */
 	public void addEditTaskTab(EditTaskView etv) {
-		if (tabPaneV.indexOfComponent(etv) == -1) {
-			// Each press of create a new tab should launch a new createTaskTab
-			etv.setController(new EditTaskController(etv));
-			etv.setFieldController(new TaskInputController(etv));
-			addTab("Edit Task", etv, true);
+		boolean exists = false;
+		EditTaskView etv2 = null;
+		for (Component c : tabPaneV.getComponents()) {
+			if (c instanceof EditTaskView) {
+				etv2 = (EditTaskView) c;
+				if (etv2.getTitle().getName().equals(etv.getTitle().getName())) {
+					exists = true;
+					break;
+				}
+			}
 		}
-		// Focuses on the new tab
-		int index = tabPaneV.indexOfComponent(etv);
-		tabPaneV.setSelectedIndex(index);
+		if (exists) {
+			tabPaneV.setSelectedComponent(etv2);
+		} else {
+			addTab("Edit Task", etv, true);
+			tabPaneV.setSelectedComponent(etv);
+		}
 	}
 
 	/**
