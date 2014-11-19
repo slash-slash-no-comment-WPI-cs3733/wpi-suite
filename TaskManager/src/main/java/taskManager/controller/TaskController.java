@@ -20,6 +20,7 @@ import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
 import taskManager.view.TaskView;
+import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 
 /**
@@ -37,6 +38,7 @@ public class TaskController implements MouseListener {
 	private TabPaneController tabPaneC;
 	private EditTaskView etv;
 	private Requirement req;
+	private final User[] users = JanewayModule.users;
 
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
@@ -103,6 +105,15 @@ public class TaskController implements MouseListener {
 		// Enable stage dropdown when editing a task.
 		etv.getStages().setSelectedItem(model.getStage());
 		etv.setStageSelectorEnabled(true);
+
+		// fills the user lists
+		String[] userNames = new String[users.length];
+		for (int i = 0; i < users.length; i++) {
+			String name = users[i].getName();
+			userNames[i] = name;
+
+		}
+		etv.getProjectUsersList().addAllToList(userNames);
 
 		// Enable save button when editing a task.
 		etv.enableSave();

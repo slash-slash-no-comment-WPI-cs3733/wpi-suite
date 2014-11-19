@@ -19,7 +19,6 @@ import java.util.Date;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -49,6 +48,7 @@ public class EditTaskView extends JPanel {
 	public static final String VIEW_REQ = "viewReq";
 	public static final String SUBMIT_COMMENT = "submitComment";
 	public static final String ADD_USER = "addUser";
+	public static final String REMOVE_USER = "removeUser";
 	public static final String DELETE = "delete";
 	public static final String COMMENTS = "comments";
 	public static final String ACT_EFFORT = "act_effort";
@@ -62,6 +62,7 @@ public class EditTaskView extends JPanel {
 	private JButton save;
 	private JButton cancel;
 	private JButton addUser;
+	private JButton removeUser;
 	private JButton delete;
 	private JButton addReq;
 	private JButton submitComment;
@@ -80,8 +81,8 @@ public class EditTaskView extends JPanel {
 		CREATE, EDIT;
 	}
 
-	private JList<String> usersList;
-	private JList<String> projectUsersList;
+	private ScrollList usersList;
+	private ScrollList projectUsersList;
 
 	private JLabel titleError;
 	private JLabel descriptionError;
@@ -107,7 +108,7 @@ public class EditTaskView extends JPanel {
 		this.setLayout(new FlowLayout());
 
 		Dimension nt_panelSize = getPreferredSize();
-		nt_panelSize.width = 675; // TODO
+		nt_panelSize.width = 1000; // TODO
 		nt_panelSize.height = 500; // Decide size
 		window.setPreferredSize(nt_panelSize);
 		this.setPreferredSize(nt_panelSize);
@@ -179,52 +180,44 @@ public class EditTaskView extends JPanel {
 		// JTextArea
 		// TODO
 		// Get to add users
-		usersList = new JList<String>();
-		usersList.setVisibleRowCount(3);
-		usersList.setFixedCellWidth(this.getWidth() * 2 / 5);
-		projectUsersList = new JList<String>();
-		projectUsersList.setVisibleRowCount(3);
-		projectUsersList.setFixedCellWidth(this.getWidth() * 2 / 5);
+		usersList = new ScrollList();
+		projectUsersList = new ScrollList();
 
 		// TODO
 		// Comment Pane
 
 		// Requirement Pane
-		JComboBox<String> nt_requirementBoxes = new JComboBox<String>();
-		requirements = nt_requirementBoxes;
+		requirements = new JComboBox<String>();
 		requirements.setName(REQUIREMENTS);
 
 		// JButtons
 		// Delete Task and close the window
-		JButton nt_deleteBtn = new JButton("Delete");
-		delete = nt_deleteBtn;
+		delete = new JButton("Delete");
 		delete.setName(DELETE);
 		// Add user to list
-		JButton nt_addUsersBtn = new JButton("Add Users");
-		addUser = nt_addUsersBtn;
+		addUser = new JButton("Add Users");
 		addUser.setName(ADD_USER);
+		// remove user from list
+		removeUser = new JButton("Add Users");
+		removeUser.setName(REMOVE_USER);
+
 		// Add comment to comments
-		JButton nt_submitCommentBtn = new JButton("Submit Comment");
-		submitComment = nt_submitCommentBtn;
+		submitComment = new JButton("Submit Comment");
 		submitComment.setName(SUBMIT_COMMENT);
 		// add requirement
-		JButton nt_addRequirementBtn = new JButton("View Requirement");
-		addReq = nt_addRequirementBtn;
+		addReq = new JButton("View Requirement");
 		addReq.setName(VIEW_REQ);
 		// saves all the data and closes the window
-		JButton nt_saveBtn = new JButton("Save");
-		save = nt_saveBtn;
+		save = new JButton("Save");
 		save.setName(SAVE);
 		this.disableSave();
 		// closes the window without saving
-		JButton nt_cancelBtn = new JButton("Cancel");
-		cancel = nt_cancelBtn;
+		cancel = new JButton("Cancel");
 		cancel.setName(CANCEL);
 
 		// Combo Box for Stage
-		JComboBox<String> nt_stagesBoxes = new JComboBox<String>();
-		nt_stagesBoxes.setName(STAGES);
-		stages = nt_stagesBoxes;
+		stages = new JComboBox<String>();
+		stages.setName(STAGES);
 
 		window.setLayout(new GridBagLayout());
 
@@ -272,7 +265,7 @@ public class EditTaskView extends JPanel {
 		// Second Column ////
 
 		newTaskGridBag.anchor = GridBagConstraints.LINE_START;
-		newTaskGridBag.weightx = 0.15;
+		newTaskGridBag.weightx = 0.4;
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridx = 1;
 
@@ -286,11 +279,11 @@ public class EditTaskView extends JPanel {
 		window.add(nt_dueDateField, newTaskGridBag);
 
 		newTaskGridBag.gridy = 3;
-		window.add(nt_stagesBoxes, newTaskGridBag);
+		window.add(stages, newTaskGridBag);
 
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridy = 4;
-		add(usersList, newTaskGridBag);
+		window.add(usersList, newTaskGridBag);
 
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridy = 5;
@@ -308,7 +301,7 @@ public class EditTaskView extends JPanel {
 
 		// List of Requirements
 		newTaskGridBag.gridy = 9;
-		window.add(nt_requirementBoxes, newTaskGridBag);
+		window.add(requirements, newTaskGridBag);
 
 		// Third Column ////
 
@@ -323,8 +316,11 @@ public class EditTaskView extends JPanel {
 		newTaskGridBag.gridy = 1;
 		window.add(nt_descriptionLabel_error, newTaskGridBag);
 
+		JPanel userButtons = new JPanel();
+		userButtons.add(addUser);
+		userButtons.add(removeUser);
 		newTaskGridBag.gridy = 4;
-		window.add(nt_addUsersBtn, newTaskGridBag);
+		window.add(userButtons, newTaskGridBag);
 
 		newTaskGridBag.gridy = 5;
 		window.add(nt_estimatedEffortLabel_error, newTaskGridBag);
@@ -333,19 +329,29 @@ public class EditTaskView extends JPanel {
 		window.add(nt_actualEffortLabel_error, newTaskGridBag);
 
 		newTaskGridBag.gridy = 7;
-		window.add(nt_submitCommentBtn, newTaskGridBag);
+		window.add(submitComment, newTaskGridBag);
 
 		newTaskGridBag.gridy = 9;
-		window.add(nt_addRequirementBtn, newTaskGridBag);
+		window.add(requirements, newTaskGridBag);
 
 		JPanel bottomBtns = new JPanel();
-		bottomBtns.add(nt_saveBtn);
-		bottomBtns.add(nt_cancelBtn);
+		bottomBtns.add(save);
+		bottomBtns.add(cancel);
 		if (this.mode == Mode.EDIT) {
-			bottomBtns.add(nt_deleteBtn);
+			bottomBtns.add(delete);
 		}
 		newTaskGridBag.gridy = 11;
 		window.add(bottomBtns, newTaskGridBag);
+
+		// Fourth Column ////
+
+		newTaskGridBag.anchor = GridBagConstraints.LINE_START;
+		newTaskGridBag.weightx = .5;
+		newTaskGridBag.weighty = 0.077;
+		newTaskGridBag.gridx = 3;
+
+		newTaskGridBag.gridy = 4;
+		window.add(projectUsersList, newTaskGridBag);
 
 		this.add(window);
 	}
@@ -461,16 +467,16 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the JList of assigned usernames
 	 */
-	public JList<String> getUsersList() {
+	public ScrollList getUsersList() {
 		return this.usersList;
 	}
 
 	/**
 	 * return the JList containing the project user names
 	 * 
-	 * @return the JLst of prohect user names
+	 * @return the JLst of project user names
 	 */
-	public JList<String> getProjectUsersList() {
+	public ScrollList getProjectUsersList() {
 		return this.projectUsersList;
 	}
 

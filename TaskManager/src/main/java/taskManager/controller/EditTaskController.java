@@ -9,7 +9,6 @@
 
 package taskManager.controller;
 
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -129,11 +128,9 @@ public class EditTaskController implements ActionListener {
 
 			case EditTaskView.ADD_USER:
 				// add a user to this task
-				List<String> toAdd = etv.getProjectUsersList()
-						.getSelectedValuesList();
-				for (String userName : toAdd) {
-					// etv.getUsersList().add(userName);
-				}
+				String toAdd = etv.getProjectUsersList().getSelectedValue();
+				etv.getUsersList().addToList(toAdd);
+
 				break;
 
 			case EditTaskView.VIEW_REQ:
@@ -235,7 +232,7 @@ public class EditTaskController implements ActionListener {
 		}
 		t.setDueDate(etv.getDateField().getDate());
 		t.setStage(s);
-		for (Component name : etv.getUsersList().getComponents()) {
+		for (String name : etv.getUsersList().getAllValues()) {
 			t.addAssigned(findUserByName(name.toString()));
 		}
 		t.setReq(r);

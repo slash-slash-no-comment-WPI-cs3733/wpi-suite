@@ -1,9 +1,10 @@
 package taskManager.view;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.util.LinkedList;
 
 import javax.swing.DefaultListModel;
-import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -15,24 +16,28 @@ public class ScrollList extends JPanel {
 	 */
 	private static final long serialVersionUID = -1862712982356137942L;
 
-	public static void main(String[] args) {
-		System.out.println("Program Start!");
-		JFrame jf = new JFrame();
-		jf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		jf.setSize(500, 500);
-		jf.add(new ScrollList(), BorderLayout.CENTER);
-		jf.setVisible(true);
-	}
-
 	private DefaultListModel<String> lm;
 	private JScrollPane listScroller;
 	private JList<String> jl;
 
 	public ScrollList() {
 		setLayout(new BorderLayout());
+		this.setMinimumSize(new Dimension(250, 100));
+		this.setMaximumSize(new Dimension(250, 100));
+		this.setPreferredSize(new Dimension(250, 100));
+		this.setSize(new Dimension(250, 100));
 		lm = new DefaultListModel<String>();
 		jl = new JList<String>(lm);
+		jl.setVisibleRowCount(3);
 		listScroller = new JScrollPane(jl);
+		listScroller.setMinimumSize(new Dimension(250, 100));
+		listScroller.setMaximumSize(new Dimension(250, 100));
+		listScroller.setPreferredSize(new Dimension(250, 100));
+		listScroller.setSize(new Dimension(250, 100));
+		listScroller
+				.setVerticalScrollBarPolicy(listScroller.VERTICAL_SCROLLBAR_AS_NEEDED);
+		listScroller
+				.setHorizontalScrollBarPolicy(listScroller.HORIZONTAL_SCROLLBAR_NEVER);
 		add(listScroller, BorderLayout.CENTER);
 	}
 
@@ -83,5 +88,18 @@ public class ScrollList extends JPanel {
 			jl.remove(index[i]);
 			i++;
 		}
+	}
+
+	/**
+	 * get the list of strings
+	 * 
+	 * @return the lit of strings
+	 */
+	public LinkedList<String> getAllValues() {
+		LinkedList<String> result = new LinkedList<String>();
+		for (int i = 0; i < this.lm.getSize(); i++) {
+			result.add(this.lm.get(i));
+		}
+		return result;
 	}
 }
