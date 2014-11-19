@@ -113,4 +113,8 @@ public class ToolbarView extends JToolBar {
 	public String getName() {
 		return super.getName();
 	}
+
+	public void setProjectName(String name) {
+		projectName.setText(name);
+	}
 }
