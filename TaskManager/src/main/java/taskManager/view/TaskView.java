@@ -110,4 +110,10 @@ public class TaskView extends TaskPanel {
 	public TaskModel getModel() {
 		return model;
 	}
+
+	@Override
+	public void setVisible(boolean visible) {
+		controller.resetBackground();
+		super.setVisible(visible);
+	}
 }

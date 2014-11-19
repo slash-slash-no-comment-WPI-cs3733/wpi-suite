@@ -182,7 +182,13 @@ public class TaskController implements MouseListener {
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		view.setBackground(background);
+		resetBackground();
+	}
+
+	public void resetBackground() {
+		if (background != null) {
+			view.setBackground(background);
+		}
 	}
 
 }
