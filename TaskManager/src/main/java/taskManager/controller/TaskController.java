@@ -10,10 +10,12 @@ package taskManager.controller;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.List;
 
 import javax.swing.JComboBox;
 
 import taskManager.JanewayModule;
+import taskManager.model.ActivityModel;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
@@ -106,6 +108,16 @@ public class TaskController implements MouseListener {
 
 		// Enable save button when editing a task.
 		etv.enableSave();
+
+		// Clear the activities list.
+		etv.clearActivities();
+
+		// set activities pane
+		List<ActivityModel> tskActivities = model.getActivities();
+		etv.setActivities(tskActivities);
+		etv.setActivitiesPanel(tskActivities);
+
+		etv.setRefreshEnabled(true);
 
 		// set the requirement dropdown
 		if (req != null) {

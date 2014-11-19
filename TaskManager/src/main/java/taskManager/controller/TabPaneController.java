@@ -12,6 +12,8 @@ package taskManager.controller;
 import java.awt.Component;
 import java.util.List;
 
+import taskManager.model.ActivityModel;
+import taskManager.model.ActivityModel.activityModelType;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
@@ -65,6 +67,7 @@ public class TabPaneController {
 		}
 		etv.getActEffort().setEnabled(false);
 		etv.setStageSelectorEnabled(false);
+		etv.setRefreshEnabled(false);
 		// Disable save button when creating a task.
 		etv.disableSave();
 
@@ -72,6 +75,23 @@ public class TabPaneController {
 		// Focuses on the new tab
 		int index = this.tabPaneV.getTabCount() - 1;
 		this.tabPaneV.setSelectedIndex(index);
+
+		// Set actual effort field enabled only if the selected stage is
+		// "Complete"
+		if (etv.getSelectedStage().equals("Complete")) {
+			etv.getActEffort().setEnabled(true);
+		} else {
+			etv.getActEffort().setEnabled(false);
+		}
+
+		// Clear all activities, reset fields.
+		etv.clearActivities();
+		etv.resetFields();
+
+		// Add Created Task activity and reload panel.
+		etv.addActivity(new ActivityModel("Created Task",
+				activityModelType.CREATION));
+		etv.reloadActivitiesPanel();
 	}
 
 	/**
