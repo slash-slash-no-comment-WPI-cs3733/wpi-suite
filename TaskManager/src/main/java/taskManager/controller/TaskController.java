@@ -116,7 +116,7 @@ public class TaskController implements MouseListener {
 		}
 
 		// Enable stage dropdown when editing a task.
-		etv.getStages().setSelectedItem(model.getStage());
+		etv.getStages().setSelectedItem(model.getStage().getName());
 		etv.setStageSelectorEnabled(true);
 
 		// populates the project users list

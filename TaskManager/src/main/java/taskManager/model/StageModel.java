@@ -243,6 +243,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 */
 	public void addTask(TaskModel task) {
 		addTask(taskList.size(), task);
+		task.setStage(this);
 	}
 
 	// TODO: Do the tasks need ordering? If not, let's replace this taskList
@@ -257,6 +258,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 */
 	public void addTask(int index, TaskModel task) {
 		taskList.add(index, task);
+		task.setStage(this);
 	}
 
 	/**
