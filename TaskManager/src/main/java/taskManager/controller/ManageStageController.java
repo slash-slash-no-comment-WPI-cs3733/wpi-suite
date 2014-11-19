@@ -36,9 +36,9 @@ public class ManageStageController implements ActionListener {
 	 * @param model
 	 *            The data associated with this controller.
 	 */
-	public ManageStageController(ManageStageView view, WorkflowModel model) {
+	public ManageStageController(ManageStageView view) {
 		this.view = view;
-		this.model = model;
+		this.model = WorkflowModel.getInstance();
 
 		reloadData();
 	}
@@ -106,7 +106,7 @@ public class ManageStageController implements ActionListener {
 			case ManageStageView.ADD_NEW_STAGE:
 				// Create a new stage at the end
 				String newStageName = view.getNewStageNameField().getText();
-				StageModel newStage = new StageModel(model, newStageName);
+				StageModel newStage = new StageModel(newStageName);
 				view.addStage(newStage.getName(), newStage.getName(), true);
 				// refresh the view
 				view.getNewStageNameField().setText(

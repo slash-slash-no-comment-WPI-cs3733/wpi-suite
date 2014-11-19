@@ -23,7 +23,6 @@ import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
-import taskManager.view.WorkflowView;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.RequirementManager;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
@@ -39,7 +38,6 @@ public class EditTaskController implements ActionListener {
 
 	private final EditTaskView etv;
 	private final WorkflowModel wfm;
-	private final WorkflowView wfv;
 
 	private String taskID;
 
@@ -49,10 +47,9 @@ public class EditTaskController implements ActionListener {
 	 * @param wfm
 	 *            The workflowModel that belongs to this controller.
 	 */
-	public EditTaskController(WorkflowModel wfm) {
-		etv = JanewayModule.etv;
-		this.wfm = wfm;
-		wfv = JanewayModule.wfv;
+	public EditTaskController(EditTaskView etv) {
+		this.etv = etv;
+		this.wfm = WorkflowModel.getInstance();
 
 		reloadData();
 	}
@@ -122,10 +119,11 @@ public class EditTaskController implements ActionListener {
 						.getSelectedItem());
 				TaskModel task = s.findTaskByID(taskID);
 				s.getTasks().remove(task);
+				etv.resetFields();
+
 				// Save entire workflow whenever a task is deleted
 				wfm.save();
-				this.returnToWorkflowView();
-				etv.resetFields();
+				returnToWorkflowView();
 				break;
 
 			case EditTaskView.ADD_USER:
@@ -164,8 +162,8 @@ public class EditTaskController implements ActionListener {
 
 			case EditTaskView.CANCEL:
 				// go back to workflow view
-				this.returnToWorkflowView();
 				etv.resetFields();
+				returnToWorkflowView();
 				break;
 
 			case EditTaskView.SUBMIT_COMMENT:
@@ -200,8 +198,8 @@ public class EditTaskController implements ActionListener {
 	 * switches back to workflow view
 	 */
 	private void returnToWorkflowView() {
-		etv.setVisible(false);
-		wfv.setVisible(true);
+		JanewayModule.tabPaneC.removeTabByComponent(etv);
+		JanewayModule.tabPaneC.reloadWorkflow();
 	}
 
 	/**
@@ -232,8 +230,8 @@ public class EditTaskController implements ActionListener {
 		}
 		t.setDueDate(etv.getDateField().getDate());
 		t.setStage(s);
+		wfm.save();
 		t.setReq(r);
-
 	}
 
 }

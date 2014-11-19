@@ -43,7 +43,8 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	private String name;
 
 	// Workflow that stage belongs to; not serialized
-	private transient WorkflowModel workflow;
+	private transient final WorkflowModel workflow = WorkflowModel
+			.getInstance();
 
 	// Whether users can remove this stage
 	private boolean removable;
@@ -57,8 +58,8 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 * @param name
 	 *            The name of the stage.
 	 */
-	public StageModel(WorkflowModel workflow, String name) {
-		this(workflow, name, true);
+	public StageModel(String name) {
+		this(name, true);
 	}
 
 	/**
@@ -71,8 +72,8 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 * @param removable
 	 *            Whether or not the stage can be removed.
 	 */
-	public StageModel(WorkflowModel workflow, String name, boolean removable) {
-		this(workflow, name, -1, removable);
+	public StageModel(String name, boolean removable) {
+		this(name, -1, removable);
 		// TODO better way than passing -1 for index?
 	}
 
@@ -86,8 +87,8 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 * @param index
 	 *            Index in the list to add stages too.
 	 */
-	public StageModel(WorkflowModel workflow, String name, int index) {
-		this(workflow, name, index, true);
+	public StageModel(String name, int index) {
+		this(name, index, true);
 	}
 
 	/**
@@ -103,8 +104,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 * @param removable
 	 *            Whether or not the stage can be removed.
 	 */
-	public StageModel(WorkflowModel workflow, String name, int index,
-			boolean removable) {
+	public StageModel(String name, int index, boolean removable) {
 		// Set name as ID
 		super(name);
 		// Enforce uniqueness of Stage names
@@ -113,7 +113,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 		}
 		this.name = name;
 		this.removable = removable;
-		this.workflow = workflow;
+
 		taskList = new ArrayList<TaskModel>();
 		if (index == -1) {
 			workflow.addStage(this);
@@ -130,25 +130,6 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 */
 	public StageModel() {
 	};
-
-	/**
-	 * Get the workflow this stage belongs to
-	 *
-	 * @return the workflow
-	 */
-	public WorkflowModel getWorkflow() {
-		return workflow;
-	}
-
-	/**
-	 * Set the workflow this stage belongs to
-	 *
-	 * @param workflow
-	 *            the workflow to set
-	 */
-	public void setWorkflow(WorkflowModel workflow) {
-		this.workflow = workflow;
-	}
 
 	/**
 	 * For each task in this stage, rebuild reference to stage
@@ -364,7 +345,6 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 		setID(stage.getID());
 		taskList = stage.getTasks();
 		name = stage.getName();
-		workflow = stage.getWorkflow();
 	}
 
 	@Override

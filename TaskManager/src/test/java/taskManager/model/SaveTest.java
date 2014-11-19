@@ -40,8 +40,8 @@ public class SaveTest {
 	public void saveLoad() {
 		TestLogin.login();
 
-		WorkflowModel wf = new WorkflowModel("wf1");
-		StageModel stage = new StageModel(wf, "stage1");
+		WorkflowModel.getInstance().makeIdenticalTo(new WorkflowModel("wf1"));
+		StageModel stage = new StageModel("stage1");
 		TaskModel model = new TaskModel("model1", stage);
 
 		model.save();
@@ -49,8 +49,8 @@ public class SaveTest {
 
 	@Test
 	public void modelJSON() {
-		WorkflowModel wf = new WorkflowModel("wf1");
-		StageModel stage = new StageModel(wf, "stage1");
+		WorkflowModel.getInstance().makeIdenticalTo(new WorkflowModel("wf1"));
+		StageModel stage = new StageModel("stage1");
 		System.out.println(stage.toJson());
 		TaskModel model = new TaskModel("model1", stage);
 		System.out.println(stage.toJson());

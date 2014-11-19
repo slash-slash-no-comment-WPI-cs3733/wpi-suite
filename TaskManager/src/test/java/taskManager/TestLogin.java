@@ -34,7 +34,7 @@ public class TestLogin {
 	private static final String username = "admin";
 	private static final String password = "password";
 	private static final String url = "http://localhost:8080/WPISuite/API";
-	private static final int maxLoginWait = 5; // in seconds
+	private static final int maxLoginWait = 10; // in seconds
 
 	/**
 	 * login as admin on localhost, timeout of 5 seconds
