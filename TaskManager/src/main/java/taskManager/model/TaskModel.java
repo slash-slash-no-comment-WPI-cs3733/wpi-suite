@@ -48,8 +48,8 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	// Current stage that task belongs to. This will not be serialized.
 	private transient StageModel stage;
 
-	// List of users assigned to this task
-	private Set<User> assigned;
+	// List of names of users assigned to this task
+	private Set<String> assigned;
 
 	// // Due date timestamp
 	// private Date dueDate;
@@ -85,7 +85,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 				ActivityModel.activityModelType.CREATION);
 		this.name = name;
 
-		assigned = new HashSet<User>();
+		assigned = new HashSet<String>();
 		activities = new ArrayList<ActivityModel>();
 		activities.add(createTask);
 		this.stage = stage;
@@ -240,7 +240,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	/**
 	 * @return the assigned users
 	 */
-	public Set<User> getAssigned() {
+	public Set<String> getAssigned() {
 		return assigned;
 	}
 
@@ -253,7 +253,8 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	public void addAssigned(User user) {
 		final ActivityModel addUser = new ActivityModel("User added to task",
 				ActivityModel.activityModelType.USER_ADD, user);
-		assigned.add(user);
+		String q = user.getUsername();
+		assigned.add(q);
 		addActivity(addUser);
 		logger.log(Level.FINER, "Added user " + user.getName() + " to task "
 				+ name + ".");
@@ -269,12 +270,12 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		final ActivityModel delUser = new ActivityModel(
 				"Removed user from task",
 				ActivityModel.activityModelType.USER_ADD, user);
-		if (!assigned.contains(user)) {
+		if (!assigned.contains(user.getUsername())) {
 			logger.log(Level.WARNING,
 					"Tried to remove a user from a task they were not assigned to.");
 			throw new IndexOutOfBoundsException("User not in suggested task");
 		}
-		assigned.remove(user);
+		assigned.remove(user.getUsername());
 		addActivity(delUser);
 		logger.log(Level.FINER, "Removed user " + user.getName()
 				+ " from task " + name + ".");

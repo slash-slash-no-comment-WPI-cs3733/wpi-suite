@@ -17,6 +17,7 @@ import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
 import taskManager.view.WorkflowView;
 import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
+import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.controller.GetRequirementsController;
 import edu.wpi.cs.wpisuitetng.network.Network;
 import edu.wpi.cs.wpisuitetng.network.Request;
@@ -64,11 +65,39 @@ public class WorkflowController {
 			public void run() {
 				GetRequirementsController reqController = GetRequirementsController
 						.getInstance();
+
 				while (alive) {
 					try {
 						sleep(5000);
 						// fetch();
 						reqController.retrieveRequirements();
+						final Request request = Network.getInstance()
+								.makeRequest("core/user", HttpMethod.GET);
+						request.addObserver(new RequestObserver() {
+
+							@Override
+							public void responseSuccess(IRequest iReq) {
+								ResponseModel response = iReq.getResponse();
+								String body = response.getBody();
+								System.out.println("Response:" + body);
+
+								JanewayModule.users = AbstractJsonableModel
+										.fromJson(body, User[].class);
+							}
+
+							@Override
+							public void responseError(IRequest iReq) {
+								// TODO Auto-generated method stub
+
+							}
+
+							@Override
+							public void fail(IRequest iReq, Exception exception) {
+								// TODO Auto-generated method stub
+
+							}
+						});
+						request.send();
 					} catch (NullPointerException e) {
 						// this is expected, do nothing
 					} catch (Exception e) {

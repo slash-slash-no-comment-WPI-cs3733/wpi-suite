@@ -12,6 +12,7 @@ package taskManager.controller;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -19,10 +20,12 @@ import javax.swing.JComboBox;
 import javax.swing.JTabbedPane;
 
 import taskManager.JanewayModule;
+import taskManager.model.ActivityModel;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
+import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.RequirementManager;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
@@ -38,8 +41,9 @@ public class EditTaskController implements ActionListener {
 
 	private final EditTaskView etv;
 	private final WorkflowModel wfm;
-
+	private final User[] projectUsers = JanewayModule.users;
 	private String taskID;
+	private ArrayList<String> toRemove = new ArrayList<String>();
 
 	/**
 	 * Constructor, attaches the edit task view to this controller
@@ -62,7 +66,8 @@ public class EditTaskController implements ActionListener {
 
 			taskID = etv.getTitle().getName();
 
-			// check to see if the task exists in the workflow
+			// check to see if the task exists in the workflow and grabs the
+			// stage that the task is in
 			boolean exists = false;
 			StageModel currentStage = wfm.findStageByName("New");
 			for (StageModel stage : wfm.getStages()) {
@@ -75,7 +80,7 @@ public class EditTaskController implements ActionListener {
 				}
 			}
 
-			// grabs the stage from the dropdow box
+			// grabs the stage from the dropdown box
 			StageModel desiredStage = wfm.findStageByName((String) etv
 					.getStages().getSelectedItem());
 			Requirement requirement = RequirementModel.getInstance()
@@ -85,24 +90,32 @@ public class EditTaskController implements ActionListener {
 			switch (name) {
 
 			case EditTaskView.SAVE:
+				TaskModel task;
 				// if editing
 				if (exists) {
 					// set the task to be edited
-					TaskModel task = currentStage.findTaskByID(taskID);
+					task = currentStage.findTaskByID(taskID);
 					this.setTaskData(task, desiredStage, requirement);
-					// moves the task to that stage on the model level
-					wfm.moveTask(task, currentStage, desiredStage);
-					wfm.save();
+
+					// Move task if stages are not equal.
+					if (!currentStage.getName().equals(desiredStage.getName())) {
+						wfm.moveTask(task, currentStage, desiredStage);
+					}
 
 					this.setTaskID("000000");
 				}
 				// if creating a new task
 				else {
 					// creates a new task model
-					TaskModel task = new TaskModel(etv.getTitle().getText(),
-							currentStage);
+					task = new TaskModel(etv.getTitle().getText(), currentStage);
 					this.setTaskData(task, wfm.findStageByName("New"),
 							requirement);
+				}
+
+				// Add the newly added activities.
+				List<ActivityModel> newActivities = etv.getNewActivities();
+				for (ActivityModel act : newActivities) {
+					task.addActivity(act);
 				}
 
 				// exit the edit view, this refreshes the workflow
@@ -115,10 +128,8 @@ public class EditTaskController implements ActionListener {
 
 			case EditTaskView.DELETE:
 				// delete this task
-				StageModel s = wfm.findStageByName((String) etv.getStages()
-						.getSelectedItem());
-				TaskModel task = s.findTaskByID(taskID);
-				s.getTasks().remove(task);
+				task = currentStage.findTaskByID(taskID);
+				currentStage.getTasks().remove(task);
 				etv.resetFields();
 
 				// Save entire workflow whenever a task is deleted
@@ -128,7 +139,27 @@ public class EditTaskController implements ActionListener {
 
 			case EditTaskView.ADD_USER:
 				// add a user to this task
-				System.out.println("You've pressed the add user button");
+				if (!etv.getProjectUsersList().isSelectionEmpty()) {
+					String toAdd = etv.getProjectUsersList().getSelectedValue();
+					if (!etv.getUsersList().contains(toAdd)) {
+						etv.getUsersList().addToList(toAdd);
+						etv.getProjectUsersList().removeFromList(toAdd);
+					}
+				}
+
+				break;
+
+			case EditTaskView.REMOVE_USER:
+				// add a user to this task
+				if (!etv.getUsersList().isSelectionEmpty()) {
+					int indexToRemove = etv.getUsersList().getSelectedIndex();
+					String nameToRemove = etv.getUsersList().getSelectedValue();
+					if (!etv.getProjectUsersList().contains(nameToRemove)) {
+						etv.getUsersList().removeFromList(indexToRemove);
+						etv.getProjectUsersList().addToList(nameToRemove);
+					}
+					this.toRemove.add(nameToRemove);
+				}
 				break;
 
 			case EditTaskView.VIEW_REQ:
@@ -167,8 +198,21 @@ public class EditTaskController implements ActionListener {
 				break;
 
 			case EditTaskView.SUBMIT_COMMENT:
-				// creates a new activity
-				System.out.println("You've pressed the submit comment button");
+				// adds a comment activity
+				etv.addComment();
+				break;
+
+			case EditTaskView.REFRESH:
+				if (exists) {
+					// Clear the activities list.
+					etv.clearActivities();
+
+					// set activities pane
+					task = currentStage.findTaskByID(taskID);
+					List<ActivityModel> tskActivities = task.getActivities();
+					etv.setActivities(tskActivities);
+					etv.setActivitiesPanel(tskActivities);
+				}
 				break;
 			}
 		}
@@ -220,6 +264,7 @@ public class EditTaskController implements ActionListener {
 	 *            the task to be edited
 	 */
 	private void setTaskData(TaskModel t, StageModel s, Requirement r) {
+		// sets the text fields
 		t.setName(etv.getTitle().getText());
 		t.setDescription(etv.getDescription().getText());
 		t.setEstimatedEffort(Integer.parseInt(etv.getEstEffort().getText()));
@@ -228,10 +273,43 @@ public class EditTaskController implements ActionListener {
 		} catch (java.lang.NumberFormatException e2) {
 			// TODO: handle error
 		}
+
+		// sets the due date from the calendar
 		t.setDueDate(etv.getDateField().getDate());
+		// sets the stage from the dropdown
 		t.setStage(s);
-		wfm.save();
+
+		// adds or removes users
+		for (String name : etv.getUsersList().getAllValues()) {
+			if (!t.getAssigned().contains(name)) {
+				t.addAssigned(findUserByName(name));
+			}
+		}
+		for (String n : this.toRemove) {
+			if (t.getAssigned().contains(n)) {
+				t.removeAssigned(findUserByName(n));
+			}
+		}
 		t.setReq(r);
+		wfm.save();
+	}
+
+	/**
+	 * returns the user object with the given name from the list of project
+	 * users
+	 * 
+	 * @param name
+	 *            the name of the user to find
+	 * @return the user with the given name
+	 */
+	private User findUserByName(String name) {
+		for (User u : projectUsers) {
+			if (u.getUsername().equals(name)) {
+				return u;
+			}
+		}
+		return null;
+
 	}
 
 }

@@ -26,6 +26,7 @@ import taskManager.controller.ToolbarController;
 @SuppressWarnings("serial")
 public class ToolbarView extends JToolBar {
 
+	public static final String STATISTICS = "statistics";
 	public static final String REFRESH = "refresh";
 	public static final String REPORT = "report";
 	public static final String MANAGE_USERS = "manageUsers";
@@ -37,7 +38,7 @@ public class ToolbarView extends JToolBar {
 	private JButton manageUsers;
 	private JButton manageStages;
 	private JButton statistics;
-	private JButton refresh;
+
 	private JLabel projectName;
 
 	// TODO: Change ActionListener to ToolbarController when one exists
@@ -73,9 +74,8 @@ public class ToolbarView extends JToolBar {
 		manageUsers = new JButton("Manage Users");
 		manageUsers.setName(MANAGE_USERS);
 		statistics = new JButton("Statistics");
+
 		statistics.setName(REPORT);
-		refresh = new JButton("Refresh");
-		refresh.setName(REFRESH);
 
 		// Construct the project title
 		projectName = new JLabel("Project Title"); // TODO(sswartz): update this
@@ -87,7 +87,6 @@ public class ToolbarView extends JToolBar {
 		buttons.add(manageStages);
 		buttons.add(manageUsers);
 		buttons.add(statistics);
-		buttons.add(refresh);
 
 		// Title and buttons to the toolbar
 		this.add(title);
@@ -106,7 +105,7 @@ public class ToolbarView extends JToolBar {
 		manageStages.addActionListener(controller);
 		manageUsers.addActionListener(controller);
 		statistics.addActionListener(controller);
-		refresh.addActionListener(controller);
+		// refresh.addActionListener(controller);
 	}
 
 	@Override

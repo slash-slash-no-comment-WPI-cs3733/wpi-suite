@@ -20,6 +20,7 @@ import taskManager.view.ToolbarView;
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
 import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
 import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
+import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
  * The JanewayModule for the task manager
@@ -32,12 +33,14 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
 public class JanewayModule implements IJanewayModule {
 
 	// The tabs used by this module
+
 	private final ArrayList<JanewayTabModel> tabs;
 	public static final ToolbarView toolV = new ToolbarView();
 	private static final TabPaneView tabPaneV = new TabPaneView();
 	public static final TabPaneController tabPaneC = new TabPaneController(
 			tabPaneV);
 	public static Project project = null;
+	public static User[] users = {};
 
 	/**
 	 * Construct a blank tab
@@ -66,5 +69,15 @@ public class JanewayModule implements IJanewayModule {
 	@Override
 	public List<JanewayTabModel> getTabs() {
 		return tabs;
+	}
+
+	/**
+	 * 
+	 * Returns the tabPaneView
+	 *
+	 * @return tabPaneV
+	 */
+	public static TabPaneView getTabPaneView() {
+		return tabPaneV;
 	}
 }

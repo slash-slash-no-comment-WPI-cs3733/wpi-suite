@@ -32,6 +32,7 @@ public class TaskInputController implements KeyListener, FocusListener,
 
 	public TaskInputController(EditTaskView etv) {
 		this.etv = etv;
+		checkFields();
 	}
 
 	/**
@@ -77,7 +78,7 @@ public class TaskInputController implements KeyListener, FocusListener,
 			}
 		} catch (NumberFormatException e) {
 			estEffortValid = false;
-			etv.setEstEffortErrorText("Must be a number value");
+			etv.setEstEffortErrorText("Must be a positive integer");
 		}
 
 		if (etv.getActEffort().isEnabled()) {

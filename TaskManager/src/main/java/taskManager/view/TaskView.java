@@ -14,7 +14,6 @@ import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
@@ -25,14 +24,13 @@ import taskManager.prototypeDnD.TaskPanel;
 /**
  * @author Beth Martino
  * @author Stefan Alexander
- * @version November 9, 2014
+ * @author Thane Hunt
+ * @version November 18, 2014
  */
 
 public class TaskView extends TaskPanel {
 
 	private static final long serialVersionUID = 1L;
-
-	private JButton edit;
 
 	private TaskController controller;
 
@@ -53,12 +51,13 @@ public class TaskView extends TaskPanel {
 		// organizes the data in a vertical list
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		final Border raisedbevel = BorderFactory.createRaisedBevelBorder();
-		final TitledBorder title = BorderFactory.createTitledBorder(
-				raisedbevel, name);
+		final TitledBorder title = BorderFactory
+				.createTitledBorder(raisedbevel);
 		title.setTitlePosition(TitledBorder.LEFT);
 		this.setBorder(title);
-		this.setMinimumSize(new Dimension(300, 100));
+		this.setMinimumSize(new Dimension(200, 100));
 
+		//
 		// convert Date object to Calendar object to avoid using deprecated
 		// Date methods.
 		final Calendar date = Calendar.getInstance();
@@ -67,12 +66,24 @@ public class TaskView extends TaskPanel {
 		// adds the data to the view
 		// note: the Calendar.MONTH value ranges between 0-11 so here we add 1
 		// to the month.
-		this.add(new JLabel("Due Date: " + (date.get(Calendar.MONTH) + 1) + "/"
-				+ date.get(Calendar.DATE) + "/" + (date.get(Calendar.YEAR))));
-		this.add(new JLabel("Est Effort: " + estEffort));
-		edit = new JButton("Edit");
-		edit.setName(taskID);
-		this.add(edit);
+
+		JLabel nameLabel = new JLabel();
+		JLabel dueLabel = new JLabel("Due: " + (date.get(Calendar.MONTH) + 1)
+				+ "/" + date.get(Calendar.DATE) + "/"
+				+ (date.get(Calendar.YEAR)));
+
+		// This creates a maximum text-string length before the name gets
+		// truncated in the view
+
+		nameLabel.setText("Average Name Length");
+		final Dimension size = nameLabel.getPreferredSize();
+
+		nameLabel.setMaximumSize(size);
+		nameLabel.setPreferredSize(size);
+		nameLabel.setText(name);
+
+		this.add(nameLabel);
+		this.add(dueLabel);
 
 	}
 
@@ -89,7 +100,6 @@ public class TaskView extends TaskPanel {
 	 */
 	public void setController(TaskController controller) {
 		this.controller = controller;
-		edit.addActionListener(controller);
+		this.addMouseListener(this.controller);
 	}
-
 }

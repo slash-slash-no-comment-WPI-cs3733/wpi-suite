@@ -8,18 +8,24 @@
  *******************************************************************************/
 package taskManager.controller;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Color;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import javax.swing.JComboBox;
 
 import taskManager.JanewayModule;
+import taskManager.model.ActivityModel;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
 import taskManager.view.TaskView;
+import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 
 /**
@@ -28,7 +34,7 @@ import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
  * @author Stefan Alexander
  * @version November 9, 2014
  */
-public class TaskController implements ActionListener {
+public class TaskController implements MouseListener {
 
 	private final TaskView view;
 	private final TaskModel model;
@@ -37,6 +43,9 @@ public class TaskController implements ActionListener {
 	private TabPaneController tabPaneC;
 	private EditTaskView etv;
 	private Requirement req;
+	private final User[] projectUsers = JanewayModule.users;
+	private Set<String> assignedUsers;
+	private Color background;
 
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
@@ -55,17 +64,21 @@ public class TaskController implements ActionListener {
 
 		wfm = WorkflowModel.getInstance();
 		etv = new EditTaskView(Mode.EDIT);
+		etv.setController(new EditTaskController(etv));
+		etv.setFieldController(new TaskInputController(etv));
+
+		assignedUsers = model.getAssigned();
 
 		req = model.getReq();
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void mouseClicked(MouseEvent e) {
+		// makes the delete button unclickable
+		etv.enableDelete();
 		// etv.removeAll();
 
 		// TODO: Populate with data?
-
-		tabPaneC.addEditTaskTab(etv);
 
 		// uses the title field to hold the unique id
 		etv.getTitle().setName(this.model.getID());
@@ -81,6 +94,8 @@ public class TaskController implements ActionListener {
 		etv.setDate(model.getDueDate());
 		etv.setEstEffort(model.getEstimatedEffort());
 		etv.setActEffort(model.getActualEffort());
+
+		tabPaneC.addEditTaskTab(etv);
 
 		// figures out the index of the stage, then sets the drop down to the
 		// stage at that index
@@ -104,8 +119,38 @@ public class TaskController implements ActionListener {
 		etv.getStages().setSelectedItem(model.getStage());
 		etv.setStageSelectorEnabled(true);
 
+		// populates the project users list
+		ArrayList<String> projectUserNames = new ArrayList<String>();
+		for (User u : projectUsers) {
+			String name = u.getUsername();
+			if (!projectUserNames.contains(name)
+					&& !model.getAssigned().contains(name)) {
+				projectUserNames.add(name);
+			}
+		}
+		etv.getProjectUsersList().addAllToList(projectUserNames);
+
+		// populates the assigned users panel
+		ArrayList<String> assignedUserNames = new ArrayList<String>();
+		for (String u : assignedUsers) {
+			if (!assignedUserNames.contains(u)) {
+				assignedUserNames.add(u);
+			}
+		}
+		etv.getUsersList().addAllToList(assignedUserNames);
+
 		// Enable save button when editing a task.
 		etv.enableSave();
+
+		// Clear the activities list.
+		etv.clearActivities();
+
+		// set activities pane
+		List<ActivityModel> tskActivities = model.getActivities();
+		etv.setActivities(tskActivities);
+		etv.setActivitiesPanel(tskActivities);
+
+		etv.setRefreshEnabled(true);
 
 		// set the requirement dropdown
 		if (req != null) {
@@ -113,5 +158,31 @@ public class TaskController implements ActionListener {
 		} else {
 			etv.getRequirements().setSelectedItem(EditTaskView.NO_REQ);
 		}
+
 	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		background = view.getBackground();
+		view.setBackground(Color.lightGray);
+		view.repaint();
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		view.setBackground(background);
+	}
+
 }
