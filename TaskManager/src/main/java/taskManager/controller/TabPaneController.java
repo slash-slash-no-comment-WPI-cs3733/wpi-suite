@@ -10,8 +10,10 @@
 package taskManager.controller;
 
 import java.awt.Component;
+import java.util.ArrayList;
 import java.util.List;
 
+import taskManager.JanewayModule;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
@@ -21,6 +23,7 @@ import taskManager.view.ManageUsersView;
 import taskManager.view.TabPaneView;
 import taskManager.view.TabView;
 import taskManager.view.WorkflowView;
+import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
  * This is the singleton controller for the singleton TabPaneView.
@@ -63,6 +66,16 @@ public class TabPaneController {
 				break;
 			}
 		}
+
+		// fills the user lists
+		ArrayList<String> projectUserNames = new ArrayList<String>();
+		for (User u : JanewayModule.users) {
+			String name = u.getUsername();
+			projectUserNames.add(name);
+		}
+
+		etv.getProjectUsersList().addAllToList(projectUserNames);
+
 		etv.getActEffort().setEnabled(false);
 		etv.setStageSelectorEnabled(false);
 		// Disable save button when creating a task.

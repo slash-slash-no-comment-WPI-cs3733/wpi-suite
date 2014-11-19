@@ -10,6 +10,8 @@ package taskManager.controller;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.Set;
 
 import javax.swing.JComboBox;
 
@@ -38,7 +40,8 @@ public class TaskController implements MouseListener {
 	private TabPaneController tabPaneC;
 	private EditTaskView etv;
 	private Requirement req;
-	private final User[] users = JanewayModule.users;
+	private final User[] projectUsers = JanewayModule.users;
+	private Set<String> assignedUsers;
 
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
@@ -57,6 +60,8 @@ public class TaskController implements MouseListener {
 
 		wfm = WorkflowModel.getInstance();
 		etv = new EditTaskView(Mode.EDIT);
+
+		assignedUsers = model.getAssigned();
 
 		req = model.getReq();
 	}
@@ -106,14 +111,22 @@ public class TaskController implements MouseListener {
 		etv.getStages().setSelectedItem(model.getStage());
 		etv.setStageSelectorEnabled(true);
 
-		// fills the user lists
-		String[] userNames = new String[users.length];
-		for (int i = 0; i < users.length; i++) {
-			String name = users[i].getName();
-			userNames[i] = name;
-
+		// populates the project users list
+		ArrayList<String> projectUserNames = new ArrayList<String>();
+		for (User u : projectUsers) {
+			String name = u.getUsername();
+			if (!etv.getProjectUsersList().contains(name)) {
+				projectUserNames.add(name);
+			}
 		}
-		etv.getProjectUsersList().addAllToList(userNames);
+		etv.getProjectUsersList().addAllToList(projectUserNames);
+
+		// populates the assigned users panel
+		ArrayList<String> assignedUserNames = new ArrayList<String>();
+		for (String u : assignedUsers) {
+			assignedUserNames.add(u);
+		}
+		etv.getUsersList().addAllToList(assignedUserNames);
 
 		// Enable save button when editing a task.
 		etv.enableSave();

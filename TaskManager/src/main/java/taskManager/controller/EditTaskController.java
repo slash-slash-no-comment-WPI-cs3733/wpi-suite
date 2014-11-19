@@ -12,6 +12,7 @@ package taskManager.controller;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -39,8 +40,9 @@ public class EditTaskController implements ActionListener {
 
 	private final EditTaskView etv;
 	private final WorkflowModel wfm;
-
+	private final User[] projectUsers = JanewayModule.users;
 	private String taskID;
+	private ArrayList<String> toRemove = new ArrayList<String>();
 
 	/**
 	 * Constructor, attaches the edit task view to this controller
@@ -133,6 +135,14 @@ public class EditTaskController implements ActionListener {
 
 				break;
 
+			case EditTaskView.REMOVE_USER:
+				// add a user to this task
+				int toRemove = etv.getUsersList().getSelectedIndex();
+				String nameToRemove = etv.getUsersList().getSelectedValue();
+				etv.getUsersList().removeFromList(toRemove);
+				this.toRemove.add(nameToRemove);
+				break;
+
 			case EditTaskView.VIEW_REQ:
 				// view requirement in requirement manager
 
@@ -222,6 +232,7 @@ public class EditTaskController implements ActionListener {
 	 *            the task to be edited
 	 */
 	private void setTaskData(TaskModel t, StageModel s, Requirement r) {
+		// sets the text fields
 		t.setName(etv.getTitle().getText());
 		t.setDescription(etv.getDescription().getText());
 		t.setEstimatedEffort(Integer.parseInt(etv.getEstEffort().getText()));
@@ -230,10 +241,21 @@ public class EditTaskController implements ActionListener {
 		} catch (java.lang.NumberFormatException e2) {
 			// TODO: handle error
 		}
+
+		// sets the due date from the calendar
 		t.setDueDate(etv.getDateField().getDate());
+		// sets the stage from the dropdown
 		t.setStage(s);
-		for (String name : etv.getUsersList().getAllValues()) {
-			t.addAssigned(findUserByName(name.toString()));
+		// adds or removes users
+		if (!etv.getUsersList().isEmpty()) {
+			for (String name : etv.getUsersList().getAllValues()) {
+				t.addAssigned(findUserByName(name));
+			}
+		}
+		for (String n : this.toRemove) {
+			if (t.getAssigned().contains(n)) {
+				t.getAssigned().remove(n);
+			}
 		}
 		t.setReq(r);
 		wfm.save();
@@ -248,12 +270,13 @@ public class EditTaskController implements ActionListener {
 	 * @return the user with the given name
 	 */
 	private User findUserByName(String name) {
-		for (User u : JanewayModule.users) {
-			if (u.getName().equals(name)) {
+		for (User u : projectUsers) {
+			if (u.getUsername().equals(name)) {
 				return u;
 			}
 		}
 		return null;
+
 	}
 
 }

@@ -2,6 +2,7 @@ package taskManager.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import javax.swing.DefaultListModel;
@@ -22,18 +23,18 @@ public class ScrollList extends JPanel {
 
 	public ScrollList() {
 		setLayout(new BorderLayout());
-		this.setMinimumSize(new Dimension(250, 100));
-		this.setMaximumSize(new Dimension(250, 100));
-		this.setPreferredSize(new Dimension(250, 100));
-		this.setSize(new Dimension(250, 100));
+		this.setMinimumSize(new Dimension(200, 75));
+		this.setMaximumSize(new Dimension(200, 75));
+		this.setPreferredSize(new Dimension(200, 75));
+		this.setSize(new Dimension(200, 75));
 		lm = new DefaultListModel<String>();
 		jl = new JList<String>(lm);
 		jl.setVisibleRowCount(3);
 		listScroller = new JScrollPane(jl);
-		listScroller.setMinimumSize(new Dimension(250, 100));
-		listScroller.setMaximumSize(new Dimension(250, 100));
-		listScroller.setPreferredSize(new Dimension(250, 100));
-		listScroller.setSize(new Dimension(250, 100));
+		listScroller.setMinimumSize(new Dimension(200, 75));
+		listScroller.setMaximumSize(new Dimension(200, 75));
+		listScroller.setPreferredSize(new Dimension(200, 75));
+		listScroller.setSize(new Dimension(200, 75));
 		listScroller
 				.setVerticalScrollBarPolicy(listScroller.VERTICAL_SCROLLBAR_AS_NEEDED);
 		listScroller
@@ -51,10 +52,10 @@ public class ScrollList extends JPanel {
 		refresh();
 	}
 
-	public void addAllToList(String[] elements) {
+	public void addAllToList(ArrayList<String> elements) {
 		int i = 0;
-		while (i < elements.length) {
-			lm.addElement(elements[i]);
+		while (i < elements.size()) {
+			lm.addElement(elements.get(i));
 			i++;
 		}
 		refresh();
@@ -70,6 +71,17 @@ public class ScrollList extends JPanel {
 		refresh();
 	}
 
+	/**
+	 * returns true if the list contains the given string
+	 * 
+	 * @param s
+	 *            the string to search for in the list
+	 * @return
+	 */
+	public boolean contains(String s) {
+		return lm.contains(s);
+	}
+
 	public String getSelectedValue() {
 		return jl.getSelectedValue();
 	}
@@ -78,7 +90,7 @@ public class ScrollList extends JPanel {
 		return jl.getSelectedIndex();
 	}
 
-	public int[] getSelectedIndcies() {
+	public int[] getSelectedIndices() {
 		return jl.getSelectedIndices();
 	}
 
@@ -101,5 +113,14 @@ public class ScrollList extends JPanel {
 			result.add(this.lm.get(i));
 		}
 		return result;
+	}
+
+	/**
+	 * returns true if the list of users is empty
+	 * 
+	 * @return
+	 */
+	public boolean isEmpty() {
+		return lm.isEmpty();
 	}
 }

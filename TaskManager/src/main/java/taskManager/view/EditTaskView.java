@@ -16,6 +16,7 @@ import java.awt.GridBagLayout;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -195,10 +196,11 @@ public class EditTaskView extends JPanel {
 		delete = new JButton("Delete");
 		delete.setName(DELETE);
 		// Add user to list
-		addUser = new JButton("Add Users");
+		addUser = new JButton("Add User");
 		addUser.setName(ADD_USER);
 		// remove user from list
-		removeUser = new JButton("Add Users");
+
+		removeUser = new JButton("Remove User");
 		removeUser.setName(REMOVE_USER);
 
 		// Add comment to comments
@@ -317,6 +319,7 @@ public class EditTaskView extends JPanel {
 		window.add(nt_descriptionLabel_error, newTaskGridBag);
 
 		JPanel userButtons = new JPanel();
+		userButtons.setLayout(new BoxLayout(userButtons, BoxLayout.Y_AXIS));
 		userButtons.add(addUser);
 		userButtons.add(removeUser);
 		newTaskGridBag.gridy = 4;
