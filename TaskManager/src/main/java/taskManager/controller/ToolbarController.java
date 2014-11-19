@@ -16,6 +16,8 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import taskManager.JanewayModule;
+import taskManager.model.ActivityModel;
+import taskManager.model.ActivityModel.activityModelType;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
@@ -105,8 +107,14 @@ public class ToolbarController implements ActionListener {
 
 				JanewayModule.etv.setStageSelectorEnabled(false);
 
+				// Clear all activities, reset fields.
 				JanewayModule.etv.clearActivities();
 				JanewayModule.etv.resetFields();
+
+				// Add Created Task activity and reload panel.
+				JanewayModule.etv.addActivity(new ActivityModel("Created Task",
+						activityModelType.CREATION));
+				JanewayModule.etv.reloadActivitiesPanel();
 
 				// Disable save button when creating a task.
 				JanewayModule.etv.disableSave();

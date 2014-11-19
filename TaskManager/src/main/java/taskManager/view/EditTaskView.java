@@ -731,6 +731,10 @@ public class EditTaskView extends JPanel {
 		newActivities.clear();
 	}
 
+	public void addActivity(ActivityModel act) {
+		activities.add(act);
+	}
+
 	/*
 	 * @see javax.swing.JComponent#setVisible(boolean)
 	 */
