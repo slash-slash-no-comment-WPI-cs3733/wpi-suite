@@ -29,7 +29,7 @@ public class TestWorkflowController {
 	private final String[] stageNames = { "first", "second", "not-a-duplicate",
 			"last" };
 	private WorkflowView wfv;
-	private WorkflowModel wfm;
+	private final WorkflowModel wfm = WorkflowModel.getInstance();
 	private FrameFixture fixture;
 
 	@Before
@@ -38,14 +38,14 @@ public class TestWorkflowController {
 		wfv = new WorkflowView();
 
 		// create a new workflow model
-		wfm = new WorkflowModel();
+		wfm.makeIdenticalTo(new WorkflowModel());
 		// give it the stages
 		for (String name : stageNames) {
-			new StageModel(wfm, name, false);
+			new StageModel(name, false);
 		}
 
 		// create controller for view
-		wfv.setController(new WorkflowController(wfv, wfm));
+		wfv.setController(new WorkflowController(wfv));
 
 		JFrame frame = new JFrame();
 		frame.add(wfv);

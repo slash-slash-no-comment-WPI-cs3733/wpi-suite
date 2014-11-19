@@ -35,6 +35,8 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	List<StageModel> stageList;
 	String name;
 
+	private static WorkflowModel instance = null;
+
 	private static final Logger logger = Logger.getLogger(WorkflowModel.class
 			.getName());
 
@@ -45,11 +47,21 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		// set ID
 		super(name);
 		stageList = new ArrayList<StageModel>();
-		// TODO Add default stages
 	}
 
 	public WorkflowModel() {
 		this("defaultWorkflow");
+	}
+
+	public static WorkflowModel getInstance() {
+		if (instance == null) {
+			instance = new WorkflowModel();
+			new StageModel("New");
+			new StageModel("Scheduled");
+			new StageModel("In Progress");
+			new StageModel("Complete");
+		}
+		return instance;
 	}
 
 	/**
@@ -238,7 +250,6 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 */
 	public void rebuildAllRefs() {
 		for (StageModel stage : stageList) {
-			stage.setWorkflow(this);
 			stage.rebuildTaskRefs();
 		}
 	}

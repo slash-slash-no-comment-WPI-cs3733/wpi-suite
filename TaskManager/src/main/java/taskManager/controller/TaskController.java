@@ -8,8 +8,8 @@
  *******************************************************************************/
 package taskManager.controller;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.JComboBox;
 
@@ -18,6 +18,7 @@ import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
+import taskManager.view.EditTaskView.Mode;
 import taskManager.view.TaskView;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 
@@ -27,14 +28,15 @@ import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
  * @author Stefan Alexander
  * @version November 9, 2014
  */
-public class TaskController implements ActionListener {
+public class TaskController implements MouseListener {
 
 	private final TaskView view;
 	private final TaskModel model;
 	private StageModel sm;
+	private final WorkflowModel wfm;
+	private TabPaneController tabPaneC;
+	private EditTaskView etv;
 	private Requirement req;
-	private WorkflowModel wfm;
-	private final EditTaskView etv = JanewayModule.etv;
 
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
@@ -46,23 +48,32 @@ public class TaskController implements ActionListener {
 	 *            the corresponding TaskModel object
 	 */
 	public TaskController(TaskView view, TaskModel model) {
+		this.tabPaneC = JanewayModule.tabPaneC;
 		this.view = view;
 		this.model = model;
 		sm = model.getStage();
+
+		wfm = WorkflowModel.getInstance();
+		etv = new EditTaskView(Mode.EDIT);
+
 		req = model.getReq();
-		wfm = sm.getWorkflow();
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		// makes the delete button unclickable
-		etv.enableDelete();
+	public void mouseClicked(MouseEvent e) {
+		// etv.removeAll();
+
+		// TODO: Populate with data?
+
+		tabPaneC.addEditTaskTab(etv);
 
 		// uses the title field to hold the unique id
-		etv.getTitle().setName(model.getID());
+		etv.getTitle().setName(this.model.getID());
 
 		// uses description field to hold the name of the stage
-		etv.getDescription().setName(model.getStage().getName());
+		etv.getDescription().setName(this.model.getStage().getName());
+		// makes the delete button unclickable
+		etv.enableDelete();
 
 		// populate editable fields with this tasks info
 		etv.setTitle(model.getName());
@@ -70,10 +81,6 @@ public class TaskController implements ActionListener {
 		etv.setDate(model.getDueDate());
 		etv.setEstEffort(model.getEstimatedEffort());
 		etv.setActEffort(model.getActualEffort());
-
-		// changes the view from workflow to edit
-		JanewayModule.wfv.setVisible(false);
-		etv.setVisible(true);
 
 		// figures out the index of the stage, then sets the drop down to the
 		// stage at that index
@@ -102,10 +109,34 @@ public class TaskController implements ActionListener {
 
 		// set the requirement dropdown
 		if (req != null) {
-			JanewayModule.etv.getRequirements().setSelectedItem(req.getName());
+			etv.getRequirements().setSelectedItem(req.getName());
 		} else {
-			JanewayModule.etv.getRequirements().setSelectedItem(
-					EditTaskView.NO_REQ);
+			etv.getRequirements().setSelectedItem(EditTaskView.NO_REQ);
 		}
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+
 	}
 }
