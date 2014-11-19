@@ -66,7 +66,8 @@ public class EditTaskController implements ActionListener {
 
 			taskID = etv.getTitle().getName();
 
-			// check to see if the task exists in the workflow
+			// check to see if the task exists in the workflow and grabs the
+			// stage that the task is in
 			boolean exists = false;
 			StageModel currentStage = wfm.findStageByName("New");
 			for (StageModel stage : wfm.getStages()) {
@@ -79,7 +80,7 @@ public class EditTaskController implements ActionListener {
 				}
 			}
 
-			// grabs the stage from the dropdow box
+			// grabs the stage from the dropdown box
 			StageModel desiredStage = wfm.findStageByName((String) etv
 					.getStages().getSelectedItem());
 			Requirement requirement = RequirementModel.getInstance()
@@ -140,17 +141,27 @@ public class EditTaskController implements ActionListener {
 
 			case EditTaskView.ADD_USER:
 				// add a user to this task
-				String toAdd = etv.getProjectUsersList().getSelectedValue();
-				etv.getUsersList().addToList(toAdd);
+				if (!etv.getProjectUsersList().isSelectionEmpty()) {
+					String toAdd = etv.getProjectUsersList().getSelectedValue();
+					if (!etv.getUsersList().contains(toAdd)) {
+						etv.getUsersList().addToList(toAdd);
+						etv.getProjectUsersList().removeFromList(toAdd);
+					}
+				}
 
 				break;
 
 			case EditTaskView.REMOVE_USER:
 				// add a user to this task
-				int indexToRemove = etv.getUsersList().getSelectedIndex();
-				String nameToRemove = etv.getUsersList().getSelectedValue();
-				etv.getUsersList().removeFromList(indexToRemove);
-				this.toRemove.add(nameToRemove);
+				if (!etv.getUsersList().isSelectionEmpty()) {
+					int indexToRemove = etv.getUsersList().getSelectedIndex();
+					String nameToRemove = etv.getUsersList().getSelectedValue();
+					if (!etv.getProjectUsersList().contains(nameToRemove)) {
+						etv.getUsersList().removeFromList(indexToRemove);
+						etv.getProjectUsersList().addToList(nameToRemove);
+					}
+					this.toRemove.add(nameToRemove);
+				}
 				break;
 
 			case EditTaskView.VIEW_REQ:
@@ -271,8 +282,8 @@ public class EditTaskController implements ActionListener {
 		t.setStage(s);
 
 		// adds or removes users
-		if (!etv.getUsersList().isEmpty()) {
-			for (String name : etv.getUsersList().getAllValues()) {
+		for (String name : etv.getUsersList().getAllValues()) {
+			if (!t.getAssigned().contains(name)) {
 				t.addAssigned(findUserByName(name));
 			}
 		}

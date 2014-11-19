@@ -194,8 +194,8 @@ public class EditTaskView extends JPanel {
 		// JTextArea
 		// TODO
 		// Get to add users
-		usersList = new ScrollList();
-		projectUsersList = new ScrollList();
+		usersList = new ScrollList("Assigned Users");
+		projectUsersList = new ScrollList("Project Users");
 
 		// Comment Pane
 		activityPane = new ActivityView();
@@ -689,6 +689,8 @@ public class EditTaskView extends JPanel {
 		actEffortField.setText("");
 		dateField.setDate(Calendar.getInstance().getTime());
 		activityPane.setMessage("");
+		usersList.removeAllValues();
+		projectUsersList.removeAllValues();
 	}
 
 	/**

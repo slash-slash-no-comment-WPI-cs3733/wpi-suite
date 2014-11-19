@@ -117,7 +117,8 @@ public class TaskController implements MouseListener {
 		ArrayList<String> projectUserNames = new ArrayList<String>();
 		for (User u : projectUsers) {
 			String name = u.getUsername();
-			if (!etv.getProjectUsersList().contains(name)) {
+			if (!projectUserNames.contains(name)
+					&& !model.getAssigned().contains(name)) {
 				projectUserNames.add(name);
 			}
 		}
@@ -126,7 +127,9 @@ public class TaskController implements MouseListener {
 		// populates the assigned users panel
 		ArrayList<String> assignedUserNames = new ArrayList<String>();
 		for (String u : assignedUsers) {
-			assignedUserNames.add(u);
+			if (!assignedUserNames.contains(u)) {
+				assignedUserNames.add(u);
+			}
 		}
 		etv.getUsersList().addAllToList(assignedUserNames);
 
