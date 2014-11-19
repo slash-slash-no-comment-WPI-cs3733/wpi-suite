@@ -32,6 +32,8 @@ import org.jdesktop.swingx.JXDatePicker;
 
 import taskManager.controller.EditTaskController;
 import taskManager.controller.TaskInputController;
+import taskManager.model.ActivityModel;
+import taskManager.model.ActivityModel.activityModelType;
 
 /**
  *  Edit panel for a new task
@@ -86,7 +88,8 @@ public class EditTaskView extends JPanel {
 	private EditTaskController controller;
 	private ActivityView activityPane;
 
-	private List<String> activities;
+	private List<ActivityModel> activities;
+	private List<ActivityModel> newActivities;
 
 	/**
 	 * Creates a Edit Task Panel so that you can change all of the values of a
@@ -102,7 +105,8 @@ public class EditTaskView extends JPanel {
 
 		setBorder(BorderFactory.createTitledBorder("Edit Task"));
 
-		activities = new ArrayList<String>();
+		activities = new ArrayList<ActivityModel>();
+		newActivities = new ArrayList<ActivityModel>();
 
 		// JLabels
 		JLabel nt_titleLabel = new JLabel("Title ");
@@ -627,6 +631,7 @@ public class EditTaskView extends JPanel {
 		estEffortField.setText("");
 		actEffortField.setText("");
 		dateField.setDate(Calendar.getInstance().getTime());
+		activityPane.setMessage("");
 	}
 
 	/**
@@ -649,21 +654,56 @@ public class EditTaskView extends JPanel {
 	 *
 	 */
 	public void addComment() {
-		activities.add(commentsField.getText());
-		setActivityText();
+		ActivityModel act = new ActivityModel(commentsField.getText(),
+				activityModelType.COMMENT);
+		activities.add(act);
+		newActivities.add(act);
+		commentsField.setText("");
+		setActivities(activities);
 	}
 
 	/**
 	 * 
-	 * Sets the activies panel according to the activies list.
+	 * Sets the activies panel according to the activities list.
 	 *
+	 * @param activities
 	 */
-	public void setActivityText() {
+	public void setActivities(List<ActivityModel> activities) {
 		activityPane.setMessage("");
-		for (String s : activities) {
+		for (ActivityModel act : activities) {
 			String current = activityPane.getMessage().getText();
-			activityPane.setMessage(current + "User: " + s + "\n");
+			switch (act.getType()) {
+			case CREATION:
+				activityPane.setMessage(current + act.getDescription() + "\n");
+				break;
+			case MOVE:
+				activityPane.setMessage(current + act.getDescription() + "\n");
+				break;
+			case COMPLETION:
+				activityPane.setMessage(current + act.getDescription() + "\n");
+				break;
+			case USER_ADD:
+				activityPane.setMessage(current + act.getDescription() + "\n");
+				break;
+			case USER_REMOVE:
+				activityPane.setMessage(current + act.getDescription() + "\n");
+				break;
+			case COMMENT:
+				activityPane.setMessage(current + "User: "
+						+ act.getDescription() + "\n");
+				break;
+			}
 		}
+	}
+
+	/**
+	 * 
+	 * Returns the new activities.
+	 *
+	 * @return
+	 */
+	public List<ActivityModel> getNewActivities() {
+		return newActivities;
 	}
 
 	/*

@@ -10,10 +10,12 @@ package taskManager.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JComboBox;
 
 import taskManager.JanewayModule;
+import taskManager.model.ActivityModel;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
@@ -99,6 +101,9 @@ public class TaskController implements ActionListener {
 
 		// Enable save button when editing a task.
 		etv.enableSave();
+
+		// set activities pane
+		List<ActivityModel> tskActivities = model.getActivities();
 
 		// set the requirement dropdown
 		if (req != null) {

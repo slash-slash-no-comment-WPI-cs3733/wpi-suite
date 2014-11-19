@@ -19,6 +19,7 @@ import javax.swing.JComboBox;
 import javax.swing.JTabbedPane;
 
 import taskManager.JanewayModule;
+import taskManager.model.ActivityModel;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
@@ -88,10 +89,11 @@ public class EditTaskController implements ActionListener {
 			switch (name) {
 
 			case EditTaskView.SAVE:
+				TaskModel task;
 				// if editing
 				if (exists) {
 					// set the task to be edited
-					TaskModel task = currentStage.findTaskByID(taskID);
+					task = currentStage.findTaskByID(taskID);
 					this.setTaskData(task, desiredStage, requirement);
 					// moves the task to that stage on the model level
 					wfm.moveTask(task, currentStage, desiredStage);
@@ -102,10 +104,15 @@ public class EditTaskController implements ActionListener {
 				// if creating a new task
 				else {
 					// creates a new task model
-					TaskModel task = new TaskModel(etv.getTitle().getText(),
-							currentStage);
+					task = new TaskModel(etv.getTitle().getText(), currentStage);
 					this.setTaskData(task, wfm.findStageByName("New"),
 							requirement);
+				}
+
+				// Added the newly added activities.
+				List<ActivityModel> newActivities = etv.getNewActivities();
+				for (ActivityModel act : newActivities) {
+					task.addActivity(act);
 				}
 
 				// exit the edit view, this refreshes the workflow
@@ -120,7 +127,7 @@ public class EditTaskController implements ActionListener {
 				// delete this task
 				StageModel s = wfm.findStageByName((String) etv.getStages()
 						.getSelectedItem());
-				TaskModel task = s.findTaskByID(taskID);
+				task = s.findTaskByID(taskID);
 				s.getTasks().remove(task);
 				// Save entire workflow whenever a task is deleted
 				wfm.save();
