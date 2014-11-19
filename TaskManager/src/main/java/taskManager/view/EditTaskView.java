@@ -659,7 +659,7 @@ public class EditTaskView extends JPanel {
 		activities.add(act);
 		newActivities.add(act);
 		commentsField.setText("");
-		setActivities(activities);
+		setActivitiesPanel(activities);
 	}
 
 	/**
@@ -668,7 +668,7 @@ public class EditTaskView extends JPanel {
 	 *
 	 * @param activities
 	 */
-	public void setActivities(List<ActivityModel> activities) {
+	public void setActivitiesPanel(List<ActivityModel> activities) {
 		activityPane.setMessage("");
 		for (ActivityModel act : activities) {
 			String current = activityPane.getMessage().getText();
@@ -698,12 +698,36 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * 
+	 * Reloads the activities panel.
+	 *
+	 */
+	public void reloadActivitiesPanel() {
+		setActivitiesPanel(activities);
+	}
+
+	/**
+	 * 
+	 * Sets activities.
+	 *
+	 * @param act
+	 */
+	public void setActivities(List<ActivityModel> act) {
+		activities = act;
+	}
+
+	/**
+	 * 
 	 * Returns the new activities.
 	 *
 	 * @return
 	 */
 	public List<ActivityModel> getNewActivities() {
 		return newActivities;
+	}
+
+	public void clearActivities() {
+		activities.clear();
+		newActivities.clear();
 	}
 
 	/*
@@ -715,6 +739,7 @@ public class EditTaskView extends JPanel {
 			TaskInputController tic = (TaskInputController) titleField
 					.getKeyListeners()[0];
 			tic.checkFields();
+			reloadActivitiesPanel();
 		}
 		if (visible && controller != null) {
 			controller.reloadData();

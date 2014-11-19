@@ -102,8 +102,12 @@ public class TaskController implements ActionListener {
 		// Enable save button when editing a task.
 		etv.enableSave();
 
+		// Clear the activities list.
+		etv.clearActivities();
+
 		// set activities pane
 		List<ActivityModel> tskActivities = model.getActivities();
+		etv.setActivities(tskActivities);
 
 		// set the requirement dropdown
 		if (req != null) {
