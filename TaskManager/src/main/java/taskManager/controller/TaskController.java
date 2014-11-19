@@ -57,6 +57,7 @@ public class TaskController implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+
 		// makes the delete button unclickable
 		etv.enableDelete();
 
@@ -108,6 +109,7 @@ public class TaskController implements ActionListener {
 		// set activities pane
 		List<ActivityModel> tskActivities = model.getActivities();
 		etv.setActivities(tskActivities);
+		etv.setActivitiesPanel(tskActivities);
 
 		// set the requirement dropdown
 		if (req != null) {

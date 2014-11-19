@@ -712,6 +712,7 @@ public class EditTaskView extends JPanel {
 	 * @param act
 	 */
 	public void setActivities(List<ActivityModel> act) {
+		activityPane.setMessage("");
 		activities = act;
 	}
 

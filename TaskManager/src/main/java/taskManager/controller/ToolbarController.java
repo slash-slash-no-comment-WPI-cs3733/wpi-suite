@@ -105,6 +105,9 @@ public class ToolbarController implements ActionListener {
 
 				JanewayModule.etv.setStageSelectorEnabled(false);
 
+				JanewayModule.etv.clearActivities();
+				JanewayModule.etv.resetFields();
+
 				// Disable save button when creating a task.
 				JanewayModule.etv.disableSave();
 
