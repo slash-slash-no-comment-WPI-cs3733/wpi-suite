@@ -10,12 +10,12 @@
 package taskManager.view;
 
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.Calendar;
 import java.util.Date;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -29,6 +29,7 @@ import javax.swing.ScrollPaneConstants;
 import org.jdesktop.swingx.JXDatePicker;
 
 import taskManager.controller.EditTaskController;
+import taskManager.controller.TaskInputController;
 
 /**
  *  Edit panel for a new task
@@ -42,9 +43,10 @@ import taskManager.controller.EditTaskController;
 public class EditTaskView extends JPanel {
 
 	public static final String STAGES = "stages";
+	public static final String REQUIREMENTS = "requirements";
 	public static final String CANCEL = "cancel";
 	public static final String SAVE = "save";
-	public static final String ADD_REQ = "addReq";
+	public static final String VIEW_REQ = "viewReq";
 	public static final String SUBMIT_COMMENT = "submitComment";
 	public static final String ADD_USER = "addUser";
 	public static final String DELETE = "delete";
@@ -52,6 +54,7 @@ public class EditTaskView extends JPanel {
 	public static final String ACT_EFFORT = "act_effort";
 	public static final String EST_EFFORT = "est_effort";
 	public static final String DUE_DATE = "due_date";
+	public static final String NO_REQ = "[None]";
 	/**
 	 * 
 	 */
@@ -69,24 +72,45 @@ public class EditTaskView extends JPanel {
 	private JTextField estEffortField;
 	private JTextField actEffortField;
 	private JTextField commentsField;
+	private JPanel window;
+
+	private Mode mode;
+
+	public enum Mode {
+		CREATE, EDIT;
+	}
+
+	private JLabel titleError;
+	private JLabel descriptionError;
+	private JLabel estimatedEffortError;
+	private JLabel actualEffortError;
 
 	private JComboBox<String> stages;
+	private JComboBox<String> requirements;
 
-	private EditTaskController controller;
+	public EditTaskController controller;
 
 	/**
 	 * Creates a Edit Task Panel so that you can change all of the values of a
 	 * task: Title Description Due Date Estimated Effort Actual Effort Adding
 	 * Comments
 	 */
-	public EditTaskView() {
+	public EditTaskView(Mode mode) {
+		// TODO: User Mode to switch between create and edit views
+		// When Task added make EditTask take in a Task called currTask
+		this.mode = mode;
+
+		window = new JPanel();
+		this.setLayout(new FlowLayout());
 
 		Dimension nt_panelSize = getPreferredSize();
-		nt_panelSize.width = 625; // TODO
+		nt_panelSize.width = 675; // TODO
 		nt_panelSize.height = 500; // Decide size
-		setPreferredSize(nt_panelSize);
+		window.setPreferredSize(nt_panelSize);
+		this.setPreferredSize(nt_panelSize);
+		this.setMinimumSize(nt_panelSize);
 
-		setBorder(BorderFactory.createTitledBorder("Edit Task"));
+		// window.setBorder(BorderFactory.createTitledBorder(""));
 
 		// JLabels
 		JLabel nt_titleLabel = new JLabel("Title ");
@@ -97,7 +121,22 @@ public class EditTaskView extends JPanel {
 		JLabel nt_estimatedEffortLabel = new JLabel("Estimated Effort ");
 		JLabel nt_actualEffortLabel = new JLabel("Actual Effort ");
 		JLabel nt_commentsLabel = new JLabel("Comments ");
-		JLabel nt_requirementLabel = new JLabel("Requirements ");
+		JLabel nt_requirementLabel = new JLabel("Requirement ");
+
+		JLabel nt_titleLabel_error = new JLabel("This a required field");
+		nt_titleLabel_error.setVisible(false);
+		titleError = nt_titleLabel_error;
+		JLabel nt_descriptionLabel_error = new JLabel(
+				"This is a required field");
+		nt_descriptionLabel_error.setVisible(false);
+		descriptionError = nt_descriptionLabel_error;
+		JLabel nt_estimatedEffortLabel_error = new JLabel(
+				"Estimated Effort is required");
+		nt_estimatedEffortLabel_error.setVisible(false);
+		estimatedEffortError = nt_estimatedEffortLabel_error;
+		JLabel nt_actualEffortLabel_error = new JLabel("");
+		nt_actualEffortLabel_error.setVisible(false);
+		actualEffortError = nt_actualEffortLabel_error;
 
 		// JTextFields
 		// sets all text fields editable and adds them to global variables
@@ -148,8 +187,10 @@ public class EditTaskView extends JPanel {
 		// TODO
 		// Comment Pane
 
-		// TODO
 		// Requirement Pane
+		JComboBox<String> nt_requirementBoxes = new JComboBox<String>();
+		requirements = nt_requirementBoxes;
+		requirements.setName(REQUIREMENTS);
 
 		// JButtons
 		// Delete Task and close the window
@@ -165,13 +206,14 @@ public class EditTaskView extends JPanel {
 		submitComment = nt_submitCommentBtn;
 		submitComment.setName(SUBMIT_COMMENT);
 		// add requirement
-		JButton nt_addRequirementBtn = new JButton("Add Requirement");
+		JButton nt_addRequirementBtn = new JButton("View Requirement");
 		addReq = nt_addRequirementBtn;
-		addReq.setName(ADD_REQ);
+		addReq.setName(VIEW_REQ);
 		// saves all the data and closes the window
 		JButton nt_saveBtn = new JButton("Save");
 		save = nt_saveBtn;
 		save.setName(SAVE);
+		this.disableSave();
 		// closes the window without saving
 		JButton nt_cancelBtn = new JButton("Cancel");
 		cancel = nt_cancelBtn;
@@ -179,126 +221,131 @@ public class EditTaskView extends JPanel {
 
 		// Combo Box for Stage
 		JComboBox<String> nt_stagesBoxes = new JComboBox<String>();
-
 		nt_stagesBoxes.setName(STAGES);
 		stages = nt_stagesBoxes;
 
-		setLayout(new GridBagLayout());
+		window.setLayout(new GridBagLayout());
 
 		GridBagConstraints newTaskGridBag = new GridBagConstraints();
 
 		// First Column ////
 
-		newTaskGridBag.anchor = GridBagConstraints.FIRST_LINE_START;
+		newTaskGridBag.anchor = GridBagConstraints.LINE_START;
 
-		newTaskGridBag.weightx = 0.15;
+		newTaskGridBag.weightx = 0.6;
 		newTaskGridBag.weighty = 0.077;
-
 		newTaskGridBag.gridx = 0;
 
 		newTaskGridBag.gridy = 0;
-		add(nt_titleLabel, newTaskGridBag);
+		window.add(nt_titleLabel, newTaskGridBag);
 
 		newTaskGridBag.gridy = 1;
-		add(nt_descriptionLabel, newTaskGridBag);
+		window.add(nt_descriptionLabel, newTaskGridBag);
 
 		newTaskGridBag.gridy = 2;
-		add(nt_dueDateLabel, newTaskGridBag);
+		window.add(nt_dueDateLabel, newTaskGridBag);
 
 		newTaskGridBag.gridy = 3;
-		add(nt_stageLabel, newTaskGridBag);
+		window.add(nt_stageLabel, newTaskGridBag);
 
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridy = 4;
-		add(nt_usersLabel, newTaskGridBag);
+		window.add(nt_usersLabel, newTaskGridBag);
 
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridy = 5;
-		add(nt_estimatedEffortLabel, newTaskGridBag);
+		window.add(nt_estimatedEffortLabel, newTaskGridBag);
 
 		newTaskGridBag.gridy = 6;
-		add(nt_actualEffortLabel, newTaskGridBag);
+		window.add(nt_actualEffortLabel, newTaskGridBag);
 
 		newTaskGridBag.weighty = 0.10;
 		newTaskGridBag.gridy = 7;
-		add(nt_commentsLabel, newTaskGridBag);
+		window.add(nt_commentsLabel, newTaskGridBag);
 
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridy = 9;
-		add(nt_requirementLabel, newTaskGridBag);
+		window.add(nt_requirementLabel, newTaskGridBag);
 
 		// Second Column ////
 
 		newTaskGridBag.anchor = GridBagConstraints.LINE_START;
-		newTaskGridBag.weightx = 0.3;
+		newTaskGridBag.weightx = 0.15;
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridx = 1;
 
 		newTaskGridBag.gridy = 0;
-		add(nt_titleField, newTaskGridBag);
+		window.add(nt_titleField, newTaskGridBag);
 
 		newTaskGridBag.gridy = 1;
-		add(nt_descriptionScrollPane, newTaskGridBag);
+		window.add(nt_descriptionScrollPane, newTaskGridBag);
 
 		newTaskGridBag.gridy = 2;
-		add(nt_dueDateField, newTaskGridBag);
+		window.add(nt_dueDateField, newTaskGridBag);
 
 		newTaskGridBag.gridy = 3;
-		add(nt_stagesBoxes, newTaskGridBag);
+		window.add(nt_stagesBoxes, newTaskGridBag);
 
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridy = 4;
-		add(nt_usersScrollPane, newTaskGridBag);
+		window.add(nt_usersScrollPane, newTaskGridBag);
 
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridy = 5;
-		add(nt_estimatedEffortField, newTaskGridBag);
+		window.add(nt_estimatedEffortField, newTaskGridBag);
 
 		newTaskGridBag.gridy = 6;
-		add(nt_actualEffortField, newTaskGridBag);
+		window.add(nt_actualEffortField, newTaskGridBag);
 
 		newTaskGridBag.gridy = 7;
-		add(nt_commentsField, newTaskGridBag);
+		window.add(nt_commentsField, newTaskGridBag);
 
 		// TODO
 		// List of Comments
 		// newTaskGridBag.gridy = 8;
 
-		// TODO
 		// List of Requirements
-		// newTaskGridBag.gridy = 9;
+		newTaskGridBag.gridy = 9;
+		window.add(nt_requirementBoxes, newTaskGridBag);
 
 		// Third Column ////
 
-		newTaskGridBag.anchor = GridBagConstraints.CENTER;
-		newTaskGridBag.weightx = 0.15;
+		newTaskGridBag.anchor = GridBagConstraints.LINE_START;
+		newTaskGridBag.weightx = .5;
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridx = 2;
 
+		newTaskGridBag.gridy = 0;
+		window.add(nt_titleLabel_error, newTaskGridBag);
+
+		newTaskGridBag.gridy = 1;
+		window.add(nt_descriptionLabel_error, newTaskGridBag);
+
 		newTaskGridBag.gridy = 4;
-		add(nt_addUsersBtn, newTaskGridBag);
+		window.add(nt_addUsersBtn, newTaskGridBag);
+
+		newTaskGridBag.gridy = 5;
+		window.add(nt_estimatedEffortLabel_error, newTaskGridBag);
+
+		newTaskGridBag.gridy = 6;
+		window.add(nt_actualEffortLabel_error, newTaskGridBag);
 
 		newTaskGridBag.gridy = 7;
-		add(nt_submitCommentBtn, newTaskGridBag);
+		window.add(nt_submitCommentBtn, newTaskGridBag);
 
 		newTaskGridBag.gridy = 9;
-		add(nt_addRequirementBtn, newTaskGridBag);
+		window.add(nt_addRequirementBtn, newTaskGridBag);
 
-		newTaskGridBag.gridy = 10;
-		add(nt_saveBtn, newTaskGridBag);
+		JPanel bottomBtns = new JPanel();
+		bottomBtns.add(nt_saveBtn);
+		bottomBtns.add(nt_cancelBtn);
+		if (this.mode == Mode.EDIT) {
+			bottomBtns.add(nt_deleteBtn);
+		}
+		newTaskGridBag.gridy = 11;
+		window.add(bottomBtns, newTaskGridBag);
 
-		// Fourth Column ////
-
-		newTaskGridBag.anchor = GridBagConstraints.LINE_START;
-		newTaskGridBag.weightx = 0.15;
-		newTaskGridBag.weighty = 0.077;
-		newTaskGridBag.gridx = 3;
-
-		newTaskGridBag.gridy = 0;
-		add(nt_deleteBtn, newTaskGridBag);
-
-		newTaskGridBag.gridy = 10;
-		add(nt_cancelBtn, newTaskGridBag);
+		this.add(window);
 	}
 
 	/**
@@ -318,52 +365,93 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
+	 * Adds the action listener (controller) to this view
+	 * 
+	 * @param controller
+	 *            the controller to be attached to this view
+	 */
+	public void setFieldController(TaskInputController controller) {
+		titleField.addKeyListener(controller);
+		descripArea.addKeyListener(controller);
+		estEffortField.addKeyListener(controller);
+		actEffortField.addKeyListener(controller);
+		stages.addPopupMenuListener(controller);
+	}
+
+	/**
+	 * gets the save button object
+	 * 
+	 * @return the save button object
+	 */
+	public JButton getSaveButton() {
+		return this.save;
+	}
+
+	/**
+	 * gets the delete button object
+	 * 
+	 * @return the delete button object
+	 */
+	public JButton getDeleteButton() {
+		return this.delete;
+	}
+
+	/**
 	 * Gets the text in the title field
 	 * 
-	 * @return the text in the title field
+	 * @return the title field
 	 */
 	public JTextField getTitle() {
 		return titleField;
 	}
 
 	/**
-	 * Gets the text in the description field
+	 * Gets the description field
 	 * 
-	 * @return the text in the description field
+	 * @return the description field
 	 */
 	public JTextArea getDescription() {
 		return descripArea;
 	}
 
 	/**
-	 * Gets the text in the date field
+	 * Gets the date field
 	 * 
-	 * @return the text in the date field
+	 * @return the date field
 	 */
 	public JXDatePicker getDateField() {
 		return dateField;
 	}
 
 	/**
-	 * Gets the number in the estimated effort field
+	 * Gets the estimated effort field
 	 * 
-	 * @return the number in the estimated effort field
+	 * @return the estimated effort field
 	 */
 	public JTextField getEstEffort() {
 		return estEffortField;
 	}
 
 	/**
-	 * Gets the number in the actual effort field
+	 * Gets the actual effort field
 	 * 
-	 * @return the number in the actual effort field
+	 * @return the actual effort field
 	 */
 	public JTextField getActEffort() {
 		return actEffortField;
 	}
 
+	/**
+	 * gets the dropdown box in the view that contains all the stage names
+	 * 
+	 * @return the stages dropdown box
+	 */
 	public JComboBox<String> getStages() {
 		return stages;
+	}
+
+	public JComboBox<String> getRequirements() {
+		return requirements;
 	}
 
 	/**
@@ -428,6 +516,96 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
+	 * 
+	 * Returns the selected stage name. If the selected item cannot be retrieved
+	 * returns an empty string.
+	 *
+	 * @return the selected stage as a String.
+	 */
+	public String getSelectedStage() {
+		if (stages.getSelectedItem() != null) {
+			return stages.getSelectedItem().toString();
+		}
+		return "";
+	}
+
+	/**
+	 * 
+	 * Sets the title error visible or invisible
+	 * 
+	 * @param v
+	 *            true will make the title error visible, false will make the
+	 *            title error invisible
+	 */
+	public void setTitleErrorVisible(boolean v) {
+		titleError.setVisible(v);
+	}
+
+	/**
+	 * Sets the description error visible or invisible
+	 * 
+	 * @param v
+	 *            true will make the description error visible, false will make
+	 *            the description error invisible
+	 */
+	public void setDescriptionErrorVisible(boolean v) {
+		descriptionError.setVisible(v);
+	}
+
+	/**
+	 * Sets the estimated effort error visible or invisible
+	 * 
+	 * @param v
+	 *            true will make the estimated effort error visible, false will
+	 *            make the estimated effort error invisible
+	 */
+	public void setEstEffortErrorVisible(boolean v) {
+		estimatedEffortError.setVisible(v);
+	}
+
+	/**
+	 * Sets the estimated effort error text
+	 * 
+	 * @param text
+	 *            the text to set the error
+	 */
+	public void setEstEffortErrorText(String text) {
+		estimatedEffortError.setText(text);
+	}
+
+	/**
+	 * Sets the actual effort error visible or invisible
+	 * 
+	 * @param v
+	 *            true will make the actual effort error visible, false will
+	 *            make the actual effort error invisible
+	 */
+	public void setActualEffortErrorVisible(boolean v) {
+		actualEffortError.setVisible(v);
+	}
+
+	/**
+	 * Sets the actual effort error text
+	 * 
+	 * @param text
+	 *            the text to set the error
+	 */
+	public void setActualEffortErrorText(String text) {
+		actualEffortError.setText(text);
+	}
+
+	/**
+	 * Sets the stage selector enabled or disabled
+	 * 
+	 * @param v
+	 *            true will make the stage selector enabled, false will make the
+	 *            stage selector disabled
+	 */
+	public void setStageSelectorEnabled(boolean v) {
+		stages.setEnabled(v);
+	}
+
+	/**
 	 * disables the delete button
 	 */
 	public void disableDelete() {
@@ -453,14 +631,38 @@ public class EditTaskView extends JPanel {
 		dateField.setDate(Calendar.getInstance().getTime());
 	}
 
+	/**
+	 * enables the ability to click the save button
+	 */
+	public void enableSave() {
+		this.save.setEnabled(true);
+	}
+
+	/**
+	 * disables the ability to click the save button
+	 */
+	public void disableSave() {
+		this.save.setEnabled(false);
+	}
+
 	/*
 	 * @see javax.swing.JComponent#setVisible(boolean)
 	 */
 	@Override
 	public void setVisible(boolean visible) {
+		if (visible && titleField.getKeyListeners().length > 0) {
+			TaskInputController tic = (TaskInputController) titleField
+					.getKeyListeners()[0];
+			tic.checkFields();
+		}
 		if (visible && controller != null) {
 			controller.reloadData();
 		}
 		super.setVisible(visible);
+	}
+
+	// Used for tests
+	public JPanel getWindow() {
+		return this.window;
 	}
 }

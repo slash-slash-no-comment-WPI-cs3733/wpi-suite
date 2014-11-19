@@ -28,7 +28,7 @@ import taskManager.prototypeDnD.TaskPanel;
  * @version November 9, 2014
  */
 
-public class TaskView extends TaskPanel implements ITaskView {
+public class TaskView extends TaskPanel {
 
 	private static final long serialVersionUID = 1L;
 
