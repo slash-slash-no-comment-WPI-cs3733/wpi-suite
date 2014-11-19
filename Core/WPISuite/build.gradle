@@ -31,6 +31,5 @@ dependencies {
     compile project(':DefectTracker')
     compile project(':PostBoard')
     compile project(':RequirementManager')
-    compile project(':ButtonModule')
     compile project(':TaskManager')
 }
