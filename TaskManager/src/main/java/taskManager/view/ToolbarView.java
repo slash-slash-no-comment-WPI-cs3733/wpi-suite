@@ -20,15 +20,15 @@ import javax.swing.JToolBar;
 
 import taskManager.controller.ToolbarController;
 
-//import java.awt.*;
-
 /**
  * The Task Managers tab's toolbar panel.
  */
 @SuppressWarnings("serial")
-public class ToolbarView extends JToolBar implements IToolbarView {
+public class ToolbarView extends JToolBar {
 
 	public static final String STATISTICS = "statistics";
+	public static final String REFRESH = "refresh";
+	public static final String REPORT = "report";
 	public static final String MANAGE_USERS = "manageUsers";
 	public static final String MANAGE_STAGES = "manageStages";
 	public static final String CREATE_TASK = "createTask";
@@ -38,7 +38,7 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 	private JButton manageUsers;
 	private JButton manageStages;
 	private JButton statistics;
-	private JButton workflow;
+
 	private JLabel projectName;
 
 	// TODO: Change ActionListener to ToolbarController when one exists
@@ -64,9 +64,9 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 		Insets margins = new Insets(30, 5, 0, 5);
 		this.setMargin(margins);
 
+		this.setFloatable(false);
+
 		// Construct the buttons
-		workflow = new JButton("Workflow");
-		workflow.setName(WORKFLOW);
 		createTask = new JButton("Create Task");
 		createTask.setName(CREATE_TASK);
 		manageStages = new JButton("Manage Stages");
@@ -74,8 +74,8 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 		manageUsers = new JButton("Manage Users");
 		manageUsers.setName(MANAGE_USERS);
 		statistics = new JButton("Statistics");
-		statistics.setName(STATISTICS);
 
+		statistics.setName(REPORT);
 
 		// Construct the project title
 		projectName = new JLabel("Project Title"); // TODO(sswartz): update this
@@ -83,12 +83,10 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 
 		// Add buttons to the content panel
 		title.add(projectName);
-		buttons.add(workflow);
 		buttons.add(createTask);
 		buttons.add(manageStages);
 		buttons.add(manageUsers);
 		buttons.add(statistics);
-
 
 		// Title and buttons to the toolbar
 		this.add(title);
@@ -103,12 +101,11 @@ public class ToolbarView extends JToolBar implements IToolbarView {
 	 */
 	public void setController(ToolbarController controller) {
 		this.controller = controller;
-		workflow.addActionListener(controller);
 		createTask.addActionListener(controller);
 		manageStages.addActionListener(controller);
 		manageUsers.addActionListener(controller);
 		statistics.addActionListener(controller);
-	//	refresh.addActionListener(controller);
+		// refresh.addActionListener(controller);
 	}
 
 	@Override

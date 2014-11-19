@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
+import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
 import edu.wpi.cs.wpisuitetng.network.Network;
 import edu.wpi.cs.wpisuitetng.network.Request;
 import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
@@ -66,7 +67,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	private List<ActivityModel> activities;
 
 	// Associated requirement that this task corresponds to
-	private Requirement req;
+	private Integer reqID;
 
 	/**
 	 * Constructor assigns name, task id, and stage.
@@ -79,7 +80,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 
 	public TaskModel(String name, StageModel stage) {
 
-		super(stage.getWorkflow().findUniqueTaskID(name));
+		super(WorkflowModel.getInstance().findUniqueTaskID(name));
 		final ActivityModel createTask = new ActivityModel("Created task",
 				ActivityModel.activityModelType.CREATION);
 		this.name = name;
@@ -206,7 +207,22 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 * @return the requirement
 	 */
 	public Requirement getReq() {
-		return req;
+		if (reqID == null) {
+			return null;
+		}
+		for (Requirement req : RequirementModel.getInstance().getRequirements()) {
+			if (req.getId() == reqID) {
+				return req;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @return the id of the requirement
+	 */
+	public Integer getReqID() {
+		return reqID;
 	}
 
 	/**
@@ -214,7 +230,11 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 *            the requirement to set
 	 */
 	public void setReq(Requirement req) {
-		this.req = req;
+		if (req != null) {
+			this.reqID = req.getId();
+		} else {
+			this.reqID = null;
+		}
 	}
 
 	/**
@@ -293,7 +313,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		estimatedEffort = task.getEstimatedEffort();
 		actualEffort = task.getActualEffort();
 		activities = task.getActivities();
-		req = task.getReq();
+		reqID = task.getReqID();
 	}
 
 	@Override

@@ -10,14 +10,17 @@ package taskManager.controller;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.List;
+
+import javax.swing.JComboBox;
 
 import taskManager.JanewayModule;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
+import taskManager.view.EditTaskView.Mode;
 import taskManager.view.TaskView;
+import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 
 /**
  * Controller for Tasks.
@@ -30,8 +33,10 @@ public class TaskController implements MouseListener {
 	private final TaskView view;
 	private final TaskModel model;
 	private StageModel sm;
-	private WorkflowModel wfm;
-	private final EditTaskView etv = JanewayModule.etv;
+	private final WorkflowModel wfm;
+	private TabPaneController tabPaneC;
+	private EditTaskView etv;
+	private Requirement req;
 
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
@@ -43,70 +48,99 @@ public class TaskController implements MouseListener {
 	 *            the corresponding TaskModel object
 	 */
 	public TaskController(TaskView view, TaskModel model) {
+		this.tabPaneC = JanewayModule.tabPaneC;
 		this.view = view;
 		this.model = model;
 		sm = model.getStage();
-		wfm = sm.getWorkflow();
+
+		wfm = WorkflowModel.getInstance();
+		etv = new EditTaskView(Mode.EDIT);
+
+		req = model.getReq();
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// makes the delete button unclickable
 		etv.enableDelete();
+		// etv.removeAll();
+
+		// TODO: Populate with data?
+
+		tabPaneC.addEditTaskTab(etv);
 
 		// uses the title field to hold the unique id
-		etv.getTitle().setName(model.getID());
+		etv.getTitle().setName(this.model.getID());
 
 		// uses description field to hold the name of the stage
-		etv.getDescription().setName(model.getStage().getName());
+		etv.getDescription().setName(this.model.getStage().getName());
+		// makes the delete button unclickable
+		etv.enableDelete();
 
 		// populate editable fields with this tasks info
-		JanewayModule.etv.setTitle(model.getName());
-		JanewayModule.etv.setDescription(model.getDescription());
-		JanewayModule.etv.setDate(model.getDueDate());
-		JanewayModule.etv.setEstEffort(model.getEstimatedEffort());
-		JanewayModule.etv.setActEffort(model.getActualEffort());
-
-		JanewayModule.wfv.setVisible(false);
-		JanewayModule.etv.setVisible(true);
+		etv.setTitle(model.getName());
+		etv.setDescription(model.getDescription());
+		etv.setDate(model.getDueDate());
+		etv.setEstEffort(model.getEstimatedEffort());
+		etv.setActEffort(model.getActualEffort());
 
 		// figures out the index of the stage, then sets the drop down to the
 		// stage at that index
-
-		List<StageModel> stages = wfm.getStages();
-		for (int i = 0; i < stages.size(); i++) {
-			if (stages.get(i) == sm) {
-				JanewayModule.etv.setStageDropdown(i);
+		JComboBox<String> stages = etv.getStages();
+		for (int i = 0; i < stages.getItemCount(); i++) {
+			if (etv.getStages().getItemAt(i) == sm.getName()) {
+				etv.setStageDropdown(i);
 				break;
 			}
 		}
+
+		// Set actual effort field enabled only if the selected stage is
+		// "Complete"
+		if (etv.getSelectedStage().equals("Complete")) {
+			etv.getActEffort().setEnabled(true);
+		} else {
+			etv.getActEffort().setEnabled(false);
+		}
+
+		// Enable stage dropdown when editing a task.
+		etv.getStages().setSelectedItem(model.getStage());
+		etv.setStageSelectorEnabled(true);
+
+		// Enable save button when editing a task.
+		etv.enableSave();
+
+		// set the requirement dropdown
+		if (req != null) {
+			etv.getRequirements().setSelectedItem(req.getName());
+		} else {
+			etv.getRequirements().setSelectedItem(EditTaskView.NO_REQ);
+		}
 	}
-	
-	public void MousePressed(MouseEvent e){
+
+	public void MousePressed(MouseEvent e) {
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
-	}
-	}
 
+	}
+}

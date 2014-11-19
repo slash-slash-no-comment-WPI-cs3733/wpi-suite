@@ -32,7 +32,7 @@ public class TestManageStageController {
 
 	private final String[] stageNames = { "first", "second", "third", "fourth" };
 	private ManageStageView msv;
-	private WorkflowModel wfm;
+	private final WorkflowModel wfm = WorkflowModel.getInstance();
 	private ManageStageController msc;
 	private FrameFixture fixture;
 
@@ -42,14 +42,14 @@ public class TestManageStageController {
 		msv = new ManageStageView();
 
 		// create a new workflow model
-		wfm = new WorkflowModel();
+		wfm.makeIdenticalTo(new WorkflowModel());
 		// give it the stages
 		for (String name : stageNames) {
-			new StageModel(wfm, name, true);
+			new StageModel(name, true);
 		}
 
 		// create controller for view
-		msc = new ManageStageController(msv, wfm);
+		msc = new ManageStageController(msv);
 		msv.setController(msc);
 
 		JFrame frame = new JFrame();
@@ -85,7 +85,7 @@ public class TestManageStageController {
 		checkStages(result);
 
 		// add an undeletable stage
-		new StageModel(wfm, "undeletable", false);
+		new StageModel("undeletable", false);
 		msc.reloadData();
 
 		// make sure the delete button is disabled

@@ -19,7 +19,7 @@ import taskManager.controller.WorkflowController;
  * @version November 9, 2014
  */
 
-public class WorkflowView extends JPanel implements IWorkflowView {
+public class WorkflowView extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
