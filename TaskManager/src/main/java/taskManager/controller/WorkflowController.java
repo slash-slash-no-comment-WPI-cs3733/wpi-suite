@@ -10,6 +10,7 @@ package taskManager.controller;
 
 import java.util.List;
 
+import taskManager.JanewayModule;
 import taskManager.model.AbstractJsonableModel;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
@@ -35,7 +36,6 @@ public class WorkflowController {
 
 	private final WorkflowView view;
 	private final WorkflowModel model;
-	public User[] users = {};
 
 	public static boolean alive = true;
 
@@ -74,8 +74,8 @@ public class WorkflowController {
 								String body = response.getBody();
 								System.out.println("Response:" + body);
 
-								users = AbstractJsonableModel.fromJson(body,
-										User[].class);
+								JanewayModule.users = AbstractJsonableModel
+										.fromJson(body, User[].class);
 							}
 
 							@Override
