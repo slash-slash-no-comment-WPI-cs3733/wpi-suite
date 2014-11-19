@@ -28,7 +28,7 @@ import taskManager.controller.TaskController;
  * @version November 9, 2014
  */
 
-public class TaskView extends JPanel implements ITaskView {
+public class TaskView extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
@@ -70,9 +70,6 @@ public class TaskView extends JPanel implements ITaskView {
 		this.add(new JLabel("Due Date: " + (date.get(Calendar.MONTH) + 1) + "/"
 				+ date.get(Calendar.DATE) + "/" + (date.get(Calendar.YEAR))));
 		this.add(new JLabel("Est Effort: " + estEffort));
-		edit = new JButton("Edit");
-		edit.setName(taskID);
-		this.add(edit);
 
 	}
 
@@ -89,7 +86,7 @@ public class TaskView extends JPanel implements ITaskView {
 	 */
 	public void setController(TaskController controller) {
 		this.controller = controller;
-		edit.addActionListener(controller);
+		this.addMouseListener(this.controller);
 	}
 
 }

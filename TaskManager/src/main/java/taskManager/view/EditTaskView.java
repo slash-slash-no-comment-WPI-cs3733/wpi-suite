@@ -10,6 +10,7 @@
 package taskManager.view;
 
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.ArrayList;
@@ -17,7 +18,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -78,6 +78,13 @@ public class EditTaskView extends JPanel {
 	private JTextField estEffortField;
 	private JTextField actEffortField;
 	private JTextField commentsField;
+	private JPanel window;
+
+	private Mode mode;
+
+	public enum Mode {
+		CREATE, EDIT;
+	}
 
 	private JLabel titleError;
 	private JLabel descriptionError;
@@ -98,14 +105,22 @@ public class EditTaskView extends JPanel {
 	 * task: Title Description Due Date Estimated Effort Actual Effort Adding
 	 * Comments
 	 */
-	public EditTaskView() {
+	public EditTaskView(Mode mode) {
+		// TODO: User Mode to switch between create and edit views
+		// When Task added make EditTask take in a Task called currTask
+		this.mode = mode;
+
+		window = new JPanel();
+		this.setLayout(new FlowLayout());
 
 		Dimension nt_panelSize = getPreferredSize();
-		nt_panelSize.width = 625; // TODO
+		nt_panelSize.width = 675; // TODO
 		nt_panelSize.height = 500; // Decide size
-		setPreferredSize(nt_panelSize);
+		window.setPreferredSize(nt_panelSize);
+		this.setPreferredSize(nt_panelSize);
+		this.setMinimumSize(nt_panelSize);
 
-		setBorder(BorderFactory.createTitledBorder("Edit Task"));
+		// window.setBorder(BorderFactory.createTitledBorder(""));
 
 		activities = new ArrayList<ActivityModel>();
 		newActivities = new ArrayList<ActivityModel>();
@@ -222,140 +237,133 @@ public class EditTaskView extends JPanel {
 
 		// Combo Box for Stage
 		JComboBox<String> nt_stagesBoxes = new JComboBox<String>();
-
 		nt_stagesBoxes.setName(STAGES);
 		stages = nt_stagesBoxes;
 
-		setLayout(new GridBagLayout());
+		window.setLayout(new GridBagLayout());
 
 		GridBagConstraints newTaskGridBag = new GridBagConstraints();
 
 		// First Column ////
 
-		newTaskGridBag.anchor = GridBagConstraints.FIRST_LINE_START;
+		newTaskGridBag.anchor = GridBagConstraints.LINE_START;
 
-		newTaskGridBag.weightx = 0.15;
+		newTaskGridBag.weightx = 0.6;
 		newTaskGridBag.weighty = 0.077;
-
 		newTaskGridBag.gridx = 0;
 
 		newTaskGridBag.gridy = 0;
-		add(nt_titleLabel, newTaskGridBag);
+		window.add(nt_titleLabel, newTaskGridBag);
 
 		newTaskGridBag.gridy = 1;
-		add(nt_descriptionLabel, newTaskGridBag);
+		window.add(nt_descriptionLabel, newTaskGridBag);
 
 		newTaskGridBag.gridy = 2;
-		add(nt_dueDateLabel, newTaskGridBag);
+		window.add(nt_dueDateLabel, newTaskGridBag);
 
 		newTaskGridBag.gridy = 3;
-		add(nt_stageLabel, newTaskGridBag);
+		window.add(nt_stageLabel, newTaskGridBag);
 
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridy = 4;
-		add(nt_usersLabel, newTaskGridBag);
+		window.add(nt_usersLabel, newTaskGridBag);
 
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridy = 5;
-		add(nt_estimatedEffortLabel, newTaskGridBag);
+		window.add(nt_estimatedEffortLabel, newTaskGridBag);
 
 		newTaskGridBag.gridy = 6;
-		add(nt_actualEffortLabel, newTaskGridBag);
+		window.add(nt_actualEffortLabel, newTaskGridBag);
 
 		newTaskGridBag.weighty = 0.10;
 		newTaskGridBag.gridy = 7;
-		add(nt_commentsLabel, newTaskGridBag);
+		window.add(nt_commentsLabel, newTaskGridBag);
 
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridy = 9;
-		add(nt_requirementLabel, newTaskGridBag);
+		window.add(nt_requirementLabel, newTaskGridBag);
 
 		// Second Column ////
 
 		newTaskGridBag.anchor = GridBagConstraints.LINE_START;
-		newTaskGridBag.weightx = 0.3;
+		newTaskGridBag.weightx = 0.15;
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridx = 1;
 
 		newTaskGridBag.gridy = 0;
-		add(nt_titleField, newTaskGridBag);
+		window.add(nt_titleField, newTaskGridBag);
 
 		newTaskGridBag.gridy = 1;
-		add(nt_descriptionScrollPane, newTaskGridBag);
+		window.add(nt_descriptionScrollPane, newTaskGridBag);
 
 		newTaskGridBag.gridy = 2;
-		add(nt_dueDateField, newTaskGridBag);
+		window.add(nt_dueDateField, newTaskGridBag);
 
 		newTaskGridBag.gridy = 3;
-		add(nt_stagesBoxes, newTaskGridBag);
+		window.add(nt_stagesBoxes, newTaskGridBag);
 
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridy = 4;
-		add(nt_usersScrollPane, newTaskGridBag);
+		window.add(nt_usersScrollPane, newTaskGridBag);
 
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridy = 5;
-		add(nt_estimatedEffortField, newTaskGridBag);
+		window.add(nt_estimatedEffortField, newTaskGridBag);
 
 		newTaskGridBag.gridy = 6;
-		add(nt_actualEffortField, newTaskGridBag);
+		window.add(nt_actualEffortField, newTaskGridBag);
 
 		newTaskGridBag.gridy = 7;
-		add(nt_commentsField, newTaskGridBag);
+		window.add(nt_commentsField, newTaskGridBag);
 
 		newTaskGridBag.gridy = 8;
-		add(activityPane, newTaskGridBag);
+		window.add(activityPane, newTaskGridBag);
 
 		// List of Requirements
 		newTaskGridBag.gridy = 9;
-		add(nt_requirementBoxes, newTaskGridBag);
+		window.add(nt_requirementBoxes, newTaskGridBag);
 
 		// Third Column ////
 
-		newTaskGridBag.anchor = GridBagConstraints.CENTER;
-		newTaskGridBag.weightx = 0.18;
+		newTaskGridBag.anchor = GridBagConstraints.LINE_START;
+		newTaskGridBag.weightx = .5;
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridx = 2;
 
 		newTaskGridBag.gridy = 0;
-		add(nt_titleLabel_error, newTaskGridBag);
+		window.add(nt_titleLabel_error, newTaskGridBag);
 
 		newTaskGridBag.gridy = 1;
-		add(nt_descriptionLabel_error, newTaskGridBag);
+		window.add(nt_descriptionLabel_error, newTaskGridBag);
 
 		newTaskGridBag.gridy = 4;
-		add(nt_addUsersBtn, newTaskGridBag);
+		window.add(nt_addUsersBtn, newTaskGridBag);
 
 		newTaskGridBag.gridy = 5;
-		add(nt_estimatedEffortLabel_error, newTaskGridBag);
+		window.add(nt_estimatedEffortLabel_error, newTaskGridBag);
 
 		newTaskGridBag.gridy = 6;
-		add(nt_actualEffortLabel_error, newTaskGridBag);
+		window.add(nt_actualEffortLabel_error, newTaskGridBag);
 
 		newTaskGridBag.gridy = 7;
-		add(nt_submitCommentBtn, newTaskGridBag);
+		window.add(nt_submitCommentBtn, newTaskGridBag);
 
 		newTaskGridBag.gridy = 8;
-		add(nt_refreshBtn, newTaskGridBag);
+		window.add(nt_refreshBtn, newTaskGridBag);
 
 		newTaskGridBag.gridy = 9;
-		add(nt_addRequirementBtn, newTaskGridBag);
+		window.add(nt_addRequirementBtn, newTaskGridBag);
 
-		newTaskGridBag.gridy = 10;
-		add(nt_saveBtn, newTaskGridBag);
+		JPanel bottomBtns = new JPanel();
+		bottomBtns.add(nt_saveBtn);
+		bottomBtns.add(nt_cancelBtn);
+		if (this.mode == Mode.EDIT) {
+			bottomBtns.add(nt_deleteBtn);
+		}
+		newTaskGridBag.gridy = 11;
+		window.add(bottomBtns, newTaskGridBag);
 
-		// Fourth Column ////
-
-		newTaskGridBag.anchor = GridBagConstraints.LINE_START;
-		newTaskGridBag.weightx = 0.15;
-		newTaskGridBag.weighty = 0.077;
-		newTaskGridBag.gridx = 3;
-
-		newTaskGridBag.gridy = 0;
-		add(nt_deleteBtn, newTaskGridBag);
-
-		newTaskGridBag.gridy = 10;
-		add(nt_cancelBtn, newTaskGridBag);
+		this.add(window);
 	}
 
 	/**
@@ -781,5 +789,10 @@ public class EditTaskView extends JPanel {
 			controller.reloadData();
 		}
 		super.setVisible(visible);
+	}
+
+	// Used for tests
+	public JPanel getWindow() {
+		return this.window;
 	}
 }

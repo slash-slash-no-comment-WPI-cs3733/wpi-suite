@@ -1,1 +1,0 @@
-module_class ButtonModule.buttonModule.ButtonModule

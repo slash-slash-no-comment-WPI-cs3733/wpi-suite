@@ -22,7 +22,7 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 
 	public static boolean ignoreNextResponse = false;
 
-	WorkflowModel model;
+	final WorkflowModel model;
 	WorkflowController controller;
 
 	/**
@@ -35,7 +35,7 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 	 */
 	public FetchWorkflowObserver(WorkflowModel model,
 			WorkflowController controller) {
-		this.model = model;
+		this.model = WorkflowModel.getInstance();
 		this.controller = controller;
 	}
 
