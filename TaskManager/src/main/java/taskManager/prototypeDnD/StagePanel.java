@@ -25,7 +25,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import taskManager.model.StageModel;
-import taskManager.model.WorkflowModel;
 
 /**
  * The visible panel that contains tasks. It also manages the placeholder and
@@ -85,9 +84,9 @@ public class StagePanel extends JPanel {
 	public void dropTask(TaskPanel transferredPanel, Point dropLocation) {
 		int newIndex = getInsertionIndex(dropLocation);
 
-		WorkflowModel.getInstance().moveTask(transferredPanel.getModel(),
-				((StagePanel) transferredPanel.getParent()).getModel(), model,
-				newIndex);
+		// WorkflowModel.getInstance().moveTask(transferredPanel.getModel(),
+		// ((StagePanel) transferredPanel.getParent()).getModel(), model,
+		// newIndex);
 
 		add(transferredPanel, newIndex);
 

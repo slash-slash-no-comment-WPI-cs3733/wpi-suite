@@ -48,7 +48,7 @@ public class TestLayout extends JFrame {
 		root.setPreferredSize(new Dimension(900, 900));
 
 		for (int i = 0; i < 3; i++) {
-			JPanel stage = new StagePanel();
+			JPanel stage = new StagePanel(null);
 			stage.setLayout(new BoxLayout(stage, BoxLayout.Y_AXIS));
 			// stage.setLayout(new FlowLayout());
 
