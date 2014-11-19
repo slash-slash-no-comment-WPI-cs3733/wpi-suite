@@ -696,8 +696,10 @@ public class EditTaskView extends JPanel {
 	 * @param activities
 	 */
 	public void setActivitiesPanel(List<ActivityModel> activities) {
+		List<ActivityModel> tskActivitiesCopy = new ArrayList<ActivityModel>(
+				activities);
 		activityPane.setMessage("");
-		for (ActivityModel act : activities) {
+		for (ActivityModel act : tskActivitiesCopy) {
 			String current = activityPane.getMessage().getText();
 			switch (act.getType()) {
 			case CREATION:
@@ -739,8 +741,10 @@ public class EditTaskView extends JPanel {
 	 * @param act
 	 */
 	public void setActivities(List<ActivityModel> act) {
+		List<ActivityModel> tskActivitiesCopy = new ArrayList<ActivityModel>(
+				act);
 		activityPane.setMessage("");
-		activities = act;
+		activities = tskActivitiesCopy;
 	}
 
 	/**
