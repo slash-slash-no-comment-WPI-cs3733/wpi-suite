@@ -247,6 +247,7 @@ public class TestEditTaskController {
 
 		// load the edit view
 		TaskController tc = new TaskController(null, task);
+		tc.mouseClicked(null);
 
 		// EditTaskView etv2 = null;
 		Component c = JanewayModule.tabPaneC.getTabView()
