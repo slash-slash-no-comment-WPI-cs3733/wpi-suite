@@ -22,7 +22,6 @@ import org.fest.swing.fixture.FrameFixture;
 import org.fest.swing.fixture.JTextComponentFixture;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import taskManager.JanewayModule;
@@ -48,12 +47,6 @@ public class TestEditTaskController {
 
 	private FrameFixture fixture;
 	private JFrame frame;
-
-	@BeforeClass
-	public static void setupOnce() {
-		// TestLogin.login();
-
-	}
 
 	@Before
 	public void setup() {
