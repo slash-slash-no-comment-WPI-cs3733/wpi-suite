@@ -367,31 +367,8 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 */
 	public void makeIdenticalTo(StageModel stage) {
 		setID(stage.getID());
-		synchronizeTaskList(stage.getTasks());
 		name = stage.getName();
 		workflow = stage.getWorkflow();
-	}
-
-	// We are synchronizing this list with the database.
-	// For each element, if it already exists in the database, we need to update
-	// the pointer in the list to point to the object in the database.
-	// If it doesn't exist, we should save it.
-	private void synchronizeTaskList(List<TaskModel> taskList) {
-		for (int i = 0; i < taskList.size(); i++) {
-			TaskModel taskToStore = taskList.get(i);
-			TaskModel storedTask = workflow.findTaskByID(taskToStore.getID());
-			if (storedTask == null) {
-				// The task does not yet exist in the database.
-				taskToStore.save();
-			} else {
-				// This effectively changes the pointer that savedTask contains
-				// to
-				// now reference an element in the database.
-				taskList.remove(taskToStore);
-				storedTask.makeIdenticalTo(taskToStore);
-				taskList.add(i, storedTask);
-			}
-		}
 	}
 
 	@Override
