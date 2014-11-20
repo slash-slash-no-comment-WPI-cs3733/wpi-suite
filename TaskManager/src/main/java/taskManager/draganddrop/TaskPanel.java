@@ -1,16 +1,21 @@
-package taskManager.prototypeDnD;
+package taskManager.draganddrop;
 
+import java.awt.Container;
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetAdapter;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 
 public class TaskPanel extends JPanel implements Transferable {
@@ -92,5 +97,59 @@ public class TaskPanel extends JPanel implements Transferable {
 	public boolean isDataFlavorSupported(DataFlavor flavor) {
 		System.out.println("Is data flavor supported?");
 		return flavor.equals(DDManager.taskPanelFlavor);
+	}
+}
+
+/**
+ * 
+ * The listener that triggers if a task is dropped on another task. Simply
+ * delegates calls to the stage's drop listener.
+ *
+ * @author Sam Khalandovsky
+ * @version Nov 17, 2014
+ */
+class TaskDropListener extends DropTargetAdapter {
+	private TaskPanel panel;
+
+	public TaskDropListener(TaskPanel panel) {
+		this.panel = panel;
+	}
+
+	@Override
+	public void drop(DropTargetDropEvent e) {
+		DropTargetDropEvent newE = convertToParentCoords(e);
+		if (panel.getParent() instanceof StagePanel) {
+			panel.getParent().getDropTarget().drop(newE);
+		}
+	}
+
+	@Override
+	public void dragOver(DropTargetDragEvent e) {
+		DropTargetDragEvent newE = convertToParentCoords(e);
+		if (panel.getParent() instanceof StagePanel) {
+			panel.getParent().getDropTarget().dragOver(newE);
+		}
+	}
+
+	public DropTargetDropEvent convertToParentCoords(DropTargetDropEvent e) {
+		Container parent = panel.getParent();
+
+		Point newPoint = SwingUtilities.convertPoint(e.getDropTargetContext()
+				.getComponent(), e.getLocation(), parent);
+		DropTargetDropEvent newE = new DropTargetDropEvent(
+				e.getDropTargetContext(), newPoint, e.getDropAction(),
+				e.getSourceActions());
+		return newE;
+	}
+
+	public DropTargetDragEvent convertToParentCoords(DropTargetDragEvent e) {
+		Container parent = panel.getParent();
+
+		Point newPoint = SwingUtilities.convertPoint(e.getDropTargetContext()
+				.getComponent(), e.getLocation(), parent);
+		DropTargetDragEvent newE = new DropTargetDragEvent(
+				e.getDropTargetContext(), newPoint, e.getDropAction(),
+				e.getSourceActions());
+		return newE;
 	}
 }

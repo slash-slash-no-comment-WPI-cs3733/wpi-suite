@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package taskManager.prototypeDnD;
+package taskManager.draganddrop;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -15,7 +15,12 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
@@ -245,4 +250,103 @@ public class StagePanel extends JPanel {
 	public void setModel(StageModel model) {
 		this.model = model;
 	}
+}
+
+/**
+ * 
+ * Listens to when a Task is dropped onto a stage. Adds the TaskPanel to its
+ * StagePanel.
+ *
+ * @author Sam Khalandovsky
+ * @author Ezra Davis
+ * @version Nov 17, 2014
+ */
+class StageDropListener implements DropTargetListener {
+
+	private StagePanel stage;
+
+	public StageDropListener(StagePanel stage) {
+		this.stage = stage;
+	}
+
+	/**
+	 * Drops a task onto the stage after making sure that it is a taskPanel.
+	 */
+	public void drop(DropTargetDropEvent e) {
+
+		System.out.println("Dropping");
+
+		Transferable trans = e.getTransferable();
+		TaskPanel transferredPanel;
+		if (trans.isDataFlavorSupported(DDManager.taskPanelFlavor)) {
+			try {
+				transferredPanel = (TaskPanel) trans
+						.getTransferData(DDManager.taskPanelFlavor);
+			} catch (Exception ex) {
+				System.out.println(ex.getStackTrace());
+				return;
+			}
+
+		} else {
+			return;
+		}
+
+		stage.dropTask(transferredPanel, e.getLocation());
+	}
+
+	/**
+	 * Hides the placeholder when the Task is no longer being dragged above the
+	 * stage.
+	 * 
+	 * Careful with this due to it being called after entering a TaskPanel
+	 * 
+	 */
+	@Override
+	public void dragExit(DropTargetEvent e) {
+		System.out.println("Stage drag exit");
+		stage.hidePlaceholder();
+	}
+
+	/**
+	 * Draws the placeholder on the stage when a task is being dragged above it.
+	 */
+	@Override
+	public void dragOver(DropTargetDragEvent e) {
+		System.out.println("Stage drag over");
+
+		// Getting placeholder's size & making sure it's a TaskPanel
+		Transferable trans = e.getTransferable();
+		TaskPanel transferredPanel;
+		if (trans.isDataFlavorSupported(DDManager.taskPanelFlavor)) {
+			try {
+				transferredPanel = (TaskPanel) trans
+						.getTransferData(DDManager.taskPanelFlavor);
+			} catch (Exception ex) {
+				System.out.println(ex.getStackTrace());
+				return;
+			}
+
+		} else { // Not a TaskPanel
+			return;
+		}
+		Dimension placeholderSize = transferredPanel.getSize();
+
+		// only draw placeholder if task has been made invisible
+		// necessary to avoid flicker when placeholder is drawn before task is
+		// hidden
+		if (!transferredPanel.isVisible()) {
+			stage.drawPlaceholder(e.getLocation(), placeholderSize);
+		}
+	}
+
+	// Careful with this due to it being called after leaving a TaskPanel
+	@Override
+	public void dragEnter(DropTargetDragEvent e) {
+	}
+
+	@Override
+	public void dropActionChanged(DropTargetDragEvent e) {
+
+	}
+
 }

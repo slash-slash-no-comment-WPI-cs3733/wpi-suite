@@ -1,4 +1,4 @@
-package taskManager.prototypeDnD;
+package taskManager.draganddrop;
 
 import java.awt.Component;
 import java.awt.Graphics;
@@ -14,6 +14,8 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
+
+import taskManager.prototypeDnD.DragImage;
 
 /**
  * 
@@ -35,7 +37,7 @@ public class DDManager extends DragSourceAdapter {
 		try {
 			taskPanelFlavor = new DataFlavor(
 					DataFlavor.javaJVMLocalObjectMimeType
-							+ ";class=taskManager.prototypeDnD.TaskPanel");
+							+ ";class=taskManager.draganddrop.TaskPanel");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}

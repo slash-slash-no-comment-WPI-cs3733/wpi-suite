@@ -13,7 +13,7 @@ import java.awt.FlowLayout;
 import javax.swing.JPanel;
 
 import taskManager.controller.WorkflowController;
-import taskManager.prototypeDnD.DDManager;
+import taskManager.draganddrop.DDManager;
 
 /**
  * @author Beth Martino
