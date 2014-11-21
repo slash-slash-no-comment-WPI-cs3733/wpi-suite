@@ -43,23 +43,19 @@ import taskManager.view.TaskView;
  */
 public class StagePanel extends JPanel {
 
+	private static final long serialVersionUID = -3746364753551742673L;
+
 	private JLabel placeholder;
 	private int lastIndex;
 	private Map<Component, Point> compCenters;
 	private StageModel model;
 
 	/**
-	 * 
 	 * Creates a StagePanel and initializes its placeholder.
-	 *
 	 */
 	public StagePanel() {
 		this.setTransferHandler(new DDTransferHandler());
 		this.setDropTarget(new DropTarget(this, new StageDropListener(this)));
-
-		// add placeholder
-		// placeholder = new JPanel();
-		// placeholder.setBackground(Color.GRAY);
 
 		Image image = new BufferedImage(130, 30, BufferedImage.TYPE_INT_ARGB);
 		Graphics g = image.getGraphics();
@@ -69,11 +65,6 @@ public class StagePanel extends JPanel {
 		placeholder = new JLabel(new ImageIcon(image));
 		placeholder.setAlignmentX(CENTER_ALIGNMENT);
 
-		// placeholder.setPreferredSize(new Dimension(200, 100));
-		// placeholder.setMaximumSize(new Dimension(200, 100));
-		// placeholder.setMinimumSize(new Dimension(200, 100));
-		// placeholder.setSize(new Dimension(200, 100));
-		// this.setMinimumSize(new Dimension(300, 100));
 		placeholder.setVisible(false);
 		this.add(placeholder);
 	}
@@ -154,9 +145,8 @@ public class StagePanel extends JPanel {
 
 	/**
 	 * 
-	 * Finds the center of each TaskPanel for dealing with the placeholder. **
-	 * do this ONLY while placeholder is invisible!!! REALLY!!! - otherwise it
-	 * includes the placeholder in its center calculations
+	 * Finds the center of each TaskPanel for dealing with the placeholder. Do
+	 * this only while placeholder is invisible.
 	 *
 	 */
 	private void calculateCenters() throws IllegalStateException {
@@ -185,8 +175,6 @@ public class StagePanel extends JPanel {
 	 *         closest to.
 	 */
 	private int getInsertionIndex(Point point) {
-		// Component[] components = this.getComponents();
-		// System.out.println(point);
 		double minDist = Double.MAX_VALUE;
 		Component closest = null;
 		for (Component comp : compCenters.keySet()) {
@@ -215,9 +203,6 @@ public class StagePanel extends JPanel {
 			index++;
 		}// TODO make general for horizontal?
 		System.out.println("Insert at " + Integer.toString(index));
-		/*
-		 * if (index >= compCenters.size()) { index = compCenters.size() - 1; }
-		 */
 
 		return index;
 	}
@@ -250,8 +235,8 @@ public class StagePanel extends JPanel {
 
 /**
  * 
- * Listens to when a Task is dropped onto a stage. Adds the TaskPanel to its
- * StagePanel.
+ * Listens for when a Task is dropped onto a stage, and while the drag occurs.
+ * Adds the TaskPanel to its StagePanel.
  *
  * @author Sam Khalandovsky
  * @author Ezra Davis
@@ -261,7 +246,7 @@ class StageDropListener implements DropTargetListener {
 
 	private StagePanel stage;
 
-	public StageDropListener(StagePanel stage) {
+	StageDropListener(StagePanel stage) {
 		this.stage = stage;
 	}
 
