@@ -10,6 +10,7 @@
 package taskManager.view;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -39,6 +40,13 @@ public class TabView extends JPanel implements ActionListener {
 		setOpaque(false);
 
 		final JLabel label = new JLabel(title);
+		// This makes the tab's a set width and adds the ... if a task name is
+		// too long for the tab
+		JLabel temp = new JLabel();
+		temp.setText("Tabs Name Length");
+		final Dimension size = temp.getPreferredSize();
+		label.setMaximumSize(size);
+		label.setPreferredSize(size);
 		label.setBorder(BorderFactory.createEmptyBorder(3, 0, 2, 7));
 		add(label);
 
