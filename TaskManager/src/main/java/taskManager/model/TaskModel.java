@@ -61,8 +61,14 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	// Estimated effort required for completion
 	private int estimatedEffort;
 
+	// Boolean stating whether estimated effort is set.
+	private Boolean hasEstimatedEffort = false;
+
 	// Effort actually expended to complete
 	private int actualEffort;
+
+	// Boolean stating whether actual effort is set.
+	private Boolean hasActualEffort = false;
 
 	// Actions and comments relevant to task
 	private List<ActivityModel> activities;
@@ -175,6 +181,26 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	}
 
 	/**
+	 * 
+	 * Returns whether or not the estimated effort is set.
+	 *
+	 * @return the boolean.
+	 */
+	public Boolean isEstimatedEffortSet() {
+		return hasEstimatedEffort;
+	}
+
+	/**
+	 * 
+	 * Sets the hasEstimatedEffort.
+	 *
+	 * @param flag
+	 */
+	public void setHasEstimatedEffort(Boolean flag) {
+		hasEstimatedEffort = flag;
+	}
+
+	/**
 	 * @param estimatedEffort
 	 *            the estimatedEffort to set
 	 */
@@ -184,6 +210,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 					"estimatedEffort must be non-negative");
 		}
 		this.estimatedEffort = estimatedEffort;
+		hasEstimatedEffort = true;
 	}
 
 	/**
@@ -191,6 +218,26 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 */
 	public int getActualEffort() {
 		return actualEffort;
+	}
+
+	/**
+	 * 
+	 * Returns whether or not the estimated effort is set.
+	 *
+	 * @return the boolean.
+	 */
+	public Boolean isActualEffortSet() {
+		return hasActualEffort;
+	}
+
+	/**
+	 * 
+	 * Sets the hasActualEffort.
+	 *
+	 * @param flag
+	 */
+	public void setHasActualEffort(Boolean flag) {
+		hasActualEffort = flag;
 	}
 
 	/**
@@ -203,6 +250,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 					"actualEffort must be non-negative");
 		}
 		this.actualEffort = actualEffort;
+		hasActualEffort = true;
 	}
 
 	/**

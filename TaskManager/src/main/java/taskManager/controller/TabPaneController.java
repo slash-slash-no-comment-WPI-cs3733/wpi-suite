@@ -58,8 +58,6 @@ public class TabPaneController {
 		// Set the dropdown menu to first stage and disable the menu.
 		etv.setStageDropdown(0);
 
-		etv.getActEffort().setEnabled(false);
-		etv.setStageSelectorEnabled(false);
 		etv.setRefreshEnabled(false);
 		// Disable save button when creating a task.
 		etv.disableSave();
@@ -68,14 +66,6 @@ public class TabPaneController {
 		// Focuses on the new tab
 		int index = this.tabPaneV.getTabCount() - 1;
 		this.tabPaneV.setSelectedIndex(index);
-
-		// Set actual effort field enabled only if the selected stage is
-		// "Complete"
-		if (etv.getSelectedStage().equals("Complete")) {
-			etv.getActEffort().setEnabled(true);
-		} else {
-			etv.getActEffort().setEnabled(false);
-		}
 
 		// Clear all activities, reset fields.
 		etv.clearActivities();
