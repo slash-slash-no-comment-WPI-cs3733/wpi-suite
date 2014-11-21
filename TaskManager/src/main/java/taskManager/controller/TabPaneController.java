@@ -69,7 +69,6 @@ public class TabPaneController {
 			}
 		}
 
-		etv.getActEffort().setEnabled(false);
 		etv.setRefreshEnabled(false);
 		// Disable save button when creating a task.
 		etv.disableSave();
@@ -78,9 +77,6 @@ public class TabPaneController {
 		// Focuses on the new tab
 		int index = this.tabPaneV.getTabCount() - 1;
 		this.tabPaneV.setSelectedIndex(index);
-
-		// Set actual effort field enabled.
-		etv.getActEffort().setEnabled(true);
 
 		// Clear all activities, reset fields.
 		etv.clearActivities();

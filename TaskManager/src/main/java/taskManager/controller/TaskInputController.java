@@ -84,7 +84,7 @@ public class TaskInputController implements KeyListener, FocusListener,
 				}
 			} catch (NumberFormatException e) {
 				actEffortValid = false;
-				etv.setActualEffortErrorText("Must be a positive integer");
+				etv.setActualEffortErrorText("Must be an integer");
 			}
 		}
 
