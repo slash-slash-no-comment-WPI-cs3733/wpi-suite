@@ -23,6 +23,13 @@ import javax.swing.JPanel;
 
 import taskManager.JanewayModule;
 
+/**
+ * 
+ * TabView deals with the tab for each window
+ *
+ * @author Samee Swartz
+ * @version Nov 21, 2014
+ */
 public class TabView extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = -5461050356588592448L;
@@ -30,6 +37,17 @@ public class TabView extends JPanel implements ActionListener {
 	private boolean closeable;
 	private TabPaneView tabPaneV;
 
+	/**
+	 * 
+	 * Creates a new tab to contain a window/pane of information
+	 *
+	 * @param title
+	 *            The title to put in the tab itself
+	 * @param component
+	 *            The component to display in the tab's window/pane
+	 * @param closeable
+	 *            Whether to make the tab closeable - aka put an 'x' in the tab
+	 */
 	public TabView(String title, Component component, boolean closeable) {
 		super(new FlowLayout(FlowLayout.LEFT, 0, 0));
 
@@ -59,10 +77,22 @@ public class TabView extends JPanel implements ActionListener {
 		}
 	}
 
+	/**
+	 * 
+	 * Constructs a closeable tab
+	 *
+	 * @param title
+	 *            The title to put in the tab itself
+	 * @param component
+	 *            The component to display in the tab's window/pane
+	 */
 	public TabView(String title, Component component) {
 		this(title, component, true);
 	}
 
+	/**
+	 * When the 'x' button is pressed
+	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if (closeable) {
