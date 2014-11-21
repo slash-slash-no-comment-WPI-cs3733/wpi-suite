@@ -50,7 +50,7 @@ public class StageView extends JPanel {
 		// stage view is a panel that contains the title and the scroll pane
 		// w/tasks
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		this.setPreferredSize(new Dimension(200, 450));
+		// this.setPreferredSize(new Dimension(250, 450));
 
 		// organizes the tasks in a vertical list
 		tasks.setLayout(new BoxLayout(tasks, BoxLayout.Y_AXIS));
