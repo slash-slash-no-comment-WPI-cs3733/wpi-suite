@@ -312,7 +312,9 @@ public class StagePanel extends JPanel {
 		for (Component comp : getComponents()) {
 			layoutBounds.add(comp.getBounds());
 			if (drawnBounds.containsKey(comp)) {
-				comp.setBounds(drawnBounds.get(comp));
+				Rectangle bounds = drawnBounds.get(comp);
+				comp.setBounds(bounds.x, bounds.y, comp.getBounds().width,
+						comp.getBounds().height);
 			}
 		}
 		super.paintChildren(g);
