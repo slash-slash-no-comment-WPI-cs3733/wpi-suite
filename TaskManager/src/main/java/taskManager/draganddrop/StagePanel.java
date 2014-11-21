@@ -15,19 +15,28 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
@@ -48,6 +57,9 @@ public class StagePanel extends JPanel {
 	private Map<Component, Point> compCenters;
 	private StageModel model;
 
+	private Map<Component, Rectangle> drawnBounds; // store animated panel
+													// bounds
+
 	/**
 	 * 
 	 * Creates a StagePanel and initializes its placeholder.
@@ -56,6 +68,17 @@ public class StagePanel extends JPanel {
 	public StagePanel() {
 		this.setTransferHandler(new DDTransferHandler());
 		this.setDropTarget(new DropTarget(this, new StageDropListener(this)));
+
+		drawnBounds = new HashMap<Component, Rectangle>();
+
+		Timer timer = new Timer(1000 / 24, new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (updateDrawnBounds()) {
+					repaint();
+				}
+			}
+		});
+		timer.start();
 
 		// add placeholder
 		// placeholder = new JPanel();
@@ -245,6 +268,58 @@ public class StagePanel extends JPanel {
 
 	public void setModel(StageModel model) {
 		this.model = model;
+	}
+
+	private boolean updateDrawnBounds() {
+
+		boolean changed = false;
+
+		List<Component> components = Arrays.asList(getComponents());
+
+		// For each component, add it to drawnBounds if it's not there and it is
+		// visible
+		for (Component comp : components) {
+			if (!drawnBounds.containsKey(comp) && comp.isVisible()) {
+				drawnBounds.put(comp, comp.getBounds());
+			}
+		}
+
+		Set<Component> drawnComps = new HashSet<Component>(drawnBounds.keySet());
+		// Update each drawn bound
+		for (Component comp : drawnComps) {
+			Rectangle drawn = drawnBounds.get(comp);
+
+			// If remove components from drawnBounds that are no longer in the
+			// panel or invisible
+			if (!components.contains(comp) || !comp.isVisible()) {
+				drawnBounds.remove(comp);
+			} else if (drawn.x != comp.getBounds().x
+					|| drawn.y != comp.getBounds().y) {
+				// move the drawn panel halfway between current drawn location
+				// and target position
+				drawn.x = (drawn.x + comp.getBounds().x) / 2;
+				drawn.y = (drawn.y + comp.getBounds().y) / 2;
+
+				changed = true;
+			}
+		}
+		return changed;
+	}
+
+	@Override
+	public void paintChildren(Graphics g) {
+		List<Rectangle> layoutBounds = new ArrayList<Rectangle>();
+		for (Component comp : getComponents()) {
+			layoutBounds.add(comp.getBounds());
+			if (drawnBounds.containsKey(comp)) {
+				comp.setBounds(drawnBounds.get(comp));
+			}
+		}
+		super.paintChildren(g);
+		for (int i = 0; i < getComponentCount(); i++) {
+			Component comp = getComponent(i);
+			comp.setBounds(layoutBounds.get(i));
+		}
 	}
 }
 
