@@ -107,17 +107,7 @@ public class TaskController implements MouseListener {
 			}
 		}
 
-		// Set actual effort field enabled only if the selected stage is
-		// "Complete"
-		if (etv.getSelectedStage().equals("Complete")) {
-			etv.getActEffort().setEnabled(true);
-		} else {
-			etv.getActEffort().setEnabled(false);
-		}
-
-		// Enable stage dropdown when editing a task.
 		etv.getStages().setSelectedItem(model.getStage().getName());
-		etv.setStageSelectorEnabled(true);
 
 		// populates the project users list
 		ArrayList<String> projectUserNames = new ArrayList<String>();

@@ -107,9 +107,8 @@ public class EditTaskController implements ActionListener {
 				// if creating a new task
 				else {
 					// creates a new task model
-					task = new TaskModel(etv.getTitle().getText(), currentStage);
-					this.setTaskData(task, wfm.findStageByName("New"),
-							requirement);
+					task = new TaskModel(etv.getTitle().getText(), desiredStage);
+					this.setTaskData(task, desiredStage, requirement);
 				}
 
 				// Add the newly added activities.
@@ -267,7 +266,13 @@ public class EditTaskController implements ActionListener {
 		// sets the text fields
 		t.setName(etv.getTitle().getText());
 		t.setDescription(etv.getDescription().getText());
-		t.setEstimatedEffort(Integer.parseInt(etv.getEstEffort().getText()));
+
+		try {
+			t.setEstimatedEffort(Integer.parseInt(etv.getEstEffort().getText()));
+		} catch (java.lang.NumberFormatException e2) {
+			// TODO: handle error
+		}
+
 		try {
 			t.setActualEffort(Integer.parseInt(etv.getActEffort().getText()));
 		} catch (java.lang.NumberFormatException e2) {
