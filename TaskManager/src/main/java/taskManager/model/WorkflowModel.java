@@ -53,10 +53,10 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	public static WorkflowModel getInstance() {
 		if (instance == null) {
 			instance = new WorkflowModel();
-			new StageModel("New", false);
-			new StageModel("Scheduled", false);
-			new StageModel("In Progress", false);
-			new StageModel("Complete", false);
+			new StageModel("New");
+			new StageModel("Scheduled");
+			new StageModel("In Progress");
+			new StageModel("Complete");
 		}
 		return instance;
 	}

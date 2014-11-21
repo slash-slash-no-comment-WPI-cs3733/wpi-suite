@@ -107,9 +107,8 @@ public class EditTaskController implements ActionListener {
 				// if creating a new task
 				else {
 					// creates a new task model
-					task = new TaskModel(etv.getTitle().getText(), currentStage);
-					this.setTaskData(task, wfm.findStageByName("New"),
-							requirement);
+					task = new TaskModel(etv.getTitle().getText(), desiredStage);
+					this.setTaskData(task, desiredStage, requirement);
 				}
 
 				// Add the newly added activities.
