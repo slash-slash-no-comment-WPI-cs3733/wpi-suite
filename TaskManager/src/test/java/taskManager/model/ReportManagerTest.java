@@ -21,7 +21,8 @@ public class ReportManagerTest {
 		rm = new ReportManager();
 		user = new User("Name", "userName", "password", 42);
 
-		workflow = new WorkflowModel("Workflow");
+		workflow = WorkflowModel.getInstance();
+		workflow.makeIdenticalTo(new WorkflowModel("Workflow"));
 		stage = new StageModel("Stage");
 		task1 = new TaskModel("task1", stage);
 		task2 = new TaskModel("task2", stage);

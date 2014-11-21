@@ -68,7 +68,8 @@ public class WorkflowModelTest {
 
 	@Test
 	public void basicStageOperations() {
-		WorkflowModel wm = new WorkflowModel("Workflow");
+		WorkflowModel wm = WorkflowModel.getInstance();
+		wm.makeIdenticalTo(new WorkflowModel("Workflow"));
 		StageModel sm1 = new StageModel("Stage1");
 		StageModel sm2 = new StageModel("Stage2");
 		StageModel sm3 = new StageModel("Stage3");
@@ -97,7 +98,8 @@ public class WorkflowModelTest {
 
 	@Test
 	public void basicTaskOperations() {
-		WorkflowModel wm = new WorkflowModel("Workflow");
+		WorkflowModel wm = WorkflowModel.getInstance();
+		wm.makeIdenticalTo(new WorkflowModel("Workflow"));
 		StageModel smf = new StageModel("from");
 		StageModel smt = new StageModel("to");
 		TaskModel t1 = new TaskModel("Task1", smf);

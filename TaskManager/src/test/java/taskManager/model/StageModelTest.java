@@ -16,7 +16,8 @@ public class StageModelTest {
 	@Before
 	public void initializeWorkflow() {
 		TestLogin.login();
-		wf = new WorkflowModel("Workflow");
+		wf = WorkflowModel.getInstance();
+		wf.makeIdenticalTo(new WorkflowModel("Workflow"));
 		stage = new StageModel("Stage");
 	}
 
