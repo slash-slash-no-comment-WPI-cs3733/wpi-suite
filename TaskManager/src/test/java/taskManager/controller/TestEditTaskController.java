@@ -108,10 +108,7 @@ public class TestEditTaskController {
 		getTitleBoxFixture().enterText("title");
 		getDescriptionBoxFixture().enterText("description");
 		etv.getDateField().setDate(Calendar.getInstance().getTime());
-		fixture.textBox(EditTaskView.EST_EFFORT).enterText("3");
-
 		fixture.button(EditTaskView.SAVE).requireEnabled();
-		fixture.textBox(EditTaskView.ACT_EFFORT).requireDisabled();
 
 		getTitleBoxFixture().deleteText();
 		fixture.button(EditTaskView.SAVE).requireDisabled();
@@ -119,11 +116,6 @@ public class TestEditTaskController {
 		getTitleBoxFixture().enterText("title");
 		getDescriptionBoxFixture().deleteText();
 		fixture.button(EditTaskView.SAVE).requireDisabled();
-
-		getDescriptionBoxFixture().enterText("description");
-		fixture.textBox(EditTaskView.EST_EFFORT).deleteText();
-		fixture.button(EditTaskView.SAVE).requireDisabled();
-
 	}
 
 	@Test

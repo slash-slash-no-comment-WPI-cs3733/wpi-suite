@@ -76,9 +76,6 @@ public class TaskController implements MouseListener {
 	public void mouseClicked(MouseEvent e) {
 		// makes the delete button unclickable
 		etv.enableDelete();
-		// etv.removeAll();
-
-		// TODO: Populate with data?
 
 		// uses the title field to hold the unique id
 		etv.getTitle().setName(this.model.getID());
@@ -92,8 +89,14 @@ public class TaskController implements MouseListener {
 		etv.setTitle(model.getName());
 		etv.setDescription(model.getDescription());
 		etv.setDate(model.getDueDate());
-		etv.setEstEffort(model.getEstimatedEffort());
-		etv.setActEffort(model.getActualEffort());
+
+		// Sets the effort values only if user specified them.
+		if (model.isEstimatedEffortSet()) {
+			etv.setEstEffort(model.getEstimatedEffort());
+		}
+		if (model.isActualEffortSet()) {
+			etv.setActEffort(model.getActualEffort());
+		}
 
 		tabPaneC.addEditTaskTab(etv);
 

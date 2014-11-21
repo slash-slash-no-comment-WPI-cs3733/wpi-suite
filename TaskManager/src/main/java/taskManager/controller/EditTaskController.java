@@ -267,16 +267,18 @@ public class EditTaskController implements ActionListener {
 		t.setName(etv.getTitle().getText());
 		t.setDescription(etv.getDescription().getText());
 
+		// Try to set the effort values.
 		try {
 			t.setEstimatedEffort(Integer.parseInt(etv.getEstEffort().getText()));
 		} catch (java.lang.NumberFormatException e2) {
-			// TODO: handle error
+			// Set to false since this value is not set.
+			t.setHasEstimatedEffort(false);
 		}
 
 		try {
 			t.setActualEffort(Integer.parseInt(etv.getActEffort().getText()));
 		} catch (java.lang.NumberFormatException e2) {
-			// TODO: handle error
+			t.setHasActualEffort(false);
 		}
 
 		// sets the due date from the calendar
