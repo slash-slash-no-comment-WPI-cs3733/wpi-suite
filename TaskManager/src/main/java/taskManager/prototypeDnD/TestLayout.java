@@ -1,3 +1,6 @@
+//This file is only for testing the layout without Janeway.
+//Not in production
+
 package taskManager.prototypeDnD;
 
 import java.awt.Color;
