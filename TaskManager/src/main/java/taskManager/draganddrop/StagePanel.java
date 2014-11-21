@@ -270,7 +270,7 @@ public class StagePanel extends JPanel {
 		this.model = model;
 	}
 
-	private boolean updateDrawnBounds() {
+	private synchronized boolean updateDrawnBounds() {
 
 		boolean changed = false;
 
@@ -307,7 +307,7 @@ public class StagePanel extends JPanel {
 	}
 
 	@Override
-	public void paintChildren(Graphics g) {
+	public synchronized void paintChildren(Graphics g) {
 		List<Rectangle> layoutBounds = new ArrayList<Rectangle>();
 		for (Component comp : getComponents()) {
 			layoutBounds.add(comp.getBounds());
