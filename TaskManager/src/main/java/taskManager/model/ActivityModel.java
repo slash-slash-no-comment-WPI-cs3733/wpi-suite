@@ -10,10 +10,6 @@ package taskManager.model;
 
 import java.util.Date;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-
-import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
@@ -23,7 +19,7 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.User;
  * @author Sam Khalandovsky
  * @version Nov 6, 2014
  */
-public class ActivityModel extends AbstractModel {
+public class ActivityModel {
 
 	// List of possible model types
 	/**
@@ -33,16 +29,16 @@ public class ActivityModel extends AbstractModel {
 	};
 
 	// Actual type of this model
-	private final activityModelType modelType;
+	private activityModelType modelType;
 
 	// Date of creation
-	private final Date dateCreated;
+	private Date dateCreated;
 
 	// Contents of activity
 	private String description;
 
 	// User who took the action; null for system activities
-	private final User actor;
+	private User actor;
 
 	/**
 	 * Constructor for activities with no user actor/unknown user actor
@@ -97,6 +93,12 @@ public class ActivityModel extends AbstractModel {
 		return description;
 	}
 
+	/**
+	 * Sets the description of the activity, only if the activity is a comment.
+	 *
+	 * @param newDescription
+	 *            the new description.
+	 */
 	public void setDescription(String newDescription) {
 		if (modelType != activityModelType.COMMENT) {
 			throw new UnsupportedOperationException(
@@ -110,46 +112,6 @@ public class ActivityModel extends AbstractModel {
 	 */
 	public User getActor() {
 		return actor;
-	}
-
-	@Override
-	public void save() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void delete() {
-		// TODO Auto-generated method stub
-
-	}
-
-	/**
-	 * Method fromJson.
-	 * 
-	 * @param activity
-	 *            JsonElement
-	
-	 * @return ActivityModel */
-	public static ActivityModel fromJson(JsonElement activity) {
-		final Gson gson = new Gson();
-		return gson.fromJson(activity, ActivityModel.class);
-	}
-
-	@Override
-	public String toJson() {
-		final Gson gson = new Gson();
-		return gson.toJson(this);
-	}
-
-	@Override
-	public Boolean identify(Object o) {
-		if (o instanceof ActivityModel) {
-			final ActivityModel toIdentify = (ActivityModel) o;
-			return toIdentify.getDateCreated() == dateCreated
-					&& toIdentify.getType() == modelType;
-		}
-		return false;
 	}
 
 }

@@ -11,13 +11,8 @@ package taskManager.controller;
 
 import java.awt.Component;
 import java.util.ArrayList;
-import java.util.List;
 
 import taskManager.JanewayModule;
-import taskManager.model.ActivityModel;
-import taskManager.model.ActivityModel.activityModelType;
-import taskManager.model.StageModel;
-import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
 import taskManager.view.ManageStageView;
@@ -58,19 +53,9 @@ public class TabPaneController {
 		EditTaskView etv = new EditTaskView(Mode.CREATE);
 		etv.setController(new EditTaskController(etv));
 		etv.setFieldController(new TaskInputController(etv));
-		// Set the dropdown menu to New stage and disable the menu.
-		StageModel newStage = WorkflowModel.getInstance()
-				.findStageByName("New");
-		List<StageModel> stages = WorkflowModel.getInstance().getStages();
-		for (int i = 0; i < stages.size(); i++) {
-			if (stages.get(i) == newStage) {
-				etv.setStageDropdown(i);
-				break;
-			}
-		}
+		// Set the dropdown menu to first stage and disable the menu.
+		etv.setStageDropdown(0);
 
-		etv.getActEffort().setEnabled(false);
-		etv.setStageSelectorEnabled(false);
 		etv.setRefreshEnabled(false);
 		// Disable save button when creating a task.
 		etv.disableSave();
@@ -80,22 +65,9 @@ public class TabPaneController {
 		int index = this.tabPaneV.getTabCount() - 1;
 		this.tabPaneV.setSelectedIndex(index);
 
-		// Set actual effort field enabled only if the selected stage is
-		// "Complete"
-		if (etv.getSelectedStage().equals("Complete")) {
-			etv.getActEffort().setEnabled(true);
-		} else {
-			etv.getActEffort().setEnabled(false);
-		}
-
 		// Clear all activities, reset fields.
 		etv.clearActivities();
 		etv.resetFields();
-
-		// Add Created Task activity and reload panel.
-		etv.addActivity(new ActivityModel("Created Task",
-				activityModelType.CREATION));
-		etv.reloadActivitiesPanel();
 
 		// fills the user lists
 		ArrayList<String> projectUserNames = new ArrayList<String>();
@@ -130,7 +102,7 @@ public class TabPaneController {
 		if (exists) {
 			tabPaneV.setSelectedComponent(etv2);
 		} else {
-			addTab("Edit Task", etv, true);
+			addTab(etv.getTitle().getText(), etv, true);
 			tabPaneV.setSelectedComponent(etv);
 		}
 	}
