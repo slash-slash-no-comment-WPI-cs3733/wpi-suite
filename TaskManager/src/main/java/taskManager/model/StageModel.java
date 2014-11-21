@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.google.gson.Gson;
-
 import edu.wpi.cs.wpisuitetng.network.Network;
 import edu.wpi.cs.wpisuitetng.network.Request;
 import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
@@ -33,6 +31,7 @@ import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
 
 public class StageModel extends AbstractJsonableModel<StageModel> {
 
+	// Generic logger
 	private static final Logger logger = Logger.getLogger(StageModel.class
 			.getName());
 
@@ -165,7 +164,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 *            The task to look for
 	 *
 	 *
-	 * 
+	 *
 	 * @return If the stage contains the task
 	 */
 	public boolean containsTask(TaskModel task) {
@@ -179,7 +178,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 *            The id of the task to look for
 	 *
 	 *
-	 * 
+	 *
 	 * @return the task if found, null otherwise.
 	 */
 	public TaskModel findTaskByID(String id) {
@@ -199,7 +198,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 * @param id
 	 *            The id of the task to look for
 	 *
-	 * 
+	 *
 	 * @return the task if found, null otherwise.
 	 */
 	public boolean containsTaskByID(String id) {
@@ -222,7 +221,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 *            The name of the task to look for
 	 *
 	 *
-	 * 
+	 *
 	 * @return The number of different tasks by that name in the stage.
 	 */
 	public List<TaskModel> findTaskByName(String name) {
@@ -259,6 +258,12 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	public void addTask(int index, TaskModel task) {
 		taskList.add(index, task);
 		task.setStage(this);
+		// task.save();
+	}
+
+	public void moveTask(int index, TaskModel task) {
+		taskList.remove(task);
+		addTask(index, task);
 	}
 
 	/**
@@ -271,7 +276,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 *            The name of the task to search for.
 	 *
 	 *
-	 * 
+	 *
 	 * @return The removed task, null if no task removed.
 	 */
 	public TaskModel removeTaskByName(String taskName) {
@@ -300,7 +305,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 *            The id of the task to remove.
 	 *
 	 *
-	 * 
+	 *
 	 * @return The removed task, null if no task removed.
 	 */
 	public TaskModel removeTaskByID(String id) {
@@ -323,7 +328,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 *            The task to add
 	 *
 	 *
-	 * 
+	 *
 	 * @return The removed task, null if no task removed.
 	 */
 	public TaskModel removeTask(TaskModel task) {
@@ -345,7 +350,6 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 */
 	public void makeIdenticalTo(StageModel stage) {
 		setID(stage.getID());
-		taskList = stage.getTasks();
 		name = stage.getName();
 	}
 
@@ -365,25 +369,6 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 		request.setBody(toJson());
 		request.addObserver(getObserver());
 		request.send();
-	}
-
-	@Override
-	public String toJson() {
-		final Gson gson = new Gson();
-		return gson.toJson(this);
-	}
-
-	/**
-	 * Static method for deserializing object from JSON
-	 *
-	 * @param serialized
-	 *            JSON string
-	 * 
-	 * @return the deserialized TaskModel
-	 */
-	public static StageModel fromJson(String serialized) {
-		final Gson gson = new Gson();
-		return gson.fromJson(serialized, StageModel.class);
 	}
 
 	/*
