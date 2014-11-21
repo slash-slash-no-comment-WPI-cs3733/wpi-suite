@@ -13,8 +13,6 @@ import java.awt.Component;
 import java.util.ArrayList;
 
 import taskManager.JanewayModule;
-import taskManager.model.ActivityModel;
-import taskManager.model.ActivityModel.activityModelType;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
 import taskManager.view.ManageStageView;
@@ -71,11 +69,6 @@ public class TabPaneController {
 		etv.clearActivities();
 		etv.resetFields();
 
-		// Add Created Task activity and reload panel.
-		etv.addActivity(new ActivityModel("Created Task",
-				activityModelType.CREATION));
-		etv.reloadActivitiesPanel();
-
 		// fills the user lists
 		ArrayList<String> projectUserNames = new ArrayList<String>();
 		for (User u : JanewayModule.users) {
@@ -109,7 +102,7 @@ public class TabPaneController {
 		if (exists) {
 			tabPaneV.setSelectedComponent(etv2);
 		} else {
-			addTab("Edit Task", etv, true);
+			addTab(etv.getTitle().getText(), etv, true);
 			tabPaneV.setSelectedComponent(etv);
 		}
 	}
