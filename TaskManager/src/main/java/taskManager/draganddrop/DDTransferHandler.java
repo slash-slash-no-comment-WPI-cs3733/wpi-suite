@@ -10,6 +10,7 @@ package taskManager.draganddrop;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
@@ -21,61 +22,99 @@ import taskManager.model.FetchWorkflowObserver;
 
 /**
  * 
- * Creates the transferable representation of TaskPanel.
+ * Handler for a drag-and-drop transfer
  *
  * @author Sam Khalandovsky
  * @version Nov 17, 2014
  */
 class DDTransferHandler extends TransferHandler {
-	// TODO super?
 
+	private static final long serialVersionUID = -7859524821673270515L;
+
+	// This DataFlavor represents a task being dragged
+	private static DataFlavor taskFlavor;
+
+	/**
+	 * Lazy-load the DataFlavor associated with tasks
+	 *
+	 * @return the DataFlavor
+	 */
+	public static DataFlavor getTaskFlavor() {
+		if (taskFlavor == null) {
+			try {
+				taskFlavor = new DataFlavor(
+						DataFlavor.javaJVMLocalObjectMimeType
+								+ ";class=taskManager.draganddrop.TaskPanel");
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		return taskFlavor;
+	}
+
+	/**
+	 * Creates a Transferable object; draggable panels implement Transferable,
+	 * so simply return the casted object
+	 * 
+	 * @see javax.swing.TransferHandler#createTransferable(javax.swing.JComponent)
+	 */
 	public Transferable createTransferable(JComponent comp) {
-		if (comp instanceof TaskPanel) {
-			System.out.println("Transferable created");
-			// Container parent = comp.getParent();
-			//
-			// parent.remove(comp);
-			// parent.revalidate();
-			// parent.repaint();
-
-			TaskPanel panel = (TaskPanel) comp;
-
-			// Create drag images
-			Image image = new BufferedImage(panel.getWidth(),
-					panel.getHeight(), BufferedImage.TYPE_INT_ARGB);
-			Graphics g = image.getGraphics();
-			g = g.create();
-			// g.translate(panel.getWidth(), panel.getHeight());
-			panel.paint(g);
-			panel.getTransferHandler().setDragImage(image);
-			panel.getTransferHandler().setDragImageOffset(panel.getOffset());
-
-			return panel;
+		// Make sure the component really is Transferable
+		if (comp instanceof Transferable) {
+			return (Transferable) comp;
 		}
 		return null;
 	}
 
+	/**
+	 * Returns the transfer types supported by the passed object.
+	 * 
+	 * @see javax.swing.TransferHandler#getSourceActions(javax.swing.JComponent)
+	 */
 	public int getSourceActions(JComponent comp) {
-		System.out.println("Return allowed actions");
-		if (comp instanceof TaskPanel) {
-			return TransferHandler.COPY; // TODO should be move
-		}
-		return TransferHandler.NONE;
+		// All of our drags are of type MOVE
+		return TransferHandler.MOVE;
 	}
 
-	// Do all setup actions when drag is initiated
+	/**
+	 * Perform all necessary setup actions before a drag.
+	 * 
+	 * Note: dragOver won't be called on a stage until the mouse is moved AFTER
+	 * this method is called. That's why we don't make the task visible here.
+	 * 
+	 * @see javax.swing.TransferHandler#exportAsDrag(javax.swing.JComponent,
+	 *      java.awt.event.InputEvent, int)
+	 */
 	@Override
 	public void exportAsDrag(JComponent comp, InputEvent e, int action) {
+		// Ignore all responses from server while drag is active
 		FetchWorkflowObserver.ignoreAllResponses = true;
+
+		// Create drag image
+		Image image = new BufferedImage(comp.getWidth(), comp.getHeight(),
+				BufferedImage.TYPE_INT_ARGB);
+		Graphics g = image.getGraphics();
+		g = g.create();
+		comp.paint(g);
+		setDragImage(image);
+
+		// Initiate the drag
 		super.exportAsDrag(comp, e, action);
 	}
 
-	// Do all cleanup actions after drag is complete
+	/**
+	 * Perform all necessary cleanup actions after a drag.
+	 * 
+	 * @see javax.swing.TransferHandler#exportDone(javax.swing.JComponent,
+	 *      java.awt.datatransfer.Transferable, int)
+	 */
 	@Override
-	protected void exportDone(JComponent source, Transferable data, int action) {
-		System.out.println("Export DONE");
+	protected void exportDone(JComponent comp, Transferable data, int action) {
+		// Resume updating from the server
 		FetchWorkflowObserver.ignoreAllResponses = false;
-		super.exportDone(source, data, action);
+
+		// Show the task
+		comp.setVisible(true);
 	}
 
 }

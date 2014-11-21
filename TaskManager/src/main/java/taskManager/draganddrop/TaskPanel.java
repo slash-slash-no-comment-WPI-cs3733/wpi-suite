@@ -46,7 +46,7 @@ public class TaskPanel extends JPanel implements Transferable {
 	private class TaskMouseListener extends MouseAdapter {
 		public void mousePressed(MouseEvent e) {
 			System.out.println("Panel pressed");
-			mouseOffset = e.getPoint();
+			getTransferHandler().setDragImageOffset(e.getPoint());
 			pos = TaskPanel.this.getLocationOnScreen();
 		}
 
@@ -57,7 +57,7 @@ public class TaskPanel extends JPanel implements Transferable {
 
 			JComponent comp = (JComponent) e.getSource();
 			TransferHandler handler = comp.getTransferHandler();
-			handler.exportAsDrag(comp, e, TransferHandler.COPY);// TODO
+			handler.exportAsDrag(comp, e, TransferHandler.MOVE);// TODO
 																// should be
 																// move
 		}
@@ -72,24 +72,15 @@ public class TaskPanel extends JPanel implements Transferable {
 		return dragActive;
 	}
 
-	public Point getOffset() {
-		return mouseOffset;
-	}
-
 	public void move(Point pos) {
 		this.pos = pos;
 	}
-
-	/*
-	 * public void paint(Graphics g) { if (dragActive) { g = g.create();
-	 * g.translate(pos.x, pos.y); super.paint(g); } else { super.paint(g); } }
-	 */
 
 	@Override
 	public Object getTransferData(DataFlavor flavor)
 			throws UnsupportedFlavorException, IOException {
 		System.out.println("Gettin task transfer data");
-		if (flavor.equals(DDManager.taskPanelFlavor)) {
+		if (flavor.equals(DDTransferHandler.getTaskFlavor())) {
 			return this;
 		}
 		return null;
@@ -98,14 +89,14 @@ public class TaskPanel extends JPanel implements Transferable {
 	@Override
 	public DataFlavor[] getTransferDataFlavors() {
 		System.out.println("Gettin task transfer data flavors");
-		DataFlavor[] flavors = { DDManager.taskPanelFlavor };
+		DataFlavor[] flavors = { DDTransferHandler.getTaskFlavor() };
 		return flavors;
 	}
 
 	@Override
 	public boolean isDataFlavorSupported(DataFlavor flavor) {
 		System.out.println("Is data flavor supported?");
-		return flavor.equals(DDManager.taskPanelFlavor);
+		return flavor.equals(DDTransferHandler.getTaskFlavor());
 	}
 }
 

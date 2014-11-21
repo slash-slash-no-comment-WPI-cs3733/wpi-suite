@@ -99,12 +99,8 @@ public class StagePanel extends JPanel {
 
 		add(transferredPanel, newIndex);
 
-		transferredPanel.setVisible(true);
 		hidePlaceholder();
 		calculateCenters();
-
-		revalidate();
-		repaint();
 
 		// TODO Put controller callback here!
 	}
@@ -278,10 +274,10 @@ class StageDropListener implements DropTargetListener {
 
 		Transferable trans = e.getTransferable();
 		TaskPanel transferredPanel;
-		if (trans.isDataFlavorSupported(DDManager.taskPanelFlavor)) {
+		if (trans.isDataFlavorSupported(DDTransferHandler.getTaskFlavor())) {
 			try {
 				transferredPanel = (TaskPanel) trans
-						.getTransferData(DDManager.taskPanelFlavor);
+						.getTransferData(DDTransferHandler.getTaskFlavor());
 			} catch (Exception ex) {
 				System.out.println(ex.getStackTrace());
 				return;
@@ -317,10 +313,10 @@ class StageDropListener implements DropTargetListener {
 		// Getting placeholder's size & making sure it's a TaskPanel
 		Transferable trans = e.getTransferable();
 		TaskPanel transferredPanel;
-		if (trans.isDataFlavorSupported(DDManager.taskPanelFlavor)) {
+		if (trans.isDataFlavorSupported(DDTransferHandler.getTaskFlavor())) {
 			try {
 				transferredPanel = (TaskPanel) trans
-						.getTransferData(DDManager.taskPanelFlavor);
+						.getTransferData(DDTransferHandler.getTaskFlavor());
 			} catch (Exception ex) {
 				System.out.println(ex.getStackTrace());
 				return;
@@ -331,12 +327,9 @@ class StageDropListener implements DropTargetListener {
 		}
 		Dimension placeholderSize = transferredPanel.getSize();
 
-		// only draw placeholder if task has been made invisible
-		// necessary to avoid flicker when placeholder is drawn before task is
-		// hidden
-		if (!transferredPanel.isVisible()) {
-			stage.drawPlaceholder(e.getLocation(), placeholderSize);
-		}
+		transferredPanel.setVisible(false);
+
+		stage.drawPlaceholder(e.getLocation(), placeholderSize);
 	}
 
 	// Careful with this due to it being called after leaving a TaskPanel

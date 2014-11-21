@@ -14,7 +14,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import taskManager.draganddrop.DDManager;
 import taskManager.draganddrop.StagePanel;
 import taskManager.draganddrop.TaskPanel;
 import taskManager.view.TaskView;
@@ -31,7 +30,6 @@ public class TestLayout extends JFrame {
 	Random random = new Random(); // Randomizing for colors...
 
 	public TestLayout() {
-		new DDManager();
 
 		this.setTitle("Test Layout");
 		root = new JPanel();
