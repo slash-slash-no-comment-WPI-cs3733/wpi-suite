@@ -13,7 +13,9 @@ import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -170,7 +172,8 @@ public class EditTaskController implements ActionListener {
 				// view requirement in requirement manager
 
 				if (requirement == null) {
-					// TODO: warn user that no requirement is selected
+					JOptionPane.showMessageDialog(etv,
+							"A requirement needs to be selected.");
 					return;
 				}
 
@@ -247,6 +250,7 @@ public class EditTaskController implements ActionListener {
 	 */
 	private void returnToWorkflowView() {
 		JanewayModule.tabPaneC.removeTabByComponent(etv);
+		JanewayModule.tabPaneC.getTabView().reloadWorkflow();
 	}
 
 	/**
@@ -323,4 +327,186 @@ public class EditTaskController implements ActionListener {
 
 	}
 
+	/**
+	 * 
+	 * Returns the taskID.
+	 *
+	 * @return the taskID.
+	 */
+	public String getTaskID() {
+		return etv.getTitle().getName();
+	}
+
+	/**
+	 * 
+	 * Returns a boolean of whether or not the task is edited.
+	 * 
+	 * @return boolean stating whether the task is edited.
+	 */
+	public Boolean isEdited() {
+		Boolean edited = false;
+
+		// Get the stage of the task.
+		boolean exists = false;
+		StageModel currentStage = wfm.findStageByName("New");
+		for (StageModel stage : wfm.getStages()) {
+			if (stage.containsTaskByID(getTaskID())) {
+				exists = true;
+				currentStage = stage;
+				break;
+			} else {
+				exists = false;
+			}
+		}
+		if (!exists) {
+			return false;
+		}
+
+		// Compare the task info with the filled in info.
+		TaskModel task = currentStage.findTaskByID(getTaskID());
+
+		// Title.
+		if (!task.getName().equals(etv.getTitle().getText())) {
+			edited = true;
+		}
+		// Description.
+		else if (!task.getDescription().equals(etv.getDescription().getText())) {
+			edited = true;
+		}
+		// Due Date.
+		else if (!task.getDueDate().equals(etv.getDateField().getDate())) {
+			edited = true;
+		}
+		// Stage.
+		else if (!task.getStage().getName().equals(etv.getSelectedStage())) {
+			edited = true;
+		}
+		// Users.
+		else if (checkUsers(task)) {
+			edited = true;
+		}
+		// Estimated effort.
+		else if (checkEstEffort(task)) {
+			edited = true;
+		}
+		// Actual effort.
+		else if (checkActEffort(task)) {
+			edited = true;
+		}
+		// Requirements.
+		else if (checkReq(task)) {
+			edited = true;
+		}
+		return edited;
+	}
+
+	/**
+	 * 
+	 * Checks whether the users in the view and the users stored in the task are
+	 * the same.
+	 *
+	 * @param The
+	 *            task to check with.
+	 * @return true if there are edits.
+	 */
+	public Boolean checkUsers(TaskModel task) {
+		Boolean edited = false;
+		Set<String> taskAssigned = new HashSet<String>();
+		taskAssigned = task.getAssigned();
+		Set<String> usersAssigned = new HashSet<String>();
+		usersAssigned.addAll(etv.getUsersList().getAllValues());
+		if (!taskAssigned.equals(usersAssigned)) {
+			edited = true;
+		}
+		return edited;
+	}
+
+	/**
+	 * 
+	 * Checks whether the estimated effort value in the task and on the view are
+	 * equivalent.
+	 *
+	 * @param The
+	 *            task to check if.
+	 * @return true if there are edits.
+	 */
+	public Boolean checkEstEffort(TaskModel task) {
+		Boolean edited = false;
+		if (task.getEstimatedEffort() == 0) {
+			if (etv.getEstEffort().getText().isEmpty()) {
+				edited = false;
+			} else {
+				edited = true;
+			}
+		} else {
+			Integer taskEffort = task.getEstimatedEffort();
+			Integer etvEffort;
+			try {
+				etvEffort = Integer.parseInt(etv.getEstEffort().getText());
+				if (!taskEffort.equals(etvEffort)) {
+					edited = true;
+				}
+			} catch (NumberFormatException e) {
+				edited = true;
+			}
+		}
+		return edited;
+	}
+
+	/**
+	 * 
+	 * Checks whether the actual effort value in the task and on the view are
+	 * equivalent.
+	 *
+	 * @param The
+	 *            task to check if.
+	 * @return true if there are edits.
+	 */
+	public Boolean checkActEffort(TaskModel task) {
+		Boolean edited = false;
+		if (task.getActualEffort() == 0) {
+			if (etv.getActEffort().getText().isEmpty()) {
+				edited = false;
+			} else {
+				edited = true;
+			}
+		} else {
+			Integer taskEffort = task.getActualEffort();
+			Integer etvEffort;
+			try {
+				etvEffort = Integer.parseInt(etv.getActEffort().getText());
+				if (!taskEffort.equals(etvEffort)) {
+					edited = true;
+				}
+			} catch (NumberFormatException e) {
+				edited = true;
+			}
+		}
+		return edited;
+	}
+
+	/**
+	 * 
+	 * Checks whether the requirement in the task and on the view are
+	 * equivalent.
+	 *
+	 * @param The
+	 *            task to check if.
+	 * @return true if there are edits.
+	 */
+	public Boolean checkReq(TaskModel task) {
+		Boolean edited = false;
+		if (task.getReq() == null) {
+			if (etv.getRequirements().getSelectedItem().toString()
+					.equals("[None]")) {
+				edited = false;
+			} else {
+				edited = true;
+			}
+		} else if (!task.getReq().getName()
+				.equals(etv.getRequirements().getSelectedItem().toString())) {
+			edited = true;
+		}
+		return edited;
+	}
 }

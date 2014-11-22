@@ -12,8 +12,6 @@ package taskManager.controller;
 import java.awt.Component;
 import java.util.ArrayList;
 
-import javax.swing.JOptionPane;
-
 import taskManager.JanewayModule;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
@@ -183,19 +181,9 @@ public class TabPaneController {
 		if (component instanceof ManageUsersView) {
 			manageUsersTabOpen = false;
 		}
-		if (component instanceof EditTaskView) {
-			Integer choice = JOptionPane
-					.showConfirmDialog(tabPaneV,
-							"You still have unsaved edits. Are you sure you want to delete this tab?");
-			if (choice.equals(JOptionPane.YES_OPTION)) {
-				tabPaneV.remove(component);
-				reloadWorkflow();
-			}
-		} else if (!(component instanceof WorkflowView)) {
+		if (!(component instanceof WorkflowView)) {
 			tabPaneV.remove(component);
-			tabPaneV.setSelectedIndex(0);
 		}
-
 	}
 
 	/**

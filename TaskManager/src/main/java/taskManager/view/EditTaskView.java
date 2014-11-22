@@ -812,4 +812,14 @@ public class EditTaskView extends JPanel {
 	public JPanel getWindow() {
 		return this.window;
 	}
+
+	/**
+	 * 
+	 * Returns the EditTaskController.
+	 *
+	 * @return the controller.
+	 */
+	public EditTaskController getController() {
+		return controller;
+	}
 }
