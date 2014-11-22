@@ -1,5 +1,4 @@
 /*******************************************************************************
- * Copyright (c) 2012-2014 -- WPI Suite
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -203,10 +202,12 @@ public class EditTaskView extends JPanel {
 		// Add user to list
 		addUser = new JButton("Add User");
 		addUser.setName(ADD_USER);
+		this.setAddUserEnabled(false);
 		// remove user from list
 
 		removeUser = new JButton("Remove User");
 		removeUser.setName(REMOVE_USER);
+		this.setRemoveUserEnabled(false);
 
 		// Add comment to comments
 		submitComment = new JButton("Submit Comment");
@@ -399,6 +400,8 @@ public class EditTaskView extends JPanel {
 		estEffortField.addKeyListener(controller);
 		actEffortField.addKeyListener(controller);
 		stages.addPopupMenuListener(controller);
+		usersList.setController(controller);
+		projectUsersList.setController(controller);
 	}
 
 	/**
@@ -647,6 +650,24 @@ public class EditTaskView extends JPanel {
 	 */
 	public void enableDelete() {
 		this.delete.setEnabled(true);
+	}
+
+	/**
+	 * set the add user button enabled or disabled
+	 * 
+	 * @param e
+	 */
+	public void setAddUserEnabled(boolean e) {
+		this.addUser.setEnabled(e);
+	}
+
+	/**
+	 * sets the remove user button enabled or disabled
+	 * 
+	 * @param e
+	 */
+	public void setRemoveUserEnabled(boolean e) {
+		this.removeUser.setEnabled(e);
 	}
 
 	/**
