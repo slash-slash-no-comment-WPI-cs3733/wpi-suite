@@ -25,23 +25,14 @@ public class WorkflowView extends JLayeredPane {
 	private static final long serialVersionUID = 1L;
 
 	private WorkflowController controller;
-	private JPanel stages;
-	private TaskInfoPreviewView taskInfoView;
 
 	/**
 	 * Constructor for WorkflowView.
 	 */
 	public WorkflowView() {
-		stages = new JPanel();
-
-		// ignores the task info view so the stages view fills up the screen
+		// ignores the task info view and arranges the stages horizontally
+		// and evenly spaced
 		this.setLayout(new WorkflowLayout());
-
-		// arranges the stages horizontally and evenly spaced
-		stages.setLayout(new FlowLayout());
-
-		this.add(stages);
-		this.setLayer(stages, JLayeredPane.DEFAULT_LAYER);
 	}
 
 	/**
@@ -50,7 +41,7 @@ public class WorkflowView extends JLayeredPane {
 	 *            house the stage view object sets the size and border
 	 */
 	public void addStageView(StageView stv) {
-		stages.add(stv);
+		add(stv, JLayeredPane.DEFAULT_LAYER);
 	}
 
 	/**
@@ -77,9 +68,9 @@ public class WorkflowView extends JLayeredPane {
 		try {
 			// goes through all of the stage views it contains until it finds
 			// the one that matches the name
-			for (int i = 1; i == stages.getComponents().length; i++) {
-				if (stages.getComponent(i).getName().equals(name)) {
-					return (StageView) stages.getComponent(i);
+			for (int i = 1; i == getComponents().length; i++) {
+				if (getComponent(i).getName().equals(name)) {
+					return (StageView) getComponent(i);
 				} else {
 					// do nothing, keep checking
 				}
@@ -99,29 +90,6 @@ public class WorkflowView extends JLayeredPane {
 			controller.reloadData();
 		}
 		super.setVisible(visible);
-	}
-
-	@Override
-	public void removeAll() {
-		if (stages != null) {
-			stages.removeAll();
-		}
-	}
-
-	@Override
-	public void revalidate() {
-		super.revalidate();
-		if (stages != null) {
-			stages.revalidate();
-		}
-	}
-
-	@Override
-	public void repaint() {
-		super.repaint();
-		if (stages != null) {
-			stages.repaint();
-		}
 	}
 
 }
