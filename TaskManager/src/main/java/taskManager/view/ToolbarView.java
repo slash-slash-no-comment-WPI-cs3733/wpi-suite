@@ -111,7 +111,9 @@ public class ToolbarView extends JToolBar {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		archive.setToolTipText("Drag here to archive task");
 		archive.setEnabled(false);
+		delete.setToolTipText("Drag here to delete task");
 		delete.setEnabled(false);
 		
 		// Construct the project title
