@@ -15,8 +15,6 @@ import java.util.Date;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
-import javax.swing.JToolTip;
-import javax.swing.ToolTipManager;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
@@ -118,20 +116,5 @@ public class TaskView extends TaskPanel {
 	public void setVisible(boolean visible) {
 		controller.resetBackground();
 		super.setVisible(visible);
-	}
-
-	/**
-	 * Returns the instance of <code>JToolTip</code> that should be used to
-	 * display the tooltip.
-	 *
-	 * @return the <code>JToolTip</code> used to display this toolTip
-	 */
-	@Override
-	public JToolTip createToolTip() {
-		JToolTip tip = new JToolTip();
-		ToolTipManager toolTipManager = ToolTipManager.sharedInstance();
-		this.setToolTipText("ho");
-		tip.setComponent(new TaskInfoPreviewView(model, controller));
-		return tip;
 	}
 }

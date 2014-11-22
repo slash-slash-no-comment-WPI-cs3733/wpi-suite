@@ -76,8 +76,7 @@ public class TaskController implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		view.createToolTip();
-		System.out.println("clicked a task");
+		// TODO: Add the stuff for the floating panel here
 	}
 
 	public void editTask() {
