@@ -219,7 +219,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		if (toIndex == -1) {
 			toStage.addTask(task);
 		} else {
-			toStage.addTask(toIndex, task);
+			toStage.addTask(task, toIndex);
 		}
 		fromStage.removeTask(task);
 		task.addActivity(movedTask);

@@ -241,29 +241,27 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 *            the task to add.
 	 */
 	public void addTask(TaskModel task) {
-		addTask(taskList.size(), task);
-		task.setStage(this);
+		addTask(task, -1);
 	}
 
 	// TODO: Do the tasks need ordering? If not, let's replace this taskList
 	// method and use a collection for speed.
 	/**
 	 * Duplicate task names are handled by the Workflow.
-	 *
-	 * @param index
-	 *            the index to insert the task at
+	 * 
 	 * @param task
 	 *            the task to add
+	 * @param index
+	 *            the index to insert the task at
 	 */
-	public void addTask(int index, TaskModel task) {
-		taskList.add(index, task);
+	public void addTask(TaskModel task, int index) {
+		task.getStage().removeTask(task); // remove from old parent
+		if (index == -1) {// add to end of list
+			taskList.add(task);
+		} else {
+			taskList.add(index, task);
+		}
 		task.setStage(this);
-		// task.save();
-	}
-
-	public void moveTask(int index, TaskModel task) {
-		taskList.remove(task);
-		addTask(index, task);
 	}
 
 	/**

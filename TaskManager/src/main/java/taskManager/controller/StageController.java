@@ -54,8 +54,16 @@ public class StageController {
 
 	}
 
-	public StageModel getModel() {
-		return model;
+	/**
+	 * Add a task to this stage
+	 *
+	 * @param tc
+	 *            task controller for task
+	 * @param index
+	 *            index at which to add it
+	 */
+	public void addTask(TaskController tc, int index) {
+		tc.moveToStage(model, index);
 	}
 
 }

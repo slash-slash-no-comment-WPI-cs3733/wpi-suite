@@ -107,8 +107,8 @@ public class TaskView extends TaskPanel {
 		this.addMouseListener(this.controller);
 	}
 
-	public TaskModel getModel() {
-		return model;
+	public TaskController getController() {
+		return controller;
 	}
 
 	@Override
@@ -116,4 +116,5 @@ public class TaskView extends TaskPanel {
 		controller.resetBackground();
 		super.setVisible(visible);
 	}
+
 }
