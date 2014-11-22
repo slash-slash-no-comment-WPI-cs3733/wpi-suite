@@ -46,6 +46,8 @@ public class TestEditTaskController {
 
 	private final String[] stageNames = { "New", "Scheduled", "In Progress",
 			"Complete" };
+	private final User testUser = new User("testUser", "testUser", "password",
+			1234);
 
 	private FrameFixture fixture;
 	private JFrame frame;
@@ -234,8 +236,8 @@ public class TestEditTaskController {
 	public void testAddUsers() {
 		// create users
 
-		JanewayModule.users = new User[] {
-				new User("name1", "name1", "password", 1234),
+		JanewayModule.users = new User[] { testUser,
+				new User("name1", "name1", "password", 4321),
 				new User("name2", "name2", "password", 5678),
 				new User("name3", "name3", "password", 9876) };
 		TaskModel task = createAndLoadTask();
@@ -252,28 +254,25 @@ public class TestEditTaskController {
 		}
 
 		ArrayList<String> result = new ArrayList<String>();
-		result.add("name1");
+		result.add("testUser");
 		result.add("name2");
-		assertEquals(users, result);
+		result.add("name1");
+		assertEquals(result, users);
 	}
 
 	@Test
 	public void testRemoveUsers() {
 		// create users
-
-		JanewayModule.users = new User[] {
-				new User("name1", "name1", "password", 1234),
+		JanewayModule.users = new User[] { testUser,
 				new User("name2", "name2", "password", 5678),
 				new User("name3", "name3", "password", 9876) };
+
 		TaskModel task = createAndLoadTask();
 
-		// make sure it has no requirement yet
-		task.addAssigned(new User("name3", "name3", "password", 9876));
 		etv.getUsersList().setSelected(new int[] { 0 });
 		fixture.button(EditTaskView.REMOVE_USER).click();
 		fixture.button(EditTaskView.SAVE).click();
 
-		// make sure the task got the requirement
 		ArrayList<String> users = new ArrayList<String>();
 		for (String user : task.getAssigned()) {
 			users.add(user);
@@ -307,6 +306,7 @@ public class TestEditTaskController {
 		task.setDueDate(Calendar.getInstance().getTime());
 		task.setEstimatedEffort(5);
 		task.setActualEffort(7);
+		task.addAssigned(testUser);
 
 		// load the edit view
 		TaskController tc = new TaskController(null, task);

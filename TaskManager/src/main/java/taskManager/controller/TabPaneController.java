@@ -58,7 +58,7 @@ public class TabPaneController {
 
 		etv.setRefreshEnabled(false);
 		// Disable save button when creating a task.
-		etv.disableSave();
+		etv.setSaveEnabled(false);
 
 		addTab("Create Task", etv, true);
 		// Focuses on the new tab
