@@ -13,6 +13,7 @@ import static org.junit.Assert.fail;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -226,6 +227,26 @@ public class TestEditTaskController {
 		fixture.comboBox(EditTaskView.REQUIREMENTS).requireSelection(
 				req.getName());
 
+	}
+
+	@Test
+	public void testAddUsers() {
+		// create users
+		TaskModel task = createAndLoadTask();
+
+		// make sure it has no requirement yet
+		etv.getProjectUsersList().setSelected(new int[] { 1 });
+		fixture.button(EditTaskView.ADD_USER).click();
+		fixture.button(EditTaskView.SAVE).click();
+
+		// make sure the task got the requirement
+		ArrayList<String> users = new ArrayList<String>();
+		for (String user : task.getAssigned()) {
+			users.add(user);
+		}
+		ArrayList<String> result = new ArrayList<String>();
+		result.add("admin");
+		assertEquals(users, result);
 	}
 
 	@After
