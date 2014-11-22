@@ -17,6 +17,7 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 
 import taskManager.JanewayModule;
@@ -126,14 +127,18 @@ public class EditTaskController implements ActionListener {
 				break;
 
 			case EditTaskView.DELETE:
-				// delete this task
-				task = currentStage.findTaskByID(taskID);
-				currentStage.getTasks().remove(task);
-				etv.resetFields();
+				Integer choice = JOptionPane.showConfirmDialog(etv,
+						"Are you sure you want to delete this task?");
+				if (choice.equals(JOptionPane.YES_OPTION)) {
+					// delete this task
+					task = currentStage.findTaskByID(taskID);
+					currentStage.getTasks().remove(task);
+					etv.resetFields();
 
-				// Save entire workflow whenever a task is deleted
-				wfm.save();
-				returnToWorkflowView();
+					// Save entire workflow whenever a task is deleted
+					wfm.save();
+					returnToWorkflowView();
+				}
 				break;
 
 			case EditTaskView.ADD_USER:
