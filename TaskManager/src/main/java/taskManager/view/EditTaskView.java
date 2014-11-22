@@ -218,7 +218,7 @@ public class EditTaskView extends JPanel {
 		// saves all the data and closes the window
 		save = new JButton("Save");
 		save.setName(SAVE);
-		this.disableSave();
+		this.setSaveEnabled(false);
 		// closes the window without saving
 		cancel = new JButton("Cancel");
 		cancel.setName(CANCEL);
@@ -696,17 +696,13 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * enables the ability to click the save button
+	 * enables or disables the save button
+	 * 
+	 * @param e
+	 *            true is enabled, false is disabled
 	 */
-	public void enableSave() {
-		this.save.setEnabled(true);
-	}
-
-	/**
-	 * disables the ability to click the save button
-	 */
-	public void disableSave() {
-		this.save.setEnabled(false);
+	public void setSaveEnabled(boolean e) {
+		this.save.setEnabled(e);
 	}
 
 	/**
