@@ -22,7 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import taskManager.controller.StageController;
-import taskManager.prototypeDnD.StagePanel;
+import taskManager.draganddrop.StagePanel;
 
 /**
  * @author Beth Martino

@@ -61,8 +61,7 @@ public class ManageStageController implements ActionListener {
 
 			StageModel stage = null;
 
-			stages = model.getStages();
-			for (StageModel s : model.getStages()) {
+			for (StageModel s : stages) {
 				if (s.getName().equals(stageID)) {
 					stage = s;
 					break;
@@ -72,13 +71,14 @@ public class ManageStageController implements ActionListener {
 			// take the appropriate action
 			switch (buttonName) {
 			case ManageStageView.DELETE:
-				if (stage.isRemovable()) {
+				if (stages.size() >= 2) {
 					view.removeStage(stageID);
 					model.getStages()
 							.removeIf(s -> s.getName().equals(stageID));
 					// refresh the view
 					view.updateUI();
 				}
+				reloadData();
 				break;
 			case ManageStageView.MOVE_UP:
 				// move the stage up by 1
@@ -112,6 +112,7 @@ public class ManageStageController implements ActionListener {
 				view.getNewStageNameField().setText(
 						ManageStageView.NEW_STAGE_NAME);
 				view.updateUI();
+				reloadData();
 				break;
 			default:
 				System.out.println("Unknown button pushed");
@@ -129,9 +130,19 @@ public class ManageStageController implements ActionListener {
 	 */
 	public void reloadData() {
 		view.removeAllStages();
-		for (StageModel stage : model.getStages()) {
-			view.addStage(stage.getName(), stage.getName(), stage.isRemovable());
+		List<StageModel> stages = model.getStages();
+
+		// If there are more than 2 stages display all of them as deletable.
+		// If there is one stage, the remaining stage is not deletable.
+		if (stages.size() >= 2) {
+			for (StageModel stage : stages) {
+				view.addStage(stage.getName(), stage.getName(), true);
+			}
+		} else if (stages.size() == 1) {
+			view.addStage(stages.get(0).getName(), stages.get(0).getName(),
+					false);
 		}
+
 		view.getNewStageNameField().setText(ManageStageView.NEW_STAGE_NAME);
 		view.updateUI();
 	}
