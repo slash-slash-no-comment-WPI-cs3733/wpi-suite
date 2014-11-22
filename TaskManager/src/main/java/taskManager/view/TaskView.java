@@ -15,7 +15,10 @@ import java.util.Date;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
+import javax.swing.JToolTip;
+import javax.swing.ToolTipManager;
 import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import taskManager.controller.TaskController;
@@ -44,24 +47,24 @@ public class TaskView extends TaskPanel {
 	 *            the name of the task
 	 * @param duedate
 	 *            the due date of the task
-	 * @param estEffort
-	 *            the estimated effort for the task
 	 * @param taskID
 	 *            The ID of the task being displayed
 	 */
-	public TaskView(String name, Date duedate, int estEffort, TaskModel model) {
+	public TaskView(String name, Date duedate, TaskModel model) {
 		this.model = model; // TODO this should not be done!
 
 		// organizes the data in a vertical list
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		final Border raisedbevel = BorderFactory.createRaisedBevelBorder();
+		final Border raisedbevel = BorderFactory
+				.createEtchedBorder(EtchedBorder.LOWERED);
 		final TitledBorder title = BorderFactory
 				.createTitledBorder(raisedbevel);
 		title.setTitlePosition(TitledBorder.LEFT);
 		this.setBorder(title);
-		this.setMinimumSize(new Dimension(200, 100));
+		this.setMinimumSize(new Dimension(220, 40));
+		this.setPreferredSize(new Dimension(220, 40));
+		this.setMaximumSize(new Dimension(220, 40));
 
-		//
 		// convert Date object to Calendar object to avoid using deprecated
 		// Date methods.
 		final Calendar date = Calendar.getInstance();
@@ -115,5 +118,20 @@ public class TaskView extends TaskPanel {
 	public void setVisible(boolean visible) {
 		controller.resetBackground();
 		super.setVisible(visible);
+	}
+
+	/**
+	 * Returns the instance of <code>JToolTip</code> that should be used to
+	 * display the tooltip.
+	 *
+	 * @return the <code>JToolTip</code> used to display this toolTip
+	 */
+	@Override
+	public JToolTip createToolTip() {
+		JToolTip tip = new JToolTip();
+		ToolTipManager toolTipManager = ToolTipManager.sharedInstance();
+		this.setToolTipText("ho");
+		tip.setComponent(new TaskInfoPreviewView(model, controller));
+		return tip;
 	}
 }

@@ -24,6 +24,7 @@ import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
+import taskManager.view.TaskInfoPreviewView;
 import taskManager.view.TaskView;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
@@ -46,6 +47,7 @@ public class TaskController implements MouseListener {
 	private final User[] projectUsers = JanewayModule.users;
 	private Set<String> assignedUsers;
 	private Color background;
+	private TaskInfoPreviewView infoV;
 
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
@@ -74,19 +76,16 @@ public class TaskController implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// makes the delete button unclickable
-		etv.enableDelete();
-		// etv.removeAll();
+		view.createToolTip();
+		System.out.println("clicked a task");
+	}
 
-		// TODO: Populate with data?
-
+	public void editTask() {
 		// uses the title field to hold the unique id
 		etv.getTitle().setName(this.model.getID());
 
 		// uses description field to hold the name of the stage
 		etv.getDescription().setName(this.model.getStage().getName());
-		// makes the delete button unclickable
-		etv.enableDelete();
 
 		// populate editable fields with this tasks info
 		etv.setTitle(model.getName());
