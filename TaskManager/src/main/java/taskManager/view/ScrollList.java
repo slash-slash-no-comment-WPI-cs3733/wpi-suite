@@ -184,4 +184,8 @@ public class ScrollList extends JPanel {
 		return lm.isEmpty();
 	}
 
+	public String getValueAtIndex(int i) {
+		return lm.get(i);
+	}
+
 }
