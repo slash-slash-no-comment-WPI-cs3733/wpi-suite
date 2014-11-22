@@ -1,7 +1,9 @@
 package taskManager.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -18,24 +20,47 @@ public class ReportsManagerModel {
 	public Map<User, Map<Date, Double>> getVelocity(Set<User> users,
 			Date start, Date end, boolean averageCredit) {
 		Map<User, Map<Date, Double>> data = new HashMap<User, Map<Date, Double>>();
+		for (User user : users) {
+			data.put(user, new TreeMap<Date, Double>());
+		}
 		for (StageModel stage : workflow.getStages()) {
 			for (TaskModel task : stage.getTasks()) {
 				for (User user : task.getAssignedUsers()) {
-					Map<Date, Double> userData;
-					if (data.keySet().contains(user)) {
-						userData = data.get(user);
-					} else {
-						userData = new TreeMap<Date, Double>();
+					if (data.keySet().contains(user)) { // If we are tracking
+														// the user
+						Map<Date, Double> userData = data.get(user);
+						if (averageCredit) {
+							userData.put(task.getDueDate(),
+									(double) task.getEstimatedEffort()
+											/ task.getAssigned().size());
+						} else {
+							userData.put(task.getDueDate(),
+									(double) task.getEstimatedEffort());
+						}
+						data.put(user, userData);
 					}
-					if (averageCredit) {
-						userData.put(task.getDueDate(),
-								(double) task.getEstimatedEffort()
-										/ task.getAssigned().size());
-					} else {
-						userData.put(task.getDueDate(),
-								(double) task.getEstimatedEffort());
+				}
+			}
+		}
+		return data;
+	}
+
+	public Map<User, List<TaskModel>> getUserTasks(Set<User> users) {
+		Map<User, List<TaskModel>> data = new HashMap<User, List<TaskModel>>();
+		for (User user : users) {
+			data.put(user, new ArrayList<TaskModel>());
+		}
+		for (StageModel stage : workflow.getStages()) {
+			for (TaskModel task : stage.getTasks()) {
+				for (User user : task.getAssignedUsers()) {
+					if (data.keySet().contains(user)) { // If we are tracking
+														// the user
+						List<TaskModel> userData = data.get(user);
+						if (!userData.contains(task)) {
+							userData.add(task);
+						}
+						data.put(user, userData);
 					}
-					data.put(user, userData);
 				}
 			}
 		}
