@@ -16,7 +16,6 @@ import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
 import taskManager.view.WorkflowView;
-import edu.wpi.cs.wpisuitetng.janeway.config.ConfigManager;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.controller.GetRequirementsController;
 import edu.wpi.cs.wpisuitetng.network.Network;
@@ -82,18 +81,6 @@ public class WorkflowController {
 
 								JanewayModule.users = AbstractJsonableModel
 										.fromJson(body, User[].class);
-
-								// set project name and username if we haven't
-								// already
-								// these shouldn't change once logged in
-								if (JanewayModule.currentUser == null) {
-									JanewayModule.toolV
-											.setProjectName(ConfigManager
-													.getConfig()
-													.getProjectName());
-									JanewayModule.currentUser = ConfigManager
-											.getConfig().getUserName();
-								}
 							}
 
 							@Override

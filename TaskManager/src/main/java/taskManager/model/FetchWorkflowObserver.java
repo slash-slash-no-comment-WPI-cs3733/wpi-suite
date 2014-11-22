@@ -8,7 +8,7 @@
  *******************************************************************************/
 package taskManager.model;
 
-import taskManager.controller.WorkflowController;
+import taskManager.JanewayModule;
 import edu.wpi.cs.wpisuitetng.network.models.IRequest;
 import edu.wpi.cs.wpisuitetng.network.models.ResponseModel;
 
@@ -24,7 +24,6 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 	public static boolean ignoreAllResponses = false;
 
 	final WorkflowModel model;
-	WorkflowController controller;
 
 	/**
 	 * Constructor for Observer
@@ -34,10 +33,8 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 	 * @param controller
 	 *            will be called upon success if it is passed; null is allowed
 	 */
-	public FetchWorkflowObserver(WorkflowModel model,
-			WorkflowController controller) {
+	public FetchWorkflowObserver(WorkflowModel model) {
 		this.model = WorkflowModel.getInstance();
-		this.controller = controller;
 	}
 
 	/**
@@ -71,12 +68,7 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 		model.makeIdenticalTo(workflow);
 		model.rebuildAllRefs();
 
-		// Allow calling with null controller to permit testing without
-		// controller
-		if (controller != null) {
-			controller.reloadData();
-		}
-
+		JanewayModule.tabPaneC.getTabView().reloadWorkflow();
 	}
 
 }
