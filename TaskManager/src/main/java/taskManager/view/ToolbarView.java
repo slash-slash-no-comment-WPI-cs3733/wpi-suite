@@ -26,6 +26,8 @@ import taskManager.controller.ToolbarController;
 
 /**
  * The Task Managers tab's toolbar panel.
+ * 
+ * @author Clark Jacobsohn
  */
 @SuppressWarnings("serial")
 public class ToolbarView extends JToolBar {
@@ -47,7 +49,6 @@ public class ToolbarView extends JToolBar {
 
 	private JLabel projectName;
 
-	// TODO: Change ActionListener to ToolbarController when one exists
 	private ToolbarController controller;
 
 	/**
@@ -144,7 +145,6 @@ public class ToolbarView extends JToolBar {
 		manageStages.addActionListener(controller);
 		manageUsers.addActionListener(controller);
 		statistics.addActionListener(controller);
-		// refresh.addActionListener(controller);
 	}
 
 	@Override
