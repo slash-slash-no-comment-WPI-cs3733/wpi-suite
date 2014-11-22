@@ -145,28 +145,12 @@ public class EditTaskController implements ActionListener {
 				break;
 
 			case EditTaskView.ADD_USER:
-				// add a user to this task
-				if (!etv.getProjectUsersList().isSelectionEmpty()) {
-					String toAdd = etv.getProjectUsersList().getSelectedValue();
-					if (!etv.getUsersList().contains(toAdd)) {
-						etv.getUsersList().addToList(toAdd);
-						etv.getProjectUsersList().removeFromList(toAdd);
-					}
-				}
+				this.addUsersToList();
 
 				break;
 
 			case EditTaskView.REMOVE_USER:
-				// add a user to this task
-				if (!etv.getUsersList().isSelectionEmpty()) {
-					int indexToRemove = etv.getUsersList().getSelectedIndex();
-					String nameToRemove = etv.getUsersList().getSelectedValue();
-					if (!etv.getProjectUsersList().contains(nameToRemove)) {
-						etv.getUsersList().removeFromList(indexToRemove);
-						etv.getProjectUsersList().addToList(nameToRemove);
-					}
-					this.toRemove.add(nameToRemove);
-				}
+				this.removeUsersFromList();
 				break;
 
 			case EditTaskView.VIEW_REQ:
@@ -329,10 +313,67 @@ public class EditTaskController implements ActionListener {
 	}
 
 	/**
+	 * adds selected usernames to the assigned users list and removes them from
+	 * the project user list.
+	 */
+	public void addUsersToList() {
+		int[] toAdd = etv.getProjectUsersList().getSelectedIndices();
+		ArrayList<String> namesToAdd = new ArrayList<String>();
+
+		for (int ind : toAdd) {
+			namesToAdd.add(etv.getProjectUsersList().getValueAtIndex(ind));
+		}
+
+		for (String n1 : namesToAdd) {
+			etv.getProjectUsersList().removeFromList(n1);
+			if (!etv.getUsersList().contains(n1)) {
+				// add the new username to the assigned user list
+				etv.getUsersList().addToList(n1);
+				etv.getProjectUsersList().removeFromList(n1);
+				// if this user was to be removed take it out of the
+				// list
+				if (this.toRemove.contains(n1)) {
+					this.toRemove.remove(n1);
+				}
+
+			}
+		}
+	}
+
+	/**
+	 * removes selected usernames from the assigned users list and adds them to
+	 * the project user list. marks selected usernames to be removed from the
+	 * model
+	 */
+	public void removeUsersFromList() {
+		// grab all of the indices of the usernames selected in
+		// assigned users and grab the associated strings
+		int[] usersToRemove = etv.getUsersList().getSelectedIndices();
+		ArrayList<String> namesToRemove = new ArrayList<String>();
+		for (int ind : usersToRemove) {
+			namesToRemove.add(etv.getUsersList().getValueAtIndex(ind));
+		}
+
+		// for every name that is selected, remove it from assigned
+		// users and add it to project users
+		for (String n2 : namesToRemove) {
+			etv.getUsersList().removeFromList(n2);
+			if (!etv.getProjectUsersList().contains(n2)) {
+				etv.getProjectUsersList().addToList(n2);
+				etv.getUsersList().removeFromList(n2);
+				if (!this.toRemove.contains(n2)) {
+					this.toRemove.add(n2);
+				}
+			}
+
+		}
+	}
+
+	/**
 	 * 
-	 * Returns the taskID.
+	 * Returns the task ID.
 	 *
-	 * @return the taskID.
+	 * @return the task ID
 	 */
 	public String getTaskID() {
 		return etv.getTitle().getName();

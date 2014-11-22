@@ -13,6 +13,8 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
@@ -26,9 +28,11 @@ import taskManager.view.EditTaskView;
  *
  */
 public class TaskInputController implements KeyListener, FocusListener,
-		PopupMenuListener {
+		PopupMenuListener, ListSelectionListener {
 
 	private final EditTaskView etv;
+	private boolean addUsersSelected = false;
+	private boolean removeUsersSelected = false;
 
 	public TaskInputController(EditTaskView etv) {
 		this.etv = etv;
@@ -40,11 +44,14 @@ public class TaskInputController implements KeyListener, FocusListener,
 	 * requirements. If a field doesn't meet the requirements, display an error
 	 */
 	public boolean checkFields() {
+
+		addUsersSelected = !etv.getProjectUsersList().isSelectionEmpty();
+		removeUsersSelected = !etv.getUsersList().isSelectionEmpty();
+
 		boolean titleValid = true;
 		boolean descriptionValid = true;
 		boolean estEffortValid = true;
 		boolean actEffortValid = true;
-
 		// checks each required field and determines if it meets the
 		// requirements for that field
 
@@ -98,6 +105,15 @@ public class TaskInputController implements KeyListener, FocusListener,
 				&& actEffortValid;
 	}
 
+	/**
+	 * validate the inputs
+	 */
+	public void validate() {
+		etv.setSaveEnabled(this.checkFields());
+		etv.setAddUserEnabled(addUsersSelected);
+		etv.setRemoveUserEnabled(removeUsersSelected);
+	}
+
 	@Override
 	public void keyTyped(KeyEvent e) {
 
@@ -110,55 +126,38 @@ public class TaskInputController implements KeyListener, FocusListener,
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		if (this.checkFields()) {
-			etv.enableSave();
-		} else {
-			etv.disableSave();
-		}
+		validate();
 	}
 
 	@Override
 	public void focusGained(FocusEvent e) {
-		if (this.checkFields()) {
-			etv.enableSave();
-		} else {
-			etv.disableSave();
-		}
+		validate();
 	}
 
 	@Override
 	public void focusLost(FocusEvent e) {
-		if (this.checkFields()) {
-			etv.enableSave();
-		} else {
-			etv.disableSave();
-		}
+		validate();
 	}
 
 	@Override
 	public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-		// TODO Auto-generated method stub
-		if (this.checkFields()) {
-			etv.enableSave();
-		} else {
-			etv.disableSave();
-		}
+		validate();
 	}
 
 	@Override
 	public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-		// TODO Auto-generated method stub
-		if (this.checkFields()) {
-			etv.enableSave();
-		} else {
-			etv.disableSave();
-		}
-
+		validate();
 	}
 
 	@Override
 	public void popupMenuCanceled(PopupMenuEvent e) {
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+		validate();
+
 	}
 
 }

@@ -19,7 +19,6 @@ import taskManager.view.TabPaneView;
 import taskManager.view.ToolbarView;
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
 import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
-import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
@@ -39,8 +38,8 @@ public class JanewayModule implements IJanewayModule {
 	private static final TabPaneView tabPaneV = new TabPaneView();
 	public static final TabPaneController tabPaneC = new TabPaneController(
 			tabPaneV);
-	public static Project project = null;
 	public static User[] users = {};
+	public static String currentUser = null; // the username of the current user
 
 	/**
 	 * Construct a blank tab

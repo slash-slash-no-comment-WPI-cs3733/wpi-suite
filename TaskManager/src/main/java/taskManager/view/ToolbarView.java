@@ -11,8 +11,12 @@ package taskManager.view;
 
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.Insets;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -22,6 +26,8 @@ import taskManager.controller.ToolbarController;
 
 /**
  * The Task Managers tab's toolbar panel.
+ * 
+ * @author Clark Jacobsohn
  */
 @SuppressWarnings("serial")
 public class ToolbarView extends JToolBar {
@@ -38,10 +44,11 @@ public class ToolbarView extends JToolBar {
 	private JButton manageUsers;
 	private JButton manageStages;
 	private JButton statistics;
+	private JLabel archive;
+	private JLabel delete;
 
 	private JLabel projectName;
 
-	// TODO: Change ActionListener to ToolbarController when one exists
 	private ToolbarController controller;
 
 	/**
@@ -55,13 +62,16 @@ public class ToolbarView extends JToolBar {
 		// Construct and set up the buttons and title panels
 		JPanel buttons = new JPanel();
 		JPanel title = new JPanel();
+		JPanel targets = new JPanel();
 		FlowLayout layout = new FlowLayout();
 		buttons.setLayout(layout);
 		buttons.setOpaque(false);
 		title.setLayout(layout);
 		title.setOpaque(false);
+		targets.setLayout(layout);
+		targets.setOpaque(false);
 
-		Insets margins = new Insets(30, 5, 0, 5);
+		Insets margins = new Insets(15, 5, 0, 5);
 		this.setMargin(margins);
 
 		this.setFloatable(false);
@@ -74,9 +84,38 @@ public class ToolbarView extends JToolBar {
 		manageUsers = new JButton("Manage Users");
 		manageUsers.setName(MANAGE_USERS);
 		statistics = new JButton("Statistics");
-
 		statistics.setName(REPORT);
 
+		// Add icons
+		Image img;
+		try {
+			img = ImageIO.read(this.getClass().getResourceAsStream("create-task-icon.png"));
+			createTask.setIcon(new ImageIcon(img));
+			img = ImageIO.read(this.getClass().getResourceAsStream("stages-icon.png"));
+			manageStages.setIcon(new ImageIcon(img));
+			img = ImageIO.read(this.getClass().getResourceAsStream("users-icon.png"));
+			manageUsers.setIcon(new ImageIcon(img));
+			img = ImageIO.read(this.getClass().getResourceAsStream("reports-icon.png"));
+			statistics.setIcon(new ImageIcon(img));
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		// Add archive and delete drop targets
+		try {
+			img = ImageIO.read(this.getClass().getResourceAsStream("archive-icon.png"));
+			archive = new JLabel(new ImageIcon(img));
+			img = ImageIO.read(this.getClass().getResourceAsStream("delete-icon.png"));
+			delete = new JLabel(new ImageIcon(img));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		archive.setToolTipText("Drag here to archive task");
+		archive.setEnabled(false);
+		delete.setToolTipText("Drag here to delete task");
+		delete.setEnabled(false);
+		
 		// Construct the project title
 		projectName = new JLabel("Project Title"); // TODO(sswartz): update this
 		projectName.setFont(new Font("TextField.font", Font.BOLD, 20));
@@ -87,10 +126,13 @@ public class ToolbarView extends JToolBar {
 		buttons.add(manageStages);
 		buttons.add(manageUsers);
 		buttons.add(statistics);
+		targets.add(archive);
+		targets.add(delete);
 
 		// Title and buttons to the toolbar
 		this.add(title);
 		this.add(buttons);
+		this.add(targets);
 	}
 
 	/**
@@ -105,7 +147,6 @@ public class ToolbarView extends JToolBar {
 		manageStages.addActionListener(controller);
 		manageUsers.addActionListener(controller);
 		statistics.addActionListener(controller);
-		// refresh.addActionListener(controller);
 	}
 
 	@Override
