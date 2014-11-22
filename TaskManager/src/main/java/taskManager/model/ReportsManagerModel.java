@@ -13,7 +13,12 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 public class ReportsManagerModel {
 	private WorkflowModel workflow;
 
-	public ReportsManagerModel(WorkflowModel workflow) {
+	public ReportsManagerModel() {
+		this.workflow = WorkflowModel.getInstance();
+	}
+
+	public ReportsManagerModel(WorkflowModel workflow) { // This method is used
+															// for testing.
 		this.workflow = workflow;
 	}
 
@@ -26,8 +31,7 @@ public class ReportsManagerModel {
 		for (StageModel stage : workflow.getStages()) {
 			for (TaskModel task : stage.getTasks()) {
 				for (User user : task.getAssignedUsers()) {
-					if (data.keySet().contains(user)) { // If we are tracking
-														// the user
+					if (users.contains(user)) {
 						Map<Date, Double> userData = data.get(user);
 						if (averageCredit) {
 							userData.put(task.getDueDate(),
@@ -53,8 +57,7 @@ public class ReportsManagerModel {
 		for (StageModel stage : workflow.getStages()) {
 			for (TaskModel task : stage.getTasks()) {
 				for (User user : task.getAssignedUsers()) {
-					if (data.keySet().contains(user)) { // If we are tracking
-														// the user
+					if (users.contains(user)) {
 						List<TaskModel> userData = data.get(user);
 						if (!userData.contains(task)) {
 							userData.add(task);
