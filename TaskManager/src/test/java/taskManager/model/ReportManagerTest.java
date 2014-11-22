@@ -30,7 +30,7 @@ public class ReportManagerTest {
 	private User u1;
 	private User u2;
 	private User u3;
-	private Set<User> users;
+	private Set<String> users;
 
 	@Before
 	public void intialize() {
@@ -61,10 +61,10 @@ public class ReportManagerTest {
 		u1 = new User("User 1", "User 1", null, 1);
 		u2 = new User("User 2", "User 2", null, 2);
 		u3 = new User("User 3", "User 3", null, 3);
-		users = new HashSet<User>();
-		users.add(u1);
-		users.add(u2);
-		users.add(u3);
+		users = new HashSet<String>();
+		users.add("User 1");
+		users.add("User 2");
+		users.add("User 3");
 	}
 
 	@Test
@@ -107,37 +107,36 @@ public class ReportManagerTest {
 
 		Date start = new Date(0);
 		Date end = new Date();
-		Map<User, Map<Date, Double>> dataWithAverage = rmm.getVelocity(users,
+		Map<String, Map<Date, Double>> dataWithAverage = rmm.getVelocity(users,
 				start, end, true);
 		Double totalU1Effort = 0.0;
 		Double totalU2Effort = 0.0;
 		Double totalU3Effort = 0.0;
-		System.out.println(dataWithAverage.get(u1).values().size());
-		for (Double avgEffort : dataWithAverage.get(u1).values()) {
+		for (Double avgEffort : dataWithAverage.get("User 1").values()) {
 			totalU1Effort += avgEffort;
 		}
-		for (Double avgEffort : dataWithAverage.get(u2).values()) {
+		for (Double avgEffort : dataWithAverage.get("User 2").values()) {
 			totalU2Effort += avgEffort;
 		}
-		for (Double avgEffort : dataWithAverage.get(u3).values()) {
+		for (Double avgEffort : dataWithAverage.get("User 3").values()) {
 			totalU3Effort += avgEffort;
 		}
 		assertEquals(16.0, totalU1Effort, 0.001);
 		assertEquals(28.0, totalU2Effort, 0.001);
 		assertEquals(23.0, totalU3Effort, 0.001);
 
-		Map<User, Map<Date, Double>> dataWithTotals = rmm.getVelocity(users,
+		Map<String, Map<Date, Double>> dataWithTotals = rmm.getVelocity(users,
 				start, end, false);
 		totalU1Effort = 0.0;
 		totalU2Effort = 0.0;
 		totalU3Effort = 0.0;
-		for (Double avgEffort : dataWithTotals.get(u1).values()) {
+		for (Double avgEffort : dataWithTotals.get("User 1").values()) {
 			totalU1Effort += avgEffort;
 		}
-		for (Double avgEffort : dataWithTotals.get(u2).values()) {
+		for (Double avgEffort : dataWithTotals.get("User 2").values()) {
 			totalU2Effort += avgEffort;
 		}
-		for (Double avgEffort : dataWithTotals.get(u3).values()) {
+		for (Double avgEffort : dataWithTotals.get("User 3").values()) {
 			totalU3Effort += avgEffort;
 		}
 		assertEquals(totalU1Effort, 31.0, 0.001);

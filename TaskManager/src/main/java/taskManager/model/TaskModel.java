@@ -48,10 +48,6 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	// Current stage that task belongs to. This will not be serialized.
 	private transient StageModel stage;
 
-	// List of users assigned to this task. When uploaded to the database, this
-	// was causing a large duplication of users.
-	private transient Set<User> assignedUsers;
-
 	// List of names of users assigned to this task
 	private Set<String> assigned;
 
@@ -85,7 +81,6 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		final ActivityModel createTask = new ActivityModel("Created task",
 				ActivityModel.activityModelType.CREATION);
 		this.name = name;
-		assignedUsers = new HashSet<User>();
 		assigned = new HashSet<String>();
 		activities = new ArrayList<ActivityModel>();
 		activities.add(createTask);
@@ -246,13 +241,6 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	}
 
 	/**
-	 * @return the assigned users
-	 */
-	public Set<User> getAssignedUsers() {
-		return assignedUsers;
-	}
-
-	/**
 	 * Adds user to assigned list
 	 *
 	 * @param user
@@ -263,7 +251,6 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 				+ user.getName() + " to task " + name + ".",
 				ActivityModel.activityModelType.USER_ADD, user);
 		assigned.add(user.getUsername());
-		assignedUsers.add(user);
 		addActivity(addUser);
 		logger.log(Level.FINER, "Added user " + user.getUsername()
 				+ " to task " + name + ".");
@@ -285,9 +272,8 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 			throw new IndexOutOfBoundsException("User not in suggested task");
 		}
 		assigned.remove(user.getUsername());
-		assignedUsers.remove(user);
 		addActivity(delUser);
-		logger.log(Level.FINER, "Removed user " + user.getName()
+		logger.log(Level.FINER, "Removed user " + user.getUsername()
 				+ " from task " + name + ".");
 	}
 
@@ -319,7 +305,6 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		name = task.getName();
 		description = task.getDescription();
 		stage = task.getStage();
-		assignedUsers = task.getAssignedUsers();
 		assigned = task.getAssigned();
 		dueDate = task.getDueDate();
 		estimatedEffort = task.getEstimatedEffort();

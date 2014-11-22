@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import edu.wpi.cs.wpisuitetng.modules.core.models.User;
-
 public class ReportsManagerModel {
 	private WorkflowModel workflow;
 
@@ -22,17 +20,17 @@ public class ReportsManagerModel {
 		this.workflow = workflow;
 	}
 
-	public Map<User, Map<Date, Double>> getVelocity(Set<User> users,
+	public Map<String, Map<Date, Double>> getVelocity(Set<String> users,
 			Date start, Date end, boolean averageCredit) {
-		Map<User, Map<Date, Double>> data = new HashMap<User, Map<Date, Double>>();
-		for (User user : users) {
-			data.put(user, new TreeMap<Date, Double>());
+		Map<String, Map<Date, Double>> data = new HashMap<String, Map<Date, Double>>();
+		for (String username : users) {
+			data.put(username, new TreeMap<Date, Double>());
 		}
 		for (StageModel stage : workflow.getStages()) {
 			for (TaskModel task : stage.getTasks()) {
-				for (User user : task.getAssignedUsers()) {
-					if (users.contains(user)) {
-						Map<Date, Double> userData = data.get(user);
+				for (String username : task.getAssigned()) {
+					if (users.contains(username)) {
+						Map<Date, Double> userData = data.get(username);
 						if (averageCredit) {
 							userData.put(task.getDueDate(),
 									(double) task.getEstimatedEffort()
@@ -41,7 +39,7 @@ public class ReportsManagerModel {
 							userData.put(task.getDueDate(),
 									(double) task.getEstimatedEffort());
 						}
-						data.put(user, userData);
+						data.put(username, userData);
 					}
 				}
 			}
@@ -49,28 +47,24 @@ public class ReportsManagerModel {
 		return data;
 	}
 
-	public Map<User, List<TaskModel>> getUserTasks(Set<User> users) {
-		Map<User, List<TaskModel>> data = new HashMap<User, List<TaskModel>>();
-		for (User user : users) {
-			data.put(user, new ArrayList<TaskModel>());
+	public Map<String, List<TaskModel>> getStringTasks(Set<String> users) {
+		Map<String, List<TaskModel>> data = new HashMap<String, List<TaskModel>>();
+		for (String username : users) {
+			data.put(username, new ArrayList<TaskModel>());
 		}
 		for (StageModel stage : workflow.getStages()) {
 			for (TaskModel task : stage.getTasks()) {
-				for (User user : task.getAssignedUsers()) {
-					if (users.contains(user)) {
-						List<TaskModel> userData = data.get(user);
+				for (String username : task.getAssigned()) {
+					if (users.contains(username)) {
+						List<TaskModel> userData = data.get(username);
 						if (!userData.contains(task)) {
 							userData.add(task);
 						}
-						data.put(user, userData);
+						data.put(username, userData);
 					}
 				}
 			}
 		}
 		return data;
 	}
-
-	// public Map<User, Map<StageModel, List<TaskModel>>>
-	// This seems a bit absurd. Maybe a Map<String, Integer> for stage name,
-	// number of tasks
 }
