@@ -30,6 +30,7 @@ import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
+import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
 
@@ -232,10 +233,15 @@ public class TestEditTaskController {
 	@Test
 	public void testAddUsers() {
 		// create users
+
+		JanewayModule.users = new User[] {
+				new User("name1", "name1", "password", 1234),
+				new User("name2", "name2", "password", 5678),
+				new User("name3", "name3", "password", 9876) };
 		TaskModel task = createAndLoadTask();
 
 		// make sure it has no requirement yet
-		etv.getProjectUsersList().setSelected(new int[] { 1 });
+		etv.getProjectUsersList().setSelected(new int[] { 0, 1 });
 		fixture.button(EditTaskView.ADD_USER).click();
 		fixture.button(EditTaskView.SAVE).click();
 
@@ -244,8 +250,36 @@ public class TestEditTaskController {
 		for (String user : task.getAssigned()) {
 			users.add(user);
 		}
+
 		ArrayList<String> result = new ArrayList<String>();
-		result.add("admin");
+		result.add("name1");
+		result.add("name2");
+		assertEquals(users, result);
+	}
+
+	@Test
+	public void testRemoveUsers() {
+		// create users
+
+		JanewayModule.users = new User[] {
+				new User("name1", "name1", "password", 1234),
+				new User("name2", "name2", "password", 5678),
+				new User("name3", "name3", "password", 9876) };
+		TaskModel task = createAndLoadTask();
+
+		// make sure it has no requirement yet
+		task.addAssigned(new User("name3", "name3", "password", 9876));
+		etv.getUsersList().setSelected(new int[] { 0 });
+		fixture.button(EditTaskView.REMOVE_USER).click();
+		fixture.button(EditTaskView.SAVE).click();
+
+		// make sure the task got the requirement
+		ArrayList<String> users = new ArrayList<String>();
+		for (String user : task.getAssigned()) {
+			users.add(user);
+		}
+
+		ArrayList<String> result = new ArrayList<String>();
 		assertEquals(users, result);
 	}
 
