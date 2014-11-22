@@ -99,7 +99,6 @@ public class TabView extends JPanel implements ActionListener {
 			JanewayModule.tabPaneC.removeTabByComponent(component);
 		}
 		tabPaneV.reloadWorkflow();
-		tabPaneV.setSelectedIndex(0);
 	}
 
 	public Component getComponent() {

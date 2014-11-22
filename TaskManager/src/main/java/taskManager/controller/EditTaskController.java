@@ -247,7 +247,6 @@ public class EditTaskController implements ActionListener {
 	 */
 	private void returnToWorkflowView() {
 		JanewayModule.tabPaneC.removeTabByComponent(etv);
-		JanewayModule.tabPaneC.reloadWorkflow();
 	}
 
 	/**
