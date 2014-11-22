@@ -84,13 +84,12 @@ public class TestManageStageController {
 
 		checkStages(result);
 
-		// add an undeletable stage
-		new StageModel("undeletable", false);
-		msc.reloadData();
+		// remove two more stages to end up with one stage
+		fixture.panel("second").button(ManageStageView.DELETE).click();
+		fixture.panel("fourth").button(ManageStageView.DELETE).click();
 
 		// make sure the delete button is disabled
-		fixture.panel("undeletable").button(ManageStageView.DELETE)
-				.requireDisabled();
+		fixture.panel("first").button(ManageStageView.DELETE).requireDisabled();
 	}
 
 	@Test

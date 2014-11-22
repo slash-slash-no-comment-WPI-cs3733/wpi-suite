@@ -45,14 +45,6 @@ public class TaskInputController implements KeyListener, FocusListener,
 		boolean estEffortValid = true;
 		boolean actEffortValid = true;
 
-		// Set actual effort field enabled only if the selected stage is
-		// "Complete"
-		if (etv.getSelectedStage().equals("Complete")) {
-			etv.getActEffort().setEnabled(true);
-		} else {
-			etv.getActEffort().setEnabled(false);
-		}
-
 		// checks each required field and determines if it meets the
 		// requirements for that field
 
@@ -65,27 +57,25 @@ public class TaskInputController implements KeyListener, FocusListener,
 			descriptionValid = false;
 		}
 		// Estimated Effort
-		try {
-			if (etv.getEstEffort().getText().isEmpty()) {
-				estEffortValid = false;
-				etv.setEstEffortErrorText("This is a required field");
-			} else if (Integer.parseInt(etv.getEstEffort().getText()) <= 0) {
-				estEffortValid = false;
-				etv.setEstEffortErrorText("Must be greater than 0");
-			} else if (Integer.parseInt(etv.getEstEffort().getText()) > 9999) {
-				estEffortValid = false;
-				etv.setEstEffortErrorText("Must be less than 9999");
-			}
-		} catch (NumberFormatException e) {
-			estEffortValid = false;
-			etv.setEstEffortErrorText("Must be a positive integer");
-		}
-
-		if (etv.getActEffort().isEnabled()) {
+		if (!etv.getEstEffort().getText().isEmpty()) {
 			try {
-				if (etv.getActEffort().getText().isEmpty()) {
-					actEffortValid = true;
-				} else if (Integer.parseInt(etv.getActEffort().getText()) < 0) {
+
+				if (Integer.parseInt(etv.getEstEffort().getText()) <= 0) {
+					estEffortValid = false;
+					etv.setEstEffortErrorText("Must be greater than 0");
+				} else if (Integer.parseInt(etv.getEstEffort().getText()) > 9999) {
+					estEffortValid = false;
+					etv.setEstEffortErrorText("Must be less than 9999");
+				}
+			} catch (NumberFormatException e) {
+				estEffortValid = false;
+				etv.setEstEffortErrorText("Must be a positive integer");
+			}
+		}
+		if (!etv.getActEffort().getText().isEmpty()) {
+			// Actual Effort
+			try {
+				if (Integer.parseInt(etv.getActEffort().getText()) < 0) {
 					actEffortValid = false;
 					etv.setActualEffortErrorText("Can not be less than 0");
 				} else if (Integer.parseInt(etv.getActEffort().getText()) > 9999) {
@@ -94,7 +84,7 @@ public class TaskInputController implements KeyListener, FocusListener,
 				}
 			} catch (NumberFormatException e) {
 				actEffortValid = false;
-				etv.setActualEffortErrorText("Must be a number");
+				etv.setActualEffortErrorText("Must be an integer");
 			}
 		}
 
