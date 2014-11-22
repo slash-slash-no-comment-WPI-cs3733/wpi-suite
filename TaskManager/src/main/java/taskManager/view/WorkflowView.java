@@ -10,29 +10,38 @@ package taskManager.view;
 
 import java.awt.FlowLayout;
 
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
 import taskManager.controller.WorkflowController;
 
 /**
  * @author Beth Martino
+ * @author Clark Jacobsohn
  * @version November 9, 2014
  */
-
-public class WorkflowView extends JPanel {
+public class WorkflowView extends JLayeredPane {
 
 	private static final long serialVersionUID = 1L;
 
 	private WorkflowController controller;
+	private JPanel stages;
+	private TaskInfoPreviewView taskInfoView;
 
 	/**
 	 * Constructor for WorkflowView.
 	 */
 	public WorkflowView() {
+		stages = new JPanel();
+
+		// ignores the task info view so the stages view fills up the screen
+		this.setLayout(new WorkflowLayout());
 
 		// arranges the stages horizontally and evenly spaced
-		this.setLayout(new FlowLayout());
+		stages.setLayout(new FlowLayout());
 
+		this.add(stages);
+		this.setLayer(stages, JLayeredPane.DEFAULT_LAYER);
 	}
 
 	/**
@@ -41,15 +50,7 @@ public class WorkflowView extends JPanel {
 	 *            house the stage view object sets the size and border
 	 */
 	public void addStageView(StageView stv) {
-		this.add(stv);
-	}
-
-	/*
-	 * @see java.awt.Component#getName()
-	 */
-	@Override
-	public String getName() {
-		return super.getName();
+		stages.add(stv);
 	}
 
 	/**
@@ -76,9 +77,9 @@ public class WorkflowView extends JPanel {
 		try {
 			// goes through all of the stage views it contains until it finds
 			// the one that matches the name
-			for (int i = 1; i == this.getComponents().length; i++) {
-				if (this.getComponent(i).getName().equals(name)) {
-					return (StageView) this.getComponent(i);
+			for (int i = 1; i == stages.getComponents().length; i++) {
+				if (stages.getComponent(i).getName().equals(name)) {
+					return (StageView) stages.getComponent(i);
 				} else {
 					// do nothing, keep checking
 				}
@@ -98,6 +99,29 @@ public class WorkflowView extends JPanel {
 			controller.reloadData();
 		}
 		super.setVisible(visible);
+	}
+
+	@Override
+	public void removeAll() {
+		if (stages != null) {
+			stages.removeAll();
+		}
+	}
+
+	@Override
+	public void revalidate() {
+		super.revalidate();
+		if (stages != null) {
+			stages.revalidate();
+		}
+	}
+
+	@Override
+	public void repaint() {
+		super.repaint();
+		if (stages != null) {
+			stages.repaint();
+		}
 	}
 
 }
