@@ -153,6 +153,7 @@ public class TaskInputController implements KeyListener, FocusListener,
 		} else {
 			etv.disableSave();
 		}
+
 	}
 
 	@Override

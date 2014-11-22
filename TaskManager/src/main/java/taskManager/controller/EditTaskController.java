@@ -130,7 +130,8 @@ public class EditTaskController implements ActionListener {
 
 			case EditTaskView.DELETE:
 				Integer choice = JOptionPane.showConfirmDialog(etv,
-						"Are you sure you want to delete this task?");
+						"Are you sure you want to delete this task?",
+						"Warning - Deleting a task", JOptionPane.YES_NO_OPTION);
 				if (choice.equals(JOptionPane.YES_OPTION)) {
 					// delete this task
 					task = currentStage.findTaskByID(taskID);
@@ -171,9 +172,9 @@ public class EditTaskController implements ActionListener {
 			case EditTaskView.VIEW_REQ:
 				// view requirement in requirement manager
 
+				// TODO: this button should be disabled when [None] selected so
+				// requirement would never be null.
 				if (requirement == null) {
-					JOptionPane.showMessageDialog(etv,
-							"A requirement needs to be selected.");
 					return;
 				}
 

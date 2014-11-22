@@ -82,7 +82,9 @@ public class ManageStageController implements ActionListener {
 										view,
 										"The "
 												+ stage.getName()
-												+ " stage contains tasks. Are you sure you want to delete this stage?");
+												+ " stage contains tasks. Are you sure you want to delete this stage?",
+										"Warning - Deleting a stage containing tasks",
+										JOptionPane.YES_NO_OPTION);
 						if (choice.equals(JOptionPane.YES_OPTION)) {
 							view.removeStage(stageID);
 							model.getStages().removeIf(
@@ -127,25 +129,14 @@ public class ManageStageController implements ActionListener {
 			case ManageStageView.ADD_NEW_STAGE:
 				// Create a new stage at the end
 				String newStageName = view.getNewStageNameField().getText();
-				Boolean stageExists = false;
-				for (StageModel s : model.getStages()) {
-					if (s.getName().equals(newStageName)) {
-						stageExists = true;
-						break;
-					}
-				}
-				if (stageExists) {
-					JOptionPane.showMessageDialog(view,
-							"Error: Stage already exists.");
-				} else {
-					StageModel newStage = new StageModel(newStageName);
-					view.addStage(newStage.getName(), newStage.getName(), true);
-					// refresh the view
-					view.getNewStageNameField().setText(
-							ManageStageView.NEW_STAGE_NAME);
-					view.updateUI();
-					reloadData();
-				}
+
+				StageModel newStage = new StageModel(newStageName);
+				view.addStage(newStage.getName(), newStage.getName(), true);
+				// refresh the view
+				view.getNewStageNameField().setText(
+						ManageStageView.NEW_STAGE_NAME);
+				view.updateUI();
+				reloadData();
 				break;
 			default:
 				System.out.println("Unknown button pushed");

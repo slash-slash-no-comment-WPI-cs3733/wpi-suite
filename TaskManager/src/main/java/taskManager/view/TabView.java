@@ -105,8 +105,11 @@ public class TabView extends JPanel implements ActionListener {
 				// If there are edits, show confirmation dialog.
 				if (etc.isEdited()) {
 					Integer choice = JOptionPane
-							.showConfirmDialog(tabPaneV,
-									"You still have unsaved edits. Are you sure you want to delete this tab?");
+							.showConfirmDialog(
+									tabPaneV,
+									"You still have unsaved edits. Are you sure you want to delete this tab?",
+									"Warning - Deleting a tab with edits",
+									JOptionPane.YES_NO_OPTION);
 					if (choice.equals(JOptionPane.YES_OPTION)) {
 						JanewayModule.tabPaneC.removeTabByComponent(component);
 						tabPaneV.setSelectedIndex(0);
