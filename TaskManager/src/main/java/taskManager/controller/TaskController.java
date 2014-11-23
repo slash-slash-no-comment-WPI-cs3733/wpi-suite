@@ -72,8 +72,16 @@ public class TaskController implements MouseListener {
 		req = model.getReq();
 	}
 
-	public void moveToStage(StageModel destination, int index) {
-		destination.addTask(model, index);
+	/**
+	 * Move this task to given stage
+	 *
+	 * @param destination
+	 *            target StageModel
+	 * @param index
+	 * @return whether the stage changed as a result
+	 */
+	public boolean moveToStage(StageModel destination, int index) {
+		return destination.addTask(model, index);
 	}
 
 	@Override

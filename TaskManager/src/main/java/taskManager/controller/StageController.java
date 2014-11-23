@@ -61,9 +61,10 @@ public class StageController {
 	 *            task controller for task
 	 * @param index
 	 *            index at which to add it
+	 * @return whether the stage changed as a result
 	 */
-	public void addTask(TaskController tc, int index) {
-		tc.moveToStage(model, index);
+	public boolean addTask(TaskController tc, int index) {
+		return tc.moveToStage(model, index);
 	}
 
 }

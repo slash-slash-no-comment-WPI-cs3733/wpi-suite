@@ -237,9 +237,10 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 *
 	 * @param task
 	 *            the task to add.
+	 * @return whether the stage changed as a result
 	 */
-	public void addTask(TaskModel task) {
-		addTask(task, -1);
+	public boolean addTask(TaskModel task) {
+		return addTask(task, -1);
 	}
 
 	/**
@@ -249,25 +250,41 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 *            the task to add
 	 * @param index
 	 *            the index to insert the task at
+	 * @return whether the stage changed as a result
 	 */
-	public void addTask(TaskModel task, int index) {
-		StageModel oldStage = task.getStage();
-		if (oldStage != null && oldStage.containsTask(task)) {
-			oldStage.removeTask(task); // remove from old parent
-
-			// since this is a move, add relevant activity
-			final ActivityModel movedTask = new ActivityModel("Moved task "
-					+ task.getName() + " from stage " + oldStage.getName()
-					+ " to stage " + name + ".",
-					ActivityModel.activityModelType.MOVE);
-			task.addActivity(movedTask);
-		}
+	public boolean addTask(TaskModel task, int index) {
 		if (index == -1 || index > taskList.size()) {// add to end of list
-			taskList.add(task);
-		} else {
-			taskList.add(index, task);
+			index = taskList.size();
 		}
+
+		// if nothing changed
+		if (index != taskList.size() && taskList.get(index).equals(task)) {
+			return false;
+		}
+
+		StageModel oldStage = task.getStage();
+		if (oldStage != null) {
+			if (oldStage.containsTask(task)) {
+				oldStage.removeTask(task); // remove from old parent, or this
+											// stage
+			}
+
+			// Only add add activity if coming from different stage
+			if (!this.equals(oldStage)) {
+
+				// since this is a move, add relevant activity
+				final ActivityModel movedTask = new ActivityModel("Moved task "
+						+ task.getName() + " from stage " + oldStage.getName()
+						+ " to stage " + name + ".",
+						ActivityModel.activityModelType.MOVE);
+				task.addActivity(movedTask);
+			}
+		}
+
+		taskList.add(index, task);
 		task.setStage(this);
+
+		return true;
 	}
 
 	/**

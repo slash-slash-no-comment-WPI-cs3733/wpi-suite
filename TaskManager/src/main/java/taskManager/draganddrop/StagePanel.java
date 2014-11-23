@@ -60,6 +60,10 @@ public class StagePanel extends JPanel {
 	}
 
 	public static void generatePlaceholder(Dimension size) {
+		if (placeholder != null && placeholder.getParent() != null) {
+			placeholder.getParent().remove(placeholder);
+		}
+
 		Image image = new BufferedImage(size.width, size.height,
 				BufferedImage.TYPE_INT_ARGB);
 		Graphics g = image.getGraphics();
@@ -82,16 +86,24 @@ public class StagePanel extends JPanel {
 	public void dropTask(TaskPanel transferredPanel, Point dropLocation) {
 		int newIndex = getInsertionIndex(dropLocation);
 
-		// TODO needs cleanup
-		controller.addTask(((TaskView) transferredPanel).getController(),
-				newIndex);
-
-		WorkflowModel.getInstance().save();
+		// If transferredPanel is lower by index in the same stage, lower the
+		// index by 1
+		int oldIndex = getComponentIndex(transferredPanel);
+		if (oldIndex != -1 && oldIndex < newIndex) {
+			newIndex--;
+		}
 
 		add(transferredPanel, newIndex);
 
+		// TODO needs cleanup
+		boolean changed = controller.addTask(
+				((TaskView) transferredPanel).getController(), newIndex);
+
+		if (changed) {
+			WorkflowModel.getInstance().save();
+		}
+
 		hidePlaceholder();
-		calculateCenters();
 
 	}
 
@@ -214,7 +226,7 @@ public class StagePanel extends JPanel {
 	 *
 	 * @param comp
 	 *            component to lookup
-	 * @return index
+	 * @return index, -1 if not found
 	 */
 	private int getComponentIndex(Component comp) {
 		for (int i = 0; i < getComponentCount(); i++) {
