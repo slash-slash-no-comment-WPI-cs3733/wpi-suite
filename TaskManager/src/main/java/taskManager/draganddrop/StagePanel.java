@@ -45,7 +45,7 @@ public class StagePanel extends JPanel {
 
 	private static final long serialVersionUID = -3746364753551742673L;
 
-	private JLabel placeholder;
+	private static JLabel placeholder;
 	private int lastIndex;
 	private Map<Component, Point> compCenters;
 	private StageController controller;
@@ -57,16 +57,19 @@ public class StagePanel extends JPanel {
 		this.setTransferHandler(new DDTransferHandler());
 		this.setDropTarget(new DropTarget(this, new StageDropListener(this)));
 
-		Image image = new BufferedImage(130, 30, BufferedImage.TYPE_INT_ARGB);
-		Graphics g = image.getGraphics();
-		g = g.create();
-		g.setColor(Color.GRAY);
-		g.fillRect(0, 0, 200, 100);
-		placeholder = new JLabel(new ImageIcon(image));
-		placeholder.setAlignmentX(CENTER_ALIGNMENT);
+		if (placeholder == null) {
+			Image image = new BufferedImage(130, 30,
+					BufferedImage.TYPE_INT_ARGB);
+			Graphics g = image.getGraphics();
+			g = g.create();
+			g.setColor(Color.GRAY);
+			g.fillRect(0, 0, 200, 100);
+			placeholder = new JLabel(new ImageIcon(image));
+			placeholder.setAlignmentX(CENTER_ALIGNMENT);
+			placeholder.setVisible(false);
+			this.add(placeholder);
+		}
 
-		placeholder.setVisible(false);
-		this.add(placeholder);
 	}
 
 	/**
