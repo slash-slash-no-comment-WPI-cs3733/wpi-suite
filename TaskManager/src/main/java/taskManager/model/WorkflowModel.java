@@ -257,10 +257,6 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 
 	@Override
 	public void save() {
-		// Tell the fetch observer to ignore the next server response, because
-		// it may not have these changes yet
-		FetchWorkflowObserver.ignoreNextResponse = true;
-
 		final Request request = Network.getInstance().makeRequest(
 				"taskmanager/workflow", HttpMethod.POST);
 		request.setBody(toJson());

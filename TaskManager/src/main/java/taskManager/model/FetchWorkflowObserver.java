@@ -20,7 +20,6 @@ import edu.wpi.cs.wpisuitetng.network.models.ResponseModel;
  */
 public class FetchWorkflowObserver extends GenericRequestObserver {
 
-	public static boolean ignoreNextResponse = false;
 	public static boolean ignoreAllResponses = false;
 
 	final WorkflowModel model;
@@ -43,13 +42,14 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 	@Override
 	public void responseSuccess(IRequest iReq) {
 
-		if (ignoreNextResponse) {
-			System.out.println("Ignoring response due to recent local changes");
-			ignoreNextResponse = false;
-			return;
-		}
 		if (ignoreAllResponses) {
 			System.out.println("Ignoring response due to global ignore flag");
+
+			// restart the connection
+			restartConnection();
+
+			// TODO: need to get changes we missed from server. They won't be
+			// resent
 			return;
 		}
 
@@ -71,7 +71,7 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 		JanewayModule.tabPaneC.getTabView().reloadWorkflow();
 
 		// restart the connection
-		WorkflowModel.getInstance().update();
+		restartConnection();
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 				+ iReq.getResponse().getStatusMessage());
 
 		// restart the connection
-		WorkflowModel.getInstance().update();
+		restartConnection();
 	}
 
 	/**
@@ -97,6 +97,16 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 		System.err.println("Request Failed: " + exception.getMessage());
 
 		// restart the connection
+		restartConnection();
+	}
+
+	/**
+	 * The current architecture doesn't let us keep pushing data through open
+	 * connections, so we have to close and reopen the connection each time
+	 *
+	 */
+	private void restartConnection() {
+		// TODO: at some point, we should stop restarting the connection
 		WorkflowModel.getInstance().update();
 	}
 
