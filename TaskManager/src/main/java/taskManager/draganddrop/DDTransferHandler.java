@@ -19,6 +19,7 @@ import javax.swing.JComponent;
 import javax.swing.TransferHandler;
 
 import taskManager.model.FetchWorkflowObserver;
+import taskManager.model.WorkflowModel;
 
 /**
  * 
@@ -112,6 +113,9 @@ class DDTransferHandler extends TransferHandler {
 	protected void exportDone(JComponent comp, Transferable data, int action) {
 		// Resume updating from the server
 		FetchWorkflowObserver.ignoreAllResponses = false;
+
+		// update now in case we missed anything while dragging
+		WorkflowModel.getInstance().updateNow();
 
 		// Show the task
 		comp.setVisible(true);

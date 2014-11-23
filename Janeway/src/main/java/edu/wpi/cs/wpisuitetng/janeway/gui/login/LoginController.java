@@ -28,7 +28,6 @@ import org.apache.commons.codec.binary.Base64;
 import taskManager.JanewayModule;
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.GetUsersObserver;
-import taskManager.model.WorkflowModel;
 import edu.wpi.cs.wpisuitetng.janeway.config.ConfigManager;
 import edu.wpi.cs.wpisuitetng.network.Network;
 import edu.wpi.cs.wpisuitetng.network.Request;
@@ -170,8 +169,7 @@ public class LoginController implements ActionListener {
 					"login", HttpMethod.PUT);
 			projectSelectRequest.addObserver(new ProjectSelectRequestObserver(
 					this));
-			projectSelectRequest.addObserver(new FetchWorkflowObserver(
-					WorkflowModel.getInstance()));
+			projectSelectRequest.addObserver(new FetchWorkflowObserver());
 			projectSelectRequest.setBody(ConfigManager.getConfig()
 					.getProjectName());
 			projectSelectRequest.send();

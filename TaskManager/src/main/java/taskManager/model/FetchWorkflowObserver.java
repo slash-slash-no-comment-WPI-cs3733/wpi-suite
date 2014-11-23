@@ -22,19 +22,28 @@ import edu.wpi.cs.wpisuitetng.network.models.ResponseModel;
 public class FetchWorkflowObserver extends GenericRequestObserver {
 
 	public static boolean ignoreAllResponses = false;
+	private boolean keepOpen;
 
 	final WorkflowModel model;
 
 	/**
+	 * Constructor for Observer. Defaults to keeping the connection with the
+	 * server open
+	 *
+	 */
+	public FetchWorkflowObserver() {
+		this(true);
+	}
+
+	/**
 	 * Constructor for Observer
 	 *
-	 * @param model
-	 *            the workflow model being fetched/overwritten
-	 * @param controller
-	 *            will be called upon success if it is passed; null is allowed
+	 * @param keepOpen
+	 *            If the connection should be kept
 	 */
-	public FetchWorkflowObserver(WorkflowModel model) {
+	public FetchWorkflowObserver(boolean keepOpen) {
 		this.model = WorkflowModel.getInstance();
+		this.keepOpen = keepOpen;
 	}
 
 	/**
@@ -49,8 +58,6 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 			// restart the connection
 			restartConnection();
 
-			// TODO: need to get changes we missed from server. They won't be
-			// resent
 			return;
 		}
 
@@ -107,7 +114,7 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 	 *
 	 */
 	private void restartConnection() {
-		if (WorkflowController.alive) {
+		if (WorkflowController.alive && keepOpen) {
 			WorkflowModel.getInstance().update();
 		}
 	}
