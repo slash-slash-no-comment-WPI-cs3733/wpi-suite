@@ -137,7 +137,7 @@ public class TaskController implements MouseListener {
 		etv.getUsersList().addAllToList(assignedUserNames);
 
 		// Enable save button when editing a task.
-		etv.enableSave();
+		etv.setSaveEnabled(true);
 
 		// Clear the activities list.
 		etv.clearActivities();
