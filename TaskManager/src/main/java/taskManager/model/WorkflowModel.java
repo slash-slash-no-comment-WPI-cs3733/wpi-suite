@@ -282,18 +282,15 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	/**
 	 * Retrieve all workspaces
 	 *
-	 * @param controller
-	 *            The active workflow controller.
 	 */
-	public void update(WorkflowController controller) {
+	public void update() {
 		final Request request = Network.getInstance().makeRequest(
-				"taskmanager/workflow/" + getID(), HttpMethod.GET);
+				"taskmanager/workflow", HttpMethod.GET);
 		request.addObserver(new FetchWorkflowObserver(this));
 		request.addHeader("long-polling", "long-polling");
 		// wait timeout + 5 sec (to allow for round trip time + database
 		// interaction)
 		request.setReadTimeout(WorkflowController.timeout + 5 * 1000);
-		System.out.println("sending request");
 		request.send();
 	}
 

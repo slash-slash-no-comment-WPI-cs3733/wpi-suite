@@ -158,6 +158,7 @@ public class WPICoreServlet extends HttpServlet {
 		try {
 			out.println(ManagerLayer.getInstance().update(path, in.readLine(),
 					req.getCookies()));
+			// notify if something was written to the database
 			synchronized (updateNotifyer) {
 				updateNotifyer.notifyAll();
 			}

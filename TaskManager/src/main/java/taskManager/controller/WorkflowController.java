@@ -50,20 +50,14 @@ public class WorkflowController {
 		this.view = view;
 		this.model = WorkflowModel.getInstance();
 
-		// necessary to add these stages to workflowView (don't know/how)
-		// StageModel newStage = new StageModel("New", false);
-		// StageModel startedStage = new StageModel("Scheduled", false);
-		// StageModel progressStage = new StageModel("In Progress", false);
-		// StageModel completeStage = new StageModel("Complete", false);
-
+		// poll for users and requirements
 		Thread thread = new Thread() {
 			public void run() {
 				GetRequirementsController reqController = GetRequirementsController
 						.getInstance();
 				while (alive) {
 					try {
-						sleep(timeout);
-						fetch();
+						sleep(5000);
 						reqController.retrieveRequirements();
 						final Request request = Network.getInstance()
 								.makeRequest("core/user", HttpMethod.GET);
@@ -80,6 +74,31 @@ public class WorkflowController {
 		thread.setName("polling");
 		thread.setDaemon(true);
 		thread.start();
+
+		// set up connection to let server send workflow changes
+		Thread thread2 = new Thread() {
+			public void run() {
+				while (alive) {
+					try {
+						sleep(1000);
+						fetch();
+
+						// once fetch completes successfully, we are done here
+						return;
+
+					} catch (NullPointerException e) {
+						// the network has not been initialized yet, just keep
+						// trying
+					} catch (InterruptedException e) {
+						// sleep failed for some reason, print it and keep going
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+		thread2.setName("setting up connections");
+		thread2.setDaemon(true);
+		thread2.start();
 
 		reloadData();
 	}
@@ -113,7 +132,7 @@ public class WorkflowController {
 	 *
 	 */
 	public void fetch() {
-		model.update(this);
+		model.update();
 	}
 
 	/**

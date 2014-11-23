@@ -69,6 +69,35 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 		model.rebuildAllRefs();
 
 		JanewayModule.tabPaneC.getTabView().reloadWorkflow();
+
+		// restart the connection
+		WorkflowModel.getInstance().update();
+	}
+
+	/**
+	 * @see edu.wpi.cs.wpisuitetng.network.RequestObserver#responseError(edu.wpi.cs.wpisuitetng.network.models.IRequest)
+	 */
+	@Override
+	public void responseError(IRequest iReq) {
+		// TODO Should we display error dialog?
+		System.err.println("Response Error "
+				+ iReq.getResponse().getStatusCode() + ": "
+				+ iReq.getResponse().getStatusMessage());
+
+		// restart the connection
+		WorkflowModel.getInstance().update();
+	}
+
+	/**
+	 * @see edu.wpi.cs.wpisuitetng.network.RequestObserver#fail(edu.wpi.cs.wpisuitetng.network.models.IRequest,
+	 *      java.lang.Exception)
+	 */
+	@Override
+	public void fail(IRequest iReq, Exception exception) {
+		System.err.println("Request Failed: " + exception.getMessage());
+
+		// restart the connection
+		WorkflowModel.getInstance().update();
 	}
 
 }
