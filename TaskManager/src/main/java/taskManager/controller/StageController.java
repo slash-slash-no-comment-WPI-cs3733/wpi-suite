@@ -47,7 +47,7 @@ public class StageController {
 		for (TaskModel task : tasks) {
 			// create stage view and controller.
 			TaskView tkv = new TaskView(task.getName(), task.getDueDate(),
-					task.getEstimatedEffort(), task);
+					task.getEstimatedEffort());
 			tkv.setController(new TaskController(tkv, task));
 			this.view.addTaskView(tkv);
 		}

@@ -261,7 +261,9 @@ class StageDropListener implements DropTargetListener {
 	}
 
 	/**
-	 * Drops a task onto the stage after making sure that it is a taskPanel.
+	 * Drops a task onto the stage after making sure that it is a taskPanel. <br>
+	 * <br>
+	 * {@inheritDoc}
 	 */
 	public void drop(DropTargetDropEvent e) {
 
@@ -289,8 +291,9 @@ class StageDropListener implements DropTargetListener {
 	 * Hides the placeholder when the Task is no longer being dragged above the
 	 * stage.
 	 * 
-	 * Careful with this due to it being called after entering a TaskPanel
-	 * 
+	 * Careful with this due to it being called after entering a TaskPanel <br>
+	 * <br>
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void dragExit(DropTargetEvent e) {
@@ -299,7 +302,9 @@ class StageDropListener implements DropTargetListener {
 	}
 
 	/**
-	 * Draws the placeholder on the stage when a task is being dragged above it.
+	 * Draws the placeholder on the stage when a task is being dragged above it. <br>
+	 * <br>
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void dragOver(DropTargetDragEvent e) {
