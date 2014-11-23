@@ -35,6 +35,7 @@ public class WPICoreServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -7156601241025735047L;
 	private ErrorResponseFormatter reponseFormatter;
+	private Object updateNotifyer = new Object();
 
 	/**
 	 * Empty Constructor
@@ -56,12 +57,57 @@ public class WPICoreServlet extends HttpServlet {
 		System.arraycopy(path, 1, path, 0, path.length - 1);
 		path[path.length - 1] = null;
 
+		if (req.getHeader("long-polling") != null) {
+			handlePolling(req, res, path);
+		}
+
 		try {
 			out.println(ManagerLayer.getInstance().read(path, req.getCookies()));
 		} catch (WPISuiteException e) {
 			res.setStatus(e.getStatus());
 		}
 
+		out.close();
+	}
+
+	/**
+	 * Handles long-polling requests. Waits until there are changes to respond
+	 * to clients
+	 *
+	 * @param req
+	 *            The request from the client
+	 * @param res
+	 *            The response for the client
+	 * @param path
+	 *            The path the client wants changes for
+	 * @throws IOException
+	 *             If the print writer throws an IOException
+	 */
+	private void handlePolling(HttpServletRequest req, HttpServletResponse res,
+			String[] path) throws IOException {
+
+		PrintWriter out = res.getWriter();
+		System.out.println("waiting on request: " + req.toString());
+		synchronized (updateNotifyer) {
+			try {
+				// wait for changes, up to 60 sec
+				updateNotifyer.wait(60 * 1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("sending changes to request: " + req.toString());
+		}
+
+		// TODO: send the same object we received from the client, instead of
+		// doing a database read
+		try {
+			out.println(ManagerLayer.getInstance().read(path, req.getCookies()));
+		} catch (WPISuiteException e) {
+			res.setStatus(e.getStatus());
+		}
+
+		// send changes
 		out.close();
 	}
 
@@ -111,10 +157,9 @@ public class WPICoreServlet extends HttpServlet {
 		try {
 			out.println(ManagerLayer.getInstance().update(path, in.readLine(),
 					req.getCookies()));
-			ManagerLayer.getInstance().getSessions().getSessions()
-					.forEach((String s1, Session s2) -> {
-						System.out.println(s1 + s2.toString());
-					});
+			synchronized (updateNotifyer) {
+				updateNotifyer.notifyAll();
+			}
 			System.out.println();
 		} catch (WPISuiteException e) {
 			res.setStatus(e.getStatus());
