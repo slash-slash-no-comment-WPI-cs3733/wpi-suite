@@ -61,7 +61,7 @@ public class WorkflowController {
 						.getInstance();
 				while (alive) {
 					try {
-						sleep(10000);
+						sleep(5000);
 						fetch();
 						reqController.retrieveRequirements();
 						final Request request = Network.getInstance()
