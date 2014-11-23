@@ -98,7 +98,8 @@ public class WPILoginServlet extends HttpServlet {
 					out.println(s);
 					out.close();
 				} catch (WPISuiteException e) {
-					e.printStackTrace();
+					System.out.println("No workflow found for project \""
+							+ projectName + "\"");
 				}
 
 				response.setStatus(HttpServletResponse.SC_OK);
