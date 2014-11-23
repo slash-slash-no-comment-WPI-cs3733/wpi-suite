@@ -104,6 +104,14 @@ public class WorkflowController {
 	}
 
 	/**
+	 * Tells the other threads to die
+	 *
+	 */
+	public static void dispose() {
+		alive = false;
+	}
+
+	/**
 	 * Reloads all the data on the view to match the data in the model
 	 *
 	 */
