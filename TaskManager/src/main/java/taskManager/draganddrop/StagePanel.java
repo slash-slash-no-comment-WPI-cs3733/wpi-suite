@@ -59,6 +59,12 @@ public class StagePanel extends JPanel {
 		this.setDropTarget(new DropTarget(this, new StageDropListener(this)));
 	}
 
+	/**
+	 * Create a new static placeholder of the given size
+	 *
+	 * @param size
+	 *            desired size of the placeholder
+	 */
 	public static void generatePlaceholder(Dimension size) {
 		Image image = new BufferedImage(size.width, size.height,
 				BufferedImage.TYPE_INT_ARGB);
