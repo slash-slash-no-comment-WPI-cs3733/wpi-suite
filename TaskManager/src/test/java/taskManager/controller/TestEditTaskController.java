@@ -146,7 +146,7 @@ public class TestEditTaskController {
 
 		StageModel stage = wfm.findStageByName(task.getStage().getName());
 
-		assertEquals(stage.findTaskByName("NT").size(), 0);
+		assertEquals(stage.findTaskByName("New Task").size(), 0);
 		assertEquals(stage.findTaskByName("newT").size(), 1);
 
 		// verify the fields of the task got saved correctly
