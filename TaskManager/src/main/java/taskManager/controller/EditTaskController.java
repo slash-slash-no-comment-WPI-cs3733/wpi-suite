@@ -99,7 +99,7 @@ public class EditTaskController implements ActionListener {
 
 					// Move task if stages are not equal.
 					if (!currentStage.getName().equals(desiredStage.getName())) {
-						wfm.moveTask(task, currentStage, desiredStage);
+						desiredStage.addTask(task);
 					}
 
 					this.setTaskID("000000");

@@ -182,14 +182,12 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 * @return the task if found, null otherwise.
 	 */
 	public TaskModel findTaskByID(String id) {
-		TaskModel task = null;
 		for (TaskModel existingTask : taskList) {
 			if (existingTask.getID().equals(id)) {
-				task = existingTask;
-				break;
+				return existingTask;
 			}
 		}
-		return task;
+		return null;
 	}
 
 	/**
@@ -244,8 +242,6 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 		addTask(task, -1);
 	}
 
-	// TODO: Do the tasks need ordering? If not, let's replace this taskList
-	// method and use a collection for speed.
 	/**
 	 * Duplicate task names are handled by the Workflow.
 	 * 
@@ -255,8 +251,18 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 *            the index to insert the task at
 	 */
 	public void addTask(TaskModel task, int index) {
-		task.getStage().removeTask(task); // remove from old parent
-		if (index == -1) {// add to end of list
+		StageModel oldStage = task.getStage();
+		if (oldStage != null && oldStage.containsTask(task)) {
+			oldStage.removeTask(task); // remove from old parent
+
+			// since this is a move, add relevant activity
+			final ActivityModel movedTask = new ActivityModel("Moved task "
+					+ task.getName() + " from stage " + oldStage.getName()
+					+ " to stage " + name + ".",
+					ActivityModel.activityModelType.MOVE);
+			task.addActivity(movedTask);
+		}
+		if (index == -1 || index > taskList.size()) {// add to end of list
 			taskList.add(task);
 		} else {
 			taskList.add(index, task);
