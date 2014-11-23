@@ -38,6 +38,7 @@ public class WorkflowController {
 	private final WorkflowModel model;
 
 	public static boolean alive = true;
+	public static int timeout = 60000; // 1 minute
 
 	/**
 	 * Constructor for the WorkflowController, gets all the stages from the
@@ -66,7 +67,7 @@ public class WorkflowController {
 						.getInstance();
 				while (alive) {
 					try {
-						sleep(60000);
+						sleep(timeout);
 						fetch();
 						reqController.retrieveRequirements();
 						final Request request = Network.getInstance()

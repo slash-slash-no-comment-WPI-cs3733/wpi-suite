@@ -290,7 +290,9 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 				"taskmanager/workflow/" + getID(), HttpMethod.GET);
 		request.addObserver(new FetchWorkflowObserver(this));
 		request.addHeader("long-polling", "long-polling");
-		request.setReadTimeout(65 * 1000);
+		// wait timeout + 5 sec (to allow for round trip time + database
+		// interaction)
+		request.setReadTimeout(WorkflowController.timeout + 5 * 1000);
 		System.out.println("sending request");
 		request.send();
 	}

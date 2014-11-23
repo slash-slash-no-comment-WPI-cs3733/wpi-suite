@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import taskManager.controller.WorkflowController;
 import edu.wpi.cs.wpisuitetng.exceptions.WPISuiteException;
 
 /**
@@ -90,8 +91,8 @@ public class WPICoreServlet extends HttpServlet {
 		System.out.println("waiting on request: " + req.toString());
 		synchronized (updateNotifyer) {
 			try {
-				// wait for changes, up to 60 sec
-				updateNotifyer.wait(60 * 1000);
+				// wait for changes
+				updateNotifyer.wait(WorkflowController.timeout);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
