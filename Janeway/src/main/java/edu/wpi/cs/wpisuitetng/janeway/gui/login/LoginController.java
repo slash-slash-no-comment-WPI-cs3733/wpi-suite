@@ -27,6 +27,7 @@ import org.apache.commons.codec.binary.Base64;
 
 import taskManager.JanewayModule;
 import taskManager.model.FetchWorkflowObserver;
+import taskManager.model.GetUsersObserver;
 import taskManager.model.WorkflowModel;
 import edu.wpi.cs.wpisuitetng.janeway.config.ConfigManager;
 import edu.wpi.cs.wpisuitetng.network.Network;
@@ -174,6 +175,12 @@ public class LoginController implements ActionListener {
 			projectSelectRequest.setBody(ConfigManager.getConfig()
 					.getProjectName());
 			projectSelectRequest.send();
+
+			// Get the list of users
+			Request usersRequest = Network.getInstance().makeRequest(
+					"core/user", HttpMethod.GET);
+			usersRequest.addObserver(new GetUsersObserver());
+			usersRequest.send();
 		} else {
 			JOptionPane.showMessageDialog(view,
 					"Unable to login: no cookies returned.", "Login Error",
