@@ -10,6 +10,7 @@
 package taskManager.view;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -22,6 +23,13 @@ import javax.swing.JPanel;
 
 import taskManager.JanewayModule;
 
+/**
+ * 
+ * TabView deals with the tab for each window
+ *
+ * @author Samee Swartz
+ * @version Nov 21, 2014
+ */
 public class TabView extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = -5461050356588592448L;
@@ -29,6 +37,17 @@ public class TabView extends JPanel implements ActionListener {
 	private boolean closeable;
 	private TabPaneView tabPaneV;
 
+	/**
+	 * 
+	 * Creates a new tab to contain a window/pane of information
+	 *
+	 * @param title
+	 *            The title to put in the tab itself
+	 * @param component
+	 *            The component to display in the tab's window/pane
+	 * @param closeable
+	 *            Whether to make the tab closeable - aka put an 'x' in the tab
+	 */
 	public TabView(String title, Component component, boolean closeable) {
 		super(new FlowLayout(FlowLayout.LEFT, 0, 0));
 
@@ -39,6 +58,13 @@ public class TabView extends JPanel implements ActionListener {
 		setOpaque(false);
 
 		final JLabel label = new JLabel(title);
+		// This makes the tab's a set width and adds the ... if a task name is
+		// too long for the tab
+		JLabel temp = new JLabel();
+		temp.setText("Tabs Name Length");
+		final Dimension size = temp.getPreferredSize();
+		label.setMaximumSize(size);
+		label.setPreferredSize(size);
 		label.setBorder(BorderFactory.createEmptyBorder(3, 0, 2, 7));
 		add(label);
 
@@ -51,10 +77,22 @@ public class TabView extends JPanel implements ActionListener {
 		}
 	}
 
+	/**
+	 * 
+	 * Constructs a closeable tab
+	 *
+	 * @param title
+	 *            The title to put in the tab itself
+	 * @param component
+	 *            The component to display in the tab's window/pane
+	 */
 	public TabView(String title, Component component) {
 		this(title, component, true);
 	}
 
+	/**
+	 * When the 'x' button is pressed
+	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if (closeable) {

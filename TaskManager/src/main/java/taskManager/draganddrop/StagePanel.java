@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package taskManager.prototypeDnD;
+package taskManager.draganddrop;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -15,7 +15,12 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,23 +43,19 @@ import taskManager.view.TaskView;
  */
 public class StagePanel extends JPanel {
 
+	private static final long serialVersionUID = -3746364753551742673L;
+
 	private JLabel placeholder;
 	private int lastIndex;
 	private Map<Component, Point> compCenters;
 	private StageModel model;
 
 	/**
-	 * 
 	 * Creates a StagePanel and initializes its placeholder.
-	 *
 	 */
 	public StagePanel() {
 		this.setTransferHandler(new DDTransferHandler());
 		this.setDropTarget(new DropTarget(this, new StageDropListener(this)));
-
-		// add placeholder
-		// placeholder = new JPanel();
-		// placeholder.setBackground(Color.GRAY);
 
 		Image image = new BufferedImage(130, 30, BufferedImage.TYPE_INT_ARGB);
 		Graphics g = image.getGraphics();
@@ -64,11 +65,6 @@ public class StagePanel extends JPanel {
 		placeholder = new JLabel(new ImageIcon(image));
 		placeholder.setAlignmentX(CENTER_ALIGNMENT);
 
-		// placeholder.setPreferredSize(new Dimension(200, 100));
-		// placeholder.setMaximumSize(new Dimension(200, 100));
-		// placeholder.setMinimumSize(new Dimension(200, 100));
-		// placeholder.setSize(new Dimension(200, 100));
-		// this.setMinimumSize(new Dimension(300, 100));
 		placeholder.setVisible(false);
 		this.add(placeholder);
 	}
@@ -94,12 +90,8 @@ public class StagePanel extends JPanel {
 
 		add(transferredPanel, newIndex);
 
-		transferredPanel.setVisible(true);
 		hidePlaceholder();
 		calculateCenters();
-
-		revalidate();
-		repaint();
 
 		// TODO Put controller callback here!
 	}
@@ -153,9 +145,8 @@ public class StagePanel extends JPanel {
 
 	/**
 	 * 
-	 * Finds the center of each TaskPanel for dealing with the placeholder. **
-	 * do this ONLY while placeholder is invisible!!! REALLY!!! - otherwise it
-	 * includes the placeholder in its center calculations
+	 * Finds the center of each TaskPanel for dealing with the placeholder. Do
+	 * this only while placeholder is invisible.
 	 *
 	 */
 	private void calculateCenters() throws IllegalStateException {
@@ -184,8 +175,6 @@ public class StagePanel extends JPanel {
 	 *         closest to.
 	 */
 	private int getInsertionIndex(Point point) {
-		// Component[] components = this.getComponents();
-		// System.out.println(point);
 		double minDist = Double.MAX_VALUE;
 		Component closest = null;
 		for (Component comp : compCenters.keySet()) {
@@ -214,9 +203,6 @@ public class StagePanel extends JPanel {
 			index++;
 		}// TODO make general for horizontal?
 		System.out.println("Insert at " + Integer.toString(index));
-		/*
-		 * if (index >= compCenters.size()) { index = compCenters.size() - 1; }
-		 */
 
 		return index;
 	}
@@ -245,4 +231,100 @@ public class StagePanel extends JPanel {
 	public void setModel(StageModel model) {
 		this.model = model;
 	}
+}
+
+/**
+ * 
+ * Listens for when a Task is dropped onto a stage, and while the drag occurs.
+ * Adds the TaskPanel to its StagePanel.
+ *
+ * @author Sam Khalandovsky
+ * @author Ezra Davis
+ * @version Nov 17, 2014
+ */
+class StageDropListener implements DropTargetListener {
+
+	private StagePanel stage;
+
+	StageDropListener(StagePanel stage) {
+		this.stage = stage;
+	}
+
+	/**
+	 * Drops a task onto the stage after making sure that it is a taskPanel.
+	 */
+	public void drop(DropTargetDropEvent e) {
+
+		System.out.println("Dropping");
+
+		Transferable trans = e.getTransferable();
+		TaskPanel transferredPanel;
+		if (trans.isDataFlavorSupported(DDTransferHandler.getTaskFlavor())) {
+			try {
+				transferredPanel = (TaskPanel) trans
+						.getTransferData(DDTransferHandler.getTaskFlavor());
+			} catch (Exception ex) {
+				System.out.println(ex.getStackTrace());
+				return;
+			}
+
+		} else {
+			return;
+		}
+
+		stage.dropTask(transferredPanel, e.getLocation());
+	}
+
+	/**
+	 * Hides the placeholder when the Task is no longer being dragged above the
+	 * stage.
+	 * 
+	 * Careful with this due to it being called after entering a TaskPanel
+	 * 
+	 */
+	@Override
+	public void dragExit(DropTargetEvent e) {
+		System.out.println("Stage drag exit");
+		stage.hidePlaceholder();
+	}
+
+	/**
+	 * Draws the placeholder on the stage when a task is being dragged above it.
+	 */
+	@Override
+	public void dragOver(DropTargetDragEvent e) {
+		System.out.println("Stage drag over");
+
+		// Getting placeholder's size & making sure it's a TaskPanel
+		Transferable trans = e.getTransferable();
+		TaskPanel transferredPanel;
+		if (trans.isDataFlavorSupported(DDTransferHandler.getTaskFlavor())) {
+			try {
+				transferredPanel = (TaskPanel) trans
+						.getTransferData(DDTransferHandler.getTaskFlavor());
+			} catch (Exception ex) {
+				System.out.println(ex.getStackTrace());
+				return;
+			}
+
+		} else { // Not a TaskPanel
+			return;
+		}
+		Dimension placeholderSize = transferredPanel.getSize();
+
+		transferredPanel.setVisible(false);
+
+		stage.drawPlaceholder(e.getLocation(), placeholderSize);
+	}
+
+	// Careful with this due to it being called after leaving a TaskPanel
+	@Override
+	public void dragEnter(DropTargetDragEvent e) {
+	}
+
+	@Override
+	public void dropActionChanged(DropTargetDragEvent e) {
+
+	}
+
 }

@@ -36,6 +36,7 @@ import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
 
 public class TaskModel extends AbstractJsonableModel<TaskModel> {
 
+	// Generic logger
 	private static final Logger logger = Logger.getLogger(TaskModel.class
 			.getName());
 
@@ -57,8 +58,14 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	// Estimated effort required for completion
 	private int estimatedEffort;
 
+	// Boolean stating whether estimated effort is set.
+	private Boolean hasEstimatedEffort = false;
+
 	// Effort actually expended to complete
 	private int actualEffort;
+
+	// Boolean stating whether actual effort is set.
+	private Boolean hasActualEffort = false;
 
 	// Actions and comments relevant to task
 	private List<ActivityModel> activities;
@@ -78,7 +85,8 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	public TaskModel(String name, StageModel stage) {
 
 		super(WorkflowModel.getInstance().findUniqueTaskID(name));
-		final ActivityModel createTask = new ActivityModel("Created task",
+		final ActivityModel createTask = new ActivityModel("Created task "
+				+ name + " in stage " + stage.getName() + ".",
 				ActivityModel.activityModelType.CREATION);
 		this.name = name;
 		assigned = new HashSet<String>();
@@ -169,6 +177,26 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	}
 
 	/**
+	 * 
+	 * Returns whether or not the estimated effort is set.
+	 *
+	 * @return the boolean.
+	 */
+	public Boolean isEstimatedEffortSet() {
+		return hasEstimatedEffort;
+	}
+
+	/**
+	 * 
+	 * Sets the hasEstimatedEffort.
+	 *
+	 * @param flag
+	 */
+	public void setHasEstimatedEffort(Boolean flag) {
+		hasEstimatedEffort = flag;
+	}
+
+	/**
 	 * @param estimatedEffort
 	 *            the estimatedEffort to set
 	 */
@@ -178,6 +206,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 					"estimatedEffort must be non-negative");
 		}
 		this.estimatedEffort = estimatedEffort;
+		hasEstimatedEffort = true;
 	}
 
 	/**
@@ -185,6 +214,26 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 */
 	public int getActualEffort() {
 		return actualEffort;
+	}
+
+	/**
+	 * 
+	 * Returns whether or not the estimated effort is set.
+	 *
+	 * @return the boolean.
+	 */
+	public Boolean isActualEffortSet() {
+		return hasActualEffort;
+	}
+
+	/**
+	 * 
+	 * Sets the hasActualEffort.
+	 *
+	 * @param flag
+	 */
+	public void setHasActualEffort(Boolean flag) {
+		hasActualEffort = flag;
 	}
 
 	/**
@@ -197,6 +246,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 					"actualEffort must be non-negative");
 		}
 		this.actualEffort = actualEffort;
+		hasActualEffort = true;
 	}
 
 	/**
@@ -249,7 +299,8 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	public void addAssigned(User user) {
 		final ActivityModel addUser = new ActivityModel("Added user "
 				+ user.getName() + " to task " + name + ".",
-				ActivityModel.activityModelType.USER_ADD, user);
+
+		ActivityModel.activityModelType.USER_ADD, user);
 		assigned.add(user.getUsername());
 		addActivity(addUser);
 		logger.log(Level.FINER, "Added user " + user.getUsername()
@@ -263,15 +314,16 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 *            to be removed
 	 */
 	public void removeAssigned(User user) {
-		final ActivityModel delUser = new ActivityModel("Removed user "
-				+ user.getName() + " from task " + name + ".",
-				ActivityModel.activityModelType.USER_ADD, user);
+
 		if (!assigned.contains(user.getUsername())) {
 			logger.log(Level.WARNING,
 					"Tried to remove a user from a task they were not assigned to.");
 			throw new IndexOutOfBoundsException("User not in suggested task");
 		}
 		assigned.remove(user.getUsername());
+		final ActivityModel delUser = new ActivityModel("Removed user "
+				+ user.getName() + " from task " + name + ".",
+				ActivityModel.activityModelType.USER_ADD, user);
 		addActivity(delUser);
 		logger.log(Level.FINER, "Removed user " + user.getUsername()
 				+ " from task " + name + ".");
@@ -291,6 +343,17 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 */
 	public void addActivity(ActivityModel activity) {
 		activities.add(activity);
+	}
+
+	public void addComment(String comment, User user) {
+		final ActivityModel commentActivity = new ActivityModel(comment,
+				ActivityModel.activityModelType.COMMENT, user);
+		addActivity(commentActivity);
+	}
+
+	public void editActivity(int index, String newText) {
+		final ActivityModel toEdit = activities.get(index);
+		toEdit.setDescription(newText);
 	}
 
 	/**

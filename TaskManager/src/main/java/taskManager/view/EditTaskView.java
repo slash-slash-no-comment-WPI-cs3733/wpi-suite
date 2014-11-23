@@ -203,10 +203,12 @@ public class EditTaskView extends JPanel {
 		// Add user to list
 		addUser = new JButton("Add User");
 		addUser.setName(ADD_USER);
+		this.setAddUserEnabled(false);
 		// remove user from list
 
 		removeUser = new JButton("Remove User");
 		removeUser.setName(REMOVE_USER);
+		this.setRemoveUserEnabled(false);
 
 		// Add comment to comments
 		submitComment = new JButton("Submit Comment");
@@ -217,7 +219,7 @@ public class EditTaskView extends JPanel {
 		// saves all the data and closes the window
 		save = new JButton("Save");
 		save.setName(SAVE);
-		this.disableSave();
+		this.setSaveEnabled(false);
 		// closes the window without saving
 		cancel = new JButton("Cancel");
 		cancel.setName(CANCEL);
@@ -399,6 +401,8 @@ public class EditTaskView extends JPanel {
 		estEffortField.addKeyListener(controller);
 		actEffortField.addKeyListener(controller);
 		stages.addPopupMenuListener(controller);
+		usersList.setController(controller);
+		projectUsersList.setController(controller);
 	}
 
 	/**
@@ -636,17 +640,6 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * Sets the stage selector enabled or disabled
-	 * 
-	 * @param v
-	 *            true will make the stage selector enabled, false will make the
-	 *            stage selector disabled
-	 */
-	public void setStageSelectorEnabled(boolean v) {
-		stages.setEnabled(v);
-	}
-
-	/**
 	 * disables the delete button
 	 */
 	public void disableDelete() {
@@ -658,6 +651,24 @@ public class EditTaskView extends JPanel {
 	 */
 	public void enableDelete() {
 		this.delete.setEnabled(true);
+	}
+
+	/**
+	 * set the add user button enabled or disabled
+	 * 
+	 * @param e
+	 */
+	public void setAddUserEnabled(boolean e) {
+		this.addUser.setEnabled(e);
+	}
+
+	/**
+	 * sets the remove user button enabled or disabled
+	 * 
+	 * @param e
+	 */
+	public void setRemoveUserEnabled(boolean e) {
+		this.removeUser.setEnabled(e);
 	}
 
 	/**
@@ -686,17 +697,13 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * enables the ability to click the save button
+	 * enables or disables the save button
+	 * 
+	 * @param e
+	 *            true is enabled, false is disabled
 	 */
-	public void enableSave() {
-		this.save.setEnabled(true);
-	}
-
-	/**
-	 * disables the ability to click the save button
-	 */
-	public void disableSave() {
-		this.save.setEnabled(false);
+	public void setSaveEnabled(boolean e) {
+		this.save.setEnabled(e);
 	}
 
 	/**

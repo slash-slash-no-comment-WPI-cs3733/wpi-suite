@@ -19,8 +19,8 @@ import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
 import taskManager.controller.TaskController;
+import taskManager.draganddrop.TaskPanel;
 import taskManager.model.TaskModel;
-import taskManager.prototypeDnD.TaskPanel;
 
 /**
  * @author Beth Martino
