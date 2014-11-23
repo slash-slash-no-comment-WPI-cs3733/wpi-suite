@@ -21,55 +21,93 @@ public class ReportsManagerModel {
 	}
 
 	/**
-	 * 
-	 * Returns the velocity (units of work completed) per day per user.
 	 *
-	 * Note: Not completely implemented, start and end don't work. Implement or
-	 * remove arguments.
+	 * See description for getVelocityForStage below.
 	 *
 	 * @param users
-	 *            The list of users we're finding data for
 	 * @param start
-	 *            The earliest date a task can be due by and still be included
-	 *            in the velocity calculations.
 	 * @param end
-	 *            The latest date a task can be due and still be included in the
-	 *            data.
 	 * @param averageCredit
-	 *            If false, splits the task's effort between users, otherwise
-	 *            gives all assigned users full credit for the task(s).
-	 * @return A map of Usernames to a Map of Dates to the amount of effort done
-	 *         by the user.
+	 * @return
 	 */
 	public Map<String, Map<Date, Double>> getVelocity(Set<String> users,
 			Date start, Date end, boolean averageCredit) {
+		// Assume the completion stage is the final stage
+		final List<StageModel> stageList = workflow.getStages();
+		final StageModel finalStage = stageList.get(stageList.size() - 1);
+		return getVelocity(users, start, end, averageCredit, finalStage);
+	}
+
+	/**
+	 * Return data to allow the calculation of "Velocity", i.e. amount of effort
+	 * completed/time. Will return data in a nested map, the outer one is a map
+	 * of users, the inner one is a map of completed task times to effort
+	 *
+	 *
+	 * @param users
+	 *            The set of usernames to get data about
+	 * @param start
+	 *            The time before which we do not care about
+	 * @param end
+	 *            The time after which we do not care about
+	 * @param averageCredit
+	 *            If true, average credit for the task across all assigned
+	 *            users.
+	 *
+	 * @param stage
+	 *            The stage to consider as the completion stage
+	 * @return HashMap<Username : TreeMap<Task completion date : Effort >>
+	 */
+	public Map<String, Map<Date, Double>> getVelocity(Set<String> users,
+			Date start, Date end, boolean averageCredit, StageModel stage) {
+		if (!workflow.getStages().contains(stage)) {
+			throw new IllegalArgumentException("Invalid stage");
+		}
+
 		Map<String, Map<Date, Double>> data = new HashMap<String, Map<Date, Double>>();
 		for (String username : users) {
 			data.put(username, new TreeMap<Date, Double>());
 		}
-		for (StageModel stage : workflow.getStages()) {
-			for (TaskModel task : stage.getTasks()) {
+		for (TaskModel task : stage.getTasks()) {
+			Date completed = null;
+			// We are going to iterate backward through the activities, and take
+			// the final MOVE event. This event must have been to the current
+			// stage (it hasn't been moved after), and since we're in the final
+			// stage, this MOVE event must actually be a completion event.
+			for (int i = task.getActivities().size(); i >= 0; i--) {
+				ActivityModel activity = task.getActivities().get(i);
+				if (activity.getType() == ActivityModel.activityModelType.MOVE) {
+					completed = activity.getDateCreated();
+					if (completed.compareTo(start) < 0
+							|| completed.compareTo(end) > 0) {
+						completed = null; // Pretend as if we didn't find the
+											// completion event.
+					}
+					break;
+				}
+			}
+			if (completed != null) {
 				for (String username : task.getAssigned()) {
 					if (users.contains(username)) {
 						Map<Date, Double> userData = data.get(username);
 						if (averageCredit) {
-							userData.put(task.getDueDate(),
+							userData.put(completed,
 									(double) task.getEstimatedEffort()
 											/ task.getAssigned().size());
 						} else {
-							userData.put(task.getDueDate(),
+							userData.put(completed,
 									(double) task.getEstimatedEffort());
 						}
 						data.put(username, userData);
 					}
 				}
-			}
-		}
+			} // End if (inDateRange)
+		} // End for (TaskModel)
 		return data;
 	}
 
 	/**
-	 * 
+	 *
 	 * Finds the list of all tasks associated with the given users.
 	 *
 	 * @param users

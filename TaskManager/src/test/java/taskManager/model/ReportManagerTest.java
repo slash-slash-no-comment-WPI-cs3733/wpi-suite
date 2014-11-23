@@ -143,4 +143,8 @@ public class ReportManagerTest {
 		assertEquals(totalU2Effort, 40.0, 0.001);
 		assertEquals(totalU3Effort, 36.0, 0.001);
 	}
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 89f2334fe0490647c34a3f02a4ec717b58d4322a
