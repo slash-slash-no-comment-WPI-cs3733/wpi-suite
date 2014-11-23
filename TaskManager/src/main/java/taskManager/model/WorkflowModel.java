@@ -239,7 +239,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	public void update(WorkflowController controller) {
 		final Request request = Network.getInstance().makeRequest(
 				"taskmanager/workflow/" + getID(), HttpMethod.GET);
-		request.addObserver(new FetchWorkflowObserver(this, controller));
+		request.addObserver(new FetchWorkflowObserver(this));
 		request.send();
 	}
 
