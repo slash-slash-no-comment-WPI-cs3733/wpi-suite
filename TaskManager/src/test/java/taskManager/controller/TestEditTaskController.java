@@ -86,8 +86,8 @@ public class TestEditTaskController {
 		JanewayModule.tabPaneC.addEditTaskTab(etv);
 
 		// enter information for a new task
-		getTitleBoxFixture().enterText("New Task");
-		getDescriptionBoxFixture().enterText("a sample task used for testing");
+		getTitleBoxFixture().enterText("name");
+		getDescriptionBoxFixture().enterText("Desc");
 		etv.getDateField().setDate(Calendar.getInstance().getTime());
 		fixture.textBox(EditTaskView.EST_EFFORT).enterText("3");
 
@@ -96,7 +96,7 @@ public class TestEditTaskController {
 
 		// verify the task got saved
 		StageModel stage = wfm.findStageByName("New");
-		assertEquals(stage.findTaskByName("New Task").size(), 1);
+		assertEquals(stage.findTaskByName("name").size(), 1);
 	}
 
 	@Test
@@ -105,15 +105,15 @@ public class TestEditTaskController {
 		// create a new edit task tab
 		JanewayModule.tabPaneC.addEditTaskTab(etv);
 
-		getTitleBoxFixture().enterText("title");
-		getDescriptionBoxFixture().enterText("description");
+		getTitleBoxFixture().enterText("name");
+		getDescriptionBoxFixture().enterText("desc");
 		etv.getDateField().setDate(Calendar.getInstance().getTime());
 		fixture.button(EditTaskView.SAVE).requireEnabled();
 
 		getTitleBoxFixture().deleteText();
 		fixture.button(EditTaskView.SAVE).requireDisabled();
 
-		getTitleBoxFixture().enterText("title");
+		getTitleBoxFixture().enterText("name");
 		getDescriptionBoxFixture().deleteText();
 		fixture.button(EditTaskView.SAVE).requireDisabled();
 	}
@@ -134,8 +134,9 @@ public class TestEditTaskController {
 		TaskModel task = createAndLoadTask();
 
 		// edit the task
-		getTitleBoxFixture().deleteText().enterText("renamed task");
-		getDescriptionBoxFixture().deleteText().enterText("new description");
+		getTitleBoxFixture().deleteText().enterText("newT"); // renamed title
+		getDescriptionBoxFixture().deleteText().enterText("newD"); // renamed
+																	// description
 		Date d = new Date(5 * 60 * 60 * 1000);
 		etv.setDate(d);
 		fixture.textBox(EditTaskView.EST_EFFORT).deleteText().enterText("4");
@@ -145,12 +146,12 @@ public class TestEditTaskController {
 
 		StageModel stage = wfm.findStageByName(task.getStage().getName());
 
-		assertEquals(stage.findTaskByName("New Task").size(), 0);
-		assertEquals(stage.findTaskByName("renamed task").size(), 1);
+		assertEquals(stage.findTaskByName("NT").size(), 0);
+		assertEquals(stage.findTaskByName("newT").size(), 1);
 
 		// verify the fields of the task got saved correctly
-		TaskModel newTask = stage.findTaskByName("renamed task").get(0);
-		assertEquals(newTask.getDescription(), "new description");
+		TaskModel newTask = stage.findTaskByName("newT").get(0);
+		assertEquals(newTask.getDescription(), "newD");
 		assertEquals(newTask.getDueDate(), d);
 		assertEquals(newTask.getEstimatedEffort(), 4);
 	}
