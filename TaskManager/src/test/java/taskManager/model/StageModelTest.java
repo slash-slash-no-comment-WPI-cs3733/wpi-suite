@@ -51,6 +51,8 @@ public class StageModelTest {
 	public void testTasklistSynchronizationMove() {
 		StageModel stage2 = new StageModel("Stage2");
 		TaskModel task = new TaskModel("Task", stage);
+		stage.addTask(task);
+
 		task.setEstimatedEffort(5);
 		wf = AbstractJsonableModel.fromJson(wf.toJson(), WorkflowModel.class);
 		wf.save();

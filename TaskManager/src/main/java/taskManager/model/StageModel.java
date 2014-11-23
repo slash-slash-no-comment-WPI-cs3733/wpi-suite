@@ -255,7 +255,9 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 *            the index to insert the task at
 	 */
 	public void addTask(TaskModel task, int index) {
-		task.getStage().removeTask(task); // remove from old parent
+		if (task.getStage() != null) {
+			task.getStage().removeTask(task); // remove from old parent
+		}
 		if (index == -1) {// add to end of list
 			taskList.add(task);
 		} else {
@@ -331,9 +333,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 */
 	public TaskModel removeTask(TaskModel task) {
 		if (!taskList.contains(task)) {
-			logger.log(Level.WARNING,
-					"Tried to remove a task that did not exist.");
-			throw new IndexOutOfBoundsException("No such task.");
+			logger.log(Level.FINE, "Tried to remove a task that did not exist.");
 		}
 		taskList.remove(task);
 		return task;
