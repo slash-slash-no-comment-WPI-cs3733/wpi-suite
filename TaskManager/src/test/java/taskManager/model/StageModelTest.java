@@ -53,14 +53,16 @@ public class StageModelTest {
 		TaskModel task = new TaskModel("Task", stage);
 		task.setEstimatedEffort(5);
 		wf = AbstractJsonableModel.fromJson(wf.toJson(), WorkflowModel.class);
+		wf.rebuildAllRefs();
 		wf.save();
 		stage = wf.findStageByName("Stage");
 		stage2 = wf.findStageByName("Stage2");
 		task = wf.findTaskByID("Task");
 		assertEquals(task.getEstimatedEffort(), 5);
 		task.setEstimatedEffort(10);
-		wf.moveTask(task, stage, stage2);
+		stage2.addTask(task);
 		wf = AbstractJsonableModel.fromJson(wf.toJson(), WorkflowModel.class);
+		wf.rebuildAllRefs();
 		wf.save();
 		stage = wf.findStageByName("Stage");
 		stage2 = wf.findStageByName("Stage2");

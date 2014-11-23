@@ -112,10 +112,11 @@ public class WorkflowModelTest {
 		assertFalse("Duplicate IDs 2 & 3", t2.getID().equals(t3.getID()));
 		assertFalse("Duplicate IDs 2 & 4", t2.getID().equals(t4.getID()));
 		assertFalse("Duplicate IDs 3 & 4", t3.getID().equals(t4.getID()));
-		wm.moveTask(t1, smf, smt);
-		wm.moveTask(t2, smf, smt);
-		wm.moveTask(t3, smf, smt);
-		wm.moveTask(t4, smf, smt);
+		smt.addTask(t1);
+		smt.addTask(t2);
+		smt.addTask(t3);
+		smt.addTask(t4);
+
 		assertTrue(smt.getTasks().size() == 4);
 	}
 }

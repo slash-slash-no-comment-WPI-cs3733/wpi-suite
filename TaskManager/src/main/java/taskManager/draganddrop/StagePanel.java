@@ -29,7 +29,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import taskManager.model.StageModel;
+import taskManager.controller.StageController;
 import taskManager.model.WorkflowModel;
 import taskManager.view.TaskView;
 
@@ -48,7 +48,7 @@ public class StagePanel extends JPanel {
 	private JLabel placeholder;
 	private int lastIndex;
 	private Map<Component, Point> compCenters;
-	private StageModel model;
+	private StageController controller;
 
 	/**
 	 * Creates a StagePanel and initializes its placeholder.
@@ -82,10 +82,9 @@ public class StagePanel extends JPanel {
 		int newIndex = getInsertionIndex(dropLocation);
 
 		// TODO needs cleanup, maybe we need a separate controller?
-		WorkflowModel.getInstance().moveTask(
-				((TaskView) transferredPanel).getModel(),
-				((StagePanel) transferredPanel.getParent()).getModel(), model,
+		controller.addTask(((TaskView) transferredPanel).getController(),
 				newIndex);
+
 		WorkflowModel.getInstance().save();
 
 		add(transferredPanel, newIndex);
@@ -224,12 +223,8 @@ public class StagePanel extends JPanel {
 
 	}
 
-	public StageModel getModel() {
-		return model;
-	}
-
-	public void setModel(StageModel model) {
-		this.model = model;
+	public void setController(StageController controller) {
+		this.controller = controller;
 	}
 }
 
