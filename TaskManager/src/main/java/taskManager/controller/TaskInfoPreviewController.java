@@ -11,6 +11,8 @@ package taskManager.controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import taskManager.JanewayModule;
+
 /**
  * Description
  *
@@ -27,5 +29,7 @@ public class TaskInfoPreviewController implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		taskC.editTask();
+		JanewayModule.tabPaneC.getTabView().getWorkflowController()
+				.setTaskInfo(null);
 	}
 }

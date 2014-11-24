@@ -32,7 +32,7 @@ public class TabPaneView extends JTabbedPane {
 
 	private static final long serialVersionUID = -4912871689110151496L;
 	// Because the workflow is a permanent tab, tabview should keep track of it
-	private WorkflowController wfc;
+	private final WorkflowController wfc;
 	private final WorkflowModel wfm;
 	private final WorkflowView wfv;
 
@@ -67,7 +67,7 @@ public class TabPaneView extends JTabbedPane {
 		wfc.reloadData();
 	}
 
-	public WorkflowView getWorkflowView() {
-		return wfv;
+	public WorkflowController getWorkflowController() {
+		return wfc;
 	}
 }

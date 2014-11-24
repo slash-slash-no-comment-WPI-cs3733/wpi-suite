@@ -63,6 +63,7 @@ public class TaskController implements MouseListener {
 		this.view = view;
 		this.model = model;
 		sm = model.getStage();
+		this.background = view.getBackground();
 
 		wfm = WorkflowModel.getInstance();
 		etv = new EditTaskView(Mode.EDIT);
@@ -78,10 +79,11 @@ public class TaskController implements MouseListener {
 	public void mouseClicked(MouseEvent e) {
 		JanewayModule.tabPaneC
 				.getTabView()
-				.getWorkflowView()
-				.addTaskInfo(
-						new TaskInfoPreviewView(model, this, view.getLocation()));
-		// TODO: Add the stuff for the floating panel here
+				.getWorkflowController()
+				.setTaskInfo(
+						new TaskInfoPreviewView(model, this, view.getParent()
+								.getParent().getParent().getParent()
+								.getLocation()));
 	}
 
 	public void editTask() {
@@ -172,11 +174,14 @@ public class TaskController implements MouseListener {
 
 	}
 
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		background = view.getBackground();
+	public void setToHoverColor() {
 		view.setBackground(Color.lightGray);
 		view.repaint();
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		setToHoverColor();
 	}
 
 	@Override
@@ -188,6 +193,7 @@ public class TaskController implements MouseListener {
 		if (background != null) {
 			view.setBackground(background);
 		}
+		view.repaint();
 	}
 
 }

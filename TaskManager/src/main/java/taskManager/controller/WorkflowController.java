@@ -15,6 +15,7 @@ import taskManager.model.AbstractJsonableModel;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
+import taskManager.view.TaskInfoPreviewView;
 import taskManager.view.WorkflowView;
 import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
@@ -37,6 +38,7 @@ public class WorkflowController {
 
 	private final WorkflowView view;
 	private final WorkflowModel model;
+	private TaskInfoPreviewView taskInfoV;
 
 	public static boolean alive = true;
 
@@ -180,6 +182,13 @@ public class WorkflowController {
 			// add stage view to workflow
 			view.addStageView(stv);
 		}
+		// TODO: Check if taskInfoV's task is in the workflow and don't show if
+		// it isn't (been deleted)
+		if (taskInfoV != null) {
+			view.addTaskInfo(taskInfoV);
+			// taskInfoV.getTaskController().setToHoverColor();
+		}
+
 		view.revalidate();
 		view.repaint();
 	}
@@ -201,5 +210,13 @@ public class WorkflowController {
 	 */
 	public WorkflowModel getModel() {
 		return model;
+	}
+
+	public void setTaskInfo(TaskInfoPreviewView ti) {
+		// if (this.taskInfoV != null) {
+		// this.taskInfoV.getTaskController().resetBackground();
+		// }
+		this.taskInfoV = ti;
+		this.reloadData();
 	}
 }

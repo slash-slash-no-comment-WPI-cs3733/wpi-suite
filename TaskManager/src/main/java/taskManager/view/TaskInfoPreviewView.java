@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Point;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -32,16 +33,19 @@ public class TaskInfoPreviewView extends JPanel {
 	private TaskModel taskM;
 	private TaskController taskC;
 	private TaskInfoPreviewController controller;
-	private Point taskLocation;
+	private Point taskLoc;
 
 	public TaskInfoPreviewView(TaskModel model, TaskController controller,
-			Point location) {
+			Point loc) {
 		this.taskM = model;
 		this.taskC = controller;
-		this.taskLocation = location;
+		this.taskLoc = loc;
 		this.controller = new TaskInfoPreviewController(this.taskC);
-		this.setBounds(this.taskLocation.x + 400, this.taskLocation.y, 300, 400);
-		this.setOpaque(true);
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		this.setBounds(0, 0, 300, 400);
+
+		// this.taskV.getLocation().y, 300, 400);
+		// this.setPreferredSize(new Dimension(300, 400));
 
 		// Drop shadow
 		DropShadowBorder shadow = new DropShadowBorder();
@@ -54,14 +58,14 @@ public class TaskInfoPreviewView extends JPanel {
 		this.setBorder(shadow);
 
 		JPanel top = new JPanel();
-		top.setBackground(Color.LIGHT_GRAY);
+		// top.setBackground(Color.LIGHT_GRAY);
 		top.setLayout(new FlowLayout());
 		JButton edit = new JButton("edit");
 		edit.addActionListener(this.controller);
 		JLabel title = new JLabel(this.taskM.getName());
 		JLabel description = new JLabel(this.taskM.getDescription());
 		JLabel info = new JLabel();
-		info.setBackground(Color.LIGHT_GRAY);
+		// info.setBackground(Color.LIGHT_GRAY);
 		String text = "Due " + this.taskM.getDueDate() + "\nEst Effort: "
 				+ this.taskM.getEstimatedEffort() + "\nAct Effort: "
 				+ this.taskM.getActualEffort();
@@ -74,7 +78,11 @@ public class TaskInfoPreviewView extends JPanel {
 		this.add(info);
 	}
 
-	public Point getLocation() {
-		return taskLocation;
+	public TaskController getTaskController() {
+		return taskC;
+	}
+
+	public Point getTaskLocation() {
+		return taskLoc;
 	}
 }

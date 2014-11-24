@@ -117,4 +117,8 @@ public class TaskView extends TaskPanel {
 		controller.resetBackground();
 		super.setVisible(visible);
 	}
+
+	public TaskController getController() {
+		return controller;
+	}
 }
