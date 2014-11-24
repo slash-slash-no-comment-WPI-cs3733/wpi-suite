@@ -63,12 +63,11 @@ public class TestManageStageController {
 	@Test
 	public void testAddStage() {
 		// the stages we should end up with
-		final String[] result = { "first", "second", "third", "fourth",
-				"New Stage" };
+		final String[] result = { "first", "second", "third", "fourth", "NS" };
 
-		// add a new stage named New Stage
+		// add a new stage named NS
 		fixture.textBox(ManageStageView.NEW_STAGE_NAME).deleteText()
-				.enterText("New Stage");
+				.enterText("NS");
 		fixture.button(ManageStageView.ADD_NEW_STAGE).click();
 
 		checkStages(result);
