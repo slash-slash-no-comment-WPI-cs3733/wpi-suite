@@ -29,6 +29,7 @@ import taskManager.JanewayModule;
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.GetUsersObserver;
 import edu.wpi.cs.wpisuitetng.janeway.config.ConfigManager;
+import edu.wpi.cs.wpisuitetng.modules.requirementmanager.controller.GetRequirementsController;
 import edu.wpi.cs.wpisuitetng.network.Network;
 import edu.wpi.cs.wpisuitetng.network.Request;
 import edu.wpi.cs.wpisuitetng.network.configuration.NetworkConfiguration;
@@ -231,11 +232,14 @@ public class LoginController implements ActionListener {
 
 			setTaskManagerData();
 
-			// Get the list of users
+			// request the list of users
 			Request usersRequest = Network.getInstance().makeRequest(
 					"core/user", HttpMethod.GET);
 			usersRequest.addObserver(new GetUsersObserver());
 			usersRequest.send();
+
+			// Request list of requirements
+			GetRequirementsController.getInstance().retrieveRequirements();
 
 			// Show the main GUI
 			mainGUI.setVisible(true);

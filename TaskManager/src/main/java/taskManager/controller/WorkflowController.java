@@ -14,7 +14,6 @@ import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
 import taskManager.view.WorkflowView;
-import edu.wpi.cs.wpisuitetng.modules.requirementmanager.controller.GetRequirementsController;
 
 /**
  * A controller for the workflow view
@@ -34,74 +33,14 @@ public class WorkflowController {
 	/**
 	 * Constructor for the WorkflowController, gets all the stages from the
 	 * WorkflowView, creates the corresponding StageView and StageControllers,
-	 * and adds the StageViews to the UI. Polls the server every 1 second until
-	 * it receives the workflow model.
+	 * and adds the StageViews to the UI.
 	 * 
 	 * @param view
 	 *            the corresponding WorkflowView object
-	 * @param model
-	 *            the corresponding WorkflowModel object
 	 */
 	public WorkflowController(WorkflowView view) {
 		this.view = view;
 		this.model = WorkflowModel.getInstance();
-
-		// poll for requirements
-		Thread thread = new Thread() {
-			public void run() {
-				GetRequirementsController reqController = GetRequirementsController
-						.getInstance();
-				while (alive) {
-					try {
-						sleep(5000);
-						reqController.retrieveRequirements();
-					} catch (NullPointerException e) {
-						// this is expected, do nothing
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		};
-		thread.setName("polling");
-		thread.setDaemon(true);
-		thread.start();
-
-		// set up connection to let server send workflow and user changes
-		Thread thread2 = new Thread() {
-			private boolean fetchCompleted = false;
-
-			public void run() {
-				while (alive) {
-					try {
-						sleep(1000);
-
-						// make sure we don't fetch an extra time if fetchUsers
-						// fails after fetch completes
-						if (!fetchCompleted) {
-							fetch();
-						}
-						fetchCompleted = true;
-
-						fetchUsers();
-
-						// once those both complete successfully, we are done
-						// here
-						return;
-
-					} catch (NullPointerException e) {
-						// the network has not been initialized yet, just keep
-						// trying
-					} catch (InterruptedException e) {
-						// sleep failed for some reason, print it and keep going
-						e.printStackTrace();
-					}
-				}
-			}
-		};
-		thread2.setName("setting up connections");
-		thread2.setDaemon(true);
-		// thread2.start();
 
 		reloadData();
 	}

@@ -261,7 +261,6 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		// wait timeout + 5 sec (to allow for round trip time + database
 		// interaction)
 		request.setReadTimeout(WorkflowController.timeout + 5 * 1000);
-		System.out.println("sending get users request");
 		request.send();
 	}
 
