@@ -8,13 +8,22 @@
  *******************************************************************************/
 package taskManager.controller;
 
+import java.awt.Component;
+import java.awt.dnd.DropTargetAdapter;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
 
 import taskManager.JanewayModule;
+import taskManager.draganddrop.DDTransferHandler;
+import taskManager.model.WorkflowModel;
 import taskManager.view.TabPaneView;
+import taskManager.view.TaskView;
 import taskManager.view.ToolbarView;
 
 /**
@@ -22,7 +31,8 @@ import taskManager.view.ToolbarView;
  *
  * @author Beth Martino
  */
-public class ToolbarController implements ActionListener {
+public class ToolbarController extends DropTargetAdapter implements
+		ActionListener {
 
 	private final TabPaneView tabPaneV;
 	private final TabPaneController tabPaneC;
@@ -62,4 +72,43 @@ public class ToolbarController implements ActionListener {
 		}
 	}
 
+	@Override
+	public void drop(DropTargetDropEvent e) {
+		Component target = e.getDropTargetContext().getComponent();
+		if (target instanceof JLabel) {
+			String name = ((JLabel) target).getName();
+			TaskView taskV;
+			try {
+				taskV = (TaskView) e.getTransferable().getTransferData(
+						DDTransferHandler.getTaskFlavor());
+			} catch (Exception ex) {
+				System.out.println(ex.getStackTrace());
+				return;
+			}
+
+			switch (name) {
+			case ToolbarView.DELETE:
+				taskV.getController().deleteTask(); // remove from model
+				taskV.getParent().remove(taskV); // remove from view
+				target.setEnabled(false);
+				WorkflowModel.getInstance().save();
+				break;
+			case ToolbarView.ARCHIVE:
+				break;
+			}
+		}
+	}
+
+	@Override
+	public void dragEnter(DropTargetDragEvent e) {
+		Component comp = e.getDropTargetContext().getComponent();
+		comp.setEnabled(true);
+
+	}
+
+	@Override
+	public void dragExit(DropTargetEvent e) {
+		Component comp = e.getDropTargetContext().getComponent();
+		comp.setEnabled(false);
+	}
 }
