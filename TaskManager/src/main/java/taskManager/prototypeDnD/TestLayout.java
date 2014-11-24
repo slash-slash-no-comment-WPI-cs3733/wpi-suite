@@ -66,7 +66,7 @@ public class TestLayout extends JFrame {
 				 * .nextFloat(), random.nextFloat())); task.setPreferredSize(new
 				 * Dimension(100, 100));
 				 */
-				TaskPanel task = new TaskView("Task", new Date(), 10, null);
+				TaskPanel task = new TaskView("Task", new Date(), 10);
 				task.setAlignmentX(CENTER_ALIGNMENT);
 				stage.add(task);
 

@@ -38,7 +38,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import taskManager.model.StageModel;
+import taskManager.controller.StageController;
 import taskManager.model.WorkflowModel;
 import taskManager.view.TaskView;
 
@@ -52,18 +52,19 @@ import taskManager.view.TaskView;
  */
 public class StagePanel extends JPanel {
 
-	private JLabel placeholder;
+	private static final long serialVersionUID = -3746364753551742673L;
+
+	private static JLabel placeholder;
+
 	private int lastIndex;
 	private Map<Component, Point> compCenters;
-	private StageModel model;
+	private StageController controller;
 
 	private Map<Component, Rectangle> drawnBounds; // store animated panel
 													// bounds
 
 	/**
-	 * 
-	 * Creates a StagePanel and initializes its placeholder.
-	 *
+	 * Creates a StagePanel and creates its handlers
 	 */
 	public StagePanel() {
 		this.setTransferHandler(new DDTransferHandler());
@@ -79,26 +80,27 @@ public class StagePanel extends JPanel {
 			}
 		});
 		timer.start();
+	}
 
-		// add placeholder
-		// placeholder = new JPanel();
-		// placeholder.setBackground(Color.GRAY);
+	/**
+	 * Create a new static placeholder of the given size
+	 *
+	 * @param size
+	 *            desired size of the placeholder
+	 */
+	public static void generatePlaceholder(Dimension size) {
+		if (placeholder != null && placeholder.getParent() != null) {
+			placeholder.getParent().remove(placeholder);
+		}
 
-		Image image = new BufferedImage(130, 30, BufferedImage.TYPE_INT_ARGB);
+		Image image = new BufferedImage(size.width, size.height,
+				BufferedImage.TYPE_INT_ARGB);
 		Graphics g = image.getGraphics();
 		g = g.create();
 		g.setColor(Color.GRAY);
-		g.fillRect(0, 0, 200, 100);
+		g.fillRect(0, 0, size.width, size.height);
 		placeholder = new JLabel(new ImageIcon(image));
 		placeholder.setAlignmentX(CENTER_ALIGNMENT);
-
-		// placeholder.setPreferredSize(new Dimension(200, 100));
-		// placeholder.setMaximumSize(new Dimension(200, 100));
-		// placeholder.setMinimumSize(new Dimension(200, 100));
-		// placeholder.setSize(new Dimension(200, 100));
-		// this.setMinimumSize(new Dimension(300, 100));
-		placeholder.setVisible(false);
-		this.add(placeholder);
 	}
 
 	/**
@@ -113,37 +115,48 @@ public class StagePanel extends JPanel {
 	public void dropTask(TaskPanel transferredPanel, Point dropLocation) {
 		int newIndex = getInsertionIndex(dropLocation);
 
-		// TODO needs cleanup, maybe we need a separate controller?
-		WorkflowModel.getInstance().moveTask(
-				((TaskView) transferredPanel).getModel(),
-				((StagePanel) transferredPanel.getParent()).getModel(), model,
-				newIndex);
-		WorkflowModel.getInstance().save();
+		// If transferredPanel is lower by index in the same stage, lower the
+		// index by 1
+		int oldIndex = getComponentIndex(transferredPanel);
+		if (oldIndex != -1 && oldIndex < newIndex) {
+			newIndex--;
+		}
 
 		add(transferredPanel, newIndex);
 
-		hidePlaceholder();
-		calculateCenters();
+		// TODO needs cleanup
+		boolean changed = controller.addTask(
+				((TaskView) transferredPanel).getController(), newIndex);
 
-		// TODO Put controller callback here!
+		if (changed) {
+			WorkflowModel.getInstance().save();
+		}
+
+		hidePlaceholder();
+
 	}
 
 	/**
 	 * 
 	 * Draws a placeholder at roughly the given location with the given size.
-	 * (only one placeholder at a time)
 	 *
 	 * @param point
 	 *            The location (relative to the StagePanel) where the
 	 *            placeholder should be drawn.
-	 * @param placeholderSize
-	 *            The size of the placeholder.
 	 */
-	public void drawPlaceholder(Point point, Dimension placeholderSize) {
-		if (!placeholder.isVisible()) {
-			calculateCenters();
+	public void drawPlaceholder(Point point) {
+		if (placeholder == null) {
+			throw new IllegalStateException("Placeholder not found");
 		}
-		placeholder.setPreferredSize(placeholderSize);
+
+		// Calculate centers if placeholder is not currently showing in this
+		// panel
+		if (placeholder.getParent() == null
+				|| !placeholder.getParent().equals(this)
+				|| !placeholder.isVisible()) {
+			calculateCenters();
+			System.out.println("Calculating centers.");
+		}
 
 		setPlaceholderIndex(getInsertionIndex(point));
 		placeholder.setVisible(true);
@@ -166,7 +179,8 @@ public class StagePanel extends JPanel {
 	 *            Where the placeholder is to be placed.
 	 */
 	private void setPlaceholderIndex(int index) {
-		index = Math.min(index, this.getComponentCount() - 1);
+		// index = Math.min(index, this.getComponentCount() - 1);
+		System.out.println("Adding placeholder at " + index);
 		this.add(placeholder, index);
 		if (index != lastIndex) {
 			this.revalidate();
@@ -177,16 +191,11 @@ public class StagePanel extends JPanel {
 
 	/**
 	 * 
-	 * Finds the center of each TaskPanel for dealing with the placeholder. **
-	 * do this ONLY while placeholder is invisible!!! REALLY!!! - otherwise it
-	 * includes the placeholder in its center calculations
+	 * Finds the center of each TaskPanel for dealing with the placeholder. Do
+	 * this only while placeholder is not visible in this stage
 	 *
 	 */
-	private void calculateCenters() throws IllegalStateException {
-		if (placeholder.isVisible()) {
-			throw new IllegalStateException(
-					"Can't calculate panel centers when placholder is visible!");
-		}
+	private void calculateCenters() {
 		compCenters = new HashMap<Component, Point>();
 		for (Component comp : this.getComponents()) {
 			if (comp.isVisible()) {
@@ -208,8 +217,6 @@ public class StagePanel extends JPanel {
 	 *         closest to.
 	 */
 	private int getInsertionIndex(Point point) {
-		// Component[] components = this.getComponents();
-		// System.out.println(point);
 		double minDist = Double.MAX_VALUE;
 		Component closest = null;
 		for (Component comp : compCenters.keySet()) {
@@ -226,7 +233,8 @@ public class StagePanel extends JPanel {
 		int index = getComponentIndex(closest);
 
 		// pretend placeholder is not there when picking drop index
-		if (getComponentIndex(placeholder) < index) {
+		int placeholderIndex = getComponentIndex(placeholder);
+		if (placeholderIndex != -1 && placeholderIndex < index) {
 			index--;
 		}
 
@@ -238,9 +246,6 @@ public class StagePanel extends JPanel {
 			index++;
 		}// TODO make general for horizontal?
 		System.out.println("Insert at " + Integer.toString(index));
-		/*
-		 * if (index >= compCenters.size()) { index = compCenters.size() - 1; }
-		 */
 
 		return index;
 	}
@@ -250,7 +255,7 @@ public class StagePanel extends JPanel {
 	 *
 	 * @param comp
 	 *            component to lookup
-	 * @return index
+	 * @return index, -1 if not found
 	 */
 	private int getComponentIndex(Component comp) {
 		for (int i = 0; i < getComponentCount(); i++) {
@@ -262,12 +267,8 @@ public class StagePanel extends JPanel {
 
 	}
 
-	public StageModel getModel() {
-		return model;
-	}
-
-	public void setModel(StageModel model) {
-		this.model = model;
+	public void setController(StageController controller) {
+		this.controller = controller;
 	}
 
 	private synchronized boolean updateDrawnBounds() {
@@ -327,8 +328,8 @@ public class StagePanel extends JPanel {
 
 /**
  * 
- * Listens to when a Task is dropped onto a stage. Adds the TaskPanel to its
- * StagePanel.
+ * Listens for when a Task is dropped onto a stage, and while the drag occurs.
+ * Adds the TaskPanel to its StagePanel.
  *
  * @author Sam Khalandovsky
  * @author Ezra Davis
@@ -338,12 +339,14 @@ class StageDropListener implements DropTargetListener {
 
 	private StagePanel stage;
 
-	public StageDropListener(StagePanel stage) {
+	StageDropListener(StagePanel stage) {
 		this.stage = stage;
 	}
 
 	/**
-	 * Drops a task onto the stage after making sure that it is a taskPanel.
+	 * Drops a task onto the stage after making sure that it is a taskPanel. <br>
+	 * <br>
+	 * {@inheritDoc}
 	 */
 	public void drop(DropTargetDropEvent e) {
 
@@ -371,8 +374,9 @@ class StageDropListener implements DropTargetListener {
 	 * Hides the placeholder when the Task is no longer being dragged above the
 	 * stage.
 	 * 
-	 * Careful with this due to it being called after entering a TaskPanel
-	 * 
+	 * Careful with this due to it being called after entering a TaskPanel <br>
+	 * <br>
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void dragExit(DropTargetEvent e) {
@@ -381,7 +385,9 @@ class StageDropListener implements DropTargetListener {
 	}
 
 	/**
-	 * Draws the placeholder on the stage when a task is being dragged above it.
+	 * Draws the placeholder on the stage when a task is being dragged above it. <br>
+	 * <br>
+	 * {@inheritDoc}
 	 */
 	@Override
 	public void dragOver(DropTargetDragEvent e) {
@@ -402,11 +408,10 @@ class StageDropListener implements DropTargetListener {
 		} else { // Not a TaskPanel
 			return;
 		}
-		Dimension placeholderSize = transferredPanel.getSize();
 
 		transferredPanel.setVisible(false);
 
-		stage.drawPlaceholder(e.getLocation(), placeholderSize);
+		stage.drawPlaceholder(e.getLocation());
 	}
 
 	// Careful with this due to it being called after leaving a TaskPanel

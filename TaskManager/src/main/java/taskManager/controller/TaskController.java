@@ -72,13 +72,22 @@ public class TaskController implements MouseListener {
 		req = model.getReq();
 	}
 
+	/**
+	 * Move this task to given stage
+	 *
+	 * @param destination
+	 *            target StageModel
+	 * @param index
+	 * @return whether the stage changed as a result
+	 */
+	public boolean moveToStage(StageModel destination, int index) {
+		return destination.addTask(model, index);
+	}
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// makes the delete button unclickable
 		etv.enableDelete();
-		// etv.removeAll();
-
-		// TODO: Populate with data?
 
 		// uses the title field to hold the unique id
 		etv.getTitle().setName(this.model.getID());
@@ -92,8 +101,14 @@ public class TaskController implements MouseListener {
 		etv.setTitle(model.getName());
 		etv.setDescription(model.getDescription());
 		etv.setDate(model.getDueDate());
-		etv.setEstEffort(model.getEstimatedEffort());
-		etv.setActEffort(model.getActualEffort());
+
+		// Sets the effort values only if user specified them.
+		if (model.isEstimatedEffortSet()) {
+			etv.setEstEffort(model.getEstimatedEffort());
+		}
+		if (model.isActualEffortSet()) {
+			etv.setActEffort(model.getActualEffort());
+		}
 
 		tabPaneC.addEditTaskTab(etv);
 
@@ -107,17 +122,7 @@ public class TaskController implements MouseListener {
 			}
 		}
 
-		// Set actual effort field enabled only if the selected stage is
-		// "Complete"
-		if (etv.getSelectedStage().equals("Complete")) {
-			etv.getActEffort().setEnabled(true);
-		} else {
-			etv.getActEffort().setEnabled(false);
-		}
-
-		// Enable stage dropdown when editing a task.
 		etv.getStages().setSelectedItem(model.getStage().getName());
-		etv.setStageSelectorEnabled(true);
 
 		// populates the project users list
 		ArrayList<String> projectUserNames = new ArrayList<String>();
@@ -140,7 +145,7 @@ public class TaskController implements MouseListener {
 		etv.getUsersList().addAllToList(assignedUserNames);
 
 		// Enable save button when editing a task.
-		etv.enableSave();
+		etv.setSaveEnabled(true);
 
 		// Clear the activities list.
 		etv.clearActivities();

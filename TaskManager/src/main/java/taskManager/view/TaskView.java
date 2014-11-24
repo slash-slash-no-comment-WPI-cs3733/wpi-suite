@@ -20,7 +20,6 @@ import javax.swing.border.TitledBorder;
 
 import taskManager.controller.TaskController;
 import taskManager.draganddrop.TaskPanel;
-import taskManager.model.TaskModel;
 
 /**
  * @author Beth Martino
@@ -34,7 +33,6 @@ public class TaskView extends TaskPanel {
 	private static final long serialVersionUID = 1L;
 
 	private TaskController controller;
-	private TaskModel model;
 
 	/**
 	 * Constructor, creates a list-like view for the following information: the
@@ -49,8 +47,7 @@ public class TaskView extends TaskPanel {
 	 * @param taskID
 	 *            The ID of the task being displayed
 	 */
-	public TaskView(String name, Date duedate, int estEffort, TaskModel model) {
-		this.model = model; // TODO this should not be done!
+	public TaskView(String name, Date duedate, int estEffort) {
 
 		// organizes the data in a vertical list
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -107,8 +104,8 @@ public class TaskView extends TaskPanel {
 		this.addMouseListener(this.controller);
 	}
 
-	public TaskModel getModel() {
-		return model;
+	public TaskController getController() {
+		return controller;
 	}
 
 	@Override
@@ -116,4 +113,5 @@ public class TaskView extends TaskPanel {
 		controller.resetBackground();
 		super.setVisible(visible);
 	}
+
 }

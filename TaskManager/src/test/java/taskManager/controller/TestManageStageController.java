@@ -63,12 +63,11 @@ public class TestManageStageController {
 	@Test
 	public void testAddStage() {
 		// the stages we should end up with
-		final String[] result = { "first", "second", "third", "fourth",
-				"New Stage" };
+		final String[] result = { "first", "second", "third", "fourth", "NS" };
 
-		// add a new stage named New Stage
+		// add a new stage named NS
 		fixture.textBox(ManageStageView.NEW_STAGE_NAME).deleteText()
-				.enterText("New Stage");
+				.enterText("NS");
 		fixture.button(ManageStageView.ADD_NEW_STAGE).click();
 
 		checkStages(result);
@@ -84,13 +83,12 @@ public class TestManageStageController {
 
 		checkStages(result);
 
-		// add an undeletable stage
-		new StageModel("undeletable", false);
-		msc.reloadData();
+		// remove two more stages to end up with one stage
+		fixture.panel("second").button(ManageStageView.DELETE).click();
+		fixture.panel("fourth").button(ManageStageView.DELETE).click();
 
 		// make sure the delete button is disabled
-		fixture.panel("undeletable").button(ManageStageView.DELETE)
-				.requireDisabled();
+		fixture.panel("first").button(ManageStageView.DELETE).requireDisabled();
 	}
 
 	@Test

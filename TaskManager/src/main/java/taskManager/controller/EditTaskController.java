@@ -97,19 +97,13 @@ public class EditTaskController implements ActionListener {
 					task = currentStage.findTaskByID(taskID);
 					this.setTaskData(task, desiredStage, requirement);
 
-					// Move task if stages are not equal.
-					if (!currentStage.getName().equals(desiredStage.getName())) {
-						wfm.moveTask(task, currentStage, desiredStage);
-					}
-
 					this.setTaskID("000000");
 				}
 				// if creating a new task
 				else {
 					// creates a new task model
-					task = new TaskModel(etv.getTitle().getText(), currentStage);
-					this.setTaskData(task, wfm.findStageByName("New"),
-							requirement);
+					task = new TaskModel(etv.getTitle().getText(), desiredStage);
+					this.setTaskData(task, desiredStage, requirement);
 				}
 
 				// Add the newly added activities.
@@ -138,28 +132,12 @@ public class EditTaskController implements ActionListener {
 				break;
 
 			case EditTaskView.ADD_USER:
-				// add a user to this task
-				if (!etv.getProjectUsersList().isSelectionEmpty()) {
-					String toAdd = etv.getProjectUsersList().getSelectedValue();
-					if (!etv.getUsersList().contains(toAdd)) {
-						etv.getUsersList().addToList(toAdd);
-						etv.getProjectUsersList().removeFromList(toAdd);
-					}
-				}
+				this.addUsersToList();
 
 				break;
 
 			case EditTaskView.REMOVE_USER:
-				// add a user to this task
-				if (!etv.getUsersList().isSelectionEmpty()) {
-					int indexToRemove = etv.getUsersList().getSelectedIndex();
-					String nameToRemove = etv.getUsersList().getSelectedValue();
-					if (!etv.getProjectUsersList().contains(nameToRemove)) {
-						etv.getUsersList().removeFromList(indexToRemove);
-						etv.getProjectUsersList().addToList(nameToRemove);
-					}
-					this.toRemove.add(nameToRemove);
-				}
+				this.removeUsersFromList();
 				break;
 
 			case EditTaskView.VIEW_REQ:
@@ -267,17 +245,26 @@ public class EditTaskController implements ActionListener {
 		// sets the text fields
 		t.setName(etv.getTitle().getText());
 		t.setDescription(etv.getDescription().getText());
-		t.setEstimatedEffort(Integer.parseInt(etv.getEstEffort().getText()));
+
+		// Try to set the effort values.
+		try {
+			t.setEstimatedEffort(Integer.parseInt(etv.getEstEffort().getText()));
+		} catch (java.lang.NumberFormatException e2) {
+			// Set to false since this value is not set.
+			t.setHasEstimatedEffort(false);
+		}
+
 		try {
 			t.setActualEffort(Integer.parseInt(etv.getActEffort().getText()));
 		} catch (java.lang.NumberFormatException e2) {
-			// TODO: handle error
+			t.setHasActualEffort(false);
 		}
 
 		// sets the due date from the calendar
 		t.setDueDate(etv.getDateField().getDate());
-		// sets the stage from the dropdown
-		t.setStage(s);
+
+		// move the stage
+		s.addTask(t);
 
 		// adds or removes users
 		for (String name : etv.getUsersList().getAllValues()) {
@@ -310,6 +297,63 @@ public class EditTaskController implements ActionListener {
 		}
 		return null;
 
+	}
+
+	/**
+	 * adds selected usernames to the assigned users list and removes them from
+	 * the project user list.
+	 */
+	public void addUsersToList() {
+		int[] toAdd = etv.getProjectUsersList().getSelectedIndices();
+		ArrayList<String> namesToAdd = new ArrayList<String>();
+
+		for (int ind : toAdd) {
+			namesToAdd.add(etv.getProjectUsersList().getValueAtIndex(ind));
+		}
+
+		for (String n1 : namesToAdd) {
+			etv.getProjectUsersList().removeFromList(n1);
+			if (!etv.getUsersList().contains(n1)) {
+				// add the new username to the assigned user list
+				etv.getUsersList().addToList(n1);
+				etv.getProjectUsersList().removeFromList(n1);
+				// if this user was to be removed take it out of the
+				// list
+				if (this.toRemove.contains(n1)) {
+					this.toRemove.remove(n1);
+				}
+
+			}
+		}
+	}
+
+	/**
+	 * removes selected usernames from the assigned users list and adds them to
+	 * the project user list. marks selected usernames to be removed from the
+	 * model
+	 */
+	public void removeUsersFromList() {
+		// grab all of the indices of the usernames selected in
+		// assigned users and grab the associated strings
+		int[] usersToRemove = etv.getUsersList().getSelectedIndices();
+		ArrayList<String> namesToRemove = new ArrayList<String>();
+		for (int ind : usersToRemove) {
+			namesToRemove.add(etv.getUsersList().getValueAtIndex(ind));
+		}
+
+		// for every name that is selected, remove it from assigned
+		// users and add it to project users
+		for (String n2 : namesToRemove) {
+			etv.getUsersList().removeFromList(n2);
+			if (!etv.getProjectUsersList().contains(n2)) {
+				etv.getProjectUsersList().addToList(n2);
+				etv.getUsersList().removeFromList(n2);
+				if (!this.toRemove.contains(n2)) {
+					this.toRemove.add(n2);
+				}
+			}
+
+		}
 	}
 
 }
