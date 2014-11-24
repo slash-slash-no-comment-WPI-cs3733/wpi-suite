@@ -69,6 +69,8 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 				WorkflowModel[].class);
 		if (workflows == null) {
 			System.out.println("Workflow not found on server");
+			// restart the connection
+			restartConnection();
 			return;
 		}
 
