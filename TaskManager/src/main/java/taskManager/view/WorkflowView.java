@@ -8,10 +8,7 @@
  *******************************************************************************/
 package taskManager.view;
 
-import java.awt.FlowLayout;
-
 import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
 
 import taskManager.controller.WorkflowController;
 
@@ -42,6 +39,10 @@ public class WorkflowView extends JLayeredPane {
 	 */
 	public void addStageView(StageView stv) {
 		add(stv, JLayeredPane.DEFAULT_LAYER);
+	}
+
+	public void addTaskInfo(TaskInfoPreviewView ti) {
+		add(ti, 3);
 	}
 
 	/**

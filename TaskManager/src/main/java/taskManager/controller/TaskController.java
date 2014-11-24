@@ -76,6 +76,11 @@ public class TaskController implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		JanewayModule.tabPaneC
+				.getTabView()
+				.getWorkflowView()
+				.addTaskInfo(
+						new TaskInfoPreviewView(model, this, view.getLocation()));
 		// TODO: Add the stuff for the floating panel here
 	}
 
