@@ -10,6 +10,7 @@ package taskManager.model;
 
 import java.util.Date;
 
+import taskManager.JanewayModule;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
@@ -37,8 +38,8 @@ public class ActivityModel {
 	// Contents of activity
 	private String description;
 
-	// User who took the action; null for system activities
-	private User actor;
+	// Name of user who took the action; null for system activities
+	private String actor;
 
 	/**
 	 * Constructor for activities with no user actor/unknown user actor
@@ -65,7 +66,11 @@ public class ActivityModel {
 	public ActivityModel(String description, activityModelType type, User actor) {
 		this.description = description;
 		modelType = type;
-		this.actor = actor;
+		if (actor != null) {
+			this.actor = actor.getUsername();
+		} else {
+			this.actor = null;
+		}
 		dateCreated = new Date(); // set date to time ActivityModel was
 									// instantiated
 	}
@@ -111,7 +116,12 @@ public class ActivityModel {
 	 * @return the actor
 	 */
 	public User getActor() {
-		return actor;
+		for (User u : JanewayModule.users) {
+			if (u.getUsername().equals(actor)) {
+				return u;
+			}
+		}
+		return null;
 	}
 
 }
