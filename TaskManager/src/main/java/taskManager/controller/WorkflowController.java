@@ -10,15 +10,11 @@ package taskManager.controller;
 
 import java.util.List;
 
-import taskManager.model.GetUsersObserver;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
 import taskManager.view.WorkflowView;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.controller.GetRequirementsController;
-import edu.wpi.cs.wpisuitetng.network.Network;
-import edu.wpi.cs.wpisuitetng.network.Request;
-import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
 
 /**
  * A controller for the workflow view
@@ -50,7 +46,7 @@ public class WorkflowController {
 		this.view = view;
 		this.model = WorkflowModel.getInstance();
 
-		// poll for users and requirements
+		// poll for requirements
 		Thread thread = new Thread() {
 			public void run() {
 				GetRequirementsController reqController = GetRequirementsController
@@ -59,10 +55,6 @@ public class WorkflowController {
 					try {
 						sleep(5000);
 						reqController.retrieveRequirements();
-						final Request request = Network.getInstance()
-								.makeRequest("core/user", HttpMethod.GET);
-						request.addObserver(new GetUsersObserver());
-						request.send();
 					} catch (NullPointerException e) {
 						// this is expected, do nothing
 					} catch (Exception e) {
@@ -75,15 +67,26 @@ public class WorkflowController {
 		thread.setDaemon(true);
 		thread.start();
 
-		// set up connection to let server send workflow changes
+		// set up connection to let server send workflow and user changes
 		Thread thread2 = new Thread() {
+			private boolean fetchCompleted = false;
+
 			public void run() {
 				while (alive) {
 					try {
 						sleep(1000);
-						fetch();
 
-						// once fetch completes successfully, we are done here
+						// make sure we don't fetch an extra time if fetchUsers
+						// fails after fetch completes
+						if (!fetchCompleted) {
+							fetch();
+						}
+						fetchCompleted = true;
+
+						fetchUsers();
+
+						// once those both complete successfully, we are done
+						// here
 						return;
 
 					} catch (NullPointerException e) {
@@ -141,6 +144,10 @@ public class WorkflowController {
 	 */
 	public void fetch() {
 		model.update();
+	}
+
+	public void fetchUsers() {
+		model.updateUsers();
 	}
 
 	/**

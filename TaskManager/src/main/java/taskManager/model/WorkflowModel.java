@@ -253,6 +253,23 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		request.send();
 	}
 
+	public void updateUsers() {
+		final Request request = Network.getInstance().makeRequest("core/user",
+				HttpMethod.GET);
+		request.addObserver(new GetUsersObserver());
+		if (Network.getInstance().getDefaultNetworkConfiguration()
+				.getRequestHeaders().get("cookie").size() == 0) {
+			throw new NullPointerException(
+					"Network configuration does not have cookies yet");
+		}
+		request.addHeader("long-polling", "long-polling");
+		// wait timeout + 5 sec (to allow for round trip time + database
+		// interaction)
+		request.setReadTimeout(WorkflowController.timeout + 5 * 1000);
+		System.out.println("sending get users request");
+		request.send();
+	}
+
 	/**
 	 * Compare a given object to the current workflow
 	 *

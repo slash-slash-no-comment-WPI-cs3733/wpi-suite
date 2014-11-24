@@ -106,6 +106,10 @@ public class WPICoreServlet extends HttpServlet {
 			out.println(ManagerLayer.getInstance().read(path, req.getCookies()));
 		} catch (WPISuiteException e) {
 			res.setStatus(e.getStatus());
+			out.write(this.reponseFormatter.formatContent(e));
+			out.flush();
+			out.close();
+			return;
 		}
 
 		// send changes
@@ -129,6 +133,10 @@ public class WPICoreServlet extends HttpServlet {
 		try {
 			out.println(ManagerLayer.getInstance().create(path, in.readLine(),
 					req.getCookies()));
+			// notify if something was written to the database
+			synchronized (updateNotifyer) {
+				updateNotifyer.notifyAll();
+			}
 		} catch (WPISuiteException e) {
 			res.setStatus(e.getStatus());
 			out.write(this.reponseFormatter.formatContent(e));
@@ -189,6 +197,10 @@ public class WPICoreServlet extends HttpServlet {
 		try {
 			out.println(ManagerLayer.getInstance().delete(path,
 					req.getCookies()));
+			// notify if something was written to the database
+			synchronized (updateNotifyer) {
+				updateNotifyer.notifyAll();
+			}
 		} catch (WPISuiteException e) {
 			res.setStatus(e.getStatus());
 			out.write(this.reponseFormatter.formatContent(e));

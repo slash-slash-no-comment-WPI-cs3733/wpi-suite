@@ -87,10 +87,7 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 	 */
 	@Override
 	public void responseError(IRequest iReq) {
-		// TODO Should we display error dialog?
-		System.err.println("Response Error "
-				+ iReq.getResponse().getStatusCode() + ": "
-				+ iReq.getResponse().getStatusMessage());
+		super.responseError(iReq);
 
 		// restart the connection
 		restartConnection();
@@ -102,7 +99,7 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 	 */
 	@Override
 	public void fail(IRequest iReq, Exception exception) {
-		System.err.println("Request Failed: " + exception.getMessage());
+		super.fail(iReq, exception);
 
 		// restart the connection
 		restartConnection();
