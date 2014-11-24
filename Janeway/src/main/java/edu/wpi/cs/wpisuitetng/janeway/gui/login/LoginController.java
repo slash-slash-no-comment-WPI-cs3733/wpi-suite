@@ -174,11 +174,6 @@ public class LoginController implements ActionListener {
 					.getProjectName());
 			projectSelectRequest.send();
 
-			// Get the list of users
-			Request usersRequest = Network.getInstance().makeRequest(
-					"core/user", HttpMethod.GET);
-			usersRequest.addObserver(new GetUsersObserver());
-			usersRequest.send();
 		} else {
 			JOptionPane.showMessageDialog(view,
 					"Unable to login: no cookies returned.", "Login Error",
@@ -235,6 +230,12 @@ public class LoginController implements ActionListener {
 					.get("cookie").get(0));
 
 			setTaskManagerData();
+
+			// Get the list of users
+			Request usersRequest = Network.getInstance().makeRequest(
+					"core/user", HttpMethod.GET);
+			usersRequest.addObserver(new GetUsersObserver());
+			usersRequest.send();
 
 			// Show the main GUI
 			mainGUI.setVisible(true);

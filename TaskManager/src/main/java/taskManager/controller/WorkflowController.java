@@ -101,7 +101,7 @@ public class WorkflowController {
 		};
 		thread2.setName("setting up connections");
 		thread2.setDaemon(true);
-		thread2.start();
+		// thread2.start();
 
 		reloadData();
 	}
