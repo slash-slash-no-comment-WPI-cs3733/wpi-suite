@@ -233,18 +233,22 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	}
 
 	/**
-	 * Add a task to the end of the task list
+	 * Add a task to the end of the task list. If it is already in the stage, do
+	 * nothing.
 	 *
 	 * @param task
 	 *            the task to add.
 	 * @return whether the stage changed as a result
 	 */
 	public boolean addTask(TaskModel task) {
+		if (taskList.contains(task)) {
+			return false;
+		}
 		return addTask(task, -1);
 	}
 
 	/**
-	 * Duplicate task names are handled by the Workflow.
+	 * Add task to a given index in this stage
 	 * 
 	 * @param task
 	 *            the task to add
