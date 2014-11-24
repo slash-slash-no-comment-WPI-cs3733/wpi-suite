@@ -35,6 +35,8 @@ class DDTransferHandler extends TransferHandler {
 	// This DataFlavor represents a task being dragged
 	private static DataFlavor taskFlavor;
 
+	public static boolean dragSaved = false;
+
 	/**
 	 * Lazy-load the DataFlavor associated with tasks
 	 *
@@ -114,8 +116,13 @@ class DDTransferHandler extends TransferHandler {
 		// Resume updating from the server
 		FetchWorkflowObserver.ignoreAllResponses = false;
 
-		// update now in case we missed anything while dragging
-		WorkflowModel.getInstance().updateNow();
+		if (DDTransferHandler.dragSaved == false) {
+			// update now in case we missed anything while dragging
+			// (if the drag saved, our changes overwrite anything we may have
+			// missed)
+			WorkflowModel.getInstance().updateNow();
+		}
+		DDTransferHandler.dragSaved = false;
 
 		// Show the task
 		comp.setVisible(true);

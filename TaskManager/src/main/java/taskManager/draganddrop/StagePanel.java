@@ -86,6 +86,7 @@ public class StagePanel extends JPanel {
 				newIndex);
 
 		WorkflowModel.getInstance().save();
+		DDTransferHandler.dragSaved = true;
 
 		add(transferredPanel, newIndex);
 
