@@ -11,11 +11,13 @@ package taskManager.view;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.LayoutManager;
+import java.awt.FlowLayout;
+import java.awt.Insets;
 
-public class WorkflowLayout implements LayoutManager {
+public class WorkflowLayout extends FlowLayout {
 	private final Container target;
-	private static final Dimension preferredSize = new Dimension(500, 500);
+
+	private int hgap = 5, vgap = 5;
 
 	public WorkflowLayout(final Container target) {
 		this.target = target;
@@ -26,35 +28,231 @@ public class WorkflowLayout implements LayoutManager {
 	}
 
 	@Override
-	public void layoutContainer(final Container container) {
-		for (final Component component : container.getComponents()) {
-			if (target instanceof WorkflowView) {
-				if (component.isVisible()) {
-					if (component.getName() == ((WorkflowView) target).STAGES) {
-						component.setBounds(0, 0, target.getWidth(),
-								target.getHeight());
-					} else if (component.getName() == ((WorkflowView) target).TASK_INFO) {
-						System.out.println(component.getBounds());
-						component.setBounds(component.getBounds());
-					} else {
-						System.out.println("Using an undocumented JPanel");
-					}
-				}
-			} else {
-				System.out
-						.println("Using WorkflowLayout for something other than WorkflowView...");
+	public void layoutContainer(Container target) {
+		synchronized (target.getTreeLock()) {
+			Insets insets = target.getInsets();
+			int maxwidth = target.getWidth()
+					- (insets.left + insets.right + hgap * 2);
+			int nmembers = target.getComponentCount();
+			int x = 0, y = insets.top + vgap;
+			int rowh = 0, start = 0;
+
+			boolean ltr = target.getComponentOrientation().isLeftToRight();
+
+			boolean useBaseline = getAlignOnBaseline();
+			int[] ascent = null;
+			int[] descent = null;
+
+			if (useBaseline) {
+				ascent = new int[nmembers];
+				descent = new int[nmembers];
 			}
+
+			for (int i = 0; i < nmembers; i++) {
+				Component m = target.getComponent(i);
+				if (m.isVisible() && !(m instanceof TaskInfoPreviewView)) {
+					Dimension d = m.getPreferredSize();
+					m.setSize(d.width, d.height);
+
+					if (useBaseline) {
+						int baseline = m.getBaseline(d.width, d.height);
+						if (baseline >= 0) {
+							ascent[i] = baseline;
+							descent[i] = d.height - baseline;
+						} else {
+							ascent[i] = -1;
+						}
+					}
+					if ((x == 0) || ((x + d.width) <= maxwidth)) {
+						if (x > 0) {
+							x += hgap;
+						}
+						x += d.width;
+						rowh = Math.max(rowh, d.height);
+					} else {
+						rowh = moveComponents(target, insets.left + hgap, y,
+								maxwidth - x, rowh, start, i, ltr, useBaseline,
+								ascent, descent);
+						x = d.width;
+						y += vgap + rowh;
+						rowh = d.height;
+						start = i;
+					}
+				} else if (m instanceof TaskInfoPreviewView) {
+					m.setBounds(m.getBounds());
+				}
+			}
+			moveComponents(target, insets.left + hgap, y, maxwidth - x, rowh,
+					start, nmembers, ltr, useBaseline, ascent, descent);
 		}
 	}
 
-	@Override
-	public Dimension minimumLayoutSize(final Container parent) {
-		return preferredLayoutSize(parent);
+	private int moveComponents(Container target, int x, int y, int width,
+			int height, int rowStart, int rowEnd, boolean ltr,
+			boolean useBaseline, int[] ascent, int[] descent) {
+		switch (FlowLayout.CENTER) {
+		case LEFT:
+			x += ltr ? 0 : width;
+			break;
+		case CENTER:
+			x += width / 2;
+			break;
+		case RIGHT:
+			x += ltr ? width : 0;
+			break;
+		case LEADING:
+			break;
+		case TRAILING:
+			x += width;
+			break;
+		}
+		int maxAscent = 0;
+		int nonbaselineHeight = 0;
+		int baselineOffset = 0;
+		if (useBaseline) {
+			int maxDescent = 0;
+			for (int i = rowStart; i < rowEnd; i++) {
+				Component m = target.getComponent(i);
+				if (m.isVisible() && !(m instanceof TaskInfoPreviewView)) {
+					if (ascent[i] >= 0) {
+						maxAscent = Math.max(maxAscent, ascent[i]);
+						maxDescent = Math.max(maxDescent, descent[i]);
+					} else {
+						nonbaselineHeight = Math.max(m.getHeight(),
+								nonbaselineHeight);
+					}
+				}
+			}
+			height = Math.max(maxAscent + maxDescent, nonbaselineHeight);
+			baselineOffset = (height - maxAscent - maxDescent) / 2;
+		}
+		for (int i = rowStart; i < rowEnd; i++) {
+			Component m = target.getComponent(i);
+			if (m.isVisible() && !(m instanceof TaskInfoPreviewView)) {
+				int cy;
+				if (useBaseline && ascent[i] >= 0) {
+					cy = y + baselineOffset + maxAscent - ascent[i];
+				} else {
+					cy = y + (height - m.getHeight()) / 2;
+				}
+				if (ltr) {
+					m.setLocation(x, cy);
+				} else {
+					m.setLocation(target.getWidth() - x - m.getWidth(), cy);
+				}
+				x += m.getWidth() + hgap;
+			}
+		}
+		return height;
 	}
 
+	/**
+	 * Returns the minimum dimensions needed to layout the <i>visible</i>
+	 * components contained in the specified target container.
+	 * 
+	 * @param target
+	 *            the container that needs to be laid out
+	 * @return the minimum dimensions to lay out the subcomponents of the
+	 *         specified container
+	 * @see #preferredLayoutSize
+	 * @see java.awt.Container
+	 * @see java.awt.Container#doLayout
+	 */
 	@Override
-	public Dimension preferredLayoutSize(final Container parent) {
-		return preferredSize;
+	public Dimension minimumLayoutSize(Container target) {
+		synchronized (target.getTreeLock()) {
+			boolean useBaseline = getAlignOnBaseline();
+			Dimension dim = new Dimension(0, 0);
+			int nmembers = target.getComponentCount();
+			int maxAscent = 0;
+			int maxDescent = 0;
+			boolean firstVisibleComponent = true;
+
+			for (int i = 0; i < nmembers; i++) {
+				Component m = target.getComponent(i);
+				if (m.isVisible() && !(m instanceof TaskInfoPreviewView)) {
+					Dimension d = m.getMinimumSize();
+					dim.height = Math.max(dim.height, d.height);
+					if (firstVisibleComponent) {
+						firstVisibleComponent = false;
+					} else {
+						dim.width += hgap;
+					}
+					dim.width += d.width;
+					if (useBaseline) {
+						int baseline = m.getBaseline(d.width, d.height);
+						if (baseline >= 0) {
+							maxAscent = Math.max(maxAscent, baseline);
+							maxDescent = Math.max(maxDescent, dim.height
+									- baseline);
+						}
+					}
+				}
+			}
+
+			if (useBaseline) {
+				dim.height = Math.max(maxAscent + maxDescent, dim.height);
+			}
+
+			Insets insets = target.getInsets();
+			dim.width += insets.left + insets.right + hgap * 2;
+			dim.height += insets.top + insets.bottom + vgap * 2;
+			return dim;
+
+		}
+	}
+
+	/**
+	 * Returns the preferred dimensions for this layout given the <i>visible</i>
+	 * components in the specified target container.
+	 *
+	 * @param target
+	 *            the container that needs to be laid out
+	 * @return the preferred dimensions to lay out the subcomponents of the
+	 *         specified container
+	 * @see Container
+	 * @see #minimumLayoutSize
+	 * @see java.awt.Container#getPreferredSize
+	 */
+	@Override
+	public Dimension preferredLayoutSize(Container target) {
+		synchronized (target.getTreeLock()) {
+			Dimension dim = new Dimension(0, 0);
+			int nmembers = target.getComponentCount();
+			boolean firstVisibleComponent = true;
+			boolean useBaseline = getAlignOnBaseline();
+			int maxAscent = 0;
+			int maxDescent = 0;
+
+			for (int i = 0; i < nmembers; i++) {
+				Component m = target.getComponent(i);
+				if (m.isVisible() && !(m instanceof TaskInfoPreviewView)) {
+					Dimension d = m.getPreferredSize();
+					dim.height = Math.max(dim.height, d.height);
+					if (firstVisibleComponent) {
+						firstVisibleComponent = false;
+					} else {
+						dim.width += hgap;
+					}
+					dim.width += d.width;
+					if (useBaseline) {
+						int baseline = m.getBaseline(d.width, d.height);
+						if (baseline >= 0) {
+							maxAscent = Math.max(maxAscent, baseline);
+							maxDescent = Math.max(maxDescent, d.height
+									- baseline);
+						}
+					}
+				}
+			}
+			if (useBaseline) {
+				dim.height = Math.max(maxAscent + maxDescent, dim.height);
+			}
+			Insets insets = target.getInsets();
+			dim.width += insets.left + insets.right + hgap * 2;
+			dim.height += insets.top + insets.bottom + vgap * 2;
+			return dim;
+		}
 	}
 
 	@Override

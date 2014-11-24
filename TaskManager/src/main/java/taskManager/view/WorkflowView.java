@@ -8,11 +8,9 @@
  *******************************************************************************/
 package taskManager.view;
 
-import java.awt.FlowLayout;
+import java.awt.Component;
 
 import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
 import taskManager.controller.WorkflowController;
 
@@ -26,8 +24,8 @@ public class WorkflowView extends JLayeredPane {
 	private static final long serialVersionUID = 1L;
 
 	private WorkflowController controller;
-	private JPanel stages;
-	private JPanel taskInfo;
+	// private JPanel stages;
+	// private JPanel taskInfo;
 
 	public final String STAGES = "Stages";
 	public final String TASK_INFO = "Task Info";
@@ -36,24 +34,7 @@ public class WorkflowView extends JLayeredPane {
 	 * Constructor for WorkflowView.
 	 */
 	public WorkflowView() {
-		// ignores the task info view and arranges the stages horizontally
-		// and evenly spaced
 		this.setLayout(new WorkflowLayout(this));
-		this.stages = new JPanel();
-		// this.stages.setName(STAGES);
-		this.stages.setLayout(new FlowLayout());
-
-		this.taskInfo = new JPanel();
-		this.taskInfo.setName(TASK_INFO);
-		this.taskInfo.setLayout(null);
-
-		JScrollPane test = new JScrollPane(stages);
-		test.setName(STAGES);
-		// test.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		// test.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
-		this.taskInfo.setVisible(false);
-		this.add(test, JLayeredPane.DEFAULT_LAYER);
-		this.add(taskInfo, 1);
 	}
 
 	/**
@@ -62,16 +43,12 @@ public class WorkflowView extends JLayeredPane {
 	 *            house the stage view object sets the size and border
 	 */
 	public void addStageView(StageView stv) {
-		stages.add(stv, JLayeredPane.DEFAULT_LAYER);
+		add(stv, new Integer(0));
 	}
 
 	public void addTaskInfo(TaskInfoPreviewView ti) {
-		// taskInfo.removeAll();
-		// taskInfo.setBounds(ti.getTaskLocation().x, ti.getTaskLocation().y +
-		// 5,
-		// 300, 400);
-		// taskInfo.add(ti);
-		// taskInfo.setVisible(true);
+		removeTaskInfos();
+		add(ti, new Integer(1));
 	}
 
 	/**
@@ -98,9 +75,9 @@ public class WorkflowView extends JLayeredPane {
 		try {
 			// goes through all of the stage views it contains until it finds
 			// the one that matches the name
-			for (int i = 1; i == stages.getComponents().length; i++) {
-				if (stages.getComponent(i).getName().equals(name)) {
-					return (StageView) stages.getComponent(i);
+			for (int i = 1; i == getComponents().length; i++) {
+				if (getComponent(i).getName().equals(name)) {
+					return (StageView) getComponent(i);
 				}
 			}
 		} catch (NullPointerException e) {
@@ -120,21 +97,11 @@ public class WorkflowView extends JLayeredPane {
 		super.setVisible(visible);
 	}
 
-	@Override
-	public void removeAll() {
-		stages.removeAll();
-		taskInfo.removeAll();
-	}
-
-	@Override
-	public void repaint() {
-		stages.repaint();
-		taskInfo.repaint();
-	}
-
-	@Override
-	public void revalidate() {
-		stages.revalidate();
-		taskInfo.revalidate();
+	public void removeTaskInfos() {
+		for (Component c : this.getComponents()) {
+			if (c instanceof TaskInfoPreviewView) {
+				this.remove(c);
+			}
+		}
 	}
 }

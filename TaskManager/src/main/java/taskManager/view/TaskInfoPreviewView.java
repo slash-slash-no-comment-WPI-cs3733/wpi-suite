@@ -33,19 +33,14 @@ public class TaskInfoPreviewView extends JPanel {
 	private TaskModel taskM;
 	private TaskController taskC;
 	private TaskInfoPreviewController controller;
-	private Point taskLoc;
 
 	public TaskInfoPreviewView(TaskModel model, TaskController controller,
 			Point loc) {
 		this.taskM = model;
 		this.taskC = controller;
-		this.taskLoc = loc;
 		this.controller = new TaskInfoPreviewController(this.taskC);
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		this.setBounds(0, 0, 300, 400);
-
-		// this.taskV.getLocation().y, 300, 400);
-		// this.setPreferredSize(new Dimension(300, 400));
+		this.setBounds(loc.x, loc.y, 300, 400);
 
 		// Drop shadow
 		DropShadowBorder shadow = new DropShadowBorder();
@@ -58,7 +53,6 @@ public class TaskInfoPreviewView extends JPanel {
 		this.setBorder(shadow);
 
 		JPanel top = new JPanel();
-		// top.setBackground(Color.LIGHT_GRAY);
 		top.setLayout(new FlowLayout());
 		JButton edit = new JButton("edit");
 		edit.addActionListener(this.controller);
@@ -80,9 +74,5 @@ public class TaskInfoPreviewView extends JPanel {
 
 	public TaskController getTaskController() {
 		return taskC;
-	}
-
-	public Point getTaskLocation() {
-		return taskLoc;
 	}
 }
