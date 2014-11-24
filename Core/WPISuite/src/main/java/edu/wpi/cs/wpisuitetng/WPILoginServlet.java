@@ -85,17 +85,22 @@ public class WPILoginServlet extends HttpServlet {
 				Cookie switchedCookie = projectSession.toCookie();
 				response.addCookie(switchedCookie);
 
-				// send the user the workflow associated with their project
-				List<Cookie> cookies = new ArrayList<Cookie>(
-						Arrays.asList(request.getCookies()));
-				cookies.add(switchedCookie);
-				Cookie[] cookies2 = new Cookie[cookies.size()];
-				String s = ManagerLayer.getInstance().read(
-						"taskmanager/workflow/defaultWorkflow".split("/"),
-						cookies.toArray(cookies2));
-				PrintWriter out = response.getWriter();
-				out.println(s);
-				out.close();
+				try {
+					// send the user the workflow associated with their project
+					List<Cookie> cookies = new ArrayList<Cookie>(
+							Arrays.asList(request.getCookies()));
+					cookies.add(switchedCookie);
+					Cookie[] cookies2 = new Cookie[cookies.size()];
+					String s = ManagerLayer.getInstance().read(
+							"taskmanager/workflow/defaultWorkflow".split("/"),
+							cookies.toArray(cookies2));
+					PrintWriter out = response.getWriter();
+					out.println(s);
+					out.close();
+				} catch (WPISuiteException e) {
+					System.out.println("No workflow found for project \""
+							+ projectName + "\"");
+				}
 
 				response.setStatus(HttpServletResponse.SC_OK);
 			} catch (WPISuiteException e) {
