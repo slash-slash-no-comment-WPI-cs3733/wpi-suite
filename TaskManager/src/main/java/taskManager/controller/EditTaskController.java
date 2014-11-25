@@ -412,12 +412,8 @@ public class EditTaskController implements ActionListener {
 		// makes the delete button unclickable
 		etv.enableDelete();
 
-		// uses the title field to hold the unique id
-		etv.getTitle().setName(model.getID());
-		// taskID = getTaskID(); // TODO remove/fix
+		taskID = model.getID();
 
-		// uses description field to hold the name of the stage
-		etv.getDescription().setName(this.model.getStage().getName());
 		// makes the delete button unclickable
 		etv.enableDelete();
 
@@ -496,18 +492,11 @@ public class EditTaskController implements ActionListener {
 	}
 
 	public boolean isDuplicateView(EditTaskView etv2) {
-		// TODO Make less ugly
-		if (getTaskID() == null) {
-			return false;
-		}
-		return getTaskID().equals(etv2.getController().getTaskID());
+		return getTaskID() != null
+				&& getTaskID().equals(etv2.getController().getTaskID());
 	}
 
 	private String getTaskID() {
-		if (taskID == null || !taskID.equals(etv.getTitle().getName())) {
-			System.out.println("TaskID: " + taskID
-					+ "\netv.getTitle.getName(): " + etv.getTitle().getName());
-		}
-		return etv.getTitle().getName();
+		return taskID;
 	}
 }
