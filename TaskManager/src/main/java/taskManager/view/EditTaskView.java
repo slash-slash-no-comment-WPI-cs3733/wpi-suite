@@ -34,6 +34,7 @@ import org.jdesktop.swingx.JXDatePicker;
 
 import taskManager.controller.EditTaskController;
 import taskManager.controller.TaskInputController;
+import taskManager.localization.Localizer;
 import taskManager.model.ActivityModel;
 import taskManager.model.ActivityModel.activityModelType;
 
@@ -133,23 +134,29 @@ public class EditTaskView extends JPanel {
 		newActivities = new ArrayList<ActivityModel>();
 
 		// JLabels
-		JLabel nt_titleLabel = new JLabel("Title ");
-		JLabel nt_descriptionLabel = new JLabel("Description ");
-		JLabel nt_dueDateLabel = new JLabel("Due Date ");
-		JLabel nt_stageLabel = new JLabel("Stage ");
-		JLabel nt_usersLabel = new JLabel("Users ");
-		JLabel nt_estimatedEffortLabel = new JLabel("Estimated Effort ");
-		JLabel nt_actualEffortLabel = new JLabel("Actual Effort ");
-		JLabel nt_commentsLabel = new JLabel("Comments ");
-		JLabel nt_requirementLabel = new JLabel("Requirement ");
+		JLabel nt_titleLabel = new JLabel(Localizer.getString("Title "));
+		JLabel nt_descriptionLabel = new JLabel(
+				Localizer.getString("Description "));
+		JLabel nt_dueDateLabel = new JLabel(Localizer.getString("Due Date "));
+		JLabel nt_stageLabel = new JLabel(Localizer.getString("Stage "));
+		JLabel nt_usersLabel = new JLabel(Localizer.getString("Users "));
+		JLabel nt_estimatedEffortLabel = new JLabel(
+				Localizer.getString("Estimated Effort "));
+		JLabel nt_actualEffortLabel = new JLabel(
+				Localizer.getString("Actual Effort "));
+		JLabel nt_commentsLabel = new JLabel(Localizer.getString("Comments "));
+		JLabel nt_requirementLabel = new JLabel(
+				Localizer.getString("Requirement "));
 
-		titleError = new JLabel("This a required field");
+		titleError = new JLabel(Localizer.getString("This is a required field"));
 		titleError.setVisible(false);
 		titleError.setForeground(Color.RED);
-		descriptionError = new JLabel("This is a required field");
+		descriptionError = new JLabel(
+				Localizer.getString("This is a required field"));
 		descriptionError.setVisible(false);
 		descriptionError.setForeground(Color.RED);
-		estimatedEffortError = new JLabel("This is a required field");
+		estimatedEffortError = new JLabel(
+				Localizer.getString("This is a required field"));
 		estimatedEffortError.setVisible(false);
 		estimatedEffortError.setForeground(Color.RED);
 		actualEffortError = new JLabel("");
@@ -196,8 +203,8 @@ public class EditTaskView extends JPanel {
 		// JTextArea
 		// TODO
 		// Get to add users
-		usersList = new ScrollList("Assigned Users");
-		projectUsersList = new ScrollList("Project Users");
+		usersList = new ScrollList(Localizer.getString("Assigned Users"));
+		projectUsersList = new ScrollList(Localizer.getString("Project Users"));
 
 		// Comment Pane
 		activityPane = new ActivityView();
@@ -208,23 +215,23 @@ public class EditTaskView extends JPanel {
 
 		// JButtons
 		// Delete Task and close the window
-		delete = new JButton("Delete");
+		delete = new JButton(Localizer.getString("Delete"));
 		delete.setName(DELETE);
 		// Add user to list
-		addUser = new JButton("Add User");
+		addUser = new JButton(Localizer.getString("Add User"));
 		addUser.setName(ADD_USER);
 		this.setAddUserEnabled(false);
 		// remove user from list
 
-		removeUser = new JButton("Remove User");
+		removeUser = new JButton(Localizer.getString("Remove User"));
 		removeUser.setName(REMOVE_USER);
 		this.setRemoveUserEnabled(false);
 
 		// Add comment to comments
-		submitComment = new JButton("Submit Comment");
+		submitComment = new JButton(Localizer.getString("Submit Comment"));
 		submitComment.setName(SUBMIT_COMMENT);
 		// add requirement
-		addReq = new JButton("View Requirement");
+		addReq = new JButton(Localizer.getString("View Requirement"));
 		addReq.setName(VIEW_REQ);
 		// saves all the data and closes the window
 		save = new JButton("Save");
@@ -233,7 +240,7 @@ public class EditTaskView extends JPanel {
 		// closes the window without saving
 		cancel = new JButton("Cancel");
 		cancel.setName(CANCEL);
-		JButton nt_refreshBtn = new JButton("Refresh");
+		JButton nt_refreshBtn = new JButton(Localizer.getString("Refresh"));
 		refreshActivities = nt_refreshBtn;
 		refreshActivities.setName(REFRESH);
 

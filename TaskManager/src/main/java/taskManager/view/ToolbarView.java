@@ -25,6 +25,7 @@ import javax.swing.JToolBar;
 
 import taskManager.controller.ToolbarController;
 import taskManager.draganddrop.DDTransferHandler;
+import taskManager.localization.Localizer;
 
 /**
  * The Task Managers tab's toolbar panel.
@@ -51,6 +52,9 @@ public class ToolbarView extends JToolBar {
 	private JButton statistics;
 	private JLabel archive;
 	private JLabel delete;
+
+	private JButton english;
+	private JButton pirate;
 
 	private JLabel projectName;
 
@@ -82,14 +86,19 @@ public class ToolbarView extends JToolBar {
 		this.setFloatable(false);
 
 		// Construct the buttons
-		createTask = new JButton("Create Task");
+		// createTask = new JButton("Create Task");
+		createTask = new JButton(Localizer.getString("Create Task"));
 		createTask.setName(CREATE_TASK);
-		manageStages = new JButton("Manage Stages");
+		manageStages = new JButton(Localizer.getString("Manage Stages"));
 		manageStages.setName(MANAGE_STAGES);
-		manageUsers = new JButton("Manage Users");
+		manageUsers = new JButton(Localizer.getString("Manage Users"));
 		manageUsers.setName(MANAGE_USERS);
-		statistics = new JButton("Statistics");
+		statistics = new JButton(Localizer.getString("Statistics"));
 		statistics.setName(REPORT);
+		english = new JButton("English");
+		english.setName(Localizer.ENGLISH);
+		pirate = new JButton("Pirate");
+		pirate.setName(Localizer.PIRATE);
 
 		// Add icons
 		Image img;
@@ -122,15 +131,17 @@ public class ToolbarView extends JToolBar {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		archive.setToolTipText("Drag here to archive task");
+		archive.setToolTipText(Localizer.getString("Drag here to archive task"));
 		archive.setEnabled(false);
 		archive.setName(ARCHIVE);
-		delete.setToolTipText("Drag here to delete task");
+		delete.setToolTipText(Localizer.getString("Drag here to delete task"));
 		delete.setEnabled(false);
 		delete.setName(DELETE);
 
 		// Construct the project title
-		projectName = new JLabel("Project Title"); // TODO(sswartz): update this
+		projectName = new JLabel(Localizer.getString("Project Title")); // TODO(sswartz):
+																		// update
+																		// this
 		projectName.setFont(new Font("TextField.font", Font.BOLD, 20));
 
 		// Add buttons to the content panel
@@ -141,6 +152,9 @@ public class ToolbarView extends JToolBar {
 		buttons.add(statistics);
 		targets.add(archive);
 		targets.add(delete);
+
+		buttons.add(english);
+		buttons.add(pirate);
 
 		// Title and buttons to the toolbar
 		this.add(title);
@@ -163,6 +177,9 @@ public class ToolbarView extends JToolBar {
 
 		delete.setTransferHandler(new DDTransferHandler());
 		delete.setDropTarget(new DropTarget(delete, controller));
+
+		english.addActionListener(controller);
+		pirate.addActionListener(controller);
 	}
 
 	@Override

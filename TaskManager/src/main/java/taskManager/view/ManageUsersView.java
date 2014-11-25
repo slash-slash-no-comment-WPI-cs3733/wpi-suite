@@ -24,6 +24,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import taskManager.localization.Localizer;
+
 /**
  * This is the view for the ManageUsers pane in the workflow.
  * 
@@ -49,7 +51,7 @@ public class ManageUsersView extends JPanel {
 	public ManageUsersView() {
 		// The title and window
 		// TODO: Center the Title (properly) and add padding below it
-		title = new JLabel("Manage Users");
+		title = new JLabel(Localizer.getString("Manage Users"));
 		title.setFont(new Font("Serif", Font.PLAIN, 15));
 		window = new JPanel();
 		window.setLayout(new FlowLayout());
@@ -61,7 +63,7 @@ public class ManageUsersView extends JPanel {
 		// Label for the users panel
 		JPanel uLabel = new JPanel();
 		uLabel.setPreferredSize(new Dimension(175, 25));
-		JLabel usersLabel = new JLabel("Users");
+		JLabel usersLabel = new JLabel(Localizer.getString("Users"));
 		// Add label to panel
 		uLabel.add(usersLabel);
 		usersBlock.add(uLabel);
@@ -74,9 +76,9 @@ public class ManageUsersView extends JPanel {
 		// Button panel
 		buttons = new JPanel();
 		buttons.setLayout(new BoxLayout(buttons, BoxLayout.Y_AXIS));
-		JButton addUser = new JButton("Add User");
-		JButton removeUser = new JButton("Remove User");
-		JButton done = new JButton("Done");
+		JButton addUser = new JButton(Localizer.getString("Add User"));
+		JButton removeUser = new JButton(Localizer.getString("Remove User"));
+		JButton done = new JButton(Localizer.getString("Done"));
 		// TODO: add spacing between the buttons
 		buttons.add(addUser);
 		buttons.add(removeUser);
@@ -88,13 +90,14 @@ public class ManageUsersView extends JPanel {
 		// Label for the task panel
 		JPanel tLabel = new JPanel();
 		tLabel.setPreferredSize(new Dimension(175, 25));
-		JLabel tasksLabel = new JLabel("Associated Tasks");
+		JLabel tasksLabel = new JLabel(Localizer.getString("Associated Tasks"));
 		// Add label to panel
 		tLabel.add(tasksLabel);
 		tasksBlock.add(tLabel);
 		// Create the scrollPane with a StageView inside it
 		// TODO: change StageView to a TaskListView. Do this
-		JScrollPane tasks = new JScrollPane(new StageView("Tasks"));
+		JScrollPane tasks = new JScrollPane(new StageView(
+				Localizer.getString("Tasks")));
 		tasks.setBorder(BorderFactory.createLineBorder(Color.black));
 		tasks.setPreferredSize(new Dimension(200, 350));
 		tasksBlock.add(tasks);

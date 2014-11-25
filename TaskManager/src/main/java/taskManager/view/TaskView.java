@@ -20,6 +20,7 @@ import javax.swing.border.TitledBorder;
 
 import taskManager.controller.TaskController;
 import taskManager.draganddrop.TaskPanel;
+import taskManager.localization.Localizer;
 
 /**
  * @author Beth Martino
@@ -69,9 +70,9 @@ public class TaskView extends TaskPanel {
 		// to the month.
 
 		JLabel nameLabel = new JLabel();
-		JLabel dueLabel = new JLabel("Due: " + (date.get(Calendar.MONTH) + 1)
-				+ "/" + date.get(Calendar.DATE) + "/"
-				+ (date.get(Calendar.YEAR)));
+		JLabel dueLabel = new JLabel(Localizer.getString("Due: ")
+				+ (date.get(Calendar.MONTH) + 1) + "/"
+				+ date.get(Calendar.DATE) + "/" + (date.get(Calendar.YEAR)));
 
 		// This creates a maximum text-string length before the name gets
 		// truncated in the view

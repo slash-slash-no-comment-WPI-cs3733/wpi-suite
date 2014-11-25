@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 
 import taskManager.JanewayModule;
 import taskManager.controller.EditTaskController;
+import taskManager.localization.Localizer;
 
 /**
  * 
@@ -107,8 +108,10 @@ public class TabView extends JPanel implements ActionListener {
 					Integer choice = JOptionPane
 							.showConfirmDialog(
 									tabPaneV,
-									"You still have unsaved edits. Are you sure you want to delete this tab?",
-									"Warning - Deleting a tab with edits",
+									Localizer
+											.getString("You still have unsaved edits. Are you sure you want to delete this tab?"),
+									Localizer
+											.getString("Warning - Deleting a tab with edits"),
 									JOptionPane.YES_NO_OPTION);
 					if (choice.equals(JOptionPane.YES_OPTION)) {
 						JanewayModule.tabPaneC.removeTabByComponent(component);

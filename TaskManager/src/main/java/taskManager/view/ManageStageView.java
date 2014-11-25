@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import taskManager.controller.ManageStageController;
+import taskManager.localization.Localizer;
 
 /**
  * A view to add/remove/move stages
@@ -168,7 +169,7 @@ public class ManageStageView extends JPanel {
 	 * @return the created JButton
 	 */
 	private JButton newButtonWithListener(String title) {
-		JButton button = new JButton(title);
+		JButton button = new JButton(Localizer.getString(title));
 		button.setName(title);
 		if (controller != null) {
 			button.addActionListener(controller);

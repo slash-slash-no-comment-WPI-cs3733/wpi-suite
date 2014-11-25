@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
+import taskManager.localization.Localizer;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
@@ -52,7 +53,8 @@ public class UserView extends JPanel {
 		this.setMinimumSize(new Dimension(300, 100));
 		// Displayed in the view
 		this.add(new JLabel(user.getName()));
-		this.add(new JLabel("Username: " + user.getUsername()));
+		this.add(new JLabel(Localizer.getString("Username: ")
+				+ user.getUsername()));
 
 		// TODO: Add the user's tasks to the tasks list
 	}

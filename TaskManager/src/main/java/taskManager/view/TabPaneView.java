@@ -18,6 +18,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import taskManager.controller.WorkflowController;
+import taskManager.localization.Localizer;
 import taskManager.model.WorkflowModel;
 
 /**
@@ -51,7 +52,8 @@ public class TabPaneView extends JTabbedPane {
 		JScrollPane scroll = new JScrollPane(wfv);
 		scroll.setBorder(BorderFactory.createLineBorder(Color.black));
 
-		this.addTab("Workflow", new ImageIcon(), scroll, "Workflow");
+		this.addTab(Localizer.getString("Workflow"), new ImageIcon(), scroll,
+				Localizer.getString("Workflow"));
 	}
 
 	public void refreshWorkflow() {

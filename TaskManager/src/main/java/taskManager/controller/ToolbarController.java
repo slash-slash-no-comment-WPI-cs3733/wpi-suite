@@ -21,6 +21,7 @@ import javax.swing.JLabel;
 
 import taskManager.JanewayModule;
 import taskManager.draganddrop.DDTransferHandler;
+import taskManager.localization.Localizer;
 import taskManager.model.WorkflowModel;
 import taskManager.view.TabPaneView;
 import taskManager.view.TaskView;
@@ -71,6 +72,11 @@ public class ToolbarController extends DropTargetAdapter implements
 
 			case ToolbarView.REFRESH:
 				tabPaneV.refreshWorkflow();
+				break;
+
+			case Localizer.ENGLISH:
+			case Localizer.PIRATE:
+				Localizer.setLanguage(name);
 				break;
 			}
 		}
