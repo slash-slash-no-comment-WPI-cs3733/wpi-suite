@@ -10,7 +10,6 @@ package taskManager.model;
 
 import java.util.Date;
 
-import taskManager.JanewayModule;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
@@ -115,13 +114,8 @@ public class ActivityModel {
 	/**
 	 * @return the actor
 	 */
-	public User getActor() {
-		for (User u : JanewayModule.users) {
-			if (u.getUsername().equals(actor)) {
-				return u;
-			}
-		}
-		return null;
+	public String getActor() {
+		return actor;
 	}
 
 }
