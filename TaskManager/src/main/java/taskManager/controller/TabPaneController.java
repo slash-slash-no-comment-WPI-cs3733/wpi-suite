@@ -69,9 +69,7 @@ public class TabPaneController {
 			if (c instanceof EditTaskView) {
 				etv2 = (EditTaskView) c;
 
-				if (etv2.getTitle().getName() != null
-						&& etv2.getTitle().getName()
-								.equals(etv.getTitle().getName())) {
+				if (etv.getController().isDuplicateView(etv2)) {
 					exists = true;
 					break;
 				}

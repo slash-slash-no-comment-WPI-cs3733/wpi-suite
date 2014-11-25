@@ -115,7 +115,7 @@ public class EditTaskController implements ActionListener {
 		if (button instanceof JButton) {
 			String name = ((JButton) button).getName();
 
-			taskID = etv.getTitle().getName();
+			taskID = getTaskID();
 
 			// check to see if the task exists in the workflow and grabs the
 			// stage that the task is in
@@ -294,7 +294,7 @@ public class EditTaskController implements ActionListener {
 	 */
 	private void setTaskData(TaskModel t, StageModel s, Requirement r) {
 		// sets the text fields
-		t.setName(etv.getTitle().getText());
+		t.setName(getTaskID());
 		t.setDescription(etv.getDescription().getText());
 
 		// Try to set the effort values.
@@ -414,6 +414,7 @@ public class EditTaskController implements ActionListener {
 
 		// uses the title field to hold the unique id
 		etv.getTitle().setName(model.getID());
+		// taskID = getTaskID(); // TODO remove/fix
 
 		// uses description field to hold the name of the stage
 		etv.getDescription().setName(this.model.getStage().getName());
@@ -494,4 +495,19 @@ public class EditTaskController implements ActionListener {
 
 	}
 
+	public boolean isDuplicateView(EditTaskView etv2) {
+		// TODO Make less ugly
+		if (getTaskID() == null) {
+			return false;
+		}
+		return getTaskID().equals(etv2.getController().getTaskID());
+	}
+
+	private String getTaskID() {
+		if (taskID == null || !taskID.equals(etv.getTitle().getName())) {
+			System.out.println("TaskID: " + taskID
+					+ "\netv.getTitle.getName(): " + etv.getTitle().getName());
+		}
+		return etv.getTitle().getName();
+	}
 }

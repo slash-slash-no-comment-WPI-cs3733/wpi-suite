@@ -840,4 +840,8 @@ public class EditTaskView extends JPanel {
 	public JPanel getWindow() {
 		return this.window;
 	}
+
+	public EditTaskController getController() {
+		return controller;
+	}
 }
