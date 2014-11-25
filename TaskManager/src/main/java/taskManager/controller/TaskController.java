@@ -84,6 +84,14 @@ public class TaskController implements MouseListener {
 		return destination.addTask(model, index);
 	}
 
+	/**
+	 * Delete this task
+	 *
+	 */
+	public void deleteTask() {
+		model.getStage().removeTask(model);
+	}
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// makes the delete button unclickable

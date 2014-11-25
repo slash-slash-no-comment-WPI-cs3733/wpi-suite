@@ -186,6 +186,15 @@ public class ScrollList extends JPanel {
 	}
 
 	/**
+	 * Sets the selected value to the given indices
+	 * 
+	 * @param index
+	 */
+	public void setSelected(int[] i) {
+		this.jl.setSelectedIndices(i);
+	}
+
+	/**
 	 * gets the value at the given index
 	 * 
 	 * @param i
