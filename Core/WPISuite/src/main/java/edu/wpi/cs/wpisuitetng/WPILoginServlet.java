@@ -16,6 +16,9 @@ package edu.wpi.cs.wpisuitetng;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,7 +29,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import edu.wpi.cs.wpisuitetng.authentication.Authenticator;
 import edu.wpi.cs.wpisuitetng.authentication.BasicAuth;
-import edu.wpi.cs.wpisuitetng.exceptions.*;
+import edu.wpi.cs.wpisuitetng.exceptions.AuthenticationException;
+import edu.wpi.cs.wpisuitetng.exceptions.WPISuiteException;
 
 /**
  * Servlet implementation class WPILoginServlet
@@ -38,122 +42,137 @@ public class WPILoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private Authenticator auth;
 	private ErrorResponseFormatter responseFormatter;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public WPILoginServlet() {
-        super();
-        this.auth = new BasicAuth(); // define Authorization implementation
-        this.responseFormatter = new JsonErrorResponseFormatter(); // define Response content body format
-    }
-    
-    /**
-     * Perform project switching action. Given a project name in the PUT Body, switches the Session to an instance for a project.
-     */
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
-    {
-    	Cookie[] cook = request.getCookies();
-    	String ssid = null;
-		for(Cookie c : cook)
-		{
-			if(c.getName().startsWith("WPISUITE-"))
+
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public WPILoginServlet() {
+		super();
+		this.auth = new BasicAuth(); // define Authorization implementation
+		this.responseFormatter = new JsonErrorResponseFormatter(); // define
+																	// Response
+																	// content
+																	// body
+																	// format
+	}
+
+	/**
+	 * Perform project switching action. Given a project name in the PUT Body,
+	 * switches the Session to an instance for a project.
+	 */
+	protected void doPut(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		Cookie[] cook = request.getCookies();
+		String ssid = null;
+		for (Cookie c : cook) {
+			if (c.getName().startsWith("WPISUITE-"))
 				ssid = c.getValue();
 		}
-		
-		if(ssid != null)
-		{			
-			try
-			{				
+
+		if (ssid != null) {
+			try {
 				// find the project ID
 				BufferedReader putBody = request.getReader();
 				String projectName = putBody.readLine();
-				
+
 				// swap out the Sessions and add the project.
 				ManagerLayer man = ManagerLayer.getInstance();
 				SessionManager sessions = man.getSessions();
 				String newSsid = sessions.switchToProject(ssid, projectName);
-				
+
 				// attach the new cookie to give back to the user.
 				Session projectSession = sessions.getSession(newSsid);
 				Cookie switchedCookie = projectSession.toCookie();
 				response.addCookie(switchedCookie);
-				
+
+				try {
+					// send the user the workflow associated with their project
+					List<Cookie> cookies = new ArrayList<Cookie>(
+							Arrays.asList(request.getCookies()));
+					cookies.add(switchedCookie);
+					Cookie[] cookies2 = new Cookie[cookies.size()];
+					String s = ManagerLayer.getInstance().read(
+							"taskmanager/workflow/defaultWorkflow".split("/"),
+							cookies.toArray(cookies2));
+					PrintWriter out = response.getWriter();
+					out.println(s);
+					out.close();
+				} catch (WPISuiteException e) {
+					System.out.println("No workflow found for project \""
+							+ projectName + "\"");
+				}
+
 				response.setStatus(HttpServletResponse.SC_OK);
-			}
-			catch(WPISuiteException e)
-			{
+			} catch (WPISuiteException e) {
 				response.setStatus(e.getStatus());
 				String contentBody = this.responseFormatter.formatContent(e);
-				
+
 				try {
 					PrintWriter contentWriter = response.getWriter();
 					contentWriter.write(contentBody);
 					contentWriter.flush();
 					contentWriter.close();
-				}
-				catch(IOException writerException)
-				{
+				} catch (IOException writerException) {
 					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // 500
 				}
 			}
+		} else {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 - no
+																		// cookie
+																		// given
 		}
-		else
-		{
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401 - no cookie given
-		}
-    }
+	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+
 		// parse the POST header into a String
 		String postString = request.getHeader("Authorization");
-		
+
 		// Authentication
-		try 
-		{	
+		try {
 			Session ses = this.auth.login(postString);
-			
+
 			// post back the Session Cookie.
 			Cookie userCookie = ses.toCookie();
 			response.addCookie(userCookie);
-			response.setStatus(HttpServletResponse.SC_OK);  //200 - Success
+			response.setStatus(HttpServletResponse.SC_OK); // 200 - Success
 			System.out.println("DEBUG: response set");
-		}
-		catch(AuthenticationException e) // Authentication Failed.
-		{			
+		} catch (AuthenticationException e) // Authentication Failed.
+		{
 			// Set the response
-			response.setStatus(e.getStatus()); // 403 - Forbidden, Authentication Failed.
-			
+			response.setStatus(e.getStatus()); // 403 - Forbidden,
+												// Authentication Failed.
+
 			String contentBody = this.responseFormatter.formatContent(e);
-			
+
 			// write the string to the body
 			try {
 				PrintWriter contentWriter = response.getWriter();
 				contentWriter.write(contentBody);
 				contentWriter.flush();
-				contentWriter.close();	
-			} 
-			catch (IOException writerException) {
+				contentWriter.close();
+			} catch (IOException writerException) {
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // 500
 			}
 		} catch (WPISuiteException e) {
 			// Set the response
-			response.setStatus(e.getStatus()); // 403 - Forbidden, Authentication Failed.
-			
+			response.setStatus(e.getStatus()); // 403 - Forbidden,
+												// Authentication Failed.
+
 			String contentBody = this.responseFormatter.formatContent(e);
-			
+
 			// write the string to the body
 			try {
 				PrintWriter contentWriter = response.getWriter();
 				contentWriter.write(contentBody);
 				contentWriter.flush();
-				contentWriter.close();	
-			} 
-			catch (IOException writerException) {
+				contentWriter.close();
+			} catch (IOException writerException) {
 				response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR); // 500
 			}
 		}
@@ -165,25 +184,34 @@ public class WPILoginServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		
+
 		// if there are no cookies, then this is an invalid logout request
-		if(req.getCookies() == null)
-		{
-			resp.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403 - Forbidden, no session cookie posted to log off with
-		}
-		else
-		{
+		if (req.getCookies() == null) {
+			resp.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403 -
+																// Forbidden, no
+																// session
+																// cookie posted
+																// to log off
+																// with
+		} else {
 			// find the WPISUITE cookie in the request
 			Cookie[] cookies = req.getCookies();
 			int cookieIndex = 0;
 			boolean found = false;
-			while(found != true)
-			{
+			while (found != true) {
 				// if found, then logout the user with the given username.
-				if(cookies[cookieIndex].getName().startsWith("WPISUITE-"))
-				{
-					this.auth.logout(cookies[cookieIndex].getValue()); // logs out the user with the given session cookie.
-					resp.setStatus(HttpServletResponse.SC_CONTINUE); // logout successful
+				if (cookies[cookieIndex].getName().startsWith("WPISUITE-")) {
+					this.auth.logout(cookies[cookieIndex].getValue()); // logs
+																		// out
+																		// the
+																		// user
+																		// with
+																		// the
+																		// given
+																		// session
+																		// cookie.
+					resp.setStatus(HttpServletResponse.SC_CONTINUE); // logout
+																		// successful
 					found = true;
 				}
 			}

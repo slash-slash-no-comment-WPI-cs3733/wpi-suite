@@ -98,6 +98,9 @@ class DDTransferHandler extends TransferHandler {
 		comp.paint(g);
 		setDragImage(image);
 
+		// Create placeholder
+		StagePanel.generatePlaceholder(comp.getSize());
+
 		// Initiate the drag
 		super.exportAsDrag(comp, e, action);
 	}

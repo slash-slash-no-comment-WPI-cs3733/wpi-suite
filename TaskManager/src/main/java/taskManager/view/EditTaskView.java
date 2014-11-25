@@ -1,4 +1,5 @@
 /*******************************************************************************
+ * Copyright (c) 2012-2014 -- WPI Suite
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -19,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -181,6 +183,15 @@ public class EditTaskView extends JPanel {
 		dateField = new JXDatePicker();
 		dateField.setName("due_date");
 		dateField.setDate(Calendar.getInstance().getTime());
+
+		// Icon is from:
+		// http://www.iconarchive.com/show/oxygen-icons-by-oxygen-icons.org/Actions-view-calendar-day-icon.html
+		// Snippet is from:
+		// http://stackoverflow.com/questions/8406200/swingx-personalize-jxdatepicker
+		((JButton) dateField.getComponent(1)).setIcon(new ImageIcon(
+				((new ImageIcon(getClass().getResource("calendar-icon.png")))
+						.getImage()).getScaledInstance(20, 20,
+						java.awt.Image.SCALE_SMOOTH)));
 
 		// JTextArea
 		// TODO

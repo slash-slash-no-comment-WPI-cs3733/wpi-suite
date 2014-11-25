@@ -97,11 +97,6 @@ public class EditTaskController implements ActionListener {
 					task = currentStage.findTaskByID(taskID);
 					this.setTaskData(task, desiredStage, requirement);
 
-					// Move task if stages are not equal.
-					if (!currentStage.getName().equals(desiredStage.getName())) {
-						wfm.moveTask(task, currentStage, desiredStage);
-					}
-
 					this.setTaskID("000000");
 				}
 				// if creating a new task
@@ -267,8 +262,9 @@ public class EditTaskController implements ActionListener {
 
 		// sets the due date from the calendar
 		t.setDueDate(etv.getDateField().getDate());
-		// sets the stage from the dropdown
-		t.setStage(s);
+
+		// move the stage
+		s.addTask(t);
 
 		// adds or removes users
 		for (String name : etv.getUsersList().getAllValues()) {
