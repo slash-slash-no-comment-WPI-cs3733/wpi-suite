@@ -14,6 +14,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.JOptionPane;
+
+import taskManager.JanewayModule;
 import taskManager.controller.WorkflowController;
 import edu.wpi.cs.wpisuitetng.network.Network;
 import edu.wpi.cs.wpisuitetng.network.Request;
@@ -110,12 +113,15 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 *            Index in the list of stages where we are adding the new stage.
 	 */
 	public void addStage(StageModel newStage, int index) {
-		if (hasStage(newStage)) {
-			// throw warning
+		if (findStageByName(newStage.getName()) != null) {
+			logger.log(Level.WARNING, "Stage named " + newStage.getName()
+					+ " already exists.");
+			JOptionPane.showMessageDialog(JanewayModule.getTabPaneView(),
+					"This stage already exists");
 		} else {
 			stageList.add(index, newStage);
+			logger.log(Level.FINER, "Stage " + newStage.getName() + " added.");
 		}
-		logger.log(Level.FINER, "Stage " + newStage.getName() + " added.");
 		// newStage.save();
 	}
 
