@@ -74,10 +74,11 @@ public class ReportsManagerModel {
 			// the final MOVE event. This event must have been to the current
 			// stage (it hasn't been moved after), and since we're in the final
 			// stage, this MOVE event must actually be a completion event.
-			for (int i = task.getActivities().size(); i >= 0; i--) {
+			for (int i = task.getActivities().size() - 1; i >= 0; i--) {
 				ActivityModel activity = task.getActivities().get(i);
 				if (activity.getType() == ActivityModel.activityModelType.MOVE) {
 					completed = activity.getDateCreated();
+					System.out.println("Found completed event");
 					if (completed.compareTo(start) < 0
 							|| completed.compareTo(end) > 0) {
 						completed = null; // Pretend as if we didn't find the

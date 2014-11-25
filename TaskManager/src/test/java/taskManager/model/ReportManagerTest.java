@@ -43,24 +43,24 @@ public class ReportManagerTest {
 		wm.addStage(sm2);
 		wm.addStage(sm3);
 		tm1 = new TaskModel("Task 1", sm1);
-		tm1.setDueDate(new Date(1000));
+		sm3.addTask(tm1);
 		tm2 = new TaskModel("Task 2", sm2);
-		tm2.setDueDate(new Date(2000));
-		tm3 = new TaskModel("Task 3", sm3);
-		tm3.setDueDate(new Date(3000));
-		tm4 = new TaskModel("Task 4", sm1);
-		tm4.setDueDate(new Date(4000));
-		tm5 = new TaskModel("Task 5", sm2);
-		tm5.setDueDate(new Date(5000));
-		tm6 = new TaskModel("Task 6", sm3);
-		tm6.setDueDate(new Date(6000));
+		sm3.addTask(tm2);
+		tm3 = new TaskModel("Task 3", sm1);
+		sm3.addTask(tm3);
+		tm4 = new TaskModel("Task 4", sm2);
+		sm3.addTask(tm4);
+		tm5 = new TaskModel("Task 5", sm1);
+		sm3.addTask(tm5);
+		tm6 = new TaskModel("Task 6", sm2);
+		sm3.addTask(tm6);
 		tm7 = new TaskModel("Task 7", sm1);
-		tm7.setDueDate(new Date(7000));
+		sm3.addTask(tm7);
 		tm8 = new TaskModel("Task 8", sm2);
-		tm8.setDueDate(new Date(8000));
-		u1 = new User("User 1", "User 1", null, 1);
-		u2 = new User("User 2", "User 2", null, 2);
-		u3 = new User("User 3", "User 3", null, 3);
+		sm3.addTask(tm8);
+		u1 = new User("User 1", "User 1", "User 1", 1);
+		u2 = new User("User 2", "User 2", "User 2", 2);
+		u3 = new User("User 3", "User 3", "User 3", 3);
 		users = new HashSet<String>();
 		users.add("User 1");
 		users.add("User 2");
@@ -112,14 +112,21 @@ public class ReportManagerTest {
 		Double totalU1Effort = 0.0;
 		Double totalU2Effort = 0.0;
 		Double totalU3Effort = 0.0;
+		System.out.println(dataWithAverage.size());
+		for (Map<Date, Double> i : dataWithAverage.values()) {
+			System.out.println(i.size());
+		}
 		for (Double avgEffort : dataWithAverage.get("User 1").values()) {
 			totalU1Effort += avgEffort;
+			System.out.println(totalU1Effort);
 		}
 		for (Double avgEffort : dataWithAverage.get("User 2").values()) {
 			totalU2Effort += avgEffort;
+			System.out.println(totalU2Effort);
 		}
 		for (Double avgEffort : dataWithAverage.get("User 3").values()) {
 			totalU3Effort += avgEffort;
+			System.out.println(totalU3Effort);
 		}
 		assertEquals(16.0, totalU1Effort, 0.001);
 		assertEquals(28.0, totalU2Effort, 0.001);
@@ -143,8 +150,4 @@ public class ReportManagerTest {
 		assertEquals(totalU2Effort, 40.0, 0.001);
 		assertEquals(totalU3Effort, 36.0, 0.001);
 	}
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 89f2334fe0490647c34a3f02a4ec717b58d4322a

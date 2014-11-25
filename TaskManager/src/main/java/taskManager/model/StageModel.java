@@ -91,7 +91,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	}
 
 	/**
-	 * Constructor for Stage Models. *
+	 * Constructor for Stage Models.
 	 *
 	 * @param workflow
 	 *            The workflow that the stage is a part of.
@@ -123,7 +123,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 
 	/**
 	 * Required to create dummy instance Necessary for passing TaskModel type
-	 * into DataStore *
+	 * into DataStore
 	 *
 	 *
 	 */
@@ -245,8 +245,6 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 		task.setStage(this);
 	}
 
-	// TODO: Do the tasks need ordering? If not, let's replace this taskList
-	// method and use a collection for speed.
 	/**
 	 * Duplicate task names are handled by the Workflow.
 	 *
