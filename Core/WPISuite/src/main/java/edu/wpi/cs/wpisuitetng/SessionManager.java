@@ -146,10 +146,6 @@ public class SessionManager {
 		return this.sessions.size();
 	}
 
-	public Map<String, Session> getSessions() {
-		return sessions;
-	}
-
 	/**
 	 * Renews the Session for a given sessionToken. Parses the username from the
 	 * token, then creates a new session for the given user.

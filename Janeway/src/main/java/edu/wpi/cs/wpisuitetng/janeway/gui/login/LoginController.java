@@ -16,16 +16,20 @@ package edu.wpi.cs.wpisuitetng.janeway.gui.login;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import org.apache.commons.codec.binary.Base64;
 
 import taskManager.JanewayModule;
+import taskManager.controller.WorkflowController;
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.GetUsersObserver;
 import edu.wpi.cs.wpisuitetng.janeway.config.ConfigManager;
@@ -255,6 +259,16 @@ public class LoginController implements ActionListener {
 		JanewayModule.toolV.setProjectName(ConfigManager.getConfig()
 				.getProjectName());
 		JanewayModule.currentUser = ConfigManager.getConfig().getUserName();
+
+		// Clean up when the window is closed
+		SwingUtilities.getWindowAncestor(mainGUI).addWindowListener(
+				new WindowAdapter() {
+
+					@Override
+					public void windowClosing(WindowEvent we) {
+						WorkflowController.dispose();
+					}
+				});
 
 	}
 

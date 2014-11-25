@@ -27,7 +27,6 @@ import javax.swing.JFrame;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
-import taskManager.controller.WorkflowController;
 import edu.wpi.cs.wpisuitetng.janeway.config.ConfigManager;
 import edu.wpi.cs.wpisuitetng.janeway.gui.widgets.KeyboardShortcut;
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
@@ -64,9 +63,6 @@ public class JanewayFrame extends JFrame {
 
 				// dispose of this window
 				dispose();
-
-				// tell the task manager to kill itself
-				WorkflowController.dispose();
 			}
 		});
 
