@@ -105,8 +105,12 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	}
 
 	/**
+	 * Basic constructor.
+	 * 
 	 * Required to create dummy instance Necessary for passing TaskModel type
-	 * into DataStore *
+	 * into DataStore.
+	 * 
+	 * Also used other times a dummy instance is needed.
 	 */
 	public TaskModel() {
 	};

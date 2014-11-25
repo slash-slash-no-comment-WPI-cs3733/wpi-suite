@@ -25,6 +25,7 @@ import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
+import taskManager.view.EditTaskView.Mode;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.RequirementManager;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
@@ -44,6 +45,7 @@ public class EditTaskController implements ActionListener {
 	private final User[] projectUsers = JanewayModule.users;
 	private String taskID;
 	private ArrayList<String> toRemove = new ArrayList<String>();
+	private TaskModel model;
 
 	/**
 	 * Constructor, attaches the edit task view to this controller
@@ -54,6 +56,18 @@ public class EditTaskController implements ActionListener {
 	public EditTaskController(EditTaskView etv) {
 		this.etv = etv;
 		this.wfm = WorkflowModel.getInstance();
+
+		model = new TaskModel(); // TODO fix inevitable bugs...
+
+		reloadData();
+	}
+
+	public EditTaskController(Mode viewMode, TaskModel model) {
+		etv = new EditTaskView(viewMode);
+		etv.setController(this);
+		etv.setFieldController(new TaskInputController(etv));
+		this.wfm = WorkflowModel.getInstance();
+		this.model = model;
 
 		reloadData();
 	}
@@ -90,26 +104,26 @@ public class EditTaskController implements ActionListener {
 			switch (name) {
 
 			case EditTaskView.SAVE:
-				TaskModel task;
 				// if editing
 				if (exists) {
 					// set the task to be edited
-					task = currentStage.findTaskByID(taskID);
-					this.setTaskData(task, desiredStage, requirement);
+					model = currentStage.findTaskByID(taskID);
+					this.setTaskData(model, desiredStage, requirement);
 
 					this.setTaskID("000000");
 				}
 				// if creating a new task
 				else {
 					// creates a new task model
-					task = new TaskModel(etv.getTitle().getText(), desiredStage);
-					this.setTaskData(task, desiredStage, requirement);
+					model = new TaskModel(etv.getTitle().getText(),
+							desiredStage);
+					this.setTaskData(model, desiredStage, requirement);
 				}
 
 				// Add the newly added activities.
 				List<ActivityModel> newActivities = etv.getNewActivities();
 				for (ActivityModel act : newActivities) {
-					task.addActivity(act);
+					model.addActivity(act);
 				}
 
 				// exit the edit view, this refreshes the workflow
@@ -122,8 +136,8 @@ public class EditTaskController implements ActionListener {
 
 			case EditTaskView.DELETE:
 				// delete this task
-				task = currentStage.findTaskByID(taskID);
-				currentStage.getTasks().remove(task);
+				model = currentStage.findTaskByID(taskID);
+				currentStage.getTasks().remove(model);
 				etv.resetFields();
 
 				// Save entire workflow whenever a task is deleted
@@ -186,8 +200,8 @@ public class EditTaskController implements ActionListener {
 					etv.clearActivities();
 
 					// set activities pane
-					task = currentStage.findTaskByID(taskID);
-					List<ActivityModel> tskActivities = task.getActivities();
+					model = currentStage.findTaskByID(taskID);
+					List<ActivityModel> tskActivities = model.getActivities();
 					etv.setActivities(tskActivities);
 					etv.setActivitiesPanel(tskActivities);
 				}
@@ -354,6 +368,88 @@ public class EditTaskController implements ActionListener {
 			}
 
 		}
+	}
+
+	public void initializeView(TabPaneController tabPaneC) {
+
+		// makes the delete button unclickable
+		etv.enableDelete();
+
+		// uses the title field to hold the unique id
+		etv.getTitle().setName(model.getID());
+
+		// uses description field to hold the name of the stage
+		etv.getDescription().setName(this.model.getStage().getName());
+		// makes the delete button unclickable
+		etv.enableDelete();
+
+		// populate editable fields with this tasks info
+		etv.setTitle(model.getName());
+		etv.setDescription(model.getDescription());
+		etv.setDate(model.getDueDate());
+
+		// Sets the effort values only if user specified them.
+		if (model.isEstimatedEffortSet()) {
+			etv.setEstEffort(model.getEstimatedEffort());
+		}
+		if (model.isActualEffortSet()) {
+			etv.setActEffort(model.getActualEffort());
+		}
+
+		tabPaneC.addEditTaskTab(etv);
+
+		// figures out the index of the stage, then sets the drop down to the
+		// stage at that index
+		JComboBox<String> stages = etv.getStages();
+		for (int i = 0; i < stages.getItemCount(); i++) {
+			if (etv.getStages().getItemAt(i) == model.getStage().getName()) {
+				etv.setStageDropdown(i);
+				break;
+			}
+		}
+
+		etv.getStages().setSelectedItem(model.getStage().getName());
+
+		// populates the project users list
+		ArrayList<String> projectUserNames = new ArrayList<String>();
+		for (User u : projectUsers) {
+			String name = u.getUsername();
+			if (!projectUserNames.contains(name)
+					&& !model.getAssigned().contains(name)) {
+				projectUserNames.add(name);
+			}
+		}
+		etv.getProjectUsersList().addAllToList(projectUserNames);
+
+		// populates the assigned users panel
+		ArrayList<String> assignedUserNames = new ArrayList<String>();
+		for (String u : model.getAssigned()) {
+			if (!assignedUserNames.contains(u)) {
+				assignedUserNames.add(u);
+			}
+		}
+		etv.getUsersList().addAllToList(assignedUserNames);
+
+		// Enable save button when editing a task.
+		etv.setSaveEnabled(true);
+
+		// Clear the activities list.
+		etv.clearActivities();
+
+		// set activities pane
+		List<ActivityModel> tskActivities = model.getActivities();
+		etv.setActivities(tskActivities);
+		etv.setActivitiesPanel(tskActivities);
+
+		etv.setRefreshEnabled(true);
+
+		// set the requirement dropdown
+		if (model.getReq() != null) {
+			etv.getRequirements().setSelectedItem(model.getReq().getName());
+		} else {
+			etv.getRequirements().setSelectedItem(EditTaskView.NO_REQ);
+		}
+
 	}
 
 }
