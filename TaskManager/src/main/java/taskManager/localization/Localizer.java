@@ -8,6 +8,8 @@
  *******************************************************************************/
 package taskManager.localization;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -21,6 +23,7 @@ public class Localizer {
 	// constants with the names of the language files
 	public static final String ENGLISH = "english";
 	public static final String PIRATE = "pirate";
+	public static final String TODO = "TODO";
 
 	// the current language, default to english
 	private static String currentLanguage = ENGLISH;
@@ -28,6 +31,9 @@ public class Localizer {
 	// the current resource bundle object
 	private static ResourceBundle rb = ResourceBundle
 			.getBundle("taskManager.localization." + currentLanguage);
+
+	// the list of views listening for local changes
+	private static List<LocaleChangeListener> listeners = new ArrayList<LocaleChangeListener>();
 
 	/**
 	 * @param the
@@ -56,6 +62,14 @@ public class Localizer {
 		currentLanguage = language;
 		rb = ResourceBundle.getBundle("taskManager.localization."
 				+ currentLanguage);
+
+		// tell all of the listeners that the locale changed
+		listeners.forEach(l -> {
+			l.onLocaleChange();
+		});
 	}
 
+	public static void addListener(LocaleChangeListener listener) {
+		listeners.add(listener);
+	}
 }

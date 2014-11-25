@@ -18,6 +18,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import taskManager.controller.WorkflowController;
+import taskManager.localization.LocaleChangeListener;
 import taskManager.localization.Localizer;
 import taskManager.model.WorkflowModel;
 
@@ -29,7 +30,7 @@ import taskManager.model.WorkflowModel;
  * @author Samee Swartz
  * @version Nov 17, 2014
  */
-public class TabPaneView extends JTabbedPane {
+public class TabPaneView extends JTabbedPane implements LocaleChangeListener {
 
 	private static final long serialVersionUID = -4912871689110151496L;
 	// Because the workflow is a permanent tab, tabview should keep track of it
@@ -54,6 +55,8 @@ public class TabPaneView extends JTabbedPane {
 
 		this.addTab(Localizer.getString("Workflow"), new ImageIcon(), scroll,
 				Localizer.getString("Workflow"));
+
+		Localizer.addListener(this);
 	}
 
 	public void refreshWorkflow() {
@@ -66,5 +69,12 @@ public class TabPaneView extends JTabbedPane {
 
 	public void reloadWorkflow() {
 		wfc.reloadData();
+	}
+
+	@Override
+	public void onLocaleChange() {
+		// TODO change names of other tabs
+		this.setTitleAt(0, Localizer.getString("Workflow"));
+		this.setToolTipTextAt(0, Localizer.getString("Workflow"));
 	}
 }

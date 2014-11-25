@@ -34,6 +34,7 @@ import org.jdesktop.swingx.JXDatePicker;
 
 import taskManager.controller.EditTaskController;
 import taskManager.controller.TaskInputController;
+import taskManager.localization.LocaleChangeListener;
 import taskManager.localization.Localizer;
 import taskManager.model.ActivityModel;
 import taskManager.model.ActivityModel.activityModelType;
@@ -47,7 +48,7 @@ import taskManager.model.ActivityModel.activityModelType;
  *
  */
 
-public class EditTaskView extends JPanel {
+public class EditTaskView extends JPanel implements LocaleChangeListener {
 
 	public static final String STAGES = "stages";
 	public static final String REQUIREMENTS = "requirements";
@@ -234,11 +235,11 @@ public class EditTaskView extends JPanel {
 		addReq = new JButton(Localizer.getString("View Requirement"));
 		addReq.setName(VIEW_REQ);
 		// saves all the data and closes the window
-		save = new JButton("Save");
+		save = new JButton(Localizer.getString("Save"));
 		save.setName(SAVE);
 		this.setSaveEnabled(false);
 		// closes the window without saving
-		cancel = new JButton("Cancel");
+		cancel = new JButton(Localizer.getString("Cancel"));
 		cancel.setName(CANCEL);
 		JButton nt_refreshBtn = new JButton(Localizer.getString("Refresh"));
 		refreshActivities = nt_refreshBtn;
@@ -386,6 +387,8 @@ public class EditTaskView extends JPanel {
 		window.add(projectUsersList, newTaskGridBag);
 
 		this.add(window);
+
+		Localizer.addListener(this);
 	}
 
 	/**
@@ -856,5 +859,21 @@ public class EditTaskView extends JPanel {
 	 */
 	public EditTaskController getController() {
 		return controller;
+	}
+
+	@Override
+	public void onLocaleChange() {
+		titleError.setText(Localizer.getString("This is a required field"));
+		descriptionError.setText(Localizer
+				.getString("This is a required field"));
+		estimatedEffortError.setText(Localizer
+				.getString("This is a required field"));
+		delete.setText(Localizer.getString("Delete"));
+		addUser.setText(Localizer.getString("Add User"));
+		removeUser.setText(Localizer.getString("Remove User"));
+		submitComment.setText(Localizer.getString("Submit Comment"));
+		addReq.setText(Localizer.getString("View Requirement"));
+		save.setText(Localizer.getString("Save"));
+		cancel.setText(Localizer.getString("Cancel"));
 	}
 }

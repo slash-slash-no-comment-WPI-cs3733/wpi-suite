@@ -76,6 +76,7 @@ public class ToolbarController extends DropTargetAdapter implements
 
 			case Localizer.ENGLISH:
 			case Localizer.PIRATE:
+			case Localizer.TODO:
 				Localizer.setLanguage(name);
 				break;
 			}

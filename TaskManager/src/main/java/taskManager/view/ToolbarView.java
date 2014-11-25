@@ -25,6 +25,7 @@ import javax.swing.JToolBar;
 
 import taskManager.controller.ToolbarController;
 import taskManager.draganddrop.DDTransferHandler;
+import taskManager.localization.LocaleChangeListener;
 import taskManager.localization.Localizer;
 
 /**
@@ -33,7 +34,7 @@ import taskManager.localization.Localizer;
  * @author Clark Jacobsohn
  */
 @SuppressWarnings("serial")
-public class ToolbarView extends JToolBar {
+public class ToolbarView extends JToolBar implements LocaleChangeListener {
 
 	public static final String STATISTICS = "statistics";
 	public static final String REFRESH = "refresh";
@@ -55,6 +56,7 @@ public class ToolbarView extends JToolBar {
 
 	private JButton english;
 	private JButton pirate;
+	private JButton todo;
 
 	private JLabel projectName;
 
@@ -99,6 +101,8 @@ public class ToolbarView extends JToolBar {
 		english.setName(Localizer.ENGLISH);
 		pirate = new JButton("Pirate");
 		pirate.setName(Localizer.PIRATE);
+		todo = new JButton("TODO");
+		todo.setName(Localizer.TODO);
 
 		// Add icons
 		Image img;
@@ -155,11 +159,14 @@ public class ToolbarView extends JToolBar {
 
 		buttons.add(english);
 		buttons.add(pirate);
+		buttons.add(todo);
 
 		// Title and buttons to the toolbar
 		this.add(title);
 		this.add(buttons);
 		this.add(targets);
+
+		Localizer.addListener(this);
 	}
 
 	/**
@@ -180,6 +187,7 @@ public class ToolbarView extends JToolBar {
 
 		english.addActionListener(controller);
 		pirate.addActionListener(controller);
+		todo.addActionListener(controller);
 	}
 
 	@Override
@@ -189,5 +197,16 @@ public class ToolbarView extends JToolBar {
 
 	public void setProjectName(String name) {
 		projectName.setText(name);
+	}
+
+	@Override
+	public void onLocaleChange() {
+		createTask.setText(Localizer.getString("Create Task"));
+		manageStages.setText(Localizer.getString("Manage Stages"));
+		manageUsers.setText(Localizer.getString("Manage Users"));
+		statistics.setText(Localizer.getString("Statistics"));
+
+		archive.setToolTipText(Localizer.getString("Drag here to archive task"));
+		delete.setToolTipText(Localizer.getString("Drag here to delete task"));
 	}
 }

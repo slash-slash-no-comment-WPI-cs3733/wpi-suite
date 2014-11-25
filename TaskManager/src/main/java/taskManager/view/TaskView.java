@@ -20,6 +20,7 @@ import javax.swing.border.TitledBorder;
 
 import taskManager.controller.TaskController;
 import taskManager.draganddrop.TaskPanel;
+import taskManager.localization.LocaleChangeListener;
 import taskManager.localization.Localizer;
 
 /**
@@ -29,7 +30,7 @@ import taskManager.localization.Localizer;
  * @version November 18, 2014
  */
 
-public class TaskView extends TaskPanel {
+public class TaskView extends TaskPanel implements LocaleChangeListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -87,6 +88,7 @@ public class TaskView extends TaskPanel {
 		this.add(nameLabel);
 		this.add(dueLabel);
 
+		Localizer.addListener(this);
 	}
 
 	@Override
@@ -113,6 +115,12 @@ public class TaskView extends TaskPanel {
 	public void setVisible(boolean visible) {
 		controller.resetBackground();
 		super.setVisible(visible);
+	}
+
+	@Override
+	public void onLocaleChange() {
+		// TODO Auto-generated method stub
+
 	}
 
 }

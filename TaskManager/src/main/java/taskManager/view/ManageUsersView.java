@@ -24,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import taskManager.localization.LocaleChangeListener;
 import taskManager.localization.Localizer;
 
 /**
@@ -32,7 +33,7 @@ import taskManager.localization.Localizer;
  * @author samee
  *
  */
-public class ManageUsersView extends JPanel {
+public class ManageUsersView extends JPanel implements LocaleChangeListener {
 
 	private static final long serialVersionUID = -4921811814567755329L;
 	// TODO: Change ActionListener to ManageUsersController when it exists
@@ -110,6 +111,8 @@ public class ManageUsersView extends JPanel {
 		// Add title and window to this
 		this.add(title);
 		this.add(window);
+
+		Localizer.addListener(this);
 	}
 
 	/**
@@ -134,6 +137,11 @@ public class ManageUsersView extends JPanel {
 			// controller.reloadData();
 		}
 		super.setVisible(visible);
+	}
+
+	@Override
+	public void onLocaleChange() {
+		title.setText(Localizer.getString("Manage Users"));
 	}
 
 }
