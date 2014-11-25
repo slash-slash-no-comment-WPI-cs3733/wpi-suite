@@ -10,9 +10,7 @@
 package taskManager.controller;
 
 import java.awt.Component;
-import java.util.ArrayList;
 
-import taskManager.JanewayModule;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
 import taskManager.view.ManageStageView;
@@ -20,7 +18,6 @@ import taskManager.view.ManageUsersView;
 import taskManager.view.TabPaneView;
 import taskManager.view.TabView;
 import taskManager.view.WorkflowView;
-import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
  * This is the singleton controller for the singleton TabPaneView.
@@ -49,35 +46,13 @@ public class TabPaneController {
 	 */
 	public void addCreateTaskTab() {
 
-		// Each press of create a new tab should launch a new createTaskTab
-		EditTaskView etv = new EditTaskView(Mode.CREATE);
-		etv.setController(new EditTaskController(etv));
-		etv.setFieldController(new TaskInputController(etv));
-		// Set the dropdown menu to first stage and disable the menu.
-		etv.setStageDropdown(0);
+		EditTaskController etc = new EditTaskController(Mode.CREATE);
 
-		etv.setRefreshEnabled(false);
-		// Disable save button when creating a task.
-		etv.setSaveEnabled(false);
+		etc.addTab(this);
 
-		addTab("Create Task", etv, true);
 		// Focuses on the new tab
 		int index = this.tabPaneV.getTabCount() - 1;
 		this.tabPaneV.setSelectedIndex(index);
-
-		// Clear all activities, reset fields.
-		etv.clearActivities();
-		etv.resetFields();
-
-		// fills the user lists
-		ArrayList<String> projectUserNames = new ArrayList<String>();
-		for (User u : JanewayModule.users) {
-			String name = u.getUsername();
-			if (!projectUserNames.contains(name)) {
-				projectUserNames.add(name);
-			}
-		}
-		etv.getProjectUsersList().addAllToList(projectUserNames);
 	}
 
 	/**

@@ -10,8 +10,8 @@ package taskManager.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
@@ -79,13 +79,13 @@ public class ScrollList extends JPanel {
 	/**
 	 * add all strings in the given list to the list
 	 * 
-	 * @param elements
+	 * @param projectUserNames
 	 *            the list to be added
 	 */
-	public void addAllToList(ArrayList<String> elements) {
+	public void addAllToList(List<String> projectUserNames) {
 		int i = 0;
-		while (i < elements.size()) {
-			lm.addElement(elements.get(i));
+		while (i < projectUserNames.size()) {
+			lm.addElement(projectUserNames.get(i));
 			i++;
 		}
 		refresh();

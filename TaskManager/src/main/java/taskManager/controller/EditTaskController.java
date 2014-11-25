@@ -57,11 +57,21 @@ public class EditTaskController implements ActionListener {
 		this.etv = etv;
 		this.wfm = WorkflowModel.getInstance();
 
-		model = new TaskModel(); // TODO fix inevitable bugs...
+		model = new TaskModel();
 
 		reloadData();
 	}
 
+	/**
+	 * 
+	 * Creates a new EditTaskController with a new EditTaskView
+	 *
+	 * @param viewMode
+	 *            The type of EditTaskController/View to be created (EG: Edit,
+	 *            CREATE...)
+	 * @param model
+	 *            The Task this controller is associated with.
+	 */
 	public EditTaskController(Mode viewMode, TaskModel model) {
 		etv = new EditTaskView(viewMode);
 		etv.setController(this);
@@ -69,7 +79,34 @@ public class EditTaskController implements ActionListener {
 		this.wfm = WorkflowModel.getInstance();
 		this.model = model;
 
+		// etv.setStageDropdown(0);
+		if (Mode.CREATE.equals(viewMode)) {
+			etv.setRefreshEnabled(false);
+			// Disable save button when creating a task.
+			etv.setSaveEnabled(false);
+
+			// Clear all activities, reset fields.
+			etv.clearActivities();
+			etv.resetFields();
+
+			// fills the user lists
+			List<String> projectUserNames = new ArrayList<String>();
+			for (User u : JanewayModule.users) {
+				String name = u.getUsername();
+				if (!projectUserNames.contains(name)) {
+					projectUserNames.add(name);
+				}
+			}
+			etv.getProjectUsersList().addAllToList(projectUserNames);
+
+		}
+
 		reloadData();
+	}
+
+	public EditTaskController(Mode viewMode) {
+		this(viewMode, new TaskModel()); // TODO Fix inevitable errors with
+											// using dumb taskModel constructor
 	}
 
 	@Override
@@ -449,6 +486,11 @@ public class EditTaskController implements ActionListener {
 		} else {
 			etv.getRequirements().setSelectedItem(EditTaskView.NO_REQ);
 		}
+
+	}
+
+	public void addTab(TabPaneController tpc) {
+		tpc.addTab("Create Task", etv, true);
 
 	}
 
