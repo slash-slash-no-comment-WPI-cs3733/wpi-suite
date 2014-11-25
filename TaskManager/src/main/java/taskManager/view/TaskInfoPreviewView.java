@@ -11,6 +11,8 @@ package taskManager.view;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -29,7 +31,7 @@ import taskManager.model.TaskModel;
  * @author Samee Swartz
  * @version Nov 21, 2014
  */
-public class TaskInfoPreviewView extends JPanel {
+public class TaskInfoPreviewView extends JPanel implements MouseListener {
 	private TaskModel taskM;
 	private TaskController taskC;
 	private TaskInfoPreviewController controller;
@@ -40,7 +42,7 @@ public class TaskInfoPreviewView extends JPanel {
 		this.taskC = controller;
 		this.controller = new TaskInfoPreviewController(this.taskC);
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		this.setBounds(loc.x, loc.y, 300, 400);
+		this.setBounds(loc.x + 230, loc.y, 300, 400);
 
 		// Drop shadow
 		DropShadowBorder shadow = new DropShadowBorder();
@@ -74,5 +76,36 @@ public class TaskInfoPreviewView extends JPanel {
 
 	public TaskController getTaskController() {
 		return taskC;
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		System.out.println("Clicked Task Info");
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+
 	}
 }

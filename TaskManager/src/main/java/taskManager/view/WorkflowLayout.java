@@ -14,19 +14,31 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Insets;
 
+/**
+ * 
+ * The Layout manager for WorkflowView. This overrides a bunch of FlowLayout
+ * functions to only work with non-TaskInfoPreviewView objects. Should ONLY be
+ * used for WorkflowView.
+ *
+ * @author Samee Swartz
+ * @version Nov 24, 2014
+ */
 public class WorkflowLayout extends FlowLayout {
-	private final Container target;
 
 	private int hgap = 5, vgap = 5;
 
-	public WorkflowLayout(final Container target) {
-		this.target = target;
+	public WorkflowLayout() {
 	}
 
 	@Override
 	public void addLayoutComponent(final String name, final Component comp) {
+		// Do nothing
 	}
 
+	/**
+	 * Basically the same as FlowLayout's layoutContainer but does not manage
+	 * TaskInfoPreviewView objects
+	 */
 	@Override
 	public void layoutContainer(Container target) {
 		synchronized (target.getTreeLock()) {
@@ -87,6 +99,10 @@ public class WorkflowLayout extends FlowLayout {
 		}
 	}
 
+	/**
+	 * Basically the same as FlowLayout's moveComponents but does not manage
+	 * TaskInfoPreviewView objects
+	 */
 	private int moveComponents(Container target, int x, int y, int width,
 			int height, int rowStart, int rowEnd, boolean ltr,
 			boolean useBaseline, int[] ascent, int[] descent) {
@@ -150,6 +166,10 @@ public class WorkflowLayout extends FlowLayout {
 	 * Returns the minimum dimensions needed to layout the <i>visible</i>
 	 * components contained in the specified target container.
 	 * 
+	 * Basically the same as FlowLayout's minimumLayoutSize but does not manage
+	 * TaskInfoPreviewView objects
+	 *
+	 * 
 	 * @param target
 	 *            the container that needs to be laid out
 	 * @return the minimum dimensions to lay out the subcomponents of the
@@ -205,6 +225,10 @@ public class WorkflowLayout extends FlowLayout {
 	/**
 	 * Returns the preferred dimensions for this layout given the <i>visible</i>
 	 * components in the specified target container.
+	 * 
+	 * Basically the same as FlowLayout's preferredLayoutSize but does not
+	 * manage TaskInfoPreviewView objects
+	 *
 	 *
 	 * @param target
 	 *            the container that needs to be laid out
@@ -257,6 +281,7 @@ public class WorkflowLayout extends FlowLayout {
 
 	@Override
 	public void removeLayoutComponent(final Component comp) {
+		// Do Nothing
 	}
 
 }

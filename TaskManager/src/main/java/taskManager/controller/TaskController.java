@@ -9,6 +9,7 @@
 package taskManager.controller;
 
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -77,13 +78,11 @@ public class TaskController implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		JanewayModule.tabPaneC
-				.getTabView()
-				.getWorkflowController()
-				.setTaskInfo(
-						new TaskInfoPreviewView(model, this, view.getParent()
-								.getParent().getParent().getParent()
-								.getLocation()));
+		Point infoLoc = view.getParent().getParent().getParent().getParent()
+				.getLocation();
+		infoLoc.y = view.getLocation().y;
+		JanewayModule.tabPaneC.getTabView().getWorkflowController()
+				.setTaskInfo(new TaskInfoPreviewView(model, this, infoLoc));
 	}
 
 	public void editTask() {

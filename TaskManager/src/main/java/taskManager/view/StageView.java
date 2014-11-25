@@ -13,6 +13,8 @@ package taskManager.view;
  */
 
 import java.awt.Dimension;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -26,7 +28,7 @@ import taskManager.draganddrop.StagePanel;
  * @author Beth Martino
  * @version November 9, 2014
  */
-public class StageView extends JPanel {
+public class StageView extends JPanel implements MouseListener {
 
 	private static final long serialVersionUID = 1L;
 	private StageController controller;
@@ -101,6 +103,7 @@ public class StageView extends JPanel {
 	public void setController(StageController controller) {
 		this.controller = controller;
 		tasks.setModel(controller.getModel());
+		stage.addMouseListener(controller);
 	}
 
 	/**
@@ -110,6 +113,36 @@ public class StageView extends JPanel {
 	 */
 	public StageController getController() {
 		return controller;
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

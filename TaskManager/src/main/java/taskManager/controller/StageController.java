@@ -8,8 +8,11 @@
  *******************************************************************************/
 package taskManager.controller;
 
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.List;
 
+import taskManager.JanewayModule;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.view.StageView;
@@ -21,7 +24,7 @@ import taskManager.view.TaskView;
  * @author Stefan Alexander
  * @version November 9, 2014
  */
-public class StageController {
+public class StageController implements MouseListener {
 
 	private final StageView view;
 	private final StageModel model;
@@ -55,6 +58,39 @@ public class StageController {
 
 	public StageModel getModel() {
 		return model;
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		System.out.println("Clicked stage");
+		JanewayModule.tabPaneC.getTabView().getWorkflowController()
+				.setTaskInfo(null);
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

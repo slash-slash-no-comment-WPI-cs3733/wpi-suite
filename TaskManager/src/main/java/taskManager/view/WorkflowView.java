@@ -24,28 +24,31 @@ public class WorkflowView extends JLayeredPane {
 	private static final long serialVersionUID = 1L;
 
 	private WorkflowController controller;
-	// private JPanel stages;
-	// private JPanel taskInfo;
-
-	public final String STAGES = "Stages";
-	public final String TASK_INFO = "Task Info";
 
 	/**
 	 * Constructor for WorkflowView.
 	 */
 	public WorkflowView() {
-		this.setLayout(new WorkflowLayout(this));
+		this.setLayout(new WorkflowLayout());
 	}
 
 	/**
+	 * 
+	 * Adds a stageView to the workflow.
+	 * 
 	 * @param stv
-	 *            of the new stage to be added creates a new scroll panel to
-	 *            house the stage view object sets the size and border
+	 *            the new stage to be added
 	 */
 	public void addStageView(StageView stv) {
 		add(stv, new Integer(0));
 	}
 
+	/**
+	 * 
+	 * Adds a TaskInfoPreviewView "pop-up" to the workflow.
+	 *
+	 * @param ti
+	 */
 	public void addTaskInfo(TaskInfoPreviewView ti) {
 		removeTaskInfos();
 		add(ti, new Integer(1));
@@ -62,6 +65,7 @@ public class WorkflowView extends JLayeredPane {
 	 */
 	public void setController(WorkflowController controller) {
 		this.controller = controller;
+		this.addMouseListener(controller);
 	}
 
 	/**
@@ -97,6 +101,11 @@ public class WorkflowView extends JLayeredPane {
 		super.setVisible(visible);
 	}
 
+	/**
+	 * 
+	 * Removes all instances of TaskInfoPreviewView from the workflow.
+	 *
+	 */
 	public void removeTaskInfos() {
 		for (Component c : this.getComponents()) {
 			if (c instanceof TaskInfoPreviewView) {

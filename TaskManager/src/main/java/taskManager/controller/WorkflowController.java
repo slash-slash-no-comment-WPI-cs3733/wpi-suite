@@ -8,6 +8,8 @@
  *******************************************************************************/
 package taskManager.controller;
 
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.List;
 
 import taskManager.JanewayModule;
@@ -34,7 +36,7 @@ import edu.wpi.cs.wpisuitetng.network.models.ResponseModel;
  * @author Stefan Alexander
  * @version November 9, 2014
  */
-public class WorkflowController {
+public class WorkflowController implements MouseListener {
 
 	private final WorkflowView view;
 	private final WorkflowModel model;
@@ -213,10 +215,42 @@ public class WorkflowController {
 	}
 
 	public void setTaskInfo(TaskInfoPreviewView ti) {
-		// if (this.taskInfoV != null) {
-		// this.taskInfoV.getTaskController().resetBackground();
-		// }
+		if (this.taskInfoV == null) {
+			this.view.removeTaskInfos();
+		}
 		this.taskInfoV = ti;
 		this.reloadData();
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		System.out.println("clicked workflow");
+		this.setTaskInfo(null);
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+
 	}
 }
