@@ -90,7 +90,7 @@ public class GetRequirementsController implements ActionListener {
 		final Request request = Network.getInstance().makeRequest(
 				"requirementmanager/requirement", HttpMethod.GET);
 		request.addObserver(observer);
-		request.addHeader("long-polling", "long-polling");
+		request.addHeader("long-polling", "60000");
 		request.setReadTimeout(60 * 1000 + 5 * 1000);
 		request.send(); // send the request
 	}

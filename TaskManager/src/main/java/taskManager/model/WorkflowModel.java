@@ -64,6 +64,14 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	}
 
 	/**
+	 * Tells the other threads to die
+	 *
+	 */
+	public static void dispose() {
+		alive = false;
+	}
+
+	/**
 	 * Moves a stage currently in the WorkFlowModel to the given position on its
 	 * list.
 	 *
@@ -237,7 +245,8 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		final Request request = Network.getInstance().makeRequest(
 				"taskmanager/workflow", HttpMethod.GET);
 		request.addObserver(new FetchWorkflowObserver());
-		request.addHeader("long-polling", "long-polling");
+		request.addHeader("long-polling",
+				Integer.toString(WorkflowModel.timeout));
 		// wait timeout + 5 sec (to allow for round trip time + database
 		// interaction)
 		request.setReadTimeout(WorkflowModel.timeout + 5 * 1000);
@@ -259,7 +268,8 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		final Request request = Network.getInstance().makeRequest("core/user",
 				HttpMethod.GET);
 		request.addObserver(new GetUsersObserver());
-		request.addHeader("long-polling", "long-polling");
+		request.addHeader("long-polling",
+				Integer.toString(WorkflowModel.timeout));
 		// wait timeout + 5 sec (to allow for round trip time + database
 		// interaction)
 		request.setReadTimeout(WorkflowModel.timeout + 5 * 1000);

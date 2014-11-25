@@ -9,13 +9,8 @@
 package taskManager.view;
 
 import java.awt.FlowLayout;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
-import javax.swing.event.AncestorEvent;
-import javax.swing.event.AncestorListener;
 
 import taskManager.controller.WorkflowController;
 
@@ -37,33 +32,6 @@ public class WorkflowView extends JPanel {
 
 		// arranges the stages horizontally and evenly spaced
 		this.setLayout(new FlowLayout());
-		this.addAncestorListener(new AncestorListener() {
-
-			@Override
-			public void ancestorRemoved(AncestorEvent event) {
-				// TODO Auto-generated method stub
-			}
-
-			@Override
-			public void ancestorMoved(AncestorEvent event) {
-				// TODO Auto-generated method stub
-			}
-
-			@Override
-			public void ancestorAdded(AncestorEvent event) {
-				if (SwingUtilities.getWindowAncestor(WorkflowView.this) != null) {
-					SwingUtilities.getWindowAncestor(WorkflowView.this)
-							.addWindowListener(new WindowAdapter() {
-
-								@Override
-								public void windowClosing(WindowEvent we) {
-									WorkflowController.dispose();
-								}
-							});
-					WorkflowView.this.removeAncestorListener(this);
-				}
-			}
-		});
 	}
 
 	/**

@@ -8,7 +8,13 @@
  *******************************************************************************/
 package taskManager.controller;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.List;
+
+import javax.swing.SwingUtilities;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
@@ -40,14 +46,32 @@ public class WorkflowController {
 		this.model = WorkflowModel.getInstance();
 
 		reloadData();
-	}
 
-	/**
-	 * Tells the other threads to die
-	 *
-	 */
-	public static void dispose() {
-		WorkflowModel.alive = false;
+		view.addAncestorListener(new AncestorListener() {
+
+			@Override
+			public void ancestorRemoved(AncestorEvent event) {
+			}
+
+			@Override
+			public void ancestorMoved(AncestorEvent event) {
+			}
+
+			@Override
+			public void ancestorAdded(AncestorEvent event) {
+				if (SwingUtilities.getWindowAncestor(view) != null) {
+					SwingUtilities.getWindowAncestor(view).addWindowListener(
+							new WindowAdapter() {
+
+								@Override
+								public void windowClosing(WindowEvent we) {
+									WorkflowModel.dispose();
+								}
+							});
+					view.removeAncestorListener(this);
+				}
+			}
+		});
 	}
 
 	/**

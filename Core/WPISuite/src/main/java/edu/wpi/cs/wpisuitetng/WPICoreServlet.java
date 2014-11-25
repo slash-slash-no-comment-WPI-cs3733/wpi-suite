@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import taskManager.model.WorkflowModel;
 import edu.wpi.cs.wpisuitetng.exceptions.WPISuiteException;
 
 /**
@@ -60,6 +59,7 @@ public class WPICoreServlet extends HttpServlet {
 
 		if (req.getHeader("long-polling") != null) {
 			handlePolling(req, res, path);
+			return;
 		}
 
 		try {
@@ -87,12 +87,13 @@ public class WPICoreServlet extends HttpServlet {
 	private void handlePolling(HttpServletRequest req, HttpServletResponse res,
 			String[] path) throws IOException {
 
+		int timeout = Integer.parseInt(req.getHeader("long-polling"));
 		PrintWriter out = res.getWriter();
 		System.out.println("waiting on request: " + req.toString());
 		synchronized (updateNotifier) {
 			try {
 				// wait for changes
-				updateNotifier.wait(WorkflowModel.timeout);
+				updateNotifier.wait(timeout);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
