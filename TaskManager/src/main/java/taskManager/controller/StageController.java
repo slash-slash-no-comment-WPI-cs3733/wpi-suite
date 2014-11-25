@@ -47,15 +47,24 @@ public class StageController {
 		for (TaskModel task : tasks) {
 			// create stage view and controller.
 			TaskView tkv = new TaskView(task.getName(), task.getDueDate(),
-					task.getEstimatedEffort(), task);
+					task.getEstimatedEffort());
 			tkv.setController(new TaskController(tkv, task));
 			this.view.addTaskView(tkv);
 		}
 
 	}
 
-	public StageModel getModel() {
-		return model;
+	/**
+	 * Add a task to this stage
+	 *
+	 * @param tc
+	 *            task controller for task
+	 * @param index
+	 *            index at which to add it
+	 * @return whether the stage changed as a result
+	 */
+	public boolean addTask(TaskController tc, int index) {
+		return tc.moveToStage(model, index);
 	}
 
 }

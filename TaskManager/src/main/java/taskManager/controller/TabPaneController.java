@@ -93,7 +93,10 @@ public class TabPaneController {
 		for (Component c : tabPaneV.getComponents()) {
 			if (c instanceof EditTaskView) {
 				etv2 = (EditTaskView) c;
-				if (etv2.getTitle().getName().equals(etv.getTitle().getName())) {
+
+				if (etv2.getTitle().getName() != null
+						&& etv2.getTitle().getName()
+								.equals(etv.getTitle().getName())) {
 					exists = true;
 					break;
 				}
