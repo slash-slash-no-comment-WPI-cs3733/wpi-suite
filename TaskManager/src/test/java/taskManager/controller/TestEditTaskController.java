@@ -236,24 +236,22 @@ public class TestEditTaskController {
 	@Test
 	public void testAddUsers() {
 		// create users
-
 		JanewayModule.users = new User[] { testUser,
 				new User("name1", "name1", "password", 4321),
 				new User("name2", "name2", "password", 5678),
 				new User("name3", "name3", "password", 9876) };
 		TaskModel task = createAndLoadTask();
 
-		// make sure it has no requirement yet
+		// select users to add
 		etv.getProjectUsersList().setSelected(new int[] { 0, 1 });
 		fixture.button(EditTaskView.ADD_USER).click();
 		fixture.button(EditTaskView.SAVE).click();
 
-		// make sure the task got the requirement
+		// check to make sure users were added to model
 		ArrayList<String> users = new ArrayList<String>();
 		for (String user : task.getAssigned()) {
 			users.add(user);
 		}
-
 		ArrayList<String> result = new ArrayList<String>();
 		result.add("testUser");
 		result.add("name2");
@@ -270,15 +268,16 @@ public class TestEditTaskController {
 
 		TaskModel task = createAndLoadTask();
 
+		// select users to remove
 		etv.getUsersList().setSelected(new int[] { 0 });
 		fixture.button(EditTaskView.REMOVE_USER).click();
 		fixture.button(EditTaskView.SAVE).click();
 
+		// check that the user has been removed from the task model
 		ArrayList<String> users = new ArrayList<String>();
 		for (String user : task.getAssigned()) {
 			users.add(user);
 		}
-
 		ArrayList<String> result = new ArrayList<String>();
 		assertEquals(users, result);
 	}
