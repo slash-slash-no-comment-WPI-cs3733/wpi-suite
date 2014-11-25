@@ -72,6 +72,18 @@ public class TaskController implements MouseListener {
 		req = model.getReq();
 	}
 
+	/**
+	 * Move this task to given stage
+	 *
+	 * @param destination
+	 *            target StageModel
+	 * @param index
+	 * @return whether the stage changed as a result
+	 */
+	public boolean moveToStage(StageModel destination, int index) {
+		return destination.addTask(model, index);
+	}
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// makes the delete button unclickable
