@@ -9,7 +9,6 @@
 package taskManager.model;
 
 import taskManager.JanewayModule;
-import taskManager.controller.WorkflowController;
 import edu.wpi.cs.wpisuitetng.network.models.IRequest;
 import edu.wpi.cs.wpisuitetng.network.models.ResponseModel;
 
@@ -113,7 +112,7 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 	 *
 	 */
 	private void restartConnection() {
-		if (WorkflowController.alive && keepOpen) {
+		if (WorkflowModel.alive && keepOpen) {
 			WorkflowModel.getInstance().update();
 		}
 	}

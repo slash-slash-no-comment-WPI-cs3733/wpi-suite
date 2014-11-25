@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import taskManager.controller.WorkflowController;
+import taskManager.model.WorkflowModel;
 import edu.wpi.cs.wpisuitetng.exceptions.WPISuiteException;
 
 /**
@@ -36,7 +36,7 @@ public class WPICoreServlet extends HttpServlet {
 
 	private static final long serialVersionUID = -7156601241025735047L;
 	private ErrorResponseFormatter reponseFormatter;
-	private Object updateNotifyer = new Object();
+	private Object updateNotifier = new Object();
 
 	/**
 	 * Empty Constructor
@@ -89,10 +89,10 @@ public class WPICoreServlet extends HttpServlet {
 
 		PrintWriter out = res.getWriter();
 		System.out.println("waiting on request: " + req.toString());
-		synchronized (updateNotifyer) {
+		synchronized (updateNotifier) {
 			try {
 				// wait for changes
-				updateNotifyer.wait(WorkflowController.timeout);
+				updateNotifier.wait(WorkflowModel.timeout);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -134,8 +134,8 @@ public class WPICoreServlet extends HttpServlet {
 			out.println(ManagerLayer.getInstance().create(path, in.readLine(),
 					req.getCookies()));
 			// notify if something was written to the database
-			synchronized (updateNotifyer) {
-				updateNotifyer.notifyAll();
+			synchronized (updateNotifier) {
+				updateNotifier.notifyAll();
 			}
 		} catch (WPISuiteException e) {
 			res.setStatus(e.getStatus());
@@ -167,8 +167,8 @@ public class WPICoreServlet extends HttpServlet {
 			out.println(ManagerLayer.getInstance().update(path, in.readLine(),
 					req.getCookies()));
 			// notify if something was written to the database
-			synchronized (updateNotifyer) {
-				updateNotifyer.notifyAll();
+			synchronized (updateNotifier) {
+				updateNotifier.notifyAll();
 			}
 			System.out.println();
 		} catch (WPISuiteException e) {
@@ -198,8 +198,8 @@ public class WPICoreServlet extends HttpServlet {
 			out.println(ManagerLayer.getInstance().delete(path,
 					req.getCookies()));
 			// notify if something was written to the database
-			synchronized (updateNotifyer) {
-				updateNotifyer.notifyAll();
+			synchronized (updateNotifier) {
+				updateNotifier.notifyAll();
 			}
 		} catch (WPISuiteException e) {
 			res.setStatus(e.getStatus());

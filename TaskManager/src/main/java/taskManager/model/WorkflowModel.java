@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import taskManager.controller.WorkflowController;
 import edu.wpi.cs.wpisuitetng.network.Network;
 import edu.wpi.cs.wpisuitetng.network.Request;
 import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
@@ -32,6 +31,9 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	List<StageModel> stageList;
 
 	private static WorkflowModel instance = null;
+
+	public static boolean alive = true;
+	public static int timeout = 60000; // 1 minute
 
 	// Generic logger
 	private static final Logger logger = Logger.getLogger(WorkflowModel.class
@@ -238,7 +240,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		request.addHeader("long-polling", "long-polling");
 		// wait timeout + 5 sec (to allow for round trip time + database
 		// interaction)
-		request.setReadTimeout(WorkflowController.timeout + 5 * 1000);
+		request.setReadTimeout(WorkflowModel.timeout + 5 * 1000);
 		request.send();
 	}
 
@@ -260,7 +262,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		request.addHeader("long-polling", "long-polling");
 		// wait timeout + 5 sec (to allow for round trip time + database
 		// interaction)
-		request.setReadTimeout(WorkflowController.timeout + 5 * 1000);
+		request.setReadTimeout(WorkflowModel.timeout + 5 * 1000);
 		request.send();
 	}
 

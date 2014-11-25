@@ -9,7 +9,6 @@
 package taskManager.model;
 
 import taskManager.JanewayModule;
-import taskManager.controller.WorkflowController;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.network.models.IRequest;
 import edu.wpi.cs.wpisuitetng.network.models.ResponseModel;
@@ -66,7 +65,7 @@ public class GetUsersObserver extends GenericRequestObserver {
 	 *
 	 */
 	private void restartConnection() {
-		if (WorkflowController.alive) {
+		if (WorkflowModel.alive) {
 			WorkflowModel.getInstance().updateUsers();
 		}
 	}

@@ -27,9 +27,6 @@ public class WorkflowController {
 	private final WorkflowView view;
 	private final WorkflowModel model;
 
-	public static boolean alive = true;
-	public static int timeout = 60000; // 1 minute
-
 	/**
 	 * Constructor for the WorkflowController, gets all the stages from the
 	 * WorkflowView, creates the corresponding StageView and StageControllers,
@@ -50,7 +47,7 @@ public class WorkflowController {
 	 *
 	 */
 	public static void dispose() {
-		alive = false;
+		WorkflowModel.alive = false;
 	}
 
 	/**
