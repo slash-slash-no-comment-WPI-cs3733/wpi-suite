@@ -294,7 +294,7 @@ public class EditTaskController implements ActionListener {
 	 */
 	private void setTaskData(TaskModel t, StageModel s, Requirement r) {
 		// sets the text fields
-		t.setName(getTaskID());
+		t.setName(etv.getTitle().getText());
 		t.setDescription(etv.getDescription().getText());
 
 		// Try to set the effort values.
