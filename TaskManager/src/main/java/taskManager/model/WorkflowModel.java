@@ -110,7 +110,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 *            Index in the list of stages where we are adding the new stage.
 	 */
 	public void addStage(StageModel newStage, int index) {
-		if (stageList.contains(newStage)) {
+		if (hasStage(newStage)) {
 			// throw warning
 		} else {
 			stageList.add(index, newStage);
