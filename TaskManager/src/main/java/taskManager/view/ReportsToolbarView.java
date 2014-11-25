@@ -9,6 +9,7 @@
 
 package taskManager.view;
 
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -29,8 +30,8 @@ import javax.swing.ScrollPaneConstants;
 
 import org.jdesktop.swingx.JXDatePicker;
 
-import taskManager.controller.EditTaskController;
 import taskManager.controller.TaskInputController;
+//TODO import taskManager.controller.ReportsController;
 
 /**
  * @author Tyler Jaskoviak
@@ -41,16 +42,17 @@ public class ReportsToolbarView extends JPanel {
 	public static final String STAGE_NAME = "stage_name";
 	public static final String START_DATE = "start_date";
 	public static final String END_DATE = "end_date";
+	public static final String WORK_FLOW= "work_flow";
+	public static final String WORK_VELOCITY = "work_velocity";
 	public static final String TOTALED_DIST = "totaled_dist";
 	public static final String DIVIDED_DIST = "divided_dist";
 	public static final String COLLABORATIVE = "collaborative";
 	public static final String COMPARATIVE = "comparative";
 	public static final String ALL_USERS = "all_users";
 	public static final String USERS_LIST = "users_list";
+	public static final String GENERATE = "generate";
 	
 	private JPanel window;
-	
-	private TabGraphPaneView graphs;
 
 	// Stage picker
 	private JLabel stageTitle;
@@ -61,6 +63,12 @@ public class ReportsToolbarView extends JPanel {
 	private JLabel toLabel;
 	private JXDatePicker startDate;
 	private JXDatePicker endDate;
+	
+	// Flow vs Velocity
+	private JLabel workTypeLabel;
+	private JRadioButton workFlow;
+	private JRadioButton workVelocity;
+	private ButtonGroup workTypeGroup;
 
 	// Work Distribution
 	private JLabel distributionTitle;
@@ -77,13 +85,22 @@ public class ReportsToolbarView extends JPanel {
 	private JLabel usersLabel;
 	private JCheckBox allUsers;
 	private JList<JCheckBox> users;
+	
+	// Generate Graph Button
+	private JButton generateGraph;
 
 	//TODO private ReportsController controller;
 
 	public ReportsToolbarView() {
 		
+		Dimension nt_panelSize = getPreferredSize();
+		nt_panelSize.width = 1000;
+		nt_panelSize.height = 500;
+		this.setPreferredSize(nt_panelSize);
+		this.setMinimumSize(nt_panelSize);
+		
 		window = new JPanel();
-		graphs = new TabGraphPaneView();
+		window.setPreferredSize(nt_panelSize);
 		this.setLayout(new FlowLayout());
 		
 		// Stage 
@@ -110,6 +127,16 @@ public class ReportsToolbarView extends JPanel {
 				((new ImageIcon(getClass().getResource("calendar-icon.png")))
 						.getImage()).getScaledInstance(20, 20,
 						java.awt.Image.SCALE_SMOOTH)));
+		
+		// WorkType
+		workTypeLabel = new JLabel("Work Type");
+		workFlow = new JRadioButton("Flow");
+		workFlow.setName(WORK_FLOW);
+		workVelocity = new JRadioButton("Velocity");
+		workVelocity.setName(WORK_VELOCITY);
+		workTypeGroup = new ButtonGroup();
+		workTypeGroup.add(workFlow);
+		workTypeGroup.add(workVelocity);
 		
 		// Distribution
 		distributionTitle = new JLabel("Ditribution Method");
@@ -139,6 +166,10 @@ public class ReportsToolbarView extends JPanel {
 		JScrollPane usersPane = new JScrollPane(users);
 		usersPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		usersPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		
+		// Generate Graph
+		generateGraph = new JButton("Generate");
+		generateGraph.setName(GENERATE);
 		
 		window.setLayout(new GridBagLayout());
 
@@ -170,31 +201,42 @@ public class ReportsToolbarView extends JPanel {
 		window.add(endDate, toolbarGrid);
 		
 		toolbarGrid.gridy = 8;
-		window.add(distributionTitle, toolbarGrid);
+		window.add(workTypeLabel, toolbarGrid);
 
 		toolbarGrid.gridy = 9;
-		window.add(totaledDist, toolbarGrid);
+		window.add(workFlow, toolbarGrid);
 		
 		toolbarGrid.gridy = 10;
-		window.add(dividedDist, toolbarGrid);
+		window.add(workVelocity, toolbarGrid);
 		
 		toolbarGrid.gridy = 12;
-		window.add(combineWork, toolbarGrid);
-		
+		window.add(distributionTitle, toolbarGrid);
+
 		toolbarGrid.gridy = 13;
-		window.add(compareWork, toolbarGrid);
+		window.add(totaledDist, toolbarGrid);
 		
-		toolbarGrid.gridy = 15;
-		window.add(usersLabel, toolbarGrid);
+		toolbarGrid.gridy = 14;
+		window.add(dividedDist, toolbarGrid);
 		
 		toolbarGrid.gridy = 16;
-		window.add(allUsers, toolbarGrid);
+		window.add(combineWork, toolbarGrid);
 		
 		toolbarGrid.gridy = 17;
+		window.add(compareWork, toolbarGrid);
+		
+		toolbarGrid.gridy = 19;
+		window.add(usersLabel, toolbarGrid);
+		
+		toolbarGrid.gridy = 20;
+		window.add(allUsers, toolbarGrid);
+		
+		toolbarGrid.gridy = 21;
 		window.add(usersPane, toolbarGrid);
 		
+		toolbarGrid.gridy = 23;
+		window.add(generateGraph, toolbarGrid);
+		
 		this.add(window);
-		this.add(graphs);
 	}
 	
 	/**
@@ -202,9 +244,11 @@ public class ReportsToolbarView extends JPanel {
 	 * 
 	 * @param controller
 	 *            the controller to be attached to this view
-	 */
-	public void setController(EditTaskController controller) {
+	 *
+	public void setController(ReportsController controller) {
 		//TODO this.controller = controller;
+		workFlow.addActionListener(controller);
+		workVelocity.addActionListener(controller);
 		totaledDist.addActionListener(controller);
 		dividedDist.addActionListener(controller);
 		combineWork.addActionListener(controller);
@@ -212,7 +256,7 @@ public class ReportsToolbarView extends JPanel {
 		allUsers.addActionListener(controller);
 		
 		//TODO help with action listeners for all users
-	}
+	}*/
 	
 	/**
 	 * Adds the action listener (controller) to this view
@@ -293,6 +337,44 @@ public class ReportsToolbarView extends JPanel {
 	 */
 	public void setEndDate(Date d){
 		endDate.setDate(d);
+	}
+	
+	/**
+	 * Returns the radio button for flow workType
+	 * 
+	 * @return the workFlow as a JRadioButton
+	 */
+	public JRadioButton getWorkFlow(){
+		return workFlow;
+	}
+	
+	/**
+	 * Sets the radio button for flow workType
+	 * 
+	 * @param b
+	 * 				the state of the button
+	 */
+	public void setWorkFlow(Boolean b){
+		workFlow.setSelected(b);
+	}
+	
+	/**
+	 * Returns the radio button for velocity workType
+	 * 
+	 * @return the workVelocity as a JRadioButton
+	 */
+	public JRadioButton getWorkVelocity(){
+		return workVelocity;
+	}
+	
+	/**
+	 * Sets the radio button for velocity workType
+	 * 
+	 * @param b
+	 * 				the state of the button
+	 */
+	public void setWorkVelocity(Boolean b){
+		workVelocity.setSelected(b);
 	}
 	
 	/**
