@@ -84,6 +84,10 @@ public class TaskController implements MouseListener {
 		return destination.addTask(model, index);
 	}
 
+	/**
+	 * Delete this task
+	 *
+	 */
 	public void deleteTask() {
 		model.getStage().removeTask(model);
 	}

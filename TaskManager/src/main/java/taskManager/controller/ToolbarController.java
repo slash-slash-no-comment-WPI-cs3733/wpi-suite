@@ -30,6 +30,7 @@ import taskManager.view.ToolbarView;
  * A controller for the toolbar view
  *
  * @author Beth Martino
+ * @author Sam Khalandovsky
  */
 public class ToolbarController extends DropTargetAdapter implements
 		ActionListener {
@@ -47,6 +48,9 @@ public class ToolbarController extends DropTargetAdapter implements
 		this.tabPaneC = JanewayModule.tabPaneC;
 	}
 
+	/**
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object button = e.getSource();
@@ -72,6 +76,9 @@ public class ToolbarController extends DropTargetAdapter implements
 		}
 	}
 
+	/**
+	 * @see java.awt.dnd.DropTargetListener#drop(java.awt.dnd.DropTargetDropEvent)
+	 */
 	@Override
 	public void drop(DropTargetDropEvent e) {
 		Component target = e.getDropTargetContext().getComponent();
@@ -99,6 +106,9 @@ public class ToolbarController extends DropTargetAdapter implements
 		}
 	}
 
+	/**
+	 * @see java.awt.dnd.DropTargetAdapter#dragEnter(java.awt.dnd.DropTargetDragEvent)
+	 */
 	@Override
 	public void dragEnter(DropTargetDragEvent e) {
 		Component comp = e.getDropTargetContext().getComponent();
@@ -106,6 +116,9 @@ public class ToolbarController extends DropTargetAdapter implements
 
 	}
 
+	/**
+	 * @see java.awt.dnd.DropTargetAdapter#dragExit(java.awt.dnd.DropTargetEvent)
+	 */
 	@Override
 	public void dragExit(DropTargetEvent e) {
 		Component comp = e.getDropTargetContext().getComponent();
