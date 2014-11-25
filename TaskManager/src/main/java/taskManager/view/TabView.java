@@ -19,9 +19,11 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import taskManager.JanewayModule;
+import taskManager.controller.EditTaskController;
 
 /**
  * 
@@ -96,10 +98,32 @@ public class TabView extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if (closeable) {
-			JanewayModule.tabPaneC.removeTabByComponent(component);
+			if (component instanceof EditTaskView) {
+
+				EditTaskController etc = ((EditTaskView) component)
+						.getController();
+				// If there are edits, show confirmation dialog.
+				if (etc.isEdited()) {
+					Integer choice = JOptionPane
+							.showConfirmDialog(
+									tabPaneV,
+									"You still have unsaved edits. Are you sure you want to delete this tab?",
+									"Warning - Deleting a tab with edits",
+									JOptionPane.YES_NO_OPTION);
+					if (choice.equals(JOptionPane.YES_OPTION)) {
+						JanewayModule.tabPaneC.removeTabByComponent(component);
+						tabPaneV.setSelectedIndex(0);
+					}
+				} else {
+					JanewayModule.tabPaneC.removeTabByComponent(component);
+					tabPaneV.setSelectedIndex(0);
+				}
+			} else {
+				JanewayModule.tabPaneC.removeTabByComponent(component);
+				tabPaneV.setSelectedIndex(0);
+			}
 		}
 		tabPaneV.reloadWorkflow();
-		tabPaneV.setSelectedIndex(0);
 	}
 
 	public Component getComponent() {

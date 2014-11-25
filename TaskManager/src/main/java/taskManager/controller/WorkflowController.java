@@ -87,7 +87,7 @@ public class WorkflowController {
 	 * Reloads all the data on the view to match the data in the model
 	 *
 	 */
-	public void reloadData() {
+	public synchronized void reloadData() {
 		// clear the stages previously on the view
 		view.removeAll();
 
