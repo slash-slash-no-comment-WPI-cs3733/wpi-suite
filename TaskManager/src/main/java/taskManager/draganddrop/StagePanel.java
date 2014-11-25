@@ -63,6 +63,8 @@ public class StagePanel extends JPanel {
 	private Map<Component, Rectangle> drawnBounds; // store animated panel
 													// bounds
 
+	private Timer animTimer; // Timer for animating while dragging
+
 	/**
 	 * Creates a StagePanel and creates its handlers
 	 */
@@ -72,14 +74,15 @@ public class StagePanel extends JPanel {
 
 		drawnBounds = new HashMap<Component, Rectangle>();
 
-		Timer timer = new Timer(1000 / 24, new ActionListener() {
+		animTimer = new Timer(1000 / 24, new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (updateDrawnBounds()) {
 					repaint();
+				} else {
+					animTimer.stop();
 				}
 			}
 		});
-		timer.start();
 	}
 
 	/**
@@ -132,7 +135,7 @@ public class StagePanel extends JPanel {
 			WorkflowModel.getInstance().save();
 		}
 
-		hidePlaceholder();
+		setPlaceholderVisible(false);
 
 	}
 
@@ -159,16 +162,23 @@ public class StagePanel extends JPanel {
 		}
 
 		setPlaceholderIndex(getInsertionIndex(point));
-		placeholder.setVisible(true);
+		setPlaceholderVisible(true);
 	}
 
 	/**
-	 * 
-	 * Hides the placeholder
+	 * Hide/show placeholder: make sure animation timer starts when visibility
+	 * changes
 	 *
+	 * @param visible
 	 */
-	public void hidePlaceholder() {
-		placeholder.setVisible(false);
+	public void setPlaceholderVisible(boolean visible) {
+		if (placeholder.isVisible() != visible) { // state changed
+			if (!animTimer.isRunning()) {
+				updateDrawnBounds();
+				animTimer.start();
+			}
+			placeholder.setVisible(visible);
+		}
 	}
 
 	/**
@@ -183,6 +193,10 @@ public class StagePanel extends JPanel {
 		System.out.println("Adding placeholder at " + index);
 		this.add(placeholder, index);
 		if (index != lastIndex) {
+			if (!animTimer.isRunning()) { // start animation timer if not
+											// running
+				animTimer.start();
+			}
 			this.revalidate();
 			this.repaint();
 			lastIndex = index;
@@ -271,6 +285,11 @@ public class StagePanel extends JPanel {
 		this.controller = controller;
 	}
 
+	/**
+	 * Update the bounds of the animated object
+	 *
+	 * @return whether the drawn bounds changed
+	 */
 	private synchronized boolean updateDrawnBounds() {
 
 		boolean changed = false;
@@ -290,23 +309,34 @@ public class StagePanel extends JPanel {
 		for (Component comp : drawnComps) {
 			Rectangle drawn = drawnBounds.get(comp);
 
-			// If remove components from drawnBounds that are no longer in the
+			// Remove components from drawnBounds that are no longer in the
 			// panel or invisible
 			if (!components.contains(comp) || !comp.isVisible()) {
 				drawnBounds.remove(comp);
-			} else if (drawn.x != comp.getBounds().x
-					|| drawn.y != comp.getBounds().y) {
+			} else {
 				// move the drawn panel halfway between current drawn location
 				// and target position
-				drawn.x = (drawn.x + comp.getBounds().x) / 2;
-				drawn.y = (drawn.y + comp.getBounds().y) / 2;
+				int deltaX = (comp.getBounds().x - drawn.x) / 2;
+				int deltaY = (comp.getBounds().y - drawn.y) / 2;
 
-				changed = true;
+				if (deltaX != 0 || deltaY != 0) {
+					drawn.x += deltaX;
+					drawn.y += deltaY;
+					changed = true;
+				}
 			}
 		}
 		return changed;
 	}
 
+	/**
+	 * Move the bounds to what we want, paint children, set bounds back
+	 * 
+	 * @param g
+	 *            Graphics context
+	 * 
+	 * @see javax.swing.JComponent#paintChildren(java.awt.Graphics)
+	 */
 	@Override
 	public synchronized void paintChildren(Graphics g) {
 		List<Rectangle> layoutBounds = new ArrayList<Rectangle>();
@@ -319,6 +349,7 @@ public class StagePanel extends JPanel {
 			}
 		}
 		super.paintChildren(g);
+
 		for (int i = 0; i < getComponentCount(); i++) {
 			Component comp = getComponent(i);
 			comp.setBounds(layoutBounds.get(i));
@@ -381,7 +412,7 @@ class StageDropListener implements DropTargetListener {
 	@Override
 	public void dragExit(DropTargetEvent e) {
 		System.out.println("Stage drag exit");
-		stage.hidePlaceholder();
+		stage.setPlaceholderVisible(false);
 	}
 
 	/**
