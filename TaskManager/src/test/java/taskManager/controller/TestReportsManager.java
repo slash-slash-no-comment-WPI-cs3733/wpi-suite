@@ -60,6 +60,6 @@ public class TestReportsManager {
 
 		frame.add(chart);
 		frame.revalidate();
-		sleep(1000);
+		sleep(10000);
 	}
 }
