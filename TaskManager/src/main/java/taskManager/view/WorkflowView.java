@@ -30,6 +30,7 @@ public class WorkflowView extends JLayeredPane {
 	 */
 	public WorkflowView() {
 		this.setLayout(new WorkflowLayout());
+		this.addMouseListener(controller);
 	}
 
 	/**

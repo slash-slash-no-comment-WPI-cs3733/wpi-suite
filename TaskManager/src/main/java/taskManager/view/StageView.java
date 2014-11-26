@@ -53,16 +53,7 @@ public class StageView extends JPanel {
 		// organizes the tasks in a vertical list
 		tasks.setLayout(new BoxLayout(tasks, BoxLayout.Y_AXIS));
 
-		// creates the scroll containing the stage view and adds it to the block
-		stage = new JScrollPane(tasks,
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		stage.setBorder(BorderFactory.createTitledBorder(name));
 		this.setName(name);
-		stage.setMinimumSize(new Dimension(175, 450));
-		stage.setSize(new Dimension(175, 450));
-		stage.setPreferredSize(new Dimension(175, 450));
-
 		updateTasks();
 	}
 
@@ -101,7 +92,7 @@ public class StageView extends JPanel {
 	public void setController(StageController controller) {
 		this.controller = controller;
 		tasks.setController(controller);
-
+		stage.addMouseListener(controller);
 	}
 
 	/**

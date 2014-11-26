@@ -47,8 +47,8 @@ public class TaskInfoPreviewView extends JPanel {
 		this.taskM = model;
 		this.taskC = controller;
 		this.controller = new TaskInfoPreviewController(this.taskC);
-		this.setLayout(new MigLayout("wrap 1", "5[grow]5", "[]:push[]"));
-		this.setBounds(loc.x + 230, loc.y, 250, 400);
+		this.setLayout(new MigLayout("wrap 1", "5[]5", "0[]:push[]"));
+		this.setBounds(loc.x + 230, loc.y, 250, 415);
 
 		// Drop shadow
 		DropShadowBorder shadow = new DropShadowBorder();
@@ -62,11 +62,11 @@ public class TaskInfoPreviewView extends JPanel {
 
 		// This panel will contain all of the task information
 		JPanel info = new JPanel();
-		info.setSize(new Dimension(212, 330));
-		info.setPreferredSize(new Dimension(212, 330));
-		info.setMinimumSize(new Dimension(212, 330));
-		info.setMaximumSize(new Dimension(212, 330));
-		info.setLayout(new MigLayout("wrap 1", "[]"));
+		info.setSize(new Dimension(212, 345));
+		info.setPreferredSize(new Dimension(212, 345));
+		info.setMinimumSize(new Dimension(212, 345));
+		info.setMaximumSize(new Dimension(212, 345));
+		info.setLayout(new MigLayout("wrap 1"));
 
 		// The task's titleBar contains the title and the 'x' button
 		JPanel titleBar = new JPanel();
@@ -114,10 +114,11 @@ public class TaskInfoPreviewView extends JPanel {
 		JLabel userL;
 		JPanel users = new JPanel();
 		JScrollPane usersS = new JScrollPane();
-		usersS.setSize(new Dimension(205, 60));
-		usersS.setMinimumSize(new Dimension(205, 60));
-		usersS.setMaximumSize(new Dimension(205, 60));
-		usersS.setPreferredSize(new Dimension(205, 60));
+		usersS.setSize(new Dimension(206, 60));
+		usersS.setMinimumSize(new Dimension(206, 60));
+		usersS.setMaximumSize(new Dimension(206, 60));
+		usersS.setPreferredSize(new Dimension(206, 60));
+		usersS.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		Object[] userList = this.taskM.getAssigned().toArray();
 		System.out.println(userList);
 		if (userList.length > 0) {
@@ -125,7 +126,12 @@ public class TaskInfoPreviewView extends JPanel {
 			userL = new JLabel("Users:");
 
 			for (int i = 0; i < userList.length; i++) {
-				users.add(new JLabel(" " + userList[i]));
+				JLabel temp = new JLabel(" " + userList[i]);
+				temp.setSize(new Dimension(190, 20));
+				temp.setMinimumSize(new Dimension(190, 20));
+				temp.setMaximumSize(new Dimension(190, 20));
+				temp.setPreferredSize(new Dimension(190, 20));
+				users.add(temp);
 			}
 			info.add(userL);
 			usersS.setViewportView(users);
@@ -137,12 +143,19 @@ public class TaskInfoPreviewView extends JPanel {
 
 		// The task's requirement
 		JLabel req;
-		if (this.taskM.getReq() != null) {
-			req = new JLabel("Requirement: " + this.taskM.getReq());
-		} else {
+		if (this.taskM.getReq() == null) {
 			req = new JLabel("Requirement: [None]");
+			info.add(req);
+		} else {
+			req = new JLabel("Requirement:");
+			info.add(req);
+			JLabel name = new JLabel("  " + this.taskM.getReq());
+			name.setSize(new Dimension(206, 20));
+			name.setMinimumSize(new Dimension(206, 20));
+			name.setMaximumSize(new Dimension(206, 20));
+			name.setPreferredSize(new Dimension(206, 20));
+			info.add(name);
 		}
-		info.add(req);
 
 		// This panel contains the edit button
 		JPanel buttonPanel = new JPanel(new MigLayout("", "[center]"));

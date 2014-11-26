@@ -53,12 +53,6 @@ public class WorkflowController implements MouseListener {
 		this.view = view;
 		this.model = WorkflowModel.getInstance();
 
-		// necessary to add these stages to workflowView (don't know/how)
-		// StageModel newStage = new StageModel("New", false);
-		// StageModel startedStage = new StageModel("Scheduled", false);
-		// StageModel progressStage = new StageModel("In Progress", false);
-		// StageModel completeStage = new StageModel("Complete", false);
-
 		Thread thread = new Thread() {
 			public void run() {
 				GetRequirementsController reqController = GetRequirementsController
@@ -146,6 +140,7 @@ public class WorkflowController implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		// Removes the task info bubble from the screen
 		this.setTaskInfo(null);
 	}
 
