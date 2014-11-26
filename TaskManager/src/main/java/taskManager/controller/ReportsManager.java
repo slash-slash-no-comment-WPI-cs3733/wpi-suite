@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.JPanel;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -48,9 +50,9 @@ public class ReportsManager extends ApplicationFrame {
 	public ReportsManager(String title) {
 		super(title);
 		final CategoryDataset dataset = createDataSet();
-		final JFreeChart chart = createChart(dataset);
+		final JPanel chartPanel = createChart(dataset, "Title", "Time",
+				"Velocity");
 		workflow = WorkflowModel.getInstance();
-		final ChartPanel chartPanel = new ChartPanel(chart, false);
 		chartPanel.setPreferredSize(new Dimension(500, 270));
 		setContentPane(chartPanel);
 	}
@@ -89,7 +91,7 @@ public class ReportsManager extends ApplicationFrame {
 			throw new IllegalArgumentException("Invalid stage");
 		}
 
-		final sMap<String, List<UserData>> data = new HashMap<String, List<UserData>>();
+		final Map<String, List<UserData>> data = new HashMap<String, List<UserData>>();
 		for (String username : users) {
 			data.put(username, new ArrayList<UserData>());
 		}
@@ -140,15 +142,27 @@ public class ReportsManager extends ApplicationFrame {
 		return dataset;
 	}
 
-	// This method generates the chart from the dataset above. How it gets
-	// integrated with JPanels is another question...
-	private static JFreeChart createChart(CategoryDataset dataset) {
+	/**
+	 * Creates a chart from the given input
+	 *
+	 * @param dataset
+	 *            The dataset for the chart
+	 * @param title
+	 *            The title of the chart
+	 * @param xlabel
+	 *            The label for the x axis
+	 * @param ylabel
+	 *            The label for the y axis
+	 * @return a JPanel containing the chart
+	 */
+	public static JPanel createChart(CategoryDataset dataset, String title,
+			String xlabel, String ylabel) {
 
 		// create the chart...
-		final JFreeChart chart = ChartFactory.createBarChart("Bar Chart Demo", // chart
-																				// title
-				"Category", // domain axis label
-				"Value", // range axis label
+		final JFreeChart chart = ChartFactory.createBarChart(title, // chart
+																	// title
+				xlabel, // domain axis label
+				ylabel, // range axis label
 				dataset, // data
 				PlotOrientation.VERTICAL, // orientation
 				true, // include legend
@@ -165,6 +179,6 @@ public class ReportsManager extends ApplicationFrame {
 		// disable bar outlines...
 		((BarRenderer) plot.getRenderer()).setDrawBarOutline(false);
 
-		return chart;
+		return new ChartPanel(chart, false);
 	}
 }
