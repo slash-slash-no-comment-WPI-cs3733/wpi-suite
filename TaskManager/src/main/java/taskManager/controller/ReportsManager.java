@@ -89,7 +89,7 @@ public class ReportsManager extends ApplicationFrame {
 			throw new IllegalArgumentException("Invalid stage");
 		}
 
-		final sMap<String, List<UserData>> data = new HashMap<String, List<UserData>>();
+		final Map<String, List<UserData>> data = new HashMap<String, List<UserData>>();
 		for (String username : users) {
 			data.put(username, new ArrayList<UserData>());
 		}
