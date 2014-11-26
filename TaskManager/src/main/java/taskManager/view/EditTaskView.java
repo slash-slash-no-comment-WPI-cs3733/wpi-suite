@@ -109,6 +109,16 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	private List<ActivityModel> activities;
 	private List<ActivityModel> newActivities;
 
+	private JLabel titleLabel;
+	private JLabel descriptionLabel;
+	private JLabel dueDateLabel;
+	private JLabel stageLabel;
+	private JLabel usersLabel;
+	private JLabel estimatedEffortLabel;
+	private JLabel actualEffortLabel;
+	private JLabel commentsLabel;
+	private JLabel requirementLabel;
+
 	/**
 	 * Creates a Edit Task Panel so that you can change all of the values of a
 	 * task: Title Description Due Date Estimated Effort Actual Effort Adding
@@ -135,19 +145,16 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		newActivities = new ArrayList<ActivityModel>();
 
 		// JLabels
-		JLabel nt_titleLabel = new JLabel(Localizer.getString("Title "));
-		JLabel nt_descriptionLabel = new JLabel(
-				Localizer.getString("Description "));
-		JLabel nt_dueDateLabel = new JLabel(Localizer.getString("Due Date "));
-		JLabel nt_stageLabel = new JLabel(Localizer.getString("Stage "));
-		JLabel nt_usersLabel = new JLabel(Localizer.getString("Users "));
-		JLabel nt_estimatedEffortLabel = new JLabel(
+		titleLabel = new JLabel(Localizer.getString("Title "));
+		descriptionLabel = new JLabel(Localizer.getString("Description "));
+		dueDateLabel = new JLabel(Localizer.getString("Due Date "));
+		stageLabel = new JLabel(Localizer.getString("Stage "));
+		usersLabel = new JLabel(Localizer.getString("Users "));
+		estimatedEffortLabel = new JLabel(
 				Localizer.getString("Estimated Effort "));
-		JLabel nt_actualEffortLabel = new JLabel(
-				Localizer.getString("Actual Effort "));
-		JLabel nt_commentsLabel = new JLabel(Localizer.getString("Comments "));
-		JLabel nt_requirementLabel = new JLabel(
-				Localizer.getString("Requirement "));
+		actualEffortLabel = new JLabel(Localizer.getString("Actual Effort "));
+		commentsLabel = new JLabel(Localizer.getString("Comments "));
+		requirementLabel = new JLabel(Localizer.getString("Requirement "));
 
 		titleError = new JLabel(Localizer.getString("This is a required field"));
 		titleError.setVisible(false);
@@ -262,35 +269,35 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		newTaskGridBag.gridx = 0;
 
 		newTaskGridBag.gridy = 0;
-		window.add(nt_titleLabel, newTaskGridBag);
+		window.add(titleLabel, newTaskGridBag);
 
 		newTaskGridBag.gridy = 1;
-		window.add(nt_descriptionLabel, newTaskGridBag);
+		window.add(descriptionLabel, newTaskGridBag);
 
 		newTaskGridBag.gridy = 2;
-		window.add(nt_dueDateLabel, newTaskGridBag);
+		window.add(dueDateLabel, newTaskGridBag);
 
 		newTaskGridBag.gridy = 3;
-		window.add(nt_stageLabel, newTaskGridBag);
+		window.add(stageLabel, newTaskGridBag);
 
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridy = 4;
-		window.add(nt_usersLabel, newTaskGridBag);
+		window.add(usersLabel, newTaskGridBag);
 
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridy = 5;
-		window.add(nt_estimatedEffortLabel, newTaskGridBag);
+		window.add(estimatedEffortLabel, newTaskGridBag);
 
 		newTaskGridBag.gridy = 6;
-		window.add(nt_actualEffortLabel, newTaskGridBag);
+		window.add(actualEffortLabel, newTaskGridBag);
 
 		newTaskGridBag.weighty = 0.10;
 		newTaskGridBag.gridy = 7;
-		window.add(nt_commentsLabel, newTaskGridBag);
+		window.add(commentsLabel, newTaskGridBag);
 
 		newTaskGridBag.weighty = 0.077;
 		newTaskGridBag.gridy = 9;
-		window.add(nt_requirementLabel, newTaskGridBag);
+		window.add(requirementLabel, newTaskGridBag);
 
 		// Second Column ////
 
@@ -863,6 +870,15 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 
 	@Override
 	public void onLocaleChange() {
+		titleLabel.setText(Localizer.getString("Title "));
+		descriptionLabel.setText(Localizer.getString("Description "));
+		dueDateLabel.setText(Localizer.getString("Due Date "));
+		stageLabel.setText(Localizer.getString("Stage "));
+		usersLabel.setText(Localizer.getString("Users "));
+		estimatedEffortLabel.setText(Localizer.getString("Estimated Effort "));
+		actualEffortLabel.setText(Localizer.getString("Actual Effort "));
+		commentsLabel.setText(Localizer.getString("Comments "));
+		requirementLabel.setText(Localizer.getString("Requirement "));
 		titleError.setText(Localizer.getString("This is a required field"));
 		descriptionError.setText(Localizer
 				.getString("This is a required field"));

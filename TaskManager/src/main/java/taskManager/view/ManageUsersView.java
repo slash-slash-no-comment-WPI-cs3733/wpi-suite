@@ -97,8 +97,7 @@ public class ManageUsersView extends JPanel implements LocaleChangeListener {
 		tasksBlock.add(tLabel);
 		// Create the scrollPane with a StageView inside it
 		// TODO: change StageView to a TaskListView. Do this
-		JScrollPane tasks = new JScrollPane(new StageView(
-				Localizer.getString("Tasks")));
+		JScrollPane tasks = new JScrollPane(new StageView("Tasks"));
 		tasks.setBorder(BorderFactory.createLineBorder(Color.black));
 		tasks.setPreferredSize(new Dimension(200, 350));
 		tasksBlock.add(tasks);

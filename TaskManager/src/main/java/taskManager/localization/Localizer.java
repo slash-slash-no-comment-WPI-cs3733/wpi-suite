@@ -69,7 +69,23 @@ public class Localizer {
 		});
 	}
 
+	/**
+	 * Add something to the list of listeners
+	 *
+	 * @param listener
+	 */
 	public static void addListener(LocaleChangeListener listener) {
 		listeners.add(listener);
+	}
+
+	/**
+	 * Remove a listener from the list
+	 * 
+	 * TODO: actually call this when needed
+	 *
+	 * @param listener
+	 */
+	public static void removeListener(LocaleChangeListener listener) {
+		listeners.remove(listener);
 	}
 }

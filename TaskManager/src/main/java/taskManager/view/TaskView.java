@@ -36,6 +36,9 @@ public class TaskView extends TaskPanel implements LocaleChangeListener {
 
 	private TaskController controller;
 
+	private JLabel dueLabel;
+	private Date duedate;
+
 	/**
 	 * Constructor, creates a list-like view for the following information: the
 	 * name of the task, the due date and the estimated effort
@@ -50,6 +53,8 @@ public class TaskView extends TaskPanel implements LocaleChangeListener {
 	 *            The ID of the task being displayed
 	 */
 	public TaskView(String name, Date duedate, int estEffort) {
+
+		this.duedate = duedate;
 
 		// organizes the data in a vertical list
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -71,7 +76,7 @@ public class TaskView extends TaskPanel implements LocaleChangeListener {
 		// to the month.
 
 		JLabel nameLabel = new JLabel();
-		JLabel dueLabel = new JLabel(Localizer.getString("Due: ")
+		dueLabel = new JLabel(Localizer.getString("Due: ")
 				+ (date.get(Calendar.MONTH) + 1) + "/"
 				+ date.get(Calendar.DATE) + "/" + (date.get(Calendar.YEAR)));
 
@@ -119,8 +124,11 @@ public class TaskView extends TaskPanel implements LocaleChangeListener {
 
 	@Override
 	public void onLocaleChange() {
-		// TODO Auto-generated method stub
-
+		final Calendar date = Calendar.getInstance();
+		date.setTime(duedate);
+		dueLabel.setText(Localizer.getString("Due: ")
+				+ (date.get(Calendar.MONTH) + 1) + "/"
+				+ date.get(Calendar.DATE) + "/" + (date.get(Calendar.YEAR)));
 	}
 
 }

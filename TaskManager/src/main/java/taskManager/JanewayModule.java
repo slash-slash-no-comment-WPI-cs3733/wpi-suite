@@ -49,8 +49,7 @@ public class JanewayModule implements IJanewayModule {
 
 		tabs = new ArrayList<JanewayTabModel>();
 		JanewayTabModel tab = new JanewayTabModel("Task Manager",
-
-		new ImageIcon(), toolV, tabPaneV);
+				new ImageIcon(), toolV, tabPaneV);
 		tabs.add(tab);
 	}
 
