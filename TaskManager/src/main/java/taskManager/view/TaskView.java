@@ -105,10 +105,6 @@ public class TaskView extends TaskPanel {
 		this.addMouseListener(this.controller);
 	}
 
-	public TaskController getController() {
-		return controller;
-	}
-
 	@Override
 	public void setVisible(boolean visible) {
 		controller.resetBackground();
