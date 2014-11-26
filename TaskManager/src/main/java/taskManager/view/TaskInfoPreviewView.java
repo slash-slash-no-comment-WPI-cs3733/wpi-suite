@@ -9,15 +9,17 @@
 package taskManager.view;
 
 import java.awt.Color;
-import java.awt.FlowLayout;
+import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.Point;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
+
+import net.miginfocom.swing.MigLayout;
 
 import org.jdesktop.swingx.border.DropShadowBorder;
 
@@ -31,18 +33,22 @@ import taskManager.model.TaskModel;
  * @author Samee Swartz
  * @version Nov 21, 2014
  */
-public class TaskInfoPreviewView extends JPanel implements MouseListener {
+public class TaskInfoPreviewView extends JPanel {
+
+	private static final long serialVersionUID = -3486346306247702460L;
 	private TaskModel taskM;
 	private TaskController taskC;
 	private TaskInfoPreviewController controller;
+	public static final String EDIT = "edit";
+	public static final String X = "x";
 
 	public TaskInfoPreviewView(TaskModel model, TaskController controller,
 			Point loc) {
 		this.taskM = model;
 		this.taskC = controller;
 		this.controller = new TaskInfoPreviewController(this.taskC);
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		this.setBounds(loc.x + 230, loc.y, 300, 400);
+		this.setLayout(new MigLayout("wrap 1", "5[grow]5", "[]:push[]"));
+		this.setBounds(loc.x + 230, loc.y, 250, 400);
 
 		// Drop shadow
 		DropShadowBorder shadow = new DropShadowBorder();
@@ -54,58 +60,103 @@ public class TaskInfoPreviewView extends JPanel implements MouseListener {
 		shadow.setShadowSize(10);
 		this.setBorder(shadow);
 
-		JPanel top = new JPanel();
-		top.setLayout(new FlowLayout());
-		JButton edit = new JButton("edit");
-		edit.addActionListener(this.controller);
-		JLabel title = new JLabel(this.taskM.getName());
-		JLabel description = new JLabel(this.taskM.getDescription());
-		JLabel info = new JLabel();
-		// info.setBackground(Color.LIGHT_GRAY);
-		String text = "Due " + this.taskM.getDueDate() + "\nEst Effort: "
-				+ this.taskM.getEstimatedEffort() + "\nAct Effort: "
-				+ this.taskM.getActualEffort();
-		info.setText(text);
+		// This panel will contain all of the task information
+		JPanel info = new JPanel();
+		info.setSize(new Dimension(212, 330));
+		info.setPreferredSize(new Dimension(212, 330));
+		info.setMinimumSize(new Dimension(212, 330));
+		info.setMaximumSize(new Dimension(212, 330));
+		info.setLayout(new MigLayout("wrap 1", "[]"));
 
-		top.add(title);
-		top.add(edit);
-		this.add(top);
-		this.add(description);
+		// The task's titleBar contains the title and the 'x' button
+		JPanel titleBar = new JPanel();
+		titleBar.setLayout(new MigLayout("", "[]:push[]"));
+		JLabel title = new JLabel(this.taskM.getName());
+		title.setPreferredSize(new Dimension(185,
+				title.getPreferredSize().height));
+		title.setMaximumSize(new Dimension(185, title.getPreferredSize().height));
+		titleBar.add(title);
+		// Closable 'x' button
+		final JButton closeButton = new JButton("\u2716");
+		closeButton.setName(X);
+		closeButton.setFont(closeButton.getFont().deriveFont((float) 8));
+		closeButton.setMargin(new Insets(0, 0, 0, 0));
+		closeButton.addActionListener(this.controller);
+		titleBar.add(closeButton);
+		info.add(titleBar);
+
+		// The task's description
+		// TODO: Make this have a '...' when it overflows
+		JTextPane description = new JTextPane();
+		description.setText(this.taskM.getDescription());
+		description.setSize(new Dimension(210, 80));
+		description.setMaximumSize(new Dimension(210, 80));
+		description.setMinimumSize(new Dimension(210, 80));
+		description.setPreferredSize(new Dimension(210, 80));
+		description.setAlignmentX(CENTER_ALIGNMENT);
+		info.add(description);
+
+		// The task's due date
+		JLabel due = new JLabel("Due:");
+		JLabel date = new JLabel("  " + this.taskM.getDueDate());
+		date.setMaximumSize(new Dimension(200, 20));
+		info.add(due);
+		info.add(date);
+
+		// The task's effort
+		JLabel estE = new JLabel("Est Effort: "
+				+ this.taskM.getEstimatedEffort());
+		JLabel actE = new JLabel("Act Effort: " + this.taskM.getActualEffort());
+		info.add(estE);
+		info.add(actE);
+
+		// The task's users
+		JLabel userL;
+		JPanel users = new JPanel();
+		JScrollPane usersS = new JScrollPane();
+		usersS.setSize(new Dimension(205, 60));
+		usersS.setMinimumSize(new Dimension(205, 60));
+		usersS.setMaximumSize(new Dimension(205, 60));
+		usersS.setPreferredSize(new Dimension(205, 60));
+		Object[] userList = this.taskM.getAssigned().toArray();
+		System.out.println(userList);
+		if (userList.length > 0) {
+			System.out.println(userList[0]);
+			userL = new JLabel("Users:");
+
+			for (int i = 0; i < userList.length; i++) {
+				users.add(new JLabel(" " + userList[i]));
+			}
+			info.add(userL);
+			usersS.setViewportView(users);
+			info.add(usersS);
+		} else {
+			userL = new JLabel("Users: [None]");
+			info.add(userL);
+		}
+
+		// The task's requirement
+		JLabel req;
+		if (this.taskM.getReq() != null) {
+			req = new JLabel("Requirement: " + this.taskM.getReq());
+		} else {
+			req = new JLabel("Requirement: [None]");
+		}
+		info.add(req);
+
+		// This panel contains the edit button
+		JPanel buttonPanel = new JPanel(new MigLayout("", "[center]"));
+		JButton edit = new JButton("edit");
+		edit.setName(EDIT);
+		edit.setMargin(new Insets(5, 87, 5, 87));
+		edit.addActionListener(this.controller);
+		buttonPanel.add(edit, "");
+
 		this.add(info);
+		this.add(buttonPanel);
 	}
 
 	public TaskController getTaskController() {
 		return taskC;
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		System.out.println("Clicked Task Info");
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 }

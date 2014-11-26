@@ -11,7 +11,10 @@ package taskManager.controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
+
 import taskManager.JanewayModule;
+import taskManager.view.TaskInfoPreviewView;
 
 /**
  * Description
@@ -28,8 +31,17 @@ public class TaskInfoPreviewController implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		taskC.editTask();
-		JanewayModule.tabPaneC.getTabView().getWorkflowController()
-				.setTaskInfo(null);
+		Object button = e.getSource();
+		if (button instanceof JButton) {
+			switch (((JButton) button).getName()) {
+			case TaskInfoPreviewView.EDIT:
+				taskC.editTask();
+				// Fall through
+			case TaskInfoPreviewView.X:
+				JanewayModule.tabPaneC.getTabView().getWorkflowController()
+						.setTaskInfo(null);
+				break;
+			}
+		}
 	}
 }

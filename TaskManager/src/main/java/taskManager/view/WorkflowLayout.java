@@ -63,6 +63,7 @@ public class WorkflowLayout extends FlowLayout {
 			for (int i = 0; i < nmembers; i++) {
 				Component m = target.getComponent(i);
 				if (m.isVisible() && !(m instanceof TaskInfoPreviewView)) {
+					// m.setSize(250, target.getSize().height - 15);
 					Dimension d = m.getPreferredSize();
 					m.setSize(d.width, d.height);
 
@@ -182,7 +183,7 @@ public class WorkflowLayout extends FlowLayout {
 	public Dimension minimumLayoutSize(Container target) {
 		synchronized (target.getTreeLock()) {
 			boolean useBaseline = getAlignOnBaseline();
-			Dimension dim = new Dimension(0, 0);
+			Dimension dim = target.getSize();
 			int nmembers = target.getComponentCount();
 			int maxAscent = 0;
 			int maxDescent = 0;
@@ -192,7 +193,7 @@ public class WorkflowLayout extends FlowLayout {
 				Component m = target.getComponent(i);
 				if (m.isVisible() && !(m instanceof TaskInfoPreviewView)) {
 					Dimension d = m.getMinimumSize();
-					dim.height = Math.max(dim.height, d.height);
+					// dim.height = Math.max(dim.height, d.height);
 					if (firstVisibleComponent) {
 						firstVisibleComponent = false;
 					} else {
@@ -218,7 +219,6 @@ public class WorkflowLayout extends FlowLayout {
 			dim.width += insets.left + insets.right + hgap * 2;
 			dim.height += insets.top + insets.bottom + vgap * 2;
 			return dim;
-
 		}
 	}
 
