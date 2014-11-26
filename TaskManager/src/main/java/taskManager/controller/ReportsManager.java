@@ -176,6 +176,9 @@ public class ReportsManager extends ApplicationFrame {
 		((NumberAxis) plot.getRangeAxis()).setStandardTickUnits(NumberAxis
 				.createIntegerTickUnits());
 
+		// put bars next to each other
+		plot.getDomainAxis().setCategoryMargin(0);
+
 		// disable bar outlines...
 		((BarRenderer) plot.getRenderer()).setDrawBarOutline(false);
 
