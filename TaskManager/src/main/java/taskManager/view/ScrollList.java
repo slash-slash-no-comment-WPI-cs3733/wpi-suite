@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.event.ListSelectionListener;
 
 public class ScrollList extends JPanel {
 
@@ -182,6 +183,36 @@ public class ScrollList extends JPanel {
 	 */
 	public boolean isEmpty() {
 		return lm.isEmpty();
+	}
+
+	/**
+	 * Sets the selected value to the given indices
+	 * 
+	 * @param index
+	 */
+	public void setSelected(int[] i) {
+		this.jl.setSelectedIndices(i);
+	}
+
+	/**
+	 * gets the value at the given index
+	 * 
+	 * @param i
+	 *            the index
+	 * @return the value at index i
+	 */
+	public String getValueAtIndex(int i) {
+		return lm.get(i);
+	}
+
+	/**
+	 * sets the listener for the JList
+	 * 
+	 * @param listener
+	 *            the listener to be added to the list
+	 */
+	public void setController(ListSelectionListener listener) {
+		jl.addListSelectionListener(listener);
 	}
 
 }

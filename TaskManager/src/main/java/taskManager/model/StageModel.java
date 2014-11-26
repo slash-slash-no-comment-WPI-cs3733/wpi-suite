@@ -182,14 +182,12 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 * @return the task if found, null otherwise.
 	 */
 	public TaskModel findTaskByID(String id) {
-		TaskModel task = null;
 		for (TaskModel existingTask : taskList) {
 			if (existingTask.getID().equals(id)) {
-				task = existingTask;
-				break;
+				return existingTask;
 			}
 		}
-		return task;
+		return null;
 	}
 
 	/**
@@ -235,35 +233,62 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	}
 
 	/**
-	 * Add a task to the end of the task list
+	 * Add a task to the end of the task list. If it is already in the stage, do
+	 * nothing.
 	 *
 	 * @param task
 	 *            the task to add.
+	 * @return whether the stage changed as a result
 	 */
-	public void addTask(TaskModel task) {
-		addTask(taskList.size(), task);
-		task.setStage(this);
+	public boolean addTask(TaskModel task) {
+		if (taskList.contains(task)) {
+			return false;
+		}
+		return addTask(task, -1);
 	}
 
-	// TODO: Do the tasks need ordering? If not, let's replace this taskList
-	// method and use a collection for speed.
 	/**
-	 * Duplicate task names are handled by the Workflow.
-	 *
-	 * @param index
-	 *            the index to insert the task at
+	 * Add task to a given index in this stage
+	 * 
 	 * @param task
 	 *            the task to add
+	 * @param index
+	 *            the index to insert the task at
+	 * @return whether the stage changed as a result
 	 */
-	public void addTask(int index, TaskModel task) {
+	public boolean addTask(TaskModel task, int index) {
+		if (index == -1 || index > taskList.size()) {// add to end of list
+			index = taskList.size();
+		}
+
+		// if nothing changed
+		if (index != taskList.size() && taskList.get(index).equals(task)) {
+			return false;
+		}
+
+		StageModel oldStage = task.getStage();
+		if (oldStage != null) {
+			if (oldStage.containsTask(task)) {
+				oldStage.removeTask(task); // remove from old parent, or this
+											// stage
+			}
+
+			// Only add add activity if coming from different stage
+			if (!this.equals(oldStage)) {
+
+				// since this is a move, add relevant activity
+				final ActivityModel movedTask = new ActivityModel("Moved task "
+						+ task.getName() + " from stage " + oldStage.getName()
+						+ " to stage " + name + ".",
+						ActivityModel.activityModelType.MOVE);
+				task.addActivity(movedTask);
+			}
+		}
+
 		taskList.add(index, task);
 		task.setStage(this);
-		// task.save();
-	}
 
-	public void moveTask(int index, TaskModel task) {
-		taskList.remove(task);
-		addTask(index, task);
+		return true;
 	}
 
 	/**

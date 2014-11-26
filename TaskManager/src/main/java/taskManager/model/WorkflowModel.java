@@ -183,55 +183,6 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	}
 
 	/**
-	 * Move a task from one stage to another by using object references to the
-	 * task and stages
-	 *
-	 * @param task
-	 *            The task to move
-	 * @param fromStage
-	 *            The stage moving from
-	 * @param toStage
-	 *            The stage moving to
-	 *
-	 */
-	public void moveTask(TaskModel task, StageModel fromStage,
-			StageModel toStage, int toIndex) {
-		if (!stageList.contains(toStage)) {
-			logger.log(Level.WARNING,
-					"Tried to move a task to a non-existant stage.");
-			throw new IllegalArgumentException("No such target stage");
-		}
-		if (!stageList.contains(fromStage)) {
-			logger.log(Level.WARNING,
-					"Tried to move a task from a non-existant stage.");
-			throw new IndexOutOfBoundsException("No such source stage.");
-		}
-		if (!fromStage.containsTask(task)) {
-			logger.log(Level.WARNING,
-					"Tried to move a task that does not exist.");
-			throw new IndexOutOfBoundsException("No such task.");
-		}
-		final ActivityModel movedTask = new ActivityModel("Moved task "
-				+ task.getName() + " from stage " + fromStage.getName()
-				+ " to stage " + toStage.getName() + ".",
-				ActivityModel.activityModelType.MOVE);
-
-		if (toIndex == -1) {
-			toStage.addTask(task);
-		} else {
-			toStage.addTask(toIndex, task);
-		}
-		fromStage.removeTask(task);
-		task.addActivity(movedTask);
-		logger.log(Level.FINER, "Moved task successfully.");
-	}
-
-	public void moveTask(TaskModel task, StageModel fromStage,
-			StageModel toStage) {
-		moveTask(task, fromStage, toStage, -1);
-	}
-
-	/**
 	 * Changes this workflowmodel to be identical to the inputed workflow model,
 	 * while maintaining the pointer
 	 *
@@ -288,7 +239,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	public void update(WorkflowController controller) {
 		final Request request = Network.getInstance().makeRequest(
 				"taskmanager/workflow/" + getID(), HttpMethod.GET);
-		request.addObserver(new FetchWorkflowObserver(this, controller));
+		request.addObserver(new FetchWorkflowObserver(this));
 		request.send();
 	}
 

@@ -76,6 +76,26 @@ public class TaskController implements MouseListener {
 		req = model.getReq();
 	}
 
+	/**
+	 * Move this task to given stage
+	 *
+	 * @param destination
+	 *            target StageModel
+	 * @param index
+	 * @return whether the stage changed as a result
+	 */
+	public boolean moveToStage(StageModel destination, int index) {
+		return destination.addTask(model, index);
+	}
+
+	/**
+	 * Delete this task
+	 *
+	 */
+	public void deleteTask() {
+		model.getStage().removeTask(model);
+	}
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		Point infoLoc = view.getParent().getParent().getParent().getParent()
@@ -140,7 +160,7 @@ public class TaskController implements MouseListener {
 		etv.getUsersList().addAllToList(assignedUserNames);
 
 		// Enable save button when editing a task.
-		etv.enableSave();
+		etv.setSaveEnabled(true);
 
 		// Clear the activities list.
 		etv.clearActivities();

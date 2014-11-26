@@ -13,6 +13,7 @@ import static org.junit.Assert.fail;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -29,6 +30,7 @@ import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
+import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
 
@@ -44,6 +46,8 @@ public class TestEditTaskController {
 
 	private final String[] stageNames = { "New", "Scheduled", "In Progress",
 			"Complete" };
+	private final User testUser = new User("testUser", "testUser", "password",
+			1234);
 
 	private FrameFixture fixture;
 	private JFrame frame;
@@ -86,8 +90,8 @@ public class TestEditTaskController {
 		JanewayModule.tabPaneC.addEditTaskTab(etv);
 
 		// enter information for a new task
-		getTitleBoxFixture().enterText("New Task");
-		getDescriptionBoxFixture().enterText("a sample task used for testing");
+		getTitleBoxFixture().enterText("name");
+		getDescriptionBoxFixture().enterText("Desc");
 		etv.getDateField().setDate(Calendar.getInstance().getTime());
 		fixture.textBox(EditTaskView.EST_EFFORT).enterText("3");
 
@@ -96,7 +100,7 @@ public class TestEditTaskController {
 
 		// verify the task got saved
 		StageModel stage = wfm.findStageByName("New");
-		assertEquals(stage.findTaskByName("New Task").size(), 1);
+		assertEquals(stage.findTaskByName("name").size(), 1);
 	}
 
 	@Test
@@ -105,15 +109,15 @@ public class TestEditTaskController {
 		// create a new edit task tab
 		JanewayModule.tabPaneC.addEditTaskTab(etv);
 
-		getTitleBoxFixture().enterText("title");
-		getDescriptionBoxFixture().enterText("description");
+		getTitleBoxFixture().enterText("name");
+		getDescriptionBoxFixture().enterText("desc");
 		etv.getDateField().setDate(Calendar.getInstance().getTime());
 		fixture.button(EditTaskView.SAVE).requireEnabled();
 
 		getTitleBoxFixture().deleteText();
 		fixture.button(EditTaskView.SAVE).requireDisabled();
 
-		getTitleBoxFixture().enterText("title");
+		getTitleBoxFixture().enterText("name");
 		getDescriptionBoxFixture().deleteText();
 		fixture.button(EditTaskView.SAVE).requireDisabled();
 	}
@@ -134,8 +138,9 @@ public class TestEditTaskController {
 		TaskModel task = createAndLoadTask();
 
 		// edit the task
-		getTitleBoxFixture().deleteText().enterText("renamed task");
-		getDescriptionBoxFixture().deleteText().enterText("new description");
+		getTitleBoxFixture().deleteText().enterText("newT"); // renamed title
+		getDescriptionBoxFixture().deleteText().enterText("newD"); // renamed
+																	// description
 		Date d = new Date(5 * 60 * 60 * 1000);
 		etv.setDate(d);
 		fixture.textBox(EditTaskView.EST_EFFORT).deleteText().enterText("4");
@@ -146,11 +151,11 @@ public class TestEditTaskController {
 		StageModel stage = wfm.findStageByName(task.getStage().getName());
 
 		assertEquals(stage.findTaskByName("New Task").size(), 0);
-		assertEquals(stage.findTaskByName("renamed task").size(), 1);
+		assertEquals(stage.findTaskByName("newT").size(), 1);
 
 		// verify the fields of the task got saved correctly
-		TaskModel newTask = stage.findTaskByName("renamed task").get(0);
-		assertEquals(newTask.getDescription(), "new description");
+		TaskModel newTask = stage.findTaskByName("newT").get(0);
+		assertEquals(newTask.getDescription(), "newD");
 		assertEquals(newTask.getDueDate(), d);
 		assertEquals(newTask.getEstimatedEffort(), 4);
 	}
@@ -228,6 +233,55 @@ public class TestEditTaskController {
 
 	}
 
+	@Test
+	public void testAddUsers() {
+		// create users
+		JanewayModule.users = new User[] { testUser,
+				new User("name1", "name1", "password", 4321),
+				new User("name2", "name2", "password", 5678),
+				new User("name3", "name3", "password", 9876) };
+		TaskModel task = createAndLoadTask();
+
+		// select users to add
+		etv.getProjectUsersList().setSelected(new int[] { 0, 1 });
+		fixture.button(EditTaskView.ADD_USER).click();
+		fixture.button(EditTaskView.SAVE).click();
+
+		// check to make sure users were added to model
+		ArrayList<String> users = new ArrayList<String>();
+		for (String user : task.getAssigned()) {
+			users.add(user);
+		}
+		ArrayList<String> result = new ArrayList<String>();
+		result.add("testUser");
+		result.add("name2");
+		result.add("name1");
+		assertEquals(result, users);
+	}
+
+	@Test
+	public void testRemoveUsers() {
+		// create users
+		JanewayModule.users = new User[] { testUser,
+				new User("name2", "name2", "password", 5678),
+				new User("name3", "name3", "password", 9876) };
+
+		TaskModel task = createAndLoadTask();
+
+		// select users to remove
+		etv.getUsersList().setSelected(new int[] { 0 });
+		fixture.button(EditTaskView.REMOVE_USER).click();
+		fixture.button(EditTaskView.SAVE).click();
+
+		// check that the user has been removed from the task model
+		ArrayList<String> users = new ArrayList<String>();
+		for (String user : task.getAssigned()) {
+			users.add(user);
+		}
+		ArrayList<String> result = new ArrayList<String>();
+		assertEquals(users, result);
+	}
+
 	@After
 	public void cleanup() {
 		fixture.cleanUp();
@@ -252,6 +306,7 @@ public class TestEditTaskController {
 		task.setDueDate(Calendar.getInstance().getTime());
 		task.setEstimatedEffort(5);
 		task.setActualEffort(7);
+		task.addAssigned(testUser);
 
 		// load the edit view
 		TaskController tc = new TaskController(null, task);

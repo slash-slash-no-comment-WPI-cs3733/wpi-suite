@@ -100,8 +100,8 @@ public class StageView extends JPanel {
 	 */
 	public void setController(StageController controller) {
 		this.controller = controller;
-		tasks.setModel(controller.getModel());
-		stage.addMouseListener(controller);
+		tasks.setController(controller);
+
 	}
 
 	/**

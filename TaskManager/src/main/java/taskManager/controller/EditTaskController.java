@@ -13,10 +13,13 @@ import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 
 import taskManager.JanewayModule;
@@ -97,11 +100,6 @@ public class EditTaskController implements ActionListener {
 					task = currentStage.findTaskByID(taskID);
 					this.setTaskData(task, desiredStage, requirement);
 
-					// Move task if stages are not equal.
-					if (!currentStage.getName().equals(desiredStage.getName())) {
-						wfm.moveTask(task, currentStage, desiredStage);
-					}
-
 					this.setTaskID("000000");
 				}
 				// if creating a new task
@@ -126,46 +124,36 @@ public class EditTaskController implements ActionListener {
 				break;
 
 			case EditTaskView.DELETE:
-				// delete this task
-				task = currentStage.findTaskByID(taskID);
-				currentStage.getTasks().remove(task);
-				etv.resetFields();
+				Integer choice = JOptionPane.showConfirmDialog(etv,
+						"Are you sure you want to delete this task?",
+						"Warning - Deleting a task", JOptionPane.YES_NO_OPTION);
+				if (choice.equals(JOptionPane.YES_OPTION)) {
+					// delete this task
+					task = currentStage.findTaskByID(taskID);
+					currentStage.getTasks().remove(task);
+					etv.resetFields();
 
-				// Save entire workflow whenever a task is deleted
-				wfm.save();
-				returnToWorkflowView();
+					// Save entire workflow whenever a task is deleted
+					wfm.save();
+					returnToWorkflowView();
+				}
 				break;
 
 			case EditTaskView.ADD_USER:
-				// add a user to this task
-				if (!etv.getProjectUsersList().isSelectionEmpty()) {
-					String toAdd = etv.getProjectUsersList().getSelectedValue();
-					if (!etv.getUsersList().contains(toAdd)) {
-						etv.getUsersList().addToList(toAdd);
-						etv.getProjectUsersList().removeFromList(toAdd);
-					}
-				}
+				this.addUsersToList();
 
 				break;
 
 			case EditTaskView.REMOVE_USER:
-				// add a user to this task
-				if (!etv.getUsersList().isSelectionEmpty()) {
-					int indexToRemove = etv.getUsersList().getSelectedIndex();
-					String nameToRemove = etv.getUsersList().getSelectedValue();
-					if (!etv.getProjectUsersList().contains(nameToRemove)) {
-						etv.getUsersList().removeFromList(indexToRemove);
-						etv.getProjectUsersList().addToList(nameToRemove);
-					}
-					this.toRemove.add(nameToRemove);
-				}
+				this.removeUsersFromList();
 				break;
 
 			case EditTaskView.VIEW_REQ:
 				// view requirement in requirement manager
 
+				// TODO: this button should be disabled when [None] selected so
+				// requirement would never be null.
 				if (requirement == null) {
-					// TODO: warn user that no requirement is selected
 					return;
 				}
 
@@ -242,7 +230,7 @@ public class EditTaskController implements ActionListener {
 	 */
 	private void returnToWorkflowView() {
 		JanewayModule.tabPaneC.removeTabByComponent(etv);
-		JanewayModule.tabPaneC.reloadWorkflow();
+		JanewayModule.tabPaneC.getTabView().reloadWorkflow();
 	}
 
 	/**
@@ -283,8 +271,9 @@ public class EditTaskController implements ActionListener {
 
 		// sets the due date from the calendar
 		t.setDueDate(etv.getDateField().getDate());
-		// sets the stage from the dropdown
-		t.setStage(s);
+
+		// move the stage
+		s.addTask(t);
 
 		// adds or removes users
 		for (String name : etv.getUsersList().getAllValues()) {
@@ -319,4 +308,243 @@ public class EditTaskController implements ActionListener {
 
 	}
 
+	/**
+	 * adds selected usernames to the assigned users list and removes them from
+	 * the project user list.
+	 */
+	public void addUsersToList() {
+		int[] toAdd = etv.getProjectUsersList().getSelectedIndices();
+		ArrayList<String> namesToAdd = new ArrayList<String>();
+
+		for (int ind : toAdd) {
+			namesToAdd.add(etv.getProjectUsersList().getValueAtIndex(ind));
+		}
+
+		for (String n1 : namesToAdd) {
+			etv.getProjectUsersList().removeFromList(n1);
+			if (!etv.getUsersList().contains(n1)) {
+				// add the new username to the assigned user list
+				etv.getUsersList().addToList(n1);
+				etv.getProjectUsersList().removeFromList(n1);
+				// if this user was to be removed take it out of the
+				// list
+				if (this.toRemove.contains(n1)) {
+					this.toRemove.remove(n1);
+				}
+
+			}
+		}
+	}
+
+	/**
+	 * removes selected usernames from the assigned users list and adds them to
+	 * the project user list. marks selected usernames to be removed from the
+	 * model
+	 */
+	public void removeUsersFromList() {
+		// grab all of the indices of the usernames selected in
+		// assigned users and grab the associated strings
+		int[] usersToRemove = etv.getUsersList().getSelectedIndices();
+		ArrayList<String> namesToRemove = new ArrayList<String>();
+		for (int ind : usersToRemove) {
+			namesToRemove.add(etv.getUsersList().getValueAtIndex(ind));
+		}
+
+		// for every name that is selected, remove it from assigned
+		// users and add it to project users
+		for (String n2 : namesToRemove) {
+			etv.getUsersList().removeFromList(n2);
+			if (!etv.getProjectUsersList().contains(n2)) {
+				etv.getProjectUsersList().addToList(n2);
+				etv.getUsersList().removeFromList(n2);
+				if (!this.toRemove.contains(n2)) {
+					this.toRemove.add(n2);
+				}
+			}
+
+		}
+	}
+
+	/**
+	 * 
+	 * Returns the task ID.
+	 *
+	 * @return the task ID
+	 */
+	public String getTaskID() {
+		return etv.getTitle().getName();
+	}
+
+	/**
+	 * 
+	 * Returns a boolean of whether or not the task is edited.
+	 * 
+	 * @return boolean stating whether the task is edited.
+	 */
+	public Boolean isEdited() {
+		Boolean edited = false;
+
+		// Get the stage of the task.
+		boolean exists = false;
+		StageModel currentStage = wfm.findStageByName("New");
+		for (StageModel stage : wfm.getStages()) {
+			if (stage.containsTaskByID(getTaskID())) {
+				exists = true;
+				currentStage = stage;
+				break;
+			} else {
+				exists = false;
+			}
+		}
+		if (!exists) {
+			return false;
+		}
+
+		// Compare the task info with the filled in info.
+		TaskModel task = currentStage.findTaskByID(getTaskID());
+
+		// Title.
+		if (!task.getName().equals(etv.getTitle().getText())) {
+			edited = true;
+		}
+		// Description.
+		else if (!task.getDescription().equals(etv.getDescription().getText())) {
+			edited = true;
+		}
+		// Due Date.
+		else if (!task.getDueDate().equals(etv.getDateField().getDate())) {
+			edited = true;
+		}
+		// Stage.
+		else if (!task.getStage().getName().equals(etv.getSelectedStage())) {
+			edited = true;
+		}
+		// Users.
+		else if (checkUsers(task)) {
+			edited = true;
+		}
+		// Estimated effort.
+		else if (checkEstEffort(task)) {
+			edited = true;
+		}
+		// Actual effort.
+		else if (checkActEffort(task)) {
+			edited = true;
+		}
+		// Requirements.
+		else if (checkReq(task)) {
+			edited = true;
+		}
+		return edited;
+	}
+
+	/**
+	 * 
+	 * Checks whether the users in the view and the users stored in the task are
+	 * the same.
+	 *
+	 * @param The
+	 *            task to check with.
+	 * @return true if there are edits.
+	 */
+	public Boolean checkUsers(TaskModel task) {
+		Boolean edited = false;
+		Set<String> taskAssigned = new HashSet<String>();
+		taskAssigned = task.getAssigned();
+		Set<String> usersAssigned = new HashSet<String>();
+		usersAssigned.addAll(etv.getUsersList().getAllValues());
+		if (!taskAssigned.equals(usersAssigned)) {
+			edited = true;
+		}
+		return edited;
+	}
+
+	/**
+	 * 
+	 * Checks whether the estimated effort value in the task and on the view are
+	 * equivalent.
+	 *
+	 * @param The
+	 *            task to check if.
+	 * @return true if there are edits.
+	 */
+	public Boolean checkEstEffort(TaskModel task) {
+		Boolean edited = false;
+		if (task.getEstimatedEffort() == 0) {
+			if (etv.getEstEffort().getText().isEmpty()) {
+				edited = false;
+			} else {
+				edited = true;
+			}
+		} else {
+			Integer taskEffort = task.getEstimatedEffort();
+			Integer etvEffort;
+			try {
+				etvEffort = Integer.parseInt(etv.getEstEffort().getText());
+				if (!taskEffort.equals(etvEffort)) {
+					edited = true;
+				}
+			} catch (NumberFormatException e) {
+				edited = true;
+			}
+		}
+		return edited;
+	}
+
+	/**
+	 * 
+	 * Checks whether the actual effort value in the task and on the view are
+	 * equivalent.
+	 *
+	 * @param The
+	 *            task to check if.
+	 * @return true if there are edits.
+	 */
+	public Boolean checkActEffort(TaskModel task) {
+		Boolean edited = false;
+		if (task.getActualEffort() == 0) {
+			if (etv.getActEffort().getText().isEmpty()) {
+				edited = false;
+			} else {
+				edited = true;
+			}
+		} else {
+			Integer taskEffort = task.getActualEffort();
+			Integer etvEffort;
+			try {
+				etvEffort = Integer.parseInt(etv.getActEffort().getText());
+				if (!taskEffort.equals(etvEffort)) {
+					edited = true;
+				}
+			} catch (NumberFormatException e) {
+				edited = true;
+			}
+		}
+		return edited;
+	}
+
+	/**
+	 * 
+	 * Checks whether the requirement in the task and on the view are
+	 * equivalent.
+	 *
+	 * @param The
+	 *            task to check if.
+	 * @return true if there are edits.
+	 */
+	public Boolean checkReq(TaskModel task) {
+		Boolean edited = false;
+		if (task.getReq() == null) {
+			if (etv.getRequirements().getSelectedItem().toString()
+					.equals("[None]")) {
+				edited = false;
+			} else {
+				edited = true;
+			}
+		} else if (!task.getReq().getName()
+				.equals(etv.getRequirements().getSelectedItem().toString())) {
+			edited = true;
+		}
+		return edited;
+	}
 }

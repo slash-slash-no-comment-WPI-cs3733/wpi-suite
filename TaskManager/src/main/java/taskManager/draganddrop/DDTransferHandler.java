@@ -27,7 +27,7 @@ import taskManager.model.FetchWorkflowObserver;
  * @author Sam Khalandovsky
  * @version Nov 17, 2014
  */
-class DDTransferHandler extends TransferHandler {
+public class DDTransferHandler extends TransferHandler {
 
 	private static final long serialVersionUID = -7859524821673270515L;
 
@@ -97,6 +97,9 @@ class DDTransferHandler extends TransferHandler {
 		g = g.create();
 		comp.paint(g);
 		setDragImage(image);
+
+		// Create placeholder
+		StagePanel.generatePlaceholder(comp.getSize());
 
 		// Initiate the drag
 		super.exportAsDrag(comp, e, action);
