@@ -47,18 +47,18 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	public static final String DELETE = "delete";
 
 	// toolbar information
-	private JButton createTask;
-	private JButton manageUsers;
-	private JButton manageStages;
-	private JButton statistics;
-	private JLabel archive;
-	private JLabel delete;
+	private JButton createTask = new JButton();
+	private JButton manageUsers = new JButton();
+	private JButton manageStages = new JButton();
+	private JButton statistics = new JButton();
+	private JLabel archive = new JLabel();
+	private JLabel delete = new JLabel();
 
 	private JButton english;
 	private JButton pirate;
 	private JButton todo;
 
-	private JLabel projectName;
+	private JLabel projectName = new JLabel();
 
 	private ToolbarController controller;
 
@@ -88,15 +88,12 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		this.setFloatable(false);
 
 		// Construct the buttons
-		// createTask = new JButton("Create Task");
-		createTask = new JButton(Localizer.getString("Create Task"));
 		createTask.setName(CREATE_TASK);
-		manageStages = new JButton(Localizer.getString("Manage Stages"));
 		manageStages.setName(MANAGE_STAGES);
-		manageUsers = new JButton(Localizer.getString("Manage Users"));
 		manageUsers.setName(MANAGE_USERS);
-		statistics = new JButton(Localizer.getString("Statistics"));
 		statistics.setName(REPORT);
+
+		// language select buttons
 		english = new JButton("English");
 		english.setName(Localizer.ENGLISH);
 		pirate = new JButton("Pirate");
@@ -135,17 +132,11 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		archive.setToolTipText(Localizer.getString("Drag here to archive task"));
 		archive.setEnabled(false);
 		archive.setName(ARCHIVE);
-		delete.setToolTipText(Localizer.getString("Drag here to delete task"));
 		delete.setEnabled(false);
 		delete.setName(DELETE);
 
-		// Construct the project title
-		projectName = new JLabel(Localizer.getString("Project Title")); // TODO(sswartz):
-																		// update
-																		// this
 		projectName.setFont(new Font("TextField.font", Font.BOLD, 20));
 
 		// Add buttons to the content panel
@@ -167,6 +158,7 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		this.add(targets);
 
 		Localizer.addListener(this);
+		onLocaleChange();
 	}
 
 	/**

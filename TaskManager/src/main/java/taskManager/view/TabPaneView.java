@@ -57,6 +57,7 @@ public class TabPaneView extends JTabbedPane implements LocaleChangeListener {
 				Localizer.getString("Workflow"));
 
 		Localizer.addListener(this);
+		onLocaleChange();
 	}
 
 	public void refreshWorkflow() {

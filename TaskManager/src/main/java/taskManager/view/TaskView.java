@@ -36,7 +36,7 @@ public class TaskView extends TaskPanel implements LocaleChangeListener {
 
 	private TaskController controller;
 
-	private JLabel dueLabel;
+	private JLabel dueLabel = new JLabel();
 	private Date duedate;
 
 	/**
@@ -65,20 +65,7 @@ public class TaskView extends TaskPanel implements LocaleChangeListener {
 		this.setBorder(title);
 		this.setMinimumSize(new Dimension(200, 100));
 
-		//
-		// convert Date object to Calendar object to avoid using deprecated
-		// Date methods.
-		final Calendar date = Calendar.getInstance();
-		date.setTime(duedate);
-
-		// adds the data to the view
-		// note: the Calendar.MONTH value ranges between 0-11 so here we add 1
-		// to the month.
-
 		JLabel nameLabel = new JLabel();
-		dueLabel = new JLabel(Localizer.getString("Due: ")
-				+ (date.get(Calendar.MONTH) + 1) + "/"
-				+ date.get(Calendar.DATE) + "/" + (date.get(Calendar.YEAR)));
 
 		// This creates a maximum text-string length before the name gets
 		// truncated in the view
@@ -94,6 +81,7 @@ public class TaskView extends TaskPanel implements LocaleChangeListener {
 		this.add(dueLabel);
 
 		Localizer.addListener(this);
+		onLocaleChange();
 	}
 
 	@Override
@@ -124,8 +112,12 @@ public class TaskView extends TaskPanel implements LocaleChangeListener {
 
 	@Override
 	public void onLocaleChange() {
+		// convert Date object to Calendar object to avoid using deprecated
+		// Date methods.
 		final Calendar date = Calendar.getInstance();
 		date.setTime(duedate);
+		// note: the Calendar.MONTH value ranges between 0-11 so here we add 1
+		// to the month.
 		dueLabel.setText(Localizer.getString("Due: ")
 				+ (date.get(Calendar.MONTH) + 1) + "/"
 				+ date.get(Calendar.DATE) + "/" + (date.get(Calendar.YEAR)));

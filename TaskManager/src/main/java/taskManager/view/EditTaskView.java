@@ -69,14 +69,14 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JButton save;
-	private JButton cancel;
-	private JButton addUser;
-	private JButton removeUser;
-	private JButton delete;
-	private JButton addReq;
-	private JButton submitComment;
-	private JButton refreshActivities;
+	private JButton save = new JButton();
+	private JButton cancel = new JButton();
+	private JButton addUser = new JButton();
+	private JButton removeUser = new JButton();
+	private JButton delete = new JButton();
+	private JButton addReq = new JButton();
+	private JButton submitComment = new JButton();
+	private JButton refreshActivities = new JButton();
 
 	private JTextField titleField;
 	private JTextArea descripArea;
@@ -92,13 +92,13 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		CREATE, EDIT;
 	}
 
-	private ScrollList usersList;
-	private ScrollList projectUsersList;
+	private ScrollList usersList = new ScrollList(null);
+	private ScrollList projectUsersList = new ScrollList(null);
 
-	private JLabel titleError;
-	private JLabel descriptionError;
-	private JLabel estimatedEffortError;
-	private JLabel actualEffortError;
+	private JLabel titleError = new JLabel();
+	private JLabel descriptionError = new JLabel();
+	private JLabel estimatedEffortError = new JLabel();
+	private JLabel actualEffortError = new JLabel();
 
 	private JComboBox<String> stages;
 	private JComboBox<String> requirements;
@@ -109,15 +109,15 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	private List<ActivityModel> activities;
 	private List<ActivityModel> newActivities;
 
-	private JLabel titleLabel;
-	private JLabel descriptionLabel;
-	private JLabel dueDateLabel;
-	private JLabel stageLabel;
-	private JLabel usersLabel;
-	private JLabel estimatedEffortLabel;
-	private JLabel actualEffortLabel;
-	private JLabel commentsLabel;
-	private JLabel requirementLabel;
+	private JLabel titleLabel = new JLabel();
+	private JLabel descriptionLabel = new JLabel();
+	private JLabel dueDateLabel = new JLabel();
+	private JLabel stageLabel = new JLabel();
+	private JLabel usersLabel = new JLabel();
+	private JLabel estimatedEffortLabel = new JLabel();
+	private JLabel actualEffortLabel = new JLabel();
+	private JLabel commentsLabel = new JLabel();
+	private JLabel requirementLabel = new JLabel();
 
 	/**
 	 * Creates a Edit Task Panel so that you can change all of the values of a
@@ -144,27 +144,10 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		activities = new ArrayList<ActivityModel>();
 		newActivities = new ArrayList<ActivityModel>();
 
-		// JLabels
-		titleLabel = new JLabel(Localizer.getString("Title "));
-		descriptionLabel = new JLabel(Localizer.getString("Description "));
-		dueDateLabel = new JLabel(Localizer.getString("Due Date "));
-		stageLabel = new JLabel(Localizer.getString("Stage "));
-		usersLabel = new JLabel(Localizer.getString("Users "));
-		estimatedEffortLabel = new JLabel(
-				Localizer.getString("Estimated Effort "));
-		actualEffortLabel = new JLabel(Localizer.getString("Actual Effort "));
-		commentsLabel = new JLabel(Localizer.getString("Comments "));
-		requirementLabel = new JLabel(Localizer.getString("Requirement "));
-
-		titleError = new JLabel(Localizer.getString("This is a required field"));
 		titleError.setVisible(false);
 		titleError.setForeground(Color.RED);
-		descriptionError = new JLabel(
-				Localizer.getString("This is a required field"));
 		descriptionError.setVisible(false);
 		descriptionError.setForeground(Color.RED);
-		estimatedEffortError = new JLabel(
-				Localizer.getString("This is a required field"));
 		estimatedEffortError.setVisible(false);
 		estimatedEffortError.setForeground(Color.RED);
 		actualEffortError = new JLabel("");
@@ -208,12 +191,6 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 						.getImage()).getScaledInstance(20, 20,
 						java.awt.Image.SCALE_SMOOTH)));
 
-		// JTextArea
-		// TODO
-		// Get to add users
-		usersList = new ScrollList(Localizer.getString("Assigned Users"));
-		projectUsersList = new ScrollList(Localizer.getString("Project Users"));
-
 		// Comment Pane
 		activityPane = new ActivityView();
 
@@ -223,33 +200,23 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 
 		// JButtons
 		// Delete Task and close the window
-		delete = new JButton(Localizer.getString("Delete"));
 		delete.setName(DELETE);
 		// Add user to list
-		addUser = new JButton(Localizer.getString("Add User"));
 		addUser.setName(ADD_USER);
 		this.setAddUserEnabled(false);
 		// remove user from list
-
-		removeUser = new JButton(Localizer.getString("Remove User"));
 		removeUser.setName(REMOVE_USER);
 		this.setRemoveUserEnabled(false);
 
 		// Add comment to comments
-		submitComment = new JButton(Localizer.getString("Submit Comment"));
 		submitComment.setName(SUBMIT_COMMENT);
 		// add requirement
-		addReq = new JButton(Localizer.getString("View Requirement"));
 		addReq.setName(VIEW_REQ);
 		// saves all the data and closes the window
-		save = new JButton(Localizer.getString("Save"));
 		save.setName(SAVE);
 		this.setSaveEnabled(false);
 		// closes the window without saving
-		cancel = new JButton(Localizer.getString("Cancel"));
 		cancel.setName(CANCEL);
-		JButton nt_refreshBtn = new JButton(Localizer.getString("Refresh"));
-		refreshActivities = nt_refreshBtn;
 		refreshActivities.setName(REFRESH);
 
 		// Combo Box for Stage
@@ -369,7 +336,7 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		window.add(submitComment, newTaskGridBag);
 
 		newTaskGridBag.gridy = 8;
-		window.add(nt_refreshBtn, newTaskGridBag);
+		window.add(refreshActivities, newTaskGridBag);
 
 		newTaskGridBag.gridy = 9;
 		window.add(addReq, newTaskGridBag);
@@ -396,6 +363,7 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		this.add(window);
 
 		Localizer.addListener(this);
+		onLocaleChange();
 	}
 
 	/**
@@ -891,5 +859,8 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		addReq.setText(Localizer.getString("View Requirement"));
 		save.setText(Localizer.getString("Save"));
 		cancel.setText(Localizer.getString("Cancel"));
+		refreshActivities.setText(Localizer.getString("Refresh"));
+		usersList.setTitle(Localizer.getString("Assigned Users"));
+		projectUsersList.setTitle(Localizer.getString("Project Users"));
 	}
 }
