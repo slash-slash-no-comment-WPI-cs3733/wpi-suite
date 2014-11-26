@@ -10,11 +10,9 @@
 package taskManager.controller;
 
 import java.awt.Dimension;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.jfree.chart.ChartFactory;
@@ -26,7 +24,6 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.ui.ApplicationFrame;
 
 import taskManager.model.ActivityModel;
 import taskManager.model.StageModel;
@@ -34,29 +31,33 @@ import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 
 // Code extended from BarChartDemo1.java
-public class ReportsManager extends ApplicationFrame {
+public class ReportsManager {
+
+	final long HOUR = 3600000;
+	final long DAY = HOUR * 24;
+	final long WEEK = DAY * 7;
 
 	private class UserData {
+		private UserData(String username, Date date, Double effort) {
+			this.username = username;
+			this.date = date;
+			this.effort = effort;
+		}
+
+		String username;
 		Date date;
 		Double effort;
 	}
 
+	private CategoryDataset dataset;
 	private final WorkflowModel workflow;
 
-	private static final long serialVersionUID = 5324733789017141522L;
-
-	public ReportsManager(String title) {
-		super(title);
-		final CategoryDataset dataset = createDataSet();
-		final JFreeChart chart = createChart(dataset);
+	public ReportsManager() {
 		workflow = WorkflowModel.getInstance();
-		final ChartPanel chartPanel = new ChartPanel(chart, false);
-		chartPanel.setPreferredSize(new Dimension(500, 270));
-		setContentPane(chartPanel);
 	}
 
-	private Map<String, List<UserData>> getVelocityData(Set<String> users,
-			Date start, Date end, boolean averageCredit) {
+	private List<UserData> getVelocity(Set<String> users, Date start, Date end,
+			boolean averageCredit) {
 		// Assume the completion stage is the final stage
 		final List<StageModel> stageList = workflow.getStages();
 		final StageModel finalStage = stageList.get(stageList.size() - 1);
@@ -83,18 +84,18 @@ public class ReportsManager extends ApplicationFrame {
 	 *            The stage to consider as the completion stage
 	 * @return HashMap<Username : TreeMap<Task completion date : Effort >>
 	 */
-	public Map<String, List<UserData>> getVelocity(Set<String> users,
-			Date start, Date end, boolean averageCredit, StageModel stage) {
+	public List<UserData> getVelocity(Set<String> users, Date start, Date end,
+			boolean averageCredit, StageModel stage) {
 		if (!workflow.getStages().contains(stage)) {
 			throw new IllegalArgumentException("Invalid stage");
 		}
 
-		final Map<String, List<UserData>> data = new HashMap<String, List<UserData>>();
-		for (String username : users) {
-			data.put(username, new ArrayList<UserData>());
-		}
+		// We use a linked list here to have o91) insertion. Since we only ever
+		// build this dataset and then read from it in order, this is efficient.
+		final List<UserData> data = new LinkedList<UserData>();
 		for (TaskModel task : stage.getTasks()) {
 			Date completed = null;
+			boolean foundMoveEvent = false;
 			// We are going to iterate backward through the activities, and take
 			// the final MOVE event. This event must have been to the current
 			// stage (it hasn't been moved after), and since we're in the final
@@ -102,27 +103,32 @@ public class ReportsManager extends ApplicationFrame {
 			for (int i = task.getActivities().size(); i >= 0; i--) {
 				ActivityModel activity = task.getActivities().get(i);
 				if (activity.getType() == ActivityModel.activityModelType.MOVE) {
+					foundMoveEvent = true;
 					completed = activity.getDateCreated();
 					if (completed.compareTo(start) < 0
 							|| completed.compareTo(end) > 0) {
-						completed = null; // Pretend as if we didn't find the
-											// completion event.
+						completed = null;
+						// Pretend as if we didn't find the completion event.
 					}
+				}
+				if (foundMoveEvent) {
 					break;
 				}
+			}
+			if (!foundMoveEvent) {
+				// If the task has no move events, then it was created in the
+				// completion stage. This is likely a retroactive completion, so
+				// we'll assume that the task was completed on its due date.
+				completed = task.getDueDate();
 			}
 			if (completed != null) {
 				for (String username : task.getAssigned()) {
 					if (users.contains(username)) {
-						List<UserData> userData = data.get(username);
-						UserData dataPoint = new UserData();
-						dataPoint.date = completed;
-						dataPoint.effort = (double) task.getEstimatedEffort();
+						Double effort = (double) task.getEstimatedEffort();
 						if (averageCredit) {
-							dataPoint.effort /= task.getAssigned().size();
+							effort /= task.getAssigned().size();
 						}
-						userData.add(dataPoint);
-						data.put(username, userData);
+						data.add(new UserData(username, completed, effort));
 					}
 				}
 			} // End if inDateRange
@@ -132,29 +138,56 @@ public class ReportsManager extends ApplicationFrame {
 
 	// This method will format the data into separate categories, e.g. weeks.
 	// Category names and exact ranges should be calculated here.
-	private static CategoryDataset createDataSet() {
+	public void getDataSet(Set<String> users, Date start, Date end,
+			boolean teamData, Date interval) {
+		final long startTime = start.getTime();
+		final long endTime = end.getTime();
+		final long intervalTime = interval.getTime();
+		String categories[] = new String[(int) Math
+				.ceil((double) (endTime - startTime) / intervalTime)];
+		String intervalName = "Interval";
+		if (intervalTime == HOUR) {
+			intervalName = "Hour";
+		} else if (intervalTime == DAY) {
+			intervalName = "Day";
+		} else if (intervalTime == WEEK) {
+			intervalName = "Week";
+		}
+		for (int i = 0; i < categories.length; i++) {
+			categories[i] = intervalName + " " + (i + 1);
+		}
 		final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-		final String series = "";
-		final String[] categories = new String[] { "", "" };
-		dataset.addValue(1.5, series, categories[0]);
-		return dataset;
+		List<UserData> data = getVelocity(users, start, end, false);
+		for (UserData userData : data) {
+			int category = (int) ((userData.date.getTime() - startTime) / intervalTime);
+			if (!teamData) {
+				dataset.addValue(userData.effort, userData.username,
+						categories[category]);
+			} else {
+				dataset.addValue(userData.effort, "Team", categories[category]);
+			}
+		}
+		this.dataset = dataset;
 	}
 
 	// This method generates the chart from the dataset above. How it gets
 	// integrated with JPanels is another question...
-	private static JFreeChart createChart(CategoryDataset dataset) {
+	public JFreeChart createChart() {
 
 		// create the chart...
 		final JFreeChart chart = ChartFactory.createBarChart("Bar Chart Demo", // chart
 																				// title
-				"Category", // domain axis label
-				"Value", // range axis label
+				"Time interval", // domain axis label
+				"Effort completed", // range axis label
 				dataset, // data
 				PlotOrientation.VERTICAL, // orientation
 				true, // include legend
 				true, // tooltips?
 				false // URLs?
 				);
+
+		final ChartPanel chartPanel = new ChartPanel(chart, false);
+		chartPanel.setPreferredSize(new Dimension(500, 270));
 
 		final CategoryPlot plot = (CategoryPlot) chart.getPlot();
 
