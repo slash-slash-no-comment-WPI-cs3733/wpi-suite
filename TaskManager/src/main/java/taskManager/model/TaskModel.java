@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
@@ -368,6 +369,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 */
 	public void makeIdenticalTo(TaskModel task) {
 		setID(task.getID());
+		setProject(task.getProject());
 		name = task.getName();
 		description = task.getDescription();
 		stage = task.getStage();
@@ -377,13 +379,16 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		actualEffort = task.getActualEffort();
 		activities = task.getActivities();
 		reqID = task.getReqID();
+		System.out.println(getClass() + "set project to "
+				+ getProject().getProjectName());
 	}
 
 	@Override
 	public void save() {
 		final Request request = Network.getInstance().makeRequest(
-				"taskmanager/task", HttpMethod.POST);
+				"taskmanager/task/" + getID(), HttpMethod.POST);
 		request.setBody(toJson());
+		System.out.println("Saving " + getClass() + ": " + toJson());
 		request.addObserver(getObserver());
 		request.send();
 	}
@@ -391,8 +396,9 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	@Override
 	public void delete() {
 		final Request request = Network.getInstance().makeRequest(
-				"taskmanager/task", HttpMethod.DELETE);
+				"taskmanager/task/" + getID(), HttpMethod.DELETE);
 		request.setBody(toJson());
+		System.out.println("Deleting " + getClass() + ": " + toJson());
 		request.addObserver(getObserver());
 		request.send();
 	}
@@ -403,5 +409,12 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 			return ((TaskModel) o).getID().equals(this.getID());
 		}
 		return false;
+	}
+
+	@Override
+	public void setProject(Project p) {
+		super.setProject(p);
+		System.out.println("setting task project");
+		// TODO: set activity project
 	}
 }

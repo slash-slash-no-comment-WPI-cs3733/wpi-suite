@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
 import edu.wpi.cs.wpisuitetng.network.Network;
 import edu.wpi.cs.wpisuitetng.network.Request;
 import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
@@ -375,23 +376,33 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 */
 	public void makeIdenticalTo(StageModel stage) {
 		setID(stage.getID());
+		setProject(stage.getProject());
 		name = stage.getName();
+		System.out.println(getClass() + "set project to "
+				+ getProject().getProjectName());
 	}
 
 	@Override
 	public void save() {
 		final Request request = Network.getInstance().makeRequest(
-				"taskmanager/stage", HttpMethod.POST);
+				"taskmanager/stage/" + getID(), HttpMethod.POST);
 		request.setBody(toJson());
+		System.out.println("Saving " + getClass() + ": " + toJson());
 		request.addObserver(getObserver());
 		request.send();
 	}
 
 	@Override
 	public void delete() {
+
+		getTasks().forEach(t -> {
+			t.delete();
+		});
+
 		final Request request = Network.getInstance().makeRequest(
-				"taskmanager/stage", HttpMethod.DELETE);
+				"taskmanager/stage/" + getID(), HttpMethod.DELETE);
 		request.setBody(toJson());
+		System.out.println("Deleting " + getClass() + ": " + toJson());
 		request.addObserver(getObserver());
 		request.send();
 	}
@@ -407,4 +418,12 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 		return false;
 	}
 
+	@Override
+	public void setProject(Project p) {
+		super.setProject(p);
+		System.out.println("setting stage project");
+		getTasks().forEach(t -> {
+			t.setProject(p);
+		});
+	}
 }

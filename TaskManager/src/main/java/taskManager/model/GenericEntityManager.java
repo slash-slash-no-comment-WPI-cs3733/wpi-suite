@@ -59,7 +59,6 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 			ConflictException, WPISuiteException {
 		final T newModel = AbstractJsonableModel.fromJson(content, type);
 		db.save(newModel, s.getProject());
-
 		return newModel;
 
 	}
@@ -77,7 +76,7 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 		final T[] tasks = response.toArray((T[]) Array.newInstance(type, 0));
 
 		if (tasks.length < 1 || tasks[0] == null) {
-  			throw new NotFoundException("Entity not found");
+			throw new NotFoundException("Entity not found");
 		}
 		return tasks;
 	}
