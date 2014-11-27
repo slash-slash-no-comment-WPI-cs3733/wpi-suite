@@ -44,7 +44,6 @@ public class WorkflowView extends JLayeredPane {
 		// stv.setPreferredSize(new Dimension(stv.getPreferredSize().width, this
 		// .getSize().height - 20));
 		add(stv, new Integer(0));
-		repaint();
 	}
 
 	/**
