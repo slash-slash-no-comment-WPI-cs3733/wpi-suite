@@ -12,6 +12,7 @@ package taskManager.view;
  * @author Beth Martino
  */
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Insets;
@@ -57,7 +58,7 @@ public class StageView extends JPanel {
 	 * @param name
 	 *            The title of the stage being drawn
 	 */
-	public StageView(String name, Boolean editting) {
+	public StageView(String name) {
 
 		// stage view is a panel that contains the title and the scroll pane
 		// w/tasks
@@ -82,17 +83,16 @@ public class StageView extends JPanel {
 
 		// The text field to change the stage's title
 		JPanel changeLabel = new JPanel();
-		// changeLabel.setLayout(new BoxLayout(changeLabel, BoxLayout.X_AXIS));
 		changeLabel.setMaximumSize(new Dimension(185, 25));
 		changeLabel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		changeLabel.setName(CHANGE_TITLE);
 		JTextField labelText = new JTextField();
 		labelText.setText(name);
 		labelText.setName(TEXT_LABEL);
-		labelText.setSize(new Dimension(140, 25));
-		labelText.setMinimumSize(new Dimension(140, 25));
-		labelText.setMaximumSize(new Dimension(140, 25));
-		labelText.setPreferredSize(new Dimension(140, 25));
+		labelText.setSize(new Dimension(135, 25));
+		labelText.setMinimumSize(new Dimension(135, 25));
+		labelText.setMaximumSize(new Dimension(135, 25));
+		labelText.setPreferredSize(new Dimension(135, 25));
 		// Checkmark button
 		done = new JButton("\u2713");
 		done.setName(CHECK);
@@ -103,19 +103,14 @@ public class StageView extends JPanel {
 		cancel.setName(X);
 		cancel.setFont(cancel.getFont().deriveFont((float) 12));
 		cancel.setMargin(new Insets(0, 0, 0, 0));
-		cancel.addActionListener(controller);
+
 		changeLabel.add(labelText);
 		changeLabel.add(done);
 		changeLabel.add(cancel);
 
-		if (editting) {
-			System.out.println("editting");
-			label.setVisible(false);
-			changeLabel.setVisible(true);
-		} else {
-			changeLabel.setVisible(false);
-			label.setVisible(true);
-		}
+		changeLabel.setVisible(false);
+		label.setVisible(true);
+
 		this.add(label);
 		this.add(changeLabel);
 
@@ -136,22 +131,13 @@ public class StageView extends JPanel {
 	 */
 	public void updateTasks() {
 		this.remove(stage);
-		stage = new JScrollPane(tasks,
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		stage.setBorder(BorderFactory.createTitledBorder(this.getName()));
-		stage.setMinimumSize(new Dimension(175, 350));
+		stage.setViewportView(tasks);
 		this.add(stage);
 	}
 
-	public void updateStageName() {
-		labelName.removeAll();
-		labelName = new JLabel(stage.getName());
-		labelName.setSize(new Dimension(175, 25));
-		labelName.setMaximumSize(new Dimension(175, 25));
-		labelName.setMinimumSize(new Dimension(175, 25));
-		labelName.setPreferredSize(new Dimension(175, 25));
-		label.add(labelName);
+	public void updateStageName(String name) {
+		stage.setName(name);
+		labelName.setText(name);
 	}
 
 	/**
@@ -176,7 +162,13 @@ public class StageView extends JPanel {
 	public void setController(StageController controller) {
 		this.controller = controller;
 		tasks.setController(controller);
+		// listen for clicks on the stage to remove stuff from view
+		stage.addMouseListener(controller);
+		// listen for double click on the stage title to change it
 		labelName.addMouseListener(controller);
+		// listen for clicks on the 'change title' buttons
+		done.addActionListener(controller);
+		cancel.addActionListener(controller);
 	}
 
 	/**
@@ -189,9 +181,8 @@ public class StageView extends JPanel {
 	}
 
 	public void setStageName(String name) {
-		stage.setName(name);
 		this.setName(name);
-		this.updateStageName();
+		this.updateStageName(name);
 	}
 
 }

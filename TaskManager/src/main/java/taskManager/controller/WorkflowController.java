@@ -8,10 +8,12 @@
  *******************************************************************************/
 package taskManager.controller;
 
+import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.List;
 
+import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.GetUsersObserver;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
@@ -34,7 +36,7 @@ public class WorkflowController implements MouseListener {
 
 	private final WorkflowView view;
 	private final WorkflowModel model;
-	private String edittedStageName = "";
+	private String edittedStageName;
 	private TaskInfoPreviewView taskInfoV;
 
 	public static boolean alive = true;
@@ -82,44 +84,47 @@ public class WorkflowController implements MouseListener {
 		reloadData();
 	}
 
+	public void reloadData() {
+		this.reloadData(false);
+	}
+
 	/**
 	 * Reloads all the data on the view to match the data in the model
 	 *
 	 */
-	public synchronized void reloadData() {
-		// clear the stages previously on the view
-		view.removeAll();
+	public synchronized void reloadData(Boolean override) {
+		// Only reloadData if you are getting new information from the serv
+		if (!FetchWorkflowObserver.ignoreAllResponses || override) {
+			// clear the stages previously on the view
+			view.removeAll();
 
-		// get all the stages in this workflow
-		final List<StageModel> stages = model.getStages();
-		// and add them all to the view
-		for (StageModel stage : stages) {
-			// create stage view and controller.
-			Boolean edit = false;
-			System.out.println("edittedStageName = " + edittedStageName + "-");
-			if (edittedStageName == stage.getName()) {
-				System.out.println("load an editted title: " + stage.getName()
-						+ "-");
-				edit = true;
-			} else {
-				System.out.println("load uneditted:-" + stage.getName() + "-");
+			// get all the stages in this workflow
+			final List<StageModel> stages = model.getStages();
+			// and add them all to the view
+			for (StageModel stage : stages) {
+				// create stage view and controller.
+				Boolean edit = false;
+				if (stage.getName().equalsIgnoreCase(this.edittedStageName)) {
+					edit = true;
+				}
+				StageView stv = new StageView(stage.getName());// , edit);
+				stv.setController(new StageController(stv, stage));
+
+				// add stage view to workflow
+				view.addStageView(stv);
+
 			}
-			StageView stv = new StageView(stage.getName(), edit);
-			stv.setController(new StageController(stv, stage));
+			// TODO: Check if taskInfoV's task is in the workflow and don't show
+			// if
+			// it isn't (been deleted)
+			if (taskInfoV != null) {
+				view.addTaskInfo(taskInfoV);
+				// taskInfoV.getTaskController().setToHoverColor();
+			}
 
-			// add stage view to workflow
-			view.addStageView(stv);
-
+			view.revalidate();
+			view.repaint();
 		}
-		// TODO: Check if taskInfoV's task is in the workflow and don't show if
-		// it isn't (been deleted)
-		if (taskInfoV != null) {
-			view.addTaskInfo(taskInfoV);
-			// taskInfoV.getTaskController().setToHoverColor();
-		}
-
-		view.revalidate();
-		view.repaint();
 	}
 
 	/**
@@ -142,18 +147,36 @@ public class WorkflowController implements MouseListener {
 		return model;
 	}
 
-
 	public void setEdittedStageName(String name) {
-		System.out.println("setEditted called with " + name);
-		edittedStageName = name;
-		reloadData();
+		this.edittedStageName = name;
+		this.reloadData();
+	}
 
 	public void setTaskInfo(TaskInfoPreviewView ti) {
-		if (this.taskInfoV == null) {
-			this.view.removeTaskInfos();
-		}
+		// if (this.taskInfoV == null) {
+		// this.removeTaskInfos();
+		// }
 		this.taskInfoV = ti;
 		this.reloadData();
+	}
+
+	/**
+	 * 
+	 * Removes all instances of TaskInfoPreviewView from the workflow.
+	 *
+	 */
+	public void removeTaskInfos() {
+		for (Component c : view.getComponents()) {
+			if (c instanceof TaskInfoPreviewView) {
+				view.remove(c);
+			}
+		}
+		// keep them removed
+		this.setTaskInfo(null);
+	}
+
+	public void repaintView() {
+		view.repaint();
 	}
 
 	@Override

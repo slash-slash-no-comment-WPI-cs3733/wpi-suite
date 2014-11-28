@@ -20,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import taskManager.JanewayModule;
+import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.view.StageView;
@@ -81,6 +82,16 @@ public class StageController implements MouseListener, ActionListener {
 	public void mouseClicked(MouseEvent e) {
 		// double clicked on the title
 		if (e.getClickCount() == 2 && e.getSource() instanceof JLabel) {
+			// remove taskinfo bubbles and refresh the view without reloading
+			// because that will make new stages and this controller will no
+			// longer control a stage on the workflow
+			JanewayModule.tabPaneC.getTabView().getWorkflowController()
+					.removeTaskInfos();
+			JanewayModule.tabPaneC.getTabView().getWorkflowController()
+					.repaintView();
+			// Don't reload while changing a stage name is open.
+			FetchWorkflowObserver.ignoreAllResponses = true;
+
 			for (Component c : ((JLabel) e.getSource()).getParent().getParent()
 					.getComponents()) {
 				if (c.getName() == StageView.TITLE) {
@@ -89,10 +100,7 @@ public class StageController implements MouseListener, ActionListener {
 					c.setVisible(true);
 				}
 			}
-			JanewayModule.tabPaneC.getTabView().getWorkflowController()
-					.setEdittedStageName(view.getName());
 		}
-
 	}
 
 	@Override
@@ -123,19 +131,22 @@ public class StageController implements MouseListener, ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		Object button = e.getSource();
 		if (button instanceof JButton) {
+
 			switch (((JButton) button).getName()) {
 			case StageView.CHECK:
 				for (Component c : ((JButton) button).getParent()
 						.getComponents()) {
 					if (c instanceof JTextField
 							&& c.getName() == StageView.TEXT_LABEL) {
-						view.setStageName(((JTextField) c).getText());
+						// Make the stage have the new name
+						model.changeStageName(((JTextField) c).getText());
 					}
 				}
 				// fall through
 			case StageView.X:
-				// JanewayModule.tabPaneC.getTabView().getWorkflowController()
-				// .setEdittedStageName("");
+				FetchWorkflowObserver.ignoreAllResponses = false;
+				JanewayModule.tabPaneC.getTabView().getWorkflowController()
+						.reloadData();
 				break;
 			}
 		}

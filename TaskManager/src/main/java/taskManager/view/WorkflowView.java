@@ -8,8 +8,6 @@
  *******************************************************************************/
 package taskManager.view;
 
-import java.awt.Component;
-
 import javax.swing.JLayeredPane;
 
 import taskManager.controller.WorkflowController;
@@ -53,7 +51,7 @@ public class WorkflowView extends JLayeredPane {
 	 * @param ti
 	 */
 	public void addTaskInfo(TaskInfoPreviewView ti) {
-		removeTaskInfos();
+		controller.removeTaskInfos();
 		add(ti, new Integer(1));
 	}
 
@@ -90,7 +88,7 @@ public class WorkflowView extends JLayeredPane {
 		} catch (NullPointerException e) {
 			System.out.println("How did you actually do this?");
 		}
-		return new StageView(name, false);
+		return new StageView(name);// , false);
 	}
 
 	/*
@@ -102,18 +100,5 @@ public class WorkflowView extends JLayeredPane {
 			controller.reloadData();
 		}
 		super.setVisible(visible);
-	}
-
-	/**
-	 * 
-	 * Removes all instances of TaskInfoPreviewView from the workflow.
-	 *
-	 */
-	public void removeTaskInfos() {
-		for (Component c : this.getComponents()) {
-			if (c instanceof TaskInfoPreviewView) {
-				this.remove(c);
-			}
-		}
 	}
 }

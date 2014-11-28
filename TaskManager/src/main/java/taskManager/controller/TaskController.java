@@ -96,15 +96,6 @@ public class TaskController implements MouseListener {
 		model.getStage().removeTask(model);
 	}
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		Point infoLoc = view.getParent().getParent().getParent().getParent()
-				.getLocation();
-		infoLoc.y = view.getLocation().y;
-		JanewayModule.tabPaneC.getTabView().getWorkflowController()
-				.setTaskInfo(new TaskInfoPreviewView(model, this, infoLoc));
-	}
-
 	public void editTask() {
 		// uses the title field to hold the unique id
 		etv.getTitle().setName(this.model.getID());
@@ -178,18 +169,26 @@ public class TaskController implements MouseListener {
 		} else {
 			etv.getRequirements().setSelectedItem(EditTaskView.NO_REQ);
 		}
+	}
 
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		Point infoLoc = view.getParent().getParent().getParent().getParent()
+				.getLocation();
+		infoLoc.y = view.getLocation().y;
+		JanewayModule.tabPaneC.getTabView().getWorkflowController()
+				.setTaskInfo(new TaskInfoPreviewView(model, this, infoLoc));
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
+		// do nothing
 
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
+		// do nothing
 
 	}
 

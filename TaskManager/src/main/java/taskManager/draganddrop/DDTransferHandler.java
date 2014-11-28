@@ -89,6 +89,9 @@ public class DDTransferHandler extends TransferHandler {
 	@Override
 	public void exportAsDrag(JComponent comp, InputEvent e, int action) {
 		// Ignore all responses from server while drag is active
+		// this is set to false before true to clear the workflow before
+		// dragging
+
 		FetchWorkflowObserver.ignoreAllResponses = true;
 		// Create drag image
 		Image image = new BufferedImage(comp.getWidth(), comp.getHeight(),
@@ -104,7 +107,8 @@ public class DDTransferHandler extends TransferHandler {
 		// Initiate the drag
 		super.exportAsDrag(comp, e, action);
 
-		// Remove the task info bubble if its up
+		// Override reload - aka Reload data while ignoring database responses.
+		// This means any task bubbles will disappear
 		JanewayModule.tabPaneC.getTabView().getWorkflowController()
 				.setTaskInfo(null);
 	}
