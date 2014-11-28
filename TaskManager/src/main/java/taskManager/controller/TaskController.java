@@ -9,6 +9,7 @@
 package taskManager.controller;
 
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
+import taskManager.view.TaskInfoPreviewView;
 import taskManager.view.TaskView;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
@@ -46,6 +48,7 @@ public class TaskController implements MouseListener {
 	private final User[] projectUsers = JanewayModule.users;
 	private Set<String> assignedUsers;
 	private Color background;
+	private TaskInfoPreviewView infoV;
 
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
@@ -61,6 +64,7 @@ public class TaskController implements MouseListener {
 		this.view = view;
 		this.model = model;
 		sm = model.getStage();
+		this.background = view.getBackground();
 
 		wfm = WorkflowModel.getInstance();
 		etv = new EditTaskView(Mode.EDIT);
@@ -94,16 +98,19 @@ public class TaskController implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// makes the delete button unclickable
-		etv.enableDelete();
+		Point infoLoc = view.getParent().getParent().getParent().getParent()
+				.getLocation();
+		infoLoc.y = view.getLocation().y;
+		JanewayModule.tabPaneC.getTabView().getWorkflowController()
+				.setTaskInfo(new TaskInfoPreviewView(model, this, infoLoc));
+	}
 
+	public void editTask() {
 		// uses the title field to hold the unique id
 		etv.getTitle().setName(this.model.getID());
 
 		// uses description field to hold the name of the stage
 		etv.getDescription().setName(this.model.getStage().getName());
-		// makes the delete button unclickable
-		etv.enableDelete();
 
 		// populate editable fields with this tasks info
 		etv.setTitle(model.getName());
@@ -186,11 +193,14 @@ public class TaskController implements MouseListener {
 
 	}
 
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		background = view.getBackground();
+	public void setToHoverColor() {
 		view.setBackground(Color.lightGray);
 		view.repaint();
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		setToHoverColor();
 	}
 
 	@Override
@@ -202,6 +212,7 @@ public class TaskController implements MouseListener {
 		if (background != null) {
 			view.setBackground(background);
 		}
+		view.repaint();
 	}
 
 }

@@ -18,6 +18,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 import javax.swing.TransferHandler;
 
+import taskManager.JanewayModule;
 import taskManager.model.FetchWorkflowObserver;
 
 /**
@@ -89,7 +90,6 @@ public class DDTransferHandler extends TransferHandler {
 	public void exportAsDrag(JComponent comp, InputEvent e, int action) {
 		// Ignore all responses from server while drag is active
 		FetchWorkflowObserver.ignoreAllResponses = true;
-
 		// Create drag image
 		Image image = new BufferedImage(comp.getWidth(), comp.getHeight(),
 				BufferedImage.TYPE_INT_ARGB);
@@ -103,6 +103,10 @@ public class DDTransferHandler extends TransferHandler {
 
 		// Initiate the drag
 		super.exportAsDrag(comp, e, action);
+
+		// Remove the task info bubble if its up
+		JanewayModule.tabPaneC.getTabView().getWorkflowController()
+				.setTaskInfo(null);
 	}
 
 	/**

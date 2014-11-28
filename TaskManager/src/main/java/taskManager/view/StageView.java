@@ -12,7 +12,6 @@ package taskManager.view;
  * @author Beth Martino
  */
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Insets;
@@ -127,8 +126,8 @@ public class StageView extends JPanel {
 		stage.setBorder(BorderFactory.createLineBorder(Color.black));
 		stage.setMinimumSize(new Dimension(175, 450));
 		stage.setSize(new Dimension(175, 450));
-		stage.setPreferredSize(new Dimension(175, 450));
 
+		this.setName(name);
 		updateTasks();
 	}
 
@@ -140,7 +139,7 @@ public class StageView extends JPanel {
 		stage = new JScrollPane(tasks,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		stage.setBorder(BorderFactory.createLineBorder(Color.black));
+		stage.setBorder(BorderFactory.createTitledBorder(this.getName()));
 		stage.setMinimumSize(new Dimension(175, 350));
 		this.add(stage);
 	}

@@ -8,12 +8,15 @@
  *******************************************************************************/
 package taskManager.controller;
 
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.List;
 
 import taskManager.model.GetUsersObserver;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
+import taskManager.view.TaskInfoPreviewView;
 import taskManager.view.WorkflowView;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.controller.GetRequirementsController;
 import edu.wpi.cs.wpisuitetng.network.Network;
@@ -27,11 +30,12 @@ import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
  * @author Stefan Alexander
  * @version November 9, 2014
  */
-public class WorkflowController {
+public class WorkflowController implements MouseListener {
 
 	private final WorkflowView view;
 	private final WorkflowModel model;
 	private String edittedStageName = "";
+	private TaskInfoPreviewView taskInfoV;
 
 	public static boolean alive = true;
 
@@ -107,6 +111,13 @@ public class WorkflowController {
 			view.addStageView(stv);
 
 		}
+		// TODO: Check if taskInfoV's task is in the workflow and don't show if
+		// it isn't (been deleted)
+		if (taskInfoV != null) {
+			view.addTaskInfo(taskInfoV);
+			// taskInfoV.getTaskController().setToHoverColor();
+		}
+
 		view.revalidate();
 		view.repaint();
 	}
@@ -131,9 +142,47 @@ public class WorkflowController {
 		return model;
 	}
 
+
 	public void setEdittedStageName(String name) {
 		System.out.println("setEditted called with " + name);
 		edittedStageName = name;
 		reloadData();
+
+	public void setTaskInfo(TaskInfoPreviewView ti) {
+		if (this.taskInfoV == null) {
+			this.view.removeTaskInfos();
+		}
+		this.taskInfoV = ti;
+		this.reloadData();
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// Removes the task info bubble from the screen
+		this.setTaskInfo(null);
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// Do nothing
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// Do nothing
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// Do nothing
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// Do nothing
+
 	}
 }

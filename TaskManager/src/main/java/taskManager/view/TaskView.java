@@ -16,6 +16,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import taskManager.controller.TaskController;
@@ -42,8 +43,6 @@ public class TaskView extends TaskPanel {
 	 *            the name of the task
 	 * @param duedate
 	 *            the due date of the task
-	 * @param estEffort
-	 *            the estimated effort for the task
 	 * @param taskID
 	 *            The ID of the task being displayed
 	 */
@@ -51,14 +50,16 @@ public class TaskView extends TaskPanel {
 
 		// organizes the data in a vertical list
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		final Border raisedbevel = BorderFactory.createRaisedBevelBorder();
+		final Border raisedbevel = BorderFactory
+				.createEtchedBorder(EtchedBorder.LOWERED);
 		final TitledBorder title = BorderFactory
 				.createTitledBorder(raisedbevel);
 		title.setTitlePosition(TitledBorder.LEFT);
 		this.setBorder(title);
-		this.setMinimumSize(new Dimension(200, 100));
+		this.setMinimumSize(new Dimension(220, 40));
+		this.setPreferredSize(new Dimension(220, 40));
+		this.setMaximumSize(new Dimension(220, 40));
 
-		//
 		// convert Date object to Calendar object to avoid using deprecated
 		// Date methods.
 		final Calendar date = Calendar.getInstance();
@@ -104,14 +105,13 @@ public class TaskView extends TaskPanel {
 		this.addMouseListener(this.controller);
 	}
 
-	public TaskController getController() {
-		return controller;
-	}
-
 	@Override
 	public void setVisible(boolean visible) {
 		controller.resetBackground();
 		super.setVisible(visible);
 	}
 
+	public TaskController getController() {
+		return controller;
+	}
 }
