@@ -31,6 +31,7 @@ public class WorkflowController {
 
 	private final WorkflowView view;
 	private final WorkflowModel model;
+	private String edittedStageName = "";
 
 	public static boolean alive = true;
 
@@ -48,12 +49,6 @@ public class WorkflowController {
 	public WorkflowController(WorkflowView view) {
 		this.view = view;
 		this.model = WorkflowModel.getInstance();
-
-		// necessary to add these stages to workflowView (don't know/how)
-		// StageModel newStage = new StageModel("New", false);
-		// StageModel startedStage = new StageModel("Scheduled", false);
-		// StageModel progressStage = new StageModel("In Progress", false);
-		// StageModel completeStage = new StageModel("Complete", false);
 
 		Thread thread = new Thread() {
 			public void run() {
@@ -96,11 +91,21 @@ public class WorkflowController {
 		// and add them all to the view
 		for (StageModel stage : stages) {
 			// create stage view and controller.
-			StageView stv = new StageView(stage.getName());
+			Boolean edit = false;
+			System.out.println("edittedStageName = " + edittedStageName + "-");
+			if (edittedStageName == stage.getName()) {
+				System.out.println("load an editted title: " + stage.getName()
+						+ "-");
+				edit = true;
+			} else {
+				System.out.println("load uneditted:-" + stage.getName() + "-");
+			}
+			StageView stv = new StageView(stage.getName(), edit);
 			stv.setController(new StageController(stv, stage));
 
 			// add stage view to workflow
 			view.addStageView(stv);
+
 		}
 		view.revalidate();
 		view.repaint();
@@ -113,6 +118,7 @@ public class WorkflowController {
 	 */
 	public void fetch() {
 		model.update(this);
+		reloadData();
 	}
 
 	/**
@@ -123,5 +129,11 @@ public class WorkflowController {
 	 */
 	public WorkflowModel getModel() {
 		return model;
+	}
+
+	public void setEdittedStageName(String name) {
+		System.out.println("setEditted called with " + name);
+		edittedStageName = name;
+		reloadData();
 	}
 }

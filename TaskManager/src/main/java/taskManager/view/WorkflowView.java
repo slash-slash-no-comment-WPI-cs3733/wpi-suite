@@ -86,7 +86,7 @@ public class WorkflowView extends JPanel {
 		} catch (NullPointerException e) {
 			System.out.println("How did you actually do this?");
 		}
-		return new StageView(name);
+		return new StageView(name, false);
 	}
 
 	/*

@@ -8,8 +8,18 @@
  *******************************************************************************/
 package taskManager.controller;
 
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.List;
 
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+
+import taskManager.JanewayModule;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.view.StageView;
@@ -21,7 +31,7 @@ import taskManager.view.TaskView;
  * @author Stefan Alexander
  * @version November 9, 2014
  */
-public class StageController {
+public class StageController implements MouseListener, ActionListener {
 
 	private final StageView view;
 	private final StageModel model;
@@ -67,4 +77,68 @@ public class StageController {
 		return tc.moveToStage(model, index);
 	}
 
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// double clicked on the title
+		if (e.getClickCount() == 2 && e.getSource() instanceof JLabel) {
+			for (Component c : ((JLabel) e.getSource()).getParent().getParent()
+					.getComponents()) {
+				if (c.getName() == StageView.TITLE) {
+					c.setVisible(false);
+				} else if (c.getName() == StageView.CHANGE_TITLE) {
+					c.setVisible(true);
+				}
+			}
+			JanewayModule.tabPaneC.getTabView().getWorkflowController()
+					.setEdittedStageName(view.getName());
+		}
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object button = e.getSource();
+		if (button instanceof JButton) {
+			switch (((JButton) button).getName()) {
+			case StageView.CHECK:
+				for (Component c : ((JButton) button).getParent()
+						.getComponents()) {
+					if (c instanceof JTextField
+							&& c.getName() == StageView.TEXT_LABEL) {
+						view.setStageName(((JTextField) c).getText());
+					}
+				}
+				// fall through
+			case StageView.X:
+				// JanewayModule.tabPaneC.getTabView().getWorkflowController()
+				// .setEdittedStageName("");
+				break;
+			}
+		}
+
+	}
 }
