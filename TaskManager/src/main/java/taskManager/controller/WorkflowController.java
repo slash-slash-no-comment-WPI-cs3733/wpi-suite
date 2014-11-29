@@ -96,11 +96,8 @@ public class WorkflowController {
 		// and add them all to the view
 		for (StageModel stage : stages) {
 			// create stage view and controller.
-			StageView stv = new StageView(stage.getName());
-			stv.setController(new StageController(stv, stage));
-
-			// add stage view to workflow
-			view.addStageView(stv);
+			// (also attaches them to this workflowView/Controller)
+			new StageController(stage, this);
 		}
 		view.revalidate();
 		view.repaint();
@@ -123,5 +120,15 @@ public class WorkflowController {
 	 */
 	public WorkflowModel getModel() {
 		return model;
+	}
+
+	/**
+	 * Adds a StageView to the workflow
+	 * 
+	 * @param stv
+	 *            The stage being added
+	 */
+	public void addStageView(StageView stv) {
+		view.addStageView(stv);
 	}
 }

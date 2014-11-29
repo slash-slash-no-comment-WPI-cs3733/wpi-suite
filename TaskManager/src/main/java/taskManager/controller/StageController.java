@@ -55,6 +55,22 @@ public class StageController {
 	}
 
 	/**
+	 * 
+	 * Constructs a stageController and sets up the view.
+	 *
+	 * @param stage
+	 *            The stage we're creating a view and controller for
+	 * @param workflowController
+	 *            The workflow this will be associated with
+	 */
+	public StageController(StageModel stage,
+			WorkflowController workflowController) {
+		this(new StageView(stage.getName()), stage);
+		view.setController(this);
+		workflowController.addStageView(view);
+	}
+
+	/**
 	 * Add a task to this stage
 	 *
 	 * @param tc
