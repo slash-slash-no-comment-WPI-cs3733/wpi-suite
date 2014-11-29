@@ -44,8 +44,6 @@ import edu.wpi.cs.wpisuitetng.modules.requirementmanager.view.ViewEventControlle
 public class EditTaskController implements ActionListener {
 
 	private final EditTaskView etv;
-	private final WorkflowModel wfm;
-	private final User[] projectUsers = JanewayModule.users;
 	private String taskID;
 	private ArrayList<String> toRemove = new ArrayList<String>();
 	private TaskModel model;
@@ -53,12 +51,9 @@ public class EditTaskController implements ActionListener {
 	/**
 	 * Constructor, attaches the edit task view to this controller
 	 * 
-	 * @param wfm
-	 *            The workflowModel that belongs to this controller.
 	 */
 	public EditTaskController(EditTaskView etv) {
 		this.etv = etv;
-		this.wfm = WorkflowModel.getInstance();
 
 		model = new TaskModel();
 
@@ -79,7 +74,6 @@ public class EditTaskController implements ActionListener {
 		etv = new EditTaskView(viewMode);
 		etv.setController(this);
 		etv.setFieldController(new TaskInputController(etv));
-		this.wfm = WorkflowModel.getInstance();
 		this.model = model;
 
 		// etv.setStageDropdown(0);
@@ -122,15 +116,12 @@ public class EditTaskController implements ActionListener {
 
 			// check to see if the task exists in the workflow and grabs the
 			// stage that the task is in
-			boolean exists = false;
-			StageModel currentStage = wfm.findStageByName("New");
+			WorkflowModel wfm = WorkflowModel.getInstance();
+			StageModel currentStage = null;
 			for (StageModel stage : wfm.getStages()) {
 				if (stage.containsTaskByID(taskID)) {
-					exists = true;
 					currentStage = stage;
 					break;
-				} else {
-					exists = false;
 				}
 			}
 
@@ -145,7 +136,7 @@ public class EditTaskController implements ActionListener {
 
 			case EditTaskView.SAVE:
 				// if editing
-				if (exists) {
+				if (currentStage != null) {
 					// set the task to be edited
 					model = currentStage.findTaskByID(taskID);
 					this.setTaskData(model, desiredStage, requirement);
@@ -241,7 +232,7 @@ public class EditTaskController implements ActionListener {
 				break;
 
 			case EditTaskView.REFRESH:
-				if (exists) {
+				if (currentStage != null) {
 					// Clear the activities list.
 					etv.clearActivities();
 
@@ -262,7 +253,7 @@ public class EditTaskController implements ActionListener {
 	public void reloadData() {
 		JComboBox<String> stages = etv.getStages();
 		stages.removeAllItems();
-		for (StageModel stage : wfm.getStages()) {
+		for (StageModel stage : WorkflowModel.getInstance().getStages()) {
 			stages.addItem(stage.getName());
 		}
 
@@ -338,7 +329,7 @@ public class EditTaskController implements ActionListener {
 			}
 		}
 		t.setReq(r);
-		wfm.save();
+		WorkflowModel.getInstance().save();
 	}
 
 	/**
@@ -350,7 +341,7 @@ public class EditTaskController implements ActionListener {
 	 * @return the user with the given name
 	 */
 	private User findUserByName(String name) {
-		for (User u : projectUsers) {
+		for (User u : JanewayModule.users) {
 			if (u.getUsername().equals(name)) {
 				return u;
 			}
@@ -455,7 +446,7 @@ public class EditTaskController implements ActionListener {
 
 		// populates the project users list
 		ArrayList<String> projectUserNames = new ArrayList<String>();
-		for (User u : projectUsers) {
+		for (User u : JanewayModule.users) {
 			String name = u.getUsername();
 			if (!projectUserNames.contains(name)
 					&& !model.getAssigned().contains(name)) {
@@ -519,18 +510,15 @@ public class EditTaskController implements ActionListener {
 		Boolean edited = false;
 
 		// Get the stage of the task.
-		boolean exists = false;
-		StageModel currentStage = wfm.findStageByName("New");
+		WorkflowModel wfm = WorkflowModel.getInstance();
+		StageModel currentStage = null;
 		for (StageModel stage : wfm.getStages()) {
 			if (stage.containsTaskByID(getTaskID())) {
-				exists = true;
 				currentStage = stage;
 				break;
-			} else {
-				exists = false;
 			}
 		}
-		if (!exists) {
+		if (currentStage == null) {
 			return false;
 		}
 
