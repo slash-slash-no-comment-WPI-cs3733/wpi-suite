@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
@@ -71,12 +72,34 @@ public class ManageStageController implements ActionListener {
 			// take the appropriate action
 			switch (buttonName) {
 			case ManageStageView.DELETE:
+				// Delete only when there are 2 or more stages.
 				if (stages.size() >= 2) {
-					view.removeStage(stageID);
-					model.getStages()
-							.removeIf(s -> s.getName().equals(stageID));
-					// refresh the view
-					view.updateUI();
+					// If the stage has tasks, show a confirmation dialog, else
+					// just delete the stage.
+					if (!stage.getTasks().isEmpty()) {
+						Integer choice = JOptionPane
+								.showConfirmDialog(
+										view,
+										"The "
+												+ stage.getName()
+												+ " stage contains tasks. Are you sure you want to delete this stage?",
+										"Warning - Deleting a stage containing tasks",
+										JOptionPane.YES_NO_OPTION);
+						if (choice.equals(JOptionPane.YES_OPTION)) {
+							view.removeStage(stageID);
+							model.getStages().removeIf(
+									s -> s.getName().equals(stageID));
+							// refresh the view
+							view.updateUI();
+						}
+					} else {
+						view.removeStage(stageID);
+						model.getStages().removeIf(
+								s -> s.getName().equals(stageID));
+						// refresh the view
+						view.updateUI();
+					}
+
 				}
 				reloadData();
 				break;
@@ -106,6 +129,7 @@ public class ManageStageController implements ActionListener {
 			case ManageStageView.ADD_NEW_STAGE:
 				// Create a new stage at the end
 				String newStageName = view.getNewStageNameField().getText();
+
 				StageModel newStage = new StageModel(newStageName);
 				view.addStage(newStage.getName(), newStage.getName(), true);
 				// refresh the view

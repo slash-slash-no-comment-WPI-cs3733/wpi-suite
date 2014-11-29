@@ -25,6 +25,7 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -72,12 +73,11 @@ public class StagePanel extends JPanel {
 
 		Image image = new BufferedImage(size.width, size.height,
 				BufferedImage.TYPE_INT_ARGB);
-		Graphics g = image.getGraphics();
-		g = g.create();
-		g.setColor(Color.GRAY);
-		g.fillRect(0, 0, size.width, size.height);
 		placeholder = new JLabel(new ImageIcon(image));
 		placeholder.setAlignmentX(CENTER_ALIGNMENT);
+		// Create border with color, thickness, length, spacing, rounded
+		placeholder.setBorder(BorderFactory.createDashedBorder(Color.GRAY, 2,
+				6, 4, true));
 	}
 
 	/**
