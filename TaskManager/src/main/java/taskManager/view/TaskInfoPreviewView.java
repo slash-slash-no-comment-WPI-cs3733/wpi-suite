@@ -28,7 +28,7 @@ import taskManager.controller.TaskInfoPreviewController;
 import taskManager.model.TaskModel;
 
 /**
- * Description
+ * The view that pop's up when a task is clicked on.
  *
  * @author Samee Swartz
  * @version Nov 21, 2014
