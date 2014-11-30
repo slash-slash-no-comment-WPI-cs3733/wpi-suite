@@ -23,7 +23,6 @@ import taskManager.model.ActivityModel;
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
-import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
 import taskManager.view.TaskInfoPreviewView;
@@ -42,14 +41,12 @@ public class TaskController implements MouseListener {
 	private final TaskView view;
 	private final TaskModel model;
 	private StageModel sm;
-	private final WorkflowModel wfm;
 	private TabPaneController tabPaneC;
 	private EditTaskView etv;
 	private Requirement req;
 	private final User[] projectUsers = JanewayModule.users;
 	private Set<String> assignedUsers;
 	private Color background;
-	private TaskInfoPreviewView infoV;
 
 	public static Boolean anyTaskInfoOut = false;
 	public Boolean thisTaskInfoOut = false;
@@ -70,7 +67,6 @@ public class TaskController implements MouseListener {
 		sm = model.getStage();
 		this.background = view.getBackground();
 
-		wfm = WorkflowModel.getInstance();
 		etv = new EditTaskView(Mode.EDIT);
 		etv.setController(new EditTaskController(etv));
 		etv.setFieldController(new TaskInputController(etv));
@@ -100,6 +96,11 @@ public class TaskController implements MouseListener {
 		model.getStage().removeTask(model);
 	}
 
+	/**
+	 * 
+	 * Populates the EditTaskView with the information from this task.
+	 *
+	 */
 	public void editTask() {
 		// uses the title field to hold the unique id
 		etv.getTitle().setName(this.model.getID());
@@ -175,23 +176,55 @@ public class TaskController implements MouseListener {
 		}
 	}
 
+	/**
+	 * 
+	 * Make the task a darker color. Used for when the mouse is over a task or
+	 * when a bubble is out for this task
+	 *
+	 */
+	public void setToHoverColor() {
+		view.setBackground(Color.lightGray);
+		view.repaint();
+	}
+
+	/**
+	 * 
+	 * Resets the task background to its original color
+	 *
+	 */
+	public void resetBackground() {
+		if (background != null) {
+			view.setBackground(background);
+		}
+		view.repaint();
+	}
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// Only show a taskinfo bubble if nothing else has set
-		// ignoreAllResponses
-		if (!FetchWorkflowObserver.ignoreAllResponses || anyTaskInfoOut) {
+		// Show task bubble only if there are no stage title textboxes out AND
+		// the ignoreAllResponses flag has not been set OR
+		// another taskinfo bubble is already out
+		if ((!FetchWorkflowObserver.ignoreAllResponses || TaskController.anyTaskInfoOut)
+				&& !StageController.anyChangeTitleOut) {
+			// Remove any taskinfo bubbles already out
 			JanewayModule.tabPaneC.getTabView().getWorkflowController()
 					.removeTaskInfos();
-			thisTaskInfoOut = true;
-			anyTaskInfoOut = true;
-
+			// Don't reload (so the correct task can be highlighted while the
+			// bubble is up
 			FetchWorkflowObserver.ignoreAllResponses = true;
+
+			// Create the taskinfo bubble
 			Point infoLoc = view.getParent().getParent().getParent()
 					.getParent().getLocation();
 			infoLoc.y = view.getLocation().y;
 			infoLoc.x = infoLoc.x - 40;
 			JanewayModule.tabPaneC.getTabView().getWorkflowController()
 					.setTaskInfo(new TaskInfoPreviewView(model, this, infoLoc));
+
+			// Set the correct flags
+			thisTaskInfoOut = true;
+			TaskController.anyTaskInfoOut = true;
+			// make the associated task a darker color while the bubble is out
 			this.setToHoverColor();
 		}
 	}
@@ -208,11 +241,6 @@ public class TaskController implements MouseListener {
 
 	}
 
-	public void setToHoverColor() {
-		view.setBackground(Color.lightGray);
-		view.repaint();
-	}
-
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		setToHoverColor();
@@ -220,15 +248,10 @@ public class TaskController implements MouseListener {
 
 	@Override
 	public void mouseExited(MouseEvent e) {
+		// only reset the background if there is no taskInfo bubble out for this
+		// task
 		if (!thisTaskInfoOut) {
 			resetBackground();
 		}
-	}
-
-	public void resetBackground() {
-		if (background != null) {
-			view.setBackground(background);
-		}
-		view.repaint();
 	}
 }

@@ -169,6 +169,12 @@ public class TaskInfoPreviewView extends JPanel {
 		this.add(buttonPanel);
 	}
 
+	/**
+	 * 
+	 * returns the taskController.
+	 *
+	 * @return The taskController
+	 */
 	public TaskController getTaskController() {
 		return taskC;
 	}

@@ -36,8 +36,6 @@ public class WorkflowController implements MouseListener {
 
 	private final WorkflowView view;
 	private final WorkflowModel model;
-	private String edittedStageName;
-	private TaskInfoPreviewView taskInfoV;
 
 	public static boolean alive = true;
 
@@ -136,11 +134,13 @@ public class WorkflowController implements MouseListener {
 		return model;
 	}
 
-	public void setEdittedStageName(String name) {
-		this.edittedStageName = name;
-		this.reloadData();
-	}
-
+	/**
+	 * 
+	 * Adds the taskInfo bubble to the workflow.
+	 *
+	 * @param ti
+	 *            The TaskInfoPreviewView that should be displayed
+	 */
 	public void setTaskInfo(TaskInfoPreviewView ti) {
 		if (ti != null) {
 			view.addTaskInfo(ti);
@@ -161,6 +161,7 @@ public class WorkflowController implements MouseListener {
 			}
 			TaskController.anyTaskInfoOut = false;
 		}
+		// display without reloading
 		this.repaintView();
 	}
 
@@ -178,6 +179,11 @@ public class WorkflowController implements MouseListener {
 		StageController.anyChangeTitleOut = false;
 	}
 
+	/**
+	 * 
+	 * repaints the WorkflowView.
+	 *
+	 */
 	public void repaintView() {
 		view.repaint();
 	}

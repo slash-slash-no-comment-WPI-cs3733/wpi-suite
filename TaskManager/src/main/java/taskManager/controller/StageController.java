@@ -81,6 +81,15 @@ public class StageController implements MouseListener, ActionListener {
 		return tc.moveToStage(model, index);
 	}
 
+	/**
+	 * 
+	 * Changes which title is visible, the label or the textbox. If edittable is
+	 * true, the textbox is visible.
+	 *
+	 * @param edittable
+	 *            true to make the textbox visible, false to make the label
+	 *            visible
+	 */
 	public void switchTitle(Boolean edittable) {
 		if (edittable) {
 			for (Component c : view.getComponents()) {
@@ -117,9 +126,12 @@ public class StageController implements MouseListener, ActionListener {
 				view.repaint();
 			}
 		}
-		// You have clicked off of something.
+		// If there are no changeTitle textboxes out, clear the workflow
 		else if (!StageController.anyChangeTitleOut) {
+			// reset the flag
 			FetchWorkflowObserver.ignoreAllResponses = false;
+			// this will remove any changeTitle textboxes or taskInfo bubbles
+			// from the workflow
 			JanewayModule.tabPaneC.getTabView().getWorkflowController()
 					.reloadData();
 		}
@@ -145,7 +157,7 @@ public class StageController implements MouseListener, ActionListener {
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
+		// Do nothing
 
 	}
 
@@ -160,14 +172,19 @@ public class StageController implements MouseListener, ActionListener {
 						.getComponents()) {
 					if (c instanceof JTextField
 							&& c.getName() == StageView.TEXT_LABEL) {
-						// Make the stage have the new name
-						model.changeStageName(((JTextField) c).getText());
+						// If nothing has changed in the textbox, make the stage
+						// have the new name
+						if (!((JTextField) c).getText().equals(view.getName())) {
+							model.changeStageName(((JTextField) c).getText());
+						}
 					}
 				}
 				// fall through
 			case StageView.X:
+				// reset the flags
 				thisChangeTitleOut = false;
 				FetchWorkflowObserver.ignoreAllResponses = false;
+				// reload which will remove the textbox
 				JanewayModule.tabPaneC.getTabView().getWorkflowController()
 						.reloadData();
 				break;

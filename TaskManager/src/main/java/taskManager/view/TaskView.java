@@ -111,6 +111,12 @@ public class TaskView extends TaskPanel {
 		super.setVisible(visible);
 	}
 
+	/**
+	 * 
+	 * Returns the TaskController.
+	 *
+	 * @return the TaskController
+	 */
 	public TaskController getController() {
 		return controller;
 	}

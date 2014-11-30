@@ -44,7 +44,7 @@ public class WorkflowView extends JLayeredPane {
 
 	/**
 	 * 
-	 * Adds a TaskInfoPreviewView "pop-up" to the workflow.
+	 * Adds a TaskInfoPreviewView bubble to the workflow.
 	 *
 	 * @param ti
 	 */
@@ -86,7 +86,7 @@ public class WorkflowView extends JLayeredPane {
 		} catch (NullPointerException e) {
 			System.out.println("How did you actually do this?");
 		}
-		return new StageView(name);// , false);
+		return new StageView(name);
 	}
 
 	/*

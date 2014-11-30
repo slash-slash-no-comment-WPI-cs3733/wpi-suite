@@ -18,7 +18,7 @@ import taskManager.model.FetchWorkflowObserver;
 import taskManager.view.TaskInfoPreviewView;
 
 /**
- * Description
+ * Controller for the TaskInfoPreviewView aka the taskInfo bubble.
  *
  * @author Samee Swartz
  * @version Nov 21, 2014
@@ -36,10 +36,13 @@ public class TaskInfoPreviewController implements ActionListener {
 		if (button instanceof JButton) {
 			switch (((JButton) button).getName()) {
 			case TaskInfoPreviewView.EDIT:
+				// open the editTask window for the task
 				taskC.editTask();
 				// Fall through
 			case TaskInfoPreviewView.X:
+				// reset the flag
 				FetchWorkflowObserver.ignoreAllResponses = false;
+				// remove any taskInfo bubbles from the workflow
 				JanewayModule.tabPaneC.getTabView().getWorkflowController()
 						.reloadData();
 				break;
