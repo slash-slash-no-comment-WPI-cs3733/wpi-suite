@@ -97,31 +97,20 @@ public class WorkflowController implements MouseListener {
 		if (!FetchWorkflowObserver.ignoreAllResponses || override) {
 			// clear the stages previously on the view
 			view.removeAll();
+			this.removeTaskInfos();
+			this.removeChangeTitles();
 
 			// get all the stages in this workflow
 			final List<StageModel> stages = model.getStages();
 			// and add them all to the view
 			for (StageModel stage : stages) {
 				// create stage view and controller.
-				Boolean edit = false;
-				if (stage.getName().equalsIgnoreCase(this.edittedStageName)) {
-					edit = true;
-				}
-				StageView stv = new StageView(stage.getName());// , edit);
+				StageView stv = new StageView(stage.getName());
 				stv.setController(new StageController(stv, stage));
 
 				// add stage view to workflow
 				view.addStageView(stv);
-
 			}
-			// TODO: Check if taskInfoV's task is in the workflow and don't show
-			// if
-			// it isn't (been deleted)
-			if (taskInfoV != null) {
-				view.addTaskInfo(taskInfoV);
-				// taskInfoV.getTaskController().setToHoverColor();
-			}
-
 			view.revalidate();
 			view.repaint();
 		}
@@ -153,11 +142,9 @@ public class WorkflowController implements MouseListener {
 	}
 
 	public void setTaskInfo(TaskInfoPreviewView ti) {
-		// if (this.taskInfoV == null) {
-		// this.removeTaskInfos();
-		// }
-		this.taskInfoV = ti;
-		this.reloadData();
+		if (ti != null) {
+			view.addTaskInfo(ti);
+		}
 	}
 
 	/**
@@ -169,10 +156,26 @@ public class WorkflowController implements MouseListener {
 		for (Component c : view.getComponents()) {
 			if (c instanceof TaskInfoPreviewView) {
 				view.remove(c);
+				((TaskInfoPreviewView) c).getTaskController().thisTaskInfoOut = false;
+				((TaskInfoPreviewView) c).getTaskController().resetBackground();
+			}
+			TaskController.anyTaskInfoOut = false;
+		}
+		this.repaintView();
+	}
+
+	/**
+	 * 
+	 * Remove all instances of stage titles being changable.
+	 *
+	 */
+	public void removeChangeTitles() {
+		for (Component c : view.getComponents()) {
+			if (c instanceof StageView) {
+				((StageView) c).getController().thisChangeTitleOut = false;
 			}
 		}
-		// keep them removed
-		this.setTaskInfo(null);
+		StageController.anyChangeTitleOut = false;
 	}
 
 	public void repaintView() {
@@ -181,8 +184,11 @@ public class WorkflowController implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// Removes the task info bubble from the screen
-		this.setTaskInfo(null);
+		if (!StageController.anyChangeTitleOut) {
+			// Removes the task info bubble from the screen
+			FetchWorkflowObserver.ignoreAllResponses = false;
+			this.reloadData();
+		}
 	}
 
 	@Override

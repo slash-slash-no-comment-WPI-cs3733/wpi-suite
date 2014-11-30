@@ -18,7 +18,6 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 import javax.swing.TransferHandler;
 
-import taskManager.JanewayModule;
 import taskManager.model.FetchWorkflowObserver;
 
 /**
@@ -91,26 +90,22 @@ public class DDTransferHandler extends TransferHandler {
 		// Ignore all responses from server while drag is active
 		// this is set to false before true to clear the workflow before
 		// dragging
+		if (!FetchWorkflowObserver.ignoreAllResponses) {
+			FetchWorkflowObserver.ignoreAllResponses = true;
+			// Create drag image
+			Image image = new BufferedImage(comp.getWidth(), comp.getHeight(),
+					BufferedImage.TYPE_INT_ARGB);
+			Graphics g = image.getGraphics();
+			g = g.create();
+			comp.paint(g);
+			setDragImage(image);
 
-		FetchWorkflowObserver.ignoreAllResponses = true;
-		// Create drag image
-		Image image = new BufferedImage(comp.getWidth(), comp.getHeight(),
-				BufferedImage.TYPE_INT_ARGB);
-		Graphics g = image.getGraphics();
-		g = g.create();
-		comp.paint(g);
-		setDragImage(image);
+			// Create placeholder
+			StagePanel.generatePlaceholder(comp.getSize());
 
-		// Create placeholder
-		StagePanel.generatePlaceholder(comp.getSize());
-
-		// Initiate the drag
-		super.exportAsDrag(comp, e, action);
-
-		// Override reload - aka Reload data while ignoring database responses.
-		// This means any task bubbles will disappear
-		JanewayModule.tabPaneC.getTabView().getWorkflowController()
-				.setTaskInfo(null);
+			// Initiate the drag
+			super.exportAsDrag(comp, e, action);
+		}
 	}
 
 	/**

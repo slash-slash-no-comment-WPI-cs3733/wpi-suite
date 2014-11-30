@@ -14,6 +14,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 
 import taskManager.JanewayModule;
+import taskManager.model.FetchWorkflowObserver;
 import taskManager.view.TaskInfoPreviewView;
 
 /**
@@ -38,8 +39,9 @@ public class TaskInfoPreviewController implements ActionListener {
 				taskC.editTask();
 				// Fall through
 			case TaskInfoPreviewView.X:
+				FetchWorkflowObserver.ignoreAllResponses = false;
 				JanewayModule.tabPaneC.getTabView().getWorkflowController()
-						.setTaskInfo(null);
+						.reloadData();
 				break;
 			}
 		}

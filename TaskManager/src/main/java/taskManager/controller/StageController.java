@@ -37,6 +37,9 @@ public class StageController implements MouseListener, ActionListener {
 	private final StageView view;
 	private final StageModel model;
 
+	public static Boolean anyChangeTitleOut = false;
+	public Boolean thisChangeTitleOut = false;
+
 	/**
 	 * Constructor for the StageController gets all the tasks from the
 	 * StageModel, creates the corresponding TaskView and TaskControllers for
@@ -78,28 +81,47 @@ public class StageController implements MouseListener, ActionListener {
 		return tc.moveToStage(model, index);
 	}
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// double clicked on the title
-		if (e.getClickCount() == 2 && e.getSource() instanceof JLabel) {
-			// remove taskinfo bubbles and refresh the view without reloading
-			// because that will make new stages and this controller will no
-			// longer control a stage on the workflow
-			JanewayModule.tabPaneC.getTabView().getWorkflowController()
-					.removeTaskInfos();
-			JanewayModule.tabPaneC.getTabView().getWorkflowController()
-					.repaintView();
-			// Don't reload while changing a stage name is open.
-			FetchWorkflowObserver.ignoreAllResponses = true;
-
-			for (Component c : ((JLabel) e.getSource()).getParent().getParent()
-					.getComponents()) {
+	public void switchTitle(Boolean edittable) {
+		if (edittable) {
+			for (Component c : view.getComponents()) {
 				if (c.getName() == StageView.TITLE) {
 					c.setVisible(false);
 				} else if (c.getName() == StageView.CHANGE_TITLE) {
 					c.setVisible(true);
 				}
 			}
+		} else {
+			for (Component c : view.getComponents()) {
+				if (c.getName() == StageView.TITLE) {
+					c.setVisible(true);
+				} else if (c.getName() == StageView.CHANGE_TITLE) {
+					c.setVisible(false);
+				}
+			}
+		}
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// only bring up the title textbox if nothing else has set
+		// ignoreAllResponses
+		if (!FetchWorkflowObserver.ignoreAllResponses && !anyChangeTitleOut) {
+			// double clicked on the title
+			if (e.getClickCount() == 2 && e.getSource() instanceof JLabel) {
+				// Don't reload while changing a stage name is open.
+				FetchWorkflowObserver.ignoreAllResponses = true;
+				anyChangeTitleOut = true;
+				thisChangeTitleOut = true;
+				// bring up the title textbox
+				switchTitle(true);
+				view.repaint();
+			}
+		}
+		// You have clicked off of something.
+		else if (!StageController.anyChangeTitleOut) {
+			FetchWorkflowObserver.ignoreAllResponses = false;
+			JanewayModule.tabPaneC.getTabView().getWorkflowController()
+					.reloadData();
 		}
 	}
 
@@ -144,6 +166,7 @@ public class StageController implements MouseListener, ActionListener {
 				}
 				// fall through
 			case StageView.X:
+				thisChangeTitleOut = false;
 				FetchWorkflowObserver.ignoreAllResponses = false;
 				JanewayModule.tabPaneC.getTabView().getWorkflowController()
 						.reloadData();

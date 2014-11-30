@@ -20,6 +20,7 @@ import javax.swing.JComboBox;
 
 import taskManager.JanewayModule;
 import taskManager.model.ActivityModel;
+import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
@@ -49,6 +50,9 @@ public class TaskController implements MouseListener {
 	private Set<String> assignedUsers;
 	private Color background;
 	private TaskInfoPreviewView infoV;
+
+	public static Boolean anyTaskInfoOut = false;
+	public Boolean thisTaskInfoOut = false;
 
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
@@ -173,11 +177,23 @@ public class TaskController implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		Point infoLoc = view.getParent().getParent().getParent().getParent()
-				.getLocation();
-		infoLoc.y = view.getLocation().y;
-		JanewayModule.tabPaneC.getTabView().getWorkflowController()
-				.setTaskInfo(new TaskInfoPreviewView(model, this, infoLoc));
+		// Only show a taskinfo bubble if nothing else has set
+		// ignoreAllResponses
+		if (!FetchWorkflowObserver.ignoreAllResponses || anyTaskInfoOut) {
+			JanewayModule.tabPaneC.getTabView().getWorkflowController()
+					.removeTaskInfos();
+			thisTaskInfoOut = true;
+			anyTaskInfoOut = true;
+
+			FetchWorkflowObserver.ignoreAllResponses = true;
+			Point infoLoc = view.getParent().getParent().getParent()
+					.getParent().getLocation();
+			infoLoc.y = view.getLocation().y;
+			infoLoc.x = infoLoc.x - 40;
+			JanewayModule.tabPaneC.getTabView().getWorkflowController()
+					.setTaskInfo(new TaskInfoPreviewView(model, this, infoLoc));
+			this.setToHoverColor();
+		}
 	}
 
 	@Override
@@ -204,7 +220,9 @@ public class TaskController implements MouseListener {
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		resetBackground();
+		if (!thisTaskInfoOut) {
+			resetBackground();
+		}
 	}
 
 	public void resetBackground() {
@@ -213,5 +231,4 @@ public class TaskController implements MouseListener {
 		}
 		view.repaint();
 	}
-
 }

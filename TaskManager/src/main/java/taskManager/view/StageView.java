@@ -135,11 +135,6 @@ public class StageView extends JPanel {
 		this.add(stage);
 	}
 
-	public void updateStageName(String name) {
-		stage.setName(name);
-		labelName.setText(name);
-	}
-
 	/**
 	 * @param tkv
 	 *            for new task view will be entered by the user
@@ -179,10 +174,4 @@ public class StageView extends JPanel {
 	public StageController getController() {
 		return controller;
 	}
-
-	public void setStageName(String name) {
-		this.setName(name);
-		this.updateStageName(name);
-	}
-
 }
