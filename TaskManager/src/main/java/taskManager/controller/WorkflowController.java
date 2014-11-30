@@ -78,25 +78,19 @@ public class WorkflowController implements MouseListener {
 		thread.setName("polling");
 		thread.setDaemon(true);
 		thread.start();
-
-		reloadData();
-	}
-
-	public void reloadData() {
-		this.reloadData(false);
 	}
 
 	/**
 	 * Reloads all the data on the view to match the data in the model
 	 *
 	 */
-	public synchronized void reloadData(Boolean override) {
+	public synchronized void reloadData() {
 		// Only reloadData if you are getting new information from the serv
-		if (!FetchWorkflowObserver.ignoreAllResponses || override) {
+		if (!FetchWorkflowObserver.ignoreAllResponses) {
 			// clear the stages previously on the view
-			view.removeAll();
 			this.removeTaskInfos();
 			this.removeChangeTitles();
+			view.removeAll();
 
 			// get all the stages in this workflow
 			final List<StageModel> stages = model.getStages();
@@ -110,7 +104,6 @@ public class WorkflowController implements MouseListener {
 				view.addStageView(stv);
 			}
 			view.revalidate();
-			view.repaint();
 		}
 	}
 

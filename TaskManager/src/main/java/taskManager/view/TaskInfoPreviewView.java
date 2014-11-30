@@ -48,7 +48,7 @@ public class TaskInfoPreviewView extends JPanel {
 		this.taskC = controller;
 		this.controller = new TaskInfoPreviewController(this.taskC);
 		this.setLayout(new MigLayout("wrap 1", "5[]5", "0[]:push[]"));
-		this.setBounds(loc.x + 230, loc.y, 250, 415);
+		this.setBounds(loc.x + 190, 45, 250, 415);
 
 		// Drop shadow
 		DropShadowBorder shadow = new DropShadowBorder();

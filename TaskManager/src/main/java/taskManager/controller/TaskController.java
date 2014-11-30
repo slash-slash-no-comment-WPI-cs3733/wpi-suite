@@ -184,7 +184,6 @@ public class TaskController implements MouseListener {
 	 */
 	public void setToHoverColor() {
 		view.setBackground(Color.lightGray);
-		view.repaint();
 	}
 
 	/**
@@ -196,7 +195,6 @@ public class TaskController implements MouseListener {
 		if (background != null) {
 			view.setBackground(background);
 		}
-		view.repaint();
 	}
 
 	@Override
@@ -217,7 +215,7 @@ public class TaskController implements MouseListener {
 			Point infoLoc = view.getParent().getParent().getParent()
 					.getParent().getLocation();
 			infoLoc.y = view.getLocation().y;
-			infoLoc.x = infoLoc.x - 40;
+			infoLoc.x = infoLoc.x;
 			JanewayModule.tabPaneC.getTabView().getWorkflowController()
 					.setTaskInfo(new TaskInfoPreviewView(model, this, infoLoc));
 

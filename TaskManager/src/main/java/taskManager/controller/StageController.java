@@ -123,7 +123,6 @@ public class StageController implements MouseListener, ActionListener {
 				thisChangeTitleOut = true;
 				// bring up the title textbox
 				switchTitle(true);
-				view.repaint();
 			}
 		}
 		// If there are no changeTitle textboxes out, clear the workflow
