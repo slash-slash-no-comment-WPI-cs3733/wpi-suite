@@ -14,6 +14,8 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.dnd.DropTarget;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -25,6 +27,7 @@ import javax.swing.JToolBar;
 
 import taskManager.controller.ToolbarController;
 import taskManager.draganddrop.DDTransferHandler;
+import taskManager.model.WorkflowModel;
 
 /**
  * The Task Managers tab's toolbar panel.
@@ -124,6 +127,39 @@ public class ToolbarView extends JToolBar {
 		}
 		archive.setToolTipText("Drag here to archive task");
 		archive.setEnabled(false);
+		archive.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				WorkflowModel.getInstance().flipArchiveShown();
+				WorkflowModel.getInstance().save();
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+
+		});
 		archive.setName(ARCHIVE);
 		delete.setToolTipText("Drag here to delete task");
 		delete.setEnabled(false);

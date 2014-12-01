@@ -12,6 +12,7 @@ import java.util.List;
 
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
+import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
 import taskManager.view.TaskView;
 
@@ -42,14 +43,17 @@ public class StageController {
 
 		// Get all the tasks associated with this Stage.
 		final List<TaskModel> tasks = this.model.getTasks();
+		Boolean showArchive = WorkflowModel.getInstance().isArchiveShown();
 
 		// Add the tasks.
 		for (TaskModel task : tasks) {
-			// create stage view and controller.
-			TaskView tkv = new TaskView(task.getName(), task.getDueDate(),
-					task.getEstimatedEffort(), task.isArchived());
-			tkv.setController(new TaskController(tkv, task));
-			this.view.addTaskView(tkv);
+			if (!task.isArchived() || (task.isArchived() && showArchive)) {
+				// create stage view and controller.
+				TaskView tkv = new TaskView(task.getName(), task.getDueDate(),
+						task.getEstimatedEffort(), task.isArchived());
+				tkv.setController(new TaskController(tkv, task));
+				this.view.addTaskView(tkv);
+			}
 		}
 
 	}
