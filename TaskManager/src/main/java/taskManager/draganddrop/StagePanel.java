@@ -12,7 +12,6 @@ package taskManager.draganddrop;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.datatransfer.Transferable;
@@ -107,6 +106,7 @@ public class StagePanel extends JPanel {
 
 		if (changed) {
 			WorkflowModel.getInstance().save();
+			DDTransferHandler.dragSaved = true;
 		}
 
 		hidePlaceholder();
