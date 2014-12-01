@@ -264,8 +264,8 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	public void setProject(Project p) {
 		super.setProject(p);
 		System.out.println("setting workflow project");
-		getStages().forEach(s -> {
+		for (StageModel s : getStages()) {
 			s.setProject(p);
-		});
+		}
 	}
 }

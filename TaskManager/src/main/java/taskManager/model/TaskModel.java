@@ -17,7 +17,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
@@ -408,12 +407,5 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 			return ((TaskModel) o).getID().equals(this.getID());
 		}
 		return false;
-	}
-
-	@Override
-	public void setProject(Project p) {
-		super.setProject(p);
-		System.out.println("setting task project");
-		// TODO: set activity project
 	}
 }

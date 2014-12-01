@@ -416,8 +416,8 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	public void setProject(Project p) {
 		super.setProject(p);
 		System.out.println("setting stage project");
-		getTasks().forEach(t -> {
+		for (TaskModel t : getTasks()) {
 			t.setProject(p);
-		});
+		}
 	}
 }
