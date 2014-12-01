@@ -12,10 +12,9 @@ package taskManager.controller;
 import java.awt.Dimension;
 import java.time.Instant;
 import java.time.Period;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.swing.JPanel;
 
@@ -64,6 +63,7 @@ public class ReportsManager {
 		 *
 		 * @param o
 		 *            comparison object
+		 * 
 		 * @return int compare value
 		 */
 		@Override
@@ -73,7 +73,7 @@ public class ReportsManager {
 	}
 
 	private CategoryDataset dataset;
-	private List<UserData> data;
+	private Set<UserData> data;
 	private final WorkflowModel workflow;
 
 	/**
@@ -125,7 +125,7 @@ public class ReportsManager {
 
 		// We use a linked list here to have o(1) insertion. Since we only ever
 		// build this dataset and then read from it in order, this is efficient.
-		data = new LinkedList<UserData>();
+		data = new TreeSet<UserData>();
 		for (TaskModel task : stage.getTasks()) {
 			Instant completed = null;
 			boolean foundMoveEvent = false;
@@ -195,7 +195,6 @@ public class ReportsManager {
 			intervalName = "Month ";
 		}
 		final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-		Collections.sort(data); // Sort while inserting?
 		int seriesNum = 0;
 		final Instant boundary = start.plus(interval);
 		for (UserData userData : data) {
@@ -223,12 +222,15 @@ public class ReportsManager {
 	 *            The label for the x axis
 	 * @param ylabel
 	 *            The label for the y axis
+	 * 
 	 * @return a JPanel containing the chart
 	 */
-	public static JPanel createChart(String title,
-			String xlabel, String ylabel) {
+	public JPanel createChart(String title, String xlabel, String ylabel) {
+		if (dataset == null) {
+			throw new IllegalStateException(
+					"Tried to generate a chart without creating a dataset first!");
+		}
 
-		// create the chart...
 		final JFreeChart chart = ChartFactory.createBarChart(title, // chart
 																	// title
 				xlabel, // domain axis label
