@@ -21,8 +21,10 @@ import java.awt.Insets;
  * used for WorkflowView.
  *
  * @author Samee Swartz
+ * @author Clark Jacobsohn
  * @version Nov 24, 2014
  */
+@SuppressWarnings("serial")
 public class WorkflowLayout extends FlowLayout {
 
 	private int hgap = 5, vgap = 5;
@@ -63,15 +65,15 @@ public class WorkflowLayout extends FlowLayout {
 			for (int i = 0; i < nmembers; i++) {
 				Component m = target.getComponent(i);
 				if (m.isVisible() && !(m instanceof TaskInfoPreviewView)) {
-					// m.setSize(250, target.getSize().height - 15);
 					Dimension d = m.getPreferredSize();
-					m.setSize(d.width, d.height);
+					m.setSize(d.width, target.getHeight() - 15);
 
 					if (useBaseline) {
-						int baseline = m.getBaseline(d.width, d.height);
+						int baseline = m.getBaseline(d.width,
+								target.getHeight() - 15);
 						if (baseline >= 0) {
 							ascent[i] = baseline;
-							descent[i] = d.height - baseline;
+							descent[i] = target.getHeight() - baseline;
 						} else {
 							ascent[i] = -1;
 						}
@@ -81,14 +83,14 @@ public class WorkflowLayout extends FlowLayout {
 							x += hgap;
 						}
 						x += d.width;
-						rowh = Math.max(rowh, d.height);
+						rowh = Math.max(rowh, target.getHeight() - 15);
 					} else {
 						rowh = moveComponents(target, insets.left + hgap, y,
 								maxwidth - x, rowh, start, i, ltr, useBaseline,
 								ascent, descent);
 						x = d.width;
 						y += vgap + rowh;
-						rowh = d.height;
+						rowh = target.getHeight() - 15;
 						start = i;
 					}
 				} else if (m instanceof TaskInfoPreviewView) {
@@ -193,7 +195,6 @@ public class WorkflowLayout extends FlowLayout {
 				Component m = target.getComponent(i);
 				if (m.isVisible() && !(m instanceof TaskInfoPreviewView)) {
 					Dimension d = m.getMinimumSize();
-					// dim.height = Math.max(dim.height, d.height);
 					if (firstVisibleComponent) {
 						firstVisibleComponent = false;
 					} else {
@@ -201,7 +202,8 @@ public class WorkflowLayout extends FlowLayout {
 					}
 					dim.width += d.width;
 					if (useBaseline) {
-						int baseline = m.getBaseline(d.width, d.height);
+						int baseline = m.getBaseline(d.width,
+								target.getHeight() - 15);
 						if (baseline >= 0) {
 							maxAscent = Math.max(maxAscent, baseline);
 							maxDescent = Math.max(maxDescent, dim.height
@@ -252,7 +254,7 @@ public class WorkflowLayout extends FlowLayout {
 				Component m = target.getComponent(i);
 				if (m.isVisible() && !(m instanceof TaskInfoPreviewView)) {
 					Dimension d = m.getPreferredSize();
-					dim.height = Math.max(dim.height, d.height);
+					dim.height = Math.max(dim.height, target.getHeight() - 15);
 					if (firstVisibleComponent) {
 						firstVisibleComponent = false;
 					} else {
@@ -260,11 +262,12 @@ public class WorkflowLayout extends FlowLayout {
 					}
 					dim.width += d.width;
 					if (useBaseline) {
-						int baseline = m.getBaseline(d.width, d.height);
+						int baseline = m.getBaseline(d.width,
+								target.getHeight() - 15);
 						if (baseline >= 0) {
 							maxAscent = Math.max(maxAscent, baseline);
-							maxDescent = Math.max(maxDescent, d.height
-									- baseline);
+							maxDescent = Math.max(maxDescent,
+									target.getHeight() - 15 - baseline);
 						}
 					}
 				}
