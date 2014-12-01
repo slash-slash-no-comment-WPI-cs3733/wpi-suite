@@ -76,6 +76,9 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	// Associated requirement that this task corresponds to
 	private Integer reqID;
 
+	// Boolean for whether the tasked is archived or not.
+	private Boolean isArchived = false;
+
 	/**
 	 * Constructor assigns name, task id, and stage.
 	 *
@@ -357,6 +360,27 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	public void editActivity(int index, String newText) {
 		final ActivityModel toEdit = activities.get(index);
 		toEdit.setDescription(newText);
+	}
+
+	/**
+	 * 
+	 * Returns whether or not the task is archived
+	 *
+	 * @return the boolean.
+	 */
+	public Boolean isArchived() {
+		return isArchived;
+	}
+
+	/**
+	 * 
+	 * Sets task's archived property to given boolean.
+	 *
+	 * @param bool
+	 *            The boolean to set the task's isArchived field.
+	 */
+	public void setArchived(Boolean bool) {
+		isArchived = bool;
 	}
 
 	/**

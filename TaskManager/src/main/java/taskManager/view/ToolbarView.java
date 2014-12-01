@@ -161,6 +161,9 @@ public class ToolbarView extends JToolBar {
 		manageUsers.addActionListener(controller);
 		statistics.addActionListener(controller);
 
+		archive.setTransferHandler(new DDTransferHandler());
+		archive.setDropTarget(new DropTarget(delete, controller));
+
 		delete.setTransferHandler(new DDTransferHandler());
 		delete.setDropTarget(new DropTarget(delete, controller));
 	}

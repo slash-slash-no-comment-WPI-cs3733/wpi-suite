@@ -92,18 +92,44 @@ public class TaskController implements MouseListener {
 		model.getStage().removeTask(model);
 	}
 
+	/**
+	 * 
+	 * Returns whether or not the task is archived
+	 *
+	 * @return the boolean.
+	 */
+	public Boolean isArchived() {
+		return model.isArchived();
+	}
+
+	/**
+	 * 
+	 * Sets task's archived property to given boolean.
+	 *
+	 * @param bool
+	 *            The boolean to set the task's isArchived field.
+	 */
+	public void setArchived(Boolean bool) {
+		model.setArchived(bool);
+	}
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// makes the delete button unclickable
-		etv.enableDelete();
+		// makes the archive button clickable
+		etv.enableArchive();
+
+		// Set text for archive button.
+		if (model.isArchived()) {
+			etv.getArchiveButton().setText("Unarchive");
+		} else {
+			etv.getArchiveButton().setText("Archive");
+		}
 
 		// uses the title field to hold the unique id
 		etv.getTitle().setName(this.model.getID());
 
 		// uses description field to hold the name of the stage
 		etv.getDescription().setName(this.model.getStage().getName());
-		// makes the delete button unclickable
-		etv.enableDelete();
 
 		// populate editable fields with this tasks info
 		etv.setTitle(model.getName());

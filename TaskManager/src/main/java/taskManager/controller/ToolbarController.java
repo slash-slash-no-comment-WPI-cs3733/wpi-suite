@@ -95,12 +95,18 @@ public class ToolbarController extends DropTargetAdapter implements
 
 			switch (name) {
 			case ToolbarView.DELETE:
-				taskV.getController().deleteTask(); // remove from model
-				taskV.getParent().remove(taskV); // remove from view
-				target.setEnabled(false);
-				WorkflowModel.getInstance().save();
+				if (target.isEnabled()) {
+					taskV.getController().deleteTask(); // remove from model
+					taskV.getParent().remove(taskV); // remove from view
+					target.setEnabled(false);
+					WorkflowModel.getInstance().save();
+				}
 				break;
 			case ToolbarView.ARCHIVE:
+				taskV.getController().setArchived(
+						!taskV.getController().isArchived());
+				target.setEnabled(false);
+				WorkflowModel.getInstance().save();
 				break;
 			}
 		}
@@ -112,8 +118,27 @@ public class ToolbarController extends DropTargetAdapter implements
 	@Override
 	public void dragEnter(DropTargetDragEvent e) {
 		Component comp = e.getDropTargetContext().getComponent();
-		comp.setEnabled(true);
-
+		if (comp instanceof JLabel) {
+			String name = ((JLabel) comp).getName();
+			TaskView taskV;
+			try {
+				taskV = (TaskView) e.getTransferable().getTransferData(
+						DDTransferHandler.getTaskFlavor());
+			} catch (Exception ex) {
+				System.out.println(ex.getStackTrace());
+				return;
+			}
+			switch (name) {
+			case ToolbarView.DELETE:
+				if (taskV.getController().isArchived()) {
+					comp.setEnabled(true);
+				}
+				break;
+			case ToolbarView.ARCHIVE:
+				comp.setEnabled(true);
+				break;
+			}
+		}
 	}
 
 	/**
