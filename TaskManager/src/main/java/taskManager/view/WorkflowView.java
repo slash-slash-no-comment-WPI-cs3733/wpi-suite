@@ -32,7 +32,6 @@ public class WorkflowView extends JPanel {
 
 		// arranges the stages horizontally and evenly spaced
 		this.setLayout(new FlowLayout());
-
 	}
 
 	/**
@@ -94,7 +93,7 @@ public class WorkflowView extends JPanel {
 	 */
 	@Override
 	public void setVisible(boolean visible) {
-		if (visible && controller != null) {
+		if (visible && controller != null && !isVisible()) {
 			controller.reloadData();
 		}
 		super.setVisible(visible);
