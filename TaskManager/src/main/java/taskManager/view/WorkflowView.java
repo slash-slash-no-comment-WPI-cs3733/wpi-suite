@@ -94,7 +94,7 @@ public class WorkflowView extends JLayeredPane {
 	 */
 	@Override
 	public void setVisible(boolean visible) {
-		if (visible && controller != null) {
+		if (visible && controller != null && !isVisible()) {
 			controller.reloadData();
 		}
 		super.setVisible(visible);
