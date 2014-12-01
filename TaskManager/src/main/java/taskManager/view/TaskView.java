@@ -56,9 +56,9 @@ public class TaskView extends TaskPanel {
 				.createTitledBorder(raisedbevel);
 		title.setTitlePosition(TitledBorder.LEFT);
 		this.setBorder(title);
-		this.setMinimumSize(new Dimension(220, 40));
-		this.setPreferredSize(new Dimension(220, 40));
-		this.setMaximumSize(new Dimension(220, 40));
+		this.setMinimumSize(new Dimension(200, 40));
+		this.setPreferredSize(new Dimension(200, 40));
+		this.setMaximumSize(new Dimension(200, 40));
 
 		// convert Date object to Calendar object to avoid using deprecated
 		// Date methods.
@@ -77,7 +77,7 @@ public class TaskView extends TaskPanel {
 		// This creates a maximum text-string length before the name gets
 		// truncated in the view
 
-		nameLabel.setText("Average Name Length");
+		nameLabel.setText("Average Name Length plu");
 		final Dimension size = nameLabel.getPreferredSize();
 
 		nameLabel.setMaximumSize(size);

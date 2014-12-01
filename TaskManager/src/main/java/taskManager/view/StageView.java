@@ -50,6 +50,7 @@ public class StageView extends JPanel {
 	private JScrollPane stage = new JScrollPane(tasks,
 			JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 			JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+	private final int STAGE_WIDTH = 200;
 
 	/**
 	 * 
@@ -63,7 +64,7 @@ public class StageView extends JPanel {
 		// stage view is a panel that contains the title and the scroll pane
 		// w/tasks
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		this.setPreferredSize(new Dimension(200, 450));
+		this.setPreferredSize(new Dimension(STAGE_WIDTH, 450));
 		this.setName(name);
 
 		// organizes the tasks in a vertical list
@@ -72,13 +73,13 @@ public class StageView extends JPanel {
 		// creates the label for the name of the stage and adds it to the block
 		label = new JPanel();
 		label.setName(TITLE);
-		label.setMaximumSize(new Dimension(175, 25));
+		label.setMaximumSize(new Dimension(STAGE_WIDTH - 15, 25));
 		// The stage's title label
 		labelName = new JLabel(name);
-		labelName.setSize(new Dimension(175, 25));
-		labelName.setMaximumSize(new Dimension(175, 25));
-		labelName.setMinimumSize(new Dimension(175, 25));
-		labelName.setPreferredSize(new Dimension(175, 25));
+		labelName.setSize(new Dimension(STAGE_WIDTH - 15, 25));
+		labelName.setMaximumSize(new Dimension(STAGE_WIDTH - 15, 25));
+		labelName.setMinimumSize(new Dimension(STAGE_WIDTH - 15, 25));
+		labelName.setPreferredSize(new Dimension(STAGE_WIDTH - 15, 25));
 		label.add(labelName);
 
 		// The text field to change the stage's title
@@ -119,8 +120,8 @@ public class StageView extends JPanel {
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		stage.setBorder(BorderFactory.createLineBorder(Color.black));
-		stage.setMinimumSize(new Dimension(175, 450));
-		stage.setSize(new Dimension(175, 450));
+		stage.setMinimumSize(new Dimension(STAGE_WIDTH, 405));
+		stage.setSize(new Dimension(STAGE_WIDTH, 405));
 
 		this.setName(name);
 		updateTasks();
@@ -141,6 +142,13 @@ public class StageView extends JPanel {
 	 */
 	public void addTaskView(TaskView tkv) {
 		tkv.setAlignmentX(CENTER_ALIGNMENT);
+		// tkv.setSize(new Dimension(STAGE_WIDTH, tkv.getSize().height));
+		// tkv.setPreferredSize(new Dimension(STAGE_WIDTH,
+		// tkv.getSize().height));
+		// tkv.setMinimumSize(new Dimension(STAGE_WIDTH - 20,
+		// tkv.getSize().height));
+		// tkv.setMaximumSize(new Dimension(STAGE_WIDTH - 20,
+		// tkv.getSize().height));
 		tasks.add(tkv);
 	}
 

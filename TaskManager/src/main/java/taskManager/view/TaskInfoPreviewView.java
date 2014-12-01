@@ -12,12 +12,13 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Point;
+import java.util.Calendar;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextPane;
+import javax.swing.JTextArea;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -87,18 +88,25 @@ public class TaskInfoPreviewView extends JPanel {
 
 		// The task's description
 		// TODO: Make this have a '...' when it overflows
-		JTextPane description = new JTextPane();
+		JTextArea description = new JTextArea();
 		description.setText(this.taskM.getDescription());
 		description.setSize(new Dimension(210, 80));
 		description.setMaximumSize(new Dimension(210, 80));
 		description.setMinimumSize(new Dimension(210, 80));
 		description.setPreferredSize(new Dimension(210, 80));
 		description.setAlignmentX(CENTER_ALIGNMENT);
+		description.setEditable(false);
+		description.setLineWrap(true);
+		description.setWrapStyleWord(true);
 		info.add(description);
 
 		// The task's due date
 		JLabel due = new JLabel("Due:");
-		JLabel date = new JLabel("  " + this.taskM.getDueDate());
+		final Calendar calDate = Calendar.getInstance();
+		calDate.setTime(this.taskM.getDueDate());
+		JLabel date = new JLabel("  " + (calDate.get(Calendar.MONTH) + 1) + "/"
+				+ calDate.get(Calendar.DATE) + "/"
+				+ (calDate.get(Calendar.YEAR)));
 		date.setMaximumSize(new Dimension(200, 20));
 		info.add(due);
 		info.add(date);
