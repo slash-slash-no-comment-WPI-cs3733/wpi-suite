@@ -13,10 +13,15 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -53,6 +58,9 @@ public class ReportsToolbarView extends JPanel {
 	public static final String GENERATE = "generate";
 	
 	private JPanel window;
+	
+	// Variable to Insert Images
+	Image img;
 
 	// Stage picker
 	private JLabel stageTitle;
@@ -91,7 +99,7 @@ public class ReportsToolbarView extends JPanel {
 
 	//TODO private ReportsController controller;
 
-	public ReportsToolbarView() {
+	public ReportsToolbarView() throws IOException {
 		
 		Dimension nt_panelSize = getPreferredSize();
 		nt_panelSize.width = 1000;
@@ -104,7 +112,7 @@ public class ReportsToolbarView extends JPanel {
 		this.setLayout(new FlowLayout());
 		
 		// Stage 
-		stageTitle = new JLabel("Stage");
+		stageTitle = new JLabel(" Select Stage");
 		stages = new JComboBox<String>();
 		stages.setName(STAGE_NAME);
 		
@@ -159,7 +167,7 @@ public class ReportsToolbarView extends JPanel {
 		
 		// Users
 		usersLabel = new JLabel("Users");
-		allUsers = new JCheckBox("All Users");
+		allUsers = new JCheckBox("All");
 		allUsers.setName(ALL_USERS);
 		users = new JList<JCheckBox>();
 		users.setName(USERS_LIST);
@@ -174,6 +182,8 @@ public class ReportsToolbarView extends JPanel {
 		window.setLayout(new GridBagLayout());
 
 		GridBagConstraints toolbarGrid = new GridBagConstraints();
+		img = ImageIO.read(this.getClass().getResourceAsStream("reports-icon.png"));
+		generateGraph.setIcon((Icon) img);
 		
 		// One Column
 		toolbarGrid.anchor = GridBagConstraints.LINE_START;
