@@ -57,6 +57,7 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	private JButton english;
 	private JButton pirate;
 	private JButton todo;
+	private JButton japanese;
 
 	private JLabel projectName = new JLabel();
 
@@ -100,6 +101,8 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		pirate.setName(Localizer.PIRATE);
 		todo = new JButton("TODO");
 		todo.setName(Localizer.TODO);
+		japanese = new JButton("Japanese");
+		japanese.setName(Localizer.JAPANESE);
 
 		// Add icons
 		Image img;
@@ -151,6 +154,7 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		buttons.add(english);
 		buttons.add(pirate);
 		buttons.add(todo);
+		buttons.add(japanese);
 
 		// Title and buttons to the toolbar
 		this.add(title);
@@ -180,6 +184,7 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		english.addActionListener(controller);
 		pirate.addActionListener(controller);
 		todo.addActionListener(controller);
+		japanese.addActionListener(controller);
 	}
 
 	@Override

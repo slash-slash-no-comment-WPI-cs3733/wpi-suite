@@ -24,6 +24,7 @@ public class Localizer {
 	public static final String ENGLISH = "english";
 	public static final String PIRATE = "pirate";
 	public static final String TODO = "TODO";
+	public static final String JAPANESE = "japanese";
 
 	// the current language, default to english
 	private static String currentLanguage = ENGLISH;
