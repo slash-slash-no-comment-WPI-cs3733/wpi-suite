@@ -850,4 +850,16 @@ public class EditTaskView extends JPanel {
 	public EditTaskController getController() {
 		return controller;
 	}
+
+	/**
+	 * 
+	 * Gets the mode of the EditTaskView. Should probably be moved to the
+	 * controller completely.
+	 *
+	 * @return The mode of this view (whether it's a new view or one being
+	 *         edited)
+	 */
+	public Mode getMode() {
+		return mode;
+	}
 }

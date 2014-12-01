@@ -487,7 +487,11 @@ public class EditTaskController implements ActionListener {
 	}
 
 	public void addTab(TabPaneController tpc) {
-		tpc.addTab("Create Task", etv, true);
+		String tabName = "Create Task";
+		if (!Mode.CREATE.equals(etv.getMode())) {
+			tabName = model.getName();
+		}
+		tpc.addTab(tabName, etv, true);
 
 	}
 
