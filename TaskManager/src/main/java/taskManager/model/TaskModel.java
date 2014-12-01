@@ -377,8 +377,6 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		actualEffort = task.getActualEffort();
 		activities = task.getActivities();
 		reqID = task.getReqID();
-		System.out.println(getClass() + "set project to "
-				+ getProject().getProjectName());
 	}
 
 	@Override
