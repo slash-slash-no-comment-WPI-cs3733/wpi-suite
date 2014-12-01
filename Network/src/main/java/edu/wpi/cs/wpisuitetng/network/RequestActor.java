@@ -31,7 +31,7 @@ import edu.wpi.cs.wpisuitetng.network.models.ResponseModel;
  */
 public class RequestActor extends Thread {
 	private Request request;
-	
+
 	/**
 	 * Constructor.
 	 * 
@@ -39,10 +39,12 @@ public class RequestActor extends Thread {
 	 */
 	public RequestActor(Request request) {
 		this.request = request;
+		this.setDaemon(true);
 	}
-	
+
 	/**
-	 * Overrides Thread's run method. This will be called when the thread is started.
+	 * Overrides Thread's run method. This will be called when the thread is
+	 * started.
 	 * 
 	 * @see java.lang.Thread#run()
 	 */
@@ -51,7 +53,7 @@ public class RequestActor extends Thread {
 		boolean requestSendFail = false;
 		boolean responseBodyReadTimeout = false;
 		Exception exceptionRecv = null;
-		
+
 		try {
 			// setup connection
 			connection = (HttpURLConnection) request.getUrl().openConnection();
@@ -60,18 +62,21 @@ public class RequestActor extends Thread {
 			connection.setRequestMethod(request.getHttpMethod().toString());
 			connection.setDoInput(true);
 			connection.setRequestProperty("Connection", "close");
-			
+
 			// set request headers
 			for (String requestHeaderKey : request.getHeaders().keySet()) {
-				for (String requestHeaderValue : request.getHeaders().get(requestHeaderKey)) {
-					connection.setRequestProperty(requestHeaderKey, requestHeaderValue);
+				for (String requestHeaderValue : request.getHeaders().get(
+						requestHeaderKey)) {
+					connection.setRequestProperty(requestHeaderKey,
+							requestHeaderValue);
 				}
 			}
-			
+
 			// if there is a body to send, send it
 			if (request.getBody() != null) {
 				connection.setDoOutput(true);
-				DataOutputStream out = new DataOutputStream(connection.getOutputStream());
+				DataOutputStream out = new DataOutputStream(
+						connection.getOutputStream());
 				out.writeBytes(request.getBody());
 				out.flush();
 				out.close();
@@ -80,49 +85,52 @@ public class RequestActor extends Thread {
 			else {
 				connection.connect();
 			}
-			
+
 			// get the response headers
-			Map<String, List<String>> responseHeaders = connection.getHeaderFields();
-			
+			Map<String, List<String>> responseHeaders = connection
+					.getHeaderFields();
+
 			// get the response code
 			int responseCode = connection.getResponseCode();
-			
+
 			// get the response message
 			String responseMessage = connection.getResponseMessage();
 
 			// get the response body
 			String responseBody = "";
 			InputStream in;
-			
-			if (responseCode < 400) {	// if the request succeeds, get the InputStream
+
+			if (responseCode < 400) { // if the request succeeds, get the
+										// InputStream
 				in = connection.getInputStream();
-			}
-			else {	// if the request fails, get the ErrorStream
+			} else { // if the request fails, get the ErrorStream
 				in = connection.getErrorStream();
 			}
-			
+
 			// read response body
-			BufferedReader reader = new BufferedReader(new InputStreamReader(in), 1);
+			BufferedReader reader = new BufferedReader(
+					new InputStreamReader(in), 1);
 			String line;
 			try {
-				while((line = reader.readLine()) != null) {
+				while ((line = reader.readLine()) != null) {
 					responseBody += line + "\n";
 				}
-			} catch (SocketTimeoutException e) {	// if there is a timeout while reading the body
+			} catch (SocketTimeoutException e) { // if there is a timeout while
+													// reading the body
 				exceptionRecv = e;
 				responseBodyReadTimeout = true;
-			} catch (IOException e) {	// if readLine() fails
+			} catch (IOException e) { // if readLine() fails
 				exceptionRecv = e;
-			}
-			finally {	// make sure that the BufferedReader is closed
+			} finally { // make sure that the BufferedReader is closed
 				if (reader != null) {
 					reader.close();
 				}
 			}
-			
+
 			// create Response
-			ResponseModel response = new Response(responseCode, responseMessage, responseHeaders, responseBody);
-			
+			ResponseModel response = new Response(responseCode,
+					responseMessage, responseHeaders, responseBody);
+
 			// set the Request's response to the newly created response
 			request.setResponse(response);
 		} catch (IOException e) {
@@ -131,25 +139,24 @@ public class RequestActor extends Thread {
 		} finally {
 			// close the connection
 			if (connection != null) {
-				connection.disconnect(); 
+				connection.disconnect();
 			}
-			
+
 			if (!request.isAsynchronous) {
 				// Do nothing
-			}
-			else if (requestSendFail) {
+			} else if (requestSendFail) {
 				request.notifyObserversFail(exceptionRecv);
-			}
-			else if (responseBodyReadTimeout) {
+			} else if (responseBodyReadTimeout) {
 				request.notifyObserversFail(exceptionRecv);
-			}
-			else if (request.getResponse() != null) {
+			} else if (request.getResponse() != null) {
 				// On status code 2xx
-				if (request.getResponse().getStatusCode() >= 200 && request.getResponse().getStatusCode() < 300) {
+				if (request.getResponse().getStatusCode() >= 200
+						&& request.getResponse().getStatusCode() < 300) {
 					request.notifyObserversResponseSuccess();
 				}
 				// On status code 4xx or 5xx
-				else if (request.getResponse().getStatusCode() >= 400 && request.getResponse().getStatusCode() < 600) {
+				else if (request.getResponse().getStatusCode() >= 400
+						&& request.getResponse().getStatusCode() < 600) {
 					request.notifyObserversResponseError();
 				}
 				// On other status codes
