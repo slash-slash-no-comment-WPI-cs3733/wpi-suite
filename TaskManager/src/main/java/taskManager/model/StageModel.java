@@ -376,7 +376,6 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 */
 	public void makeIdenticalTo(StageModel stage) {
 		setID(stage.getID());
-		setProject(stage.getProject());
 		name = stage.getName();
 		System.out.println(getClass() + "set project to "
 				+ getProject().getProjectName());

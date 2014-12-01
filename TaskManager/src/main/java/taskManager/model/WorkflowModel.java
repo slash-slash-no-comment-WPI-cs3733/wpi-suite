@@ -193,7 +193,6 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	public void makeIdenticalTo(WorkflowModel workflow) {
 		setID(workflow.getID());
 		stageList = workflow.getStages();
-		setProject(workflow.getProject());
 		System.out.println(getClass() + "set project to "
 				+ getProject().getProjectName());
 	}
