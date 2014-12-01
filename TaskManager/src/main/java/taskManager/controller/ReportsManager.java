@@ -17,6 +17,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import javax.swing.JPanel;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -43,7 +45,7 @@ public class ReportsManager {
 	/**
 	 * An internal data structure for building the bar chart. Sortable and
 	 * small.
-	 * 
+	 *
 	 * @author Joseph Blackman
 	 */
 	private class UserData implements Comparable<UserData> {
@@ -59,7 +61,7 @@ public class ReportsManager {
 
 		/**
 		 * Method compareTo.
-		 * 
+		 *
 		 * @param o
 		 *            comparison object
 		 * @return int compare value
@@ -121,7 +123,7 @@ public class ReportsManager {
 			throw new IllegalArgumentException("Invalid stage");
 		}
 
-		// We use a linked list here to have o91) insertion. Since we only ever
+		// We use a linked list here to have o(1) insertion. Since we only ever
 		// build this dataset and then read from it in order, this is efficient.
 		data = new LinkedList<UserData>();
 		for (TaskModel task : stage.getTasks()) {
@@ -212,20 +214,25 @@ public class ReportsManager {
 		}
 	}
 
-	// This method generates the chart from the dataset above. How it gets
-	// integrated with JPanels is another question...
 	/**
-	 * Method createChart.
-	 * 
-	 * @return JFreeChart
+	 * Creates a chart from the given input
+	 *
+	 * @param title
+	 *            The title of the chart
+	 * @param xlabel
+	 *            The label for the x axis
+	 * @param ylabel
+	 *            The label for the y axis
+	 * @return a JPanel containing the chart
 	 */
-	public JFreeChart createChart() {
+	public static JPanel createChart(String title,
+			String xlabel, String ylabel) {
 
 		// create the chart...
-		final JFreeChart chart = ChartFactory.createBarChart("Bar Chart Demo", // chart
-																				// title
-				"Time interval", // domain axis label
-				"Effort completed", // range axis label
+		final JFreeChart chart = ChartFactory.createBarChart(title, // chart
+																	// title
+				xlabel, // domain axis label
+				ylabel, // range axis label
 				dataset, // data
 				PlotOrientation.VERTICAL, // orientation
 				true, // include legend
@@ -242,9 +249,12 @@ public class ReportsManager {
 		((NumberAxis) plot.getRangeAxis()).setStandardTickUnits(NumberAxis
 				.createIntegerTickUnits());
 
+		// put bars next to each other
+		plot.getDomainAxis().setCategoryMargin(0);
+
 		// disable bar outlines...
 		((BarRenderer) plot.getRenderer()).setDrawBarOutline(false);
 
-		return chart;
+		return new ChartPanel(chart, false);
 	}
 }
