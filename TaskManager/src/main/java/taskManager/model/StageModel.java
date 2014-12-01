@@ -394,11 +394,6 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 
 	@Override
 	public void delete() {
-
-		getTasks().forEach(t -> {
-			t.delete();
-		});
-
 		final Request request = Network.getInstance().makeRequest(
 				"taskmanager/stage/" + getID(), HttpMethod.DELETE);
 		request.setBody(toJson());

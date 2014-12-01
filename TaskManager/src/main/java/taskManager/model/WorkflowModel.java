@@ -215,10 +215,6 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		// it may not have these changes yet
 		FetchWorkflowObserver.ignoreNextResponse = true;
 
-		getStages().forEach(s -> {
-			s.delete();
-		});
-
 		final Request request = Network.getInstance().makeRequest(
 				"taskmanager/workflow/" + getID(), HttpMethod.POST);
 		request.setBody(toJson());
