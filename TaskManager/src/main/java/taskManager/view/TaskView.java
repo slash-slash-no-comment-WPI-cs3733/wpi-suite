@@ -9,17 +9,24 @@
 package taskManager.view;
 
 import java.awt.Dimension;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.MouseAdapter;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
 import taskManager.controller.TaskController;
-import taskManager.draganddrop.TaskPanel;
+import taskManager.draganddrop.DDTransferHandler;
+import taskManager.draganddrop.DraggablePanelListener;
 
 /**
  * @author Beth Martino
@@ -28,7 +35,7 @@ import taskManager.draganddrop.TaskPanel;
  * @version November 18, 2014
  */
 
-public class TaskView extends TaskPanel {
+public class TaskView extends JPanel implements Transferable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -86,6 +93,18 @@ public class TaskView extends TaskPanel {
 		this.add(nameLabel);
 		this.add(dueLabel);
 
+		// -----------------------
+		// Drag and drop handling:
+		MouseAdapter listener = new DraggablePanelListener();
+		addMouseListener(listener);
+		addMouseMotionListener(listener);
+
+		setTransferHandler(new DDTransferHandler());
+
+		// setTransferHandler creates DropTarget by default; we don't want tasks
+		// to respond to drops
+		setDropTarget(null);
+
 	}
 
 	@Override
@@ -94,14 +113,14 @@ public class TaskView extends TaskPanel {
 	}
 
 	/**
-	 * Attaches the task controller to this view
+	 * Attaches the task controller to this view and associates listeners
 	 * 
 	 * @param controller
 	 *            the controller to be attached to this view
 	 */
 	public void setController(TaskController controller) {
 		this.controller = controller;
-		this.addMouseListener(this.controller);
+		this.addMouseListener(controller);
 	}
 
 	public TaskController getController() {
@@ -112,6 +131,42 @@ public class TaskView extends TaskPanel {
 	public void setVisible(boolean visible) {
 		controller.resetBackground();
 		super.setVisible(visible);
+	}
+
+	// ----------------------------
+	// Drag-and-drop transferable implementation
+
+	/*
+	 * @see
+	 * java.awt.datatransfer.Transferable#getTransferData(java.awt.datatransfer
+	 * .DataFlavor)
+	 */
+	@Override
+	public Object getTransferData(DataFlavor flavor)
+			throws UnsupportedFlavorException, IOException {
+		if (!flavor.equals(DDTransferHandler.getTaskFlavor())) {
+			throw new UnsupportedFlavorException(flavor);
+		}
+		// return this panel as the transfer data
+		return this;
+	}
+
+	/*
+	 * @see java.awt.datatransfer.Transferable#getTransferDataFlavors()
+	 */
+	@Override
+	public DataFlavor[] getTransferDataFlavors() {
+		DataFlavor[] flavors = { DDTransferHandler.getTaskFlavor() };
+		return flavors;
+	}
+
+	/*
+	 * @see java.awt.datatransfer.Transferable#isDataFlavorSupported(java.awt.
+	 * datatransfer.DataFlavor)
+	 */
+	@Override
+	public boolean isDataFlavorSupported(DataFlavor flavor) {
+		return flavor.equals(DDTransferHandler.getTaskFlavor());
 	}
 
 }
