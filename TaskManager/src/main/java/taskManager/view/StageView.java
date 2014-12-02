@@ -120,7 +120,7 @@ public class StageView extends JPanel {
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		stage.setBorder(BorderFactory.createLineBorder(Color.black));
-		stage.setMinimumSize(new Dimension(STAGE_WIDTH, 405));
+		stage.setMinimumSize(new Dimension(STAGE_WIDTH, 300));
 		stage.setSize(new Dimension(STAGE_WIDTH, 405));
 
 		this.setName(name);
