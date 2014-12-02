@@ -406,8 +406,9 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	@Override
 	public void save() {
 		final Request request = Network.getInstance().makeRequest(
-				"taskmanager/task", HttpMethod.POST);
+				"taskmanager/task/" + getID(), HttpMethod.POST);
 		request.setBody(toJson());
+		System.out.println("Saving " + getClass() + ": " + toJson());
 		request.addObserver(getObserver());
 		request.send();
 	}
@@ -415,8 +416,9 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	@Override
 	public void delete() {
 		final Request request = Network.getInstance().makeRequest(
-				"taskmanager/task", HttpMethod.DELETE);
+				"taskmanager/task/" + getID(), HttpMethod.DELETE);
 		request.setBody(toJson());
+		System.out.println("Deleting " + getClass() + ": " + toJson());
 		request.addObserver(getObserver());
 		request.send();
 	}
