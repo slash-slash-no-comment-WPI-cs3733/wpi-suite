@@ -10,9 +10,9 @@ package taskManager.controller;
 
 import java.util.List;
 
+import taskManager.JanewayModule;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
-import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
 import taskManager.view.TaskView;
 
@@ -43,10 +43,14 @@ public class StageController {
 
 		// Get all the tasks associated with this Stage.
 		final List<TaskModel> tasks = this.model.getTasks();
-		Boolean showArchive = WorkflowModel.getInstance().isArchiveShown();
+
+		// Get state of archive shown check box.
+		boolean showArchive = JanewayModule.toolV.isArchiveShown();
 
 		// Add the tasks.
 		for (TaskModel task : tasks) {
+			// Add only if task is not archived or when task is archived and
+			// archive shown is set to true.
 			if (!task.isArchived() || (task.isArchived() && showArchive)) {
 				// create stage view and controller.
 				TaskView tkv = new TaskView(task.getName(), task.getDueDate(),

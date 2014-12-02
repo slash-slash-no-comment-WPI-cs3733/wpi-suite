@@ -40,8 +40,6 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	private static final Logger logger = Logger.getLogger(WorkflowModel.class
 			.getName());
 
-	private Boolean archiveShown = false;
-
 	/**
 	 * Constructor for WorkflowModel.
 	 */
@@ -193,27 +191,6 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 */
 	public List<StageModel> getStages() {
 		return stageList;
-	}
-
-	/**
-	 * 
-	 * Returns whether archive is shown.
-	 *
-	 * @return the boolean
-	 */
-	public Boolean isArchiveShown() {
-		return archiveShown;
-	}
-
-	/**
-	 * 
-	 * Sets the archiveShown value to the given boolean.
-	 *
-	 * @param bool
-	 *            the boolean to set to.
-	 */
-	public void setArchiveShown(Boolean bool) {
-		archiveShown = bool;
 	}
 
 	/**

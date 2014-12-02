@@ -11,6 +11,7 @@ package taskManager.controller;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -34,7 +35,7 @@ import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
  * @author Stefan Alexander
  * @version November 9, 2014
  */
-public class TaskController implements MouseListener {
+public class TaskController implements MouseListener, MouseMotionListener {
 
 	private final TaskView view;
 	private final TaskModel model;
@@ -98,7 +99,7 @@ public class TaskController implements MouseListener {
 	 *
 	 * @return the boolean.
 	 */
-	public Boolean isArchived() {
+	public boolean isArchived() {
 		return model.isArchived();
 	}
 
@@ -109,7 +110,7 @@ public class TaskController implements MouseListener {
 	 * @param bool
 	 *            The boolean to set the task's isArchived field.
 	 */
-	public void setArchived(Boolean bool) {
+	public void setArchived(boolean bool) {
 		model.setArchived(bool);
 	}
 
@@ -229,6 +230,19 @@ public class TaskController implements MouseListener {
 		if (background != null) {
 			view.setBackground(background);
 		}
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// Enable/disable the archive and delete icons when dragged.
+		JanewayModule.toolV.setArchiveEnabled(true);
+		JanewayModule.toolV.setDeleteEnabled(model.isArchived());
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

@@ -10,8 +10,6 @@ package taskManager.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -21,7 +19,6 @@ import javax.swing.JLabel;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
-import taskManager.JanewayModule;
 import taskManager.controller.TaskController;
 import taskManager.draganddrop.TaskPanel;
 
@@ -94,23 +91,6 @@ public class TaskView extends TaskPanel {
 
 		this.add(nameLabel);
 		this.add(dueLabel);
-
-		// Enable/disable the archive and delete icons when dragged.
-		this.addMouseMotionListener(new MouseMotionListener() {
-
-			@Override
-			public void mouseDragged(MouseEvent e) {
-				JanewayModule.toolV.setArchiveEnabled(true);
-				JanewayModule.toolV.setDeleteEnabled(archived);
-			}
-
-			@Override
-			public void mouseMoved(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-		});
 	}
 
 	@Override
@@ -126,7 +106,8 @@ public class TaskView extends TaskPanel {
 	 */
 	public void setController(TaskController controller) {
 		this.controller = controller;
-		this.addMouseListener(this.controller);
+		this.addMouseListener(controller);
+		this.addMouseMotionListener(controller);
 	}
 
 	public TaskController getController() {

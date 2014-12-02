@@ -13,6 +13,8 @@ import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -31,7 +33,7 @@ import taskManager.view.ToolbarView;
  * @author Sam Khalandovsky
  */
 public class ToolbarController extends DropTargetAdapter implements
-		ActionListener {
+		ActionListener, ItemListener {
 
 	private final TabPaneView tabPaneV;
 	private final TabPaneController tabPaneC;
@@ -96,15 +98,25 @@ public class ToolbarController extends DropTargetAdapter implements
 				if (target.isEnabled()) {
 					taskV.getController().deleteTask(); // remove from model
 					taskV.getParent().remove(taskV); // remove from view
+					// Reload and save workflow.
+					JanewayModule.tabPaneC.getTabView().reloadWorkflow();
 					WorkflowModel.getInstance().save();
 				}
 				break;
 			case ToolbarView.ARCHIVE:
 				taskV.getController().setArchived(
 						!taskV.getController().isArchived());
+				// Reload and save workflow.
+				JanewayModule.tabPaneC.getTabView().reloadWorkflow();
 				WorkflowModel.getInstance().save();
 				break;
 			}
 		}
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		// Reload the workflow view.
+		JanewayModule.tabPaneC.getTabView().reloadWorkflow();
 	}
 }

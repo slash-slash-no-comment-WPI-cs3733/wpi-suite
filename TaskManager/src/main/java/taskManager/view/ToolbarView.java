@@ -14,8 +14,6 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.dnd.DropTarget;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -28,7 +26,6 @@ import javax.swing.JToolBar;
 
 import taskManager.controller.ToolbarController;
 import taskManager.draganddrop.DDTransferHandler;
-import taskManager.model.WorkflowModel;
 
 /**
  * The Task Managers tab's toolbar panel.
@@ -55,6 +52,7 @@ public class ToolbarView extends JToolBar {
 	private JButton statistics;
 	private JLabel archive;
 	private JLabel delete;
+	private JCheckBox archiveCheckBox;
 
 	private JLabel projectName;
 
@@ -130,20 +128,7 @@ public class ToolbarView extends JToolBar {
 		archive.setEnabled(false);
 
 		// Checkbox for toggling showing archived tasks.
-		JCheckBox archiveCheckBox = new JCheckBox("Show archived tasks");
-
-		// Add listener for toggling archive view.
-		archiveCheckBox.addItemListener(new ItemListener() {
-
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				// Set the archive shown boolean to the checkbox value.
-				WorkflowModel.getInstance().setArchiveShown(
-						archiveCheckBox.isSelected());
-				WorkflowModel.getInstance().save();
-			}
-
-		});
+		archiveCheckBox = new JCheckBox("Show archived tasks");
 
 		archive.setName(ARCHIVE);
 		delete.setToolTipText("Drag here to delete task");
@@ -183,6 +168,8 @@ public class ToolbarView extends JToolBar {
 		manageUsers.addActionListener(controller);
 		statistics.addActionListener(controller);
 
+		archiveCheckBox.addItemListener(controller);
+
 		archive.setTransferHandler(new DDTransferHandler());
 		archive.setDropTarget(new DropTarget(delete, controller));
 
@@ -199,11 +186,15 @@ public class ToolbarView extends JToolBar {
 		projectName.setText(name);
 	}
 
-	public void setArchiveEnabled(Boolean bool) {
+	public void setArchiveEnabled(boolean bool) {
 		archive.setEnabled(bool);
 	}
 
-	public void setDeleteEnabled(Boolean bool) {
+	public void setDeleteEnabled(boolean bool) {
 		delete.setEnabled(bool);
+	}
+
+	public boolean isArchiveShown() {
+		return archiveCheckBox.isSelected();
 	}
 }

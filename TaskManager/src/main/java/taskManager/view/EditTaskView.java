@@ -694,7 +694,7 @@ public class EditTaskView extends JPanel {
 	 *
 	 * @param boolean for whether or not to enable.
 	 */
-	public void setRefreshEnabled(Boolean b) {
+	public void setRefreshEnabled(boolean b) {
 		refreshActivities.setEnabled(b);
 	}
 
@@ -833,7 +833,7 @@ public class EditTaskView extends JPanel {
 	 * @param bool
 	 *            boolean to set the button to.
 	 */
-	public void setDeleteEnabled(Boolean bool) {
+	public void setDeleteEnabled(boolean bool) {
 		delete.setEnabled(bool);
 	}
 
