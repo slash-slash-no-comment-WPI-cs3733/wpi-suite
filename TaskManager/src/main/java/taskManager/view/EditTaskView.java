@@ -73,6 +73,7 @@ public class EditTaskView extends JPanel {
 	private JButton addUser;
 	private JButton removeUser;
 	private JButton archive;
+	private JButton delete;
 	private JButton addReq;
 	private JButton submitComment;
 	private JButton refreshActivities;
@@ -209,6 +210,9 @@ public class EditTaskView extends JPanel {
 
 		// JButtons
 		// Delete Task and close the window
+		delete = new JButton("Delete");
+		delete.setName(DELETE);
+		// Archive
 		archive = new JButton("Archive");
 		archive.setName(ARCHIVE);
 		// Add user to list
@@ -365,6 +369,7 @@ public class EditTaskView extends JPanel {
 		bottomBtns.add(cancel);
 		if (this.mode == Mode.EDIT) {
 			bottomBtns.add(archive);
+			bottomBtns.add(delete);
 		}
 		newTaskGridBag.gridy = 11;
 		window.add(bottomBtns, newTaskGridBag);
@@ -397,6 +402,7 @@ public class EditTaskView extends JPanel {
 		addReq.addActionListener(controller);
 		submitComment.addActionListener(controller);
 		archive.addActionListener(controller);
+		delete.addActionListener(controller);
 		refreshActivities.addActionListener(controller);
 	}
 
@@ -818,6 +824,17 @@ public class EditTaskView extends JPanel {
 	 */
 	public void addActivity(ActivityModel act) {
 		activities.add(act);
+	}
+
+	/**
+	 * 
+	 * Set the delete button to enabled/disabled.
+	 *
+	 * @param bool
+	 *            boolean to set the button to.
+	 */
+	public void setDeleteEnabled(Boolean bool) {
+		delete.setEnabled(bool);
 	}
 
 	/*

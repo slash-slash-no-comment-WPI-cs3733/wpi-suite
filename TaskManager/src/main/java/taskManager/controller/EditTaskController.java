@@ -126,8 +126,19 @@ public class EditTaskController implements ActionListener {
 
 				// archive this task
 				task = currentStage.findTaskByID(taskID);
-				// currentStage.getTasks().remove(task);
 				task.setArchived(!task.isArchived());
+				etv.resetFields();
+
+				// Save entire workflow whenever a task is archived
+				wfm.save();
+				returnToWorkflowView();
+
+				break;
+
+			case EditTaskView.DELETE:
+				// archive this task
+				task = currentStage.findTaskByID(taskID);
+				currentStage.getTasks().remove(task);
 				etv.resetFields();
 
 				// Save entire workflow whenever a task is deleted

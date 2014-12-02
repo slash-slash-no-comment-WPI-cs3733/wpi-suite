@@ -124,6 +124,7 @@ public class TaskController implements MouseListener {
 		} else {
 			etv.getArchiveButton().setText("Archive");
 		}
+		etv.setDeleteEnabled(model.isArchived());
 
 		// uses the title field to hold the unique id
 		etv.getTitle().setName(this.model.getID());
