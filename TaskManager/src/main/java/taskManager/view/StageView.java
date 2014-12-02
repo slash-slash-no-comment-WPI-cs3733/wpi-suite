@@ -26,6 +26,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import taskManager.controller.StageController;
+import taskManager.controller.StageTitleController;
 import taskManager.draganddrop.StagePanel;
 
 /**
@@ -43,6 +44,7 @@ public class StageView extends JPanel {
 	public static final String TEXT_LABEL = "textLabel";
 
 	private JLabel labelName;
+	private JTextField labelText;
 	private JPanel label;
 	private JButton done;
 	private JButton cancel;
@@ -87,9 +89,10 @@ public class StageView extends JPanel {
 		changeLabel.setMaximumSize(new Dimension(185, 25));
 		changeLabel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		changeLabel.setName(CHANGE_TITLE);
-		JTextField labelText = new JTextField();
+		labelText = new JTextField();
 		labelText.setText(name);
 		labelText.setName(TEXT_LABEL);
+		labelText.addKeyListener(new StageTitleController(this));
 		labelText.setSize(new Dimension(135, 25));
 		labelText.setMinimumSize(new Dimension(135, 25));
 		labelText.setMaximumSize(new Dimension(135, 25));
@@ -97,6 +100,7 @@ public class StageView extends JPanel {
 		// Checkmark button
 		done = new JButton("\u2713");
 		done.setName(CHECK);
+		done.setEnabled(false);
 		done.setFont(done.getFont().deriveFont((float) 12));
 		done.setMargin(new Insets(0, 0, 0, 0));
 		// 'x' button
@@ -142,13 +146,6 @@ public class StageView extends JPanel {
 	 */
 	public void addTaskView(TaskView tkv) {
 		tkv.setAlignmentX(CENTER_ALIGNMENT);
-		// tkv.setSize(new Dimension(STAGE_WIDTH, tkv.getSize().height));
-		// tkv.setPreferredSize(new Dimension(STAGE_WIDTH,
-		// tkv.getSize().height));
-		// tkv.setMinimumSize(new Dimension(STAGE_WIDTH - 20,
-		// tkv.getSize().height));
-		// tkv.setMaximumSize(new Dimension(STAGE_WIDTH - 20,
-		// tkv.getSize().height));
 		tasks.add(tkv);
 	}
 
@@ -181,5 +178,13 @@ public class StageView extends JPanel {
 	 */
 	public StageController getController() {
 		return controller;
+	}
+
+	public void enableChangeTitleCheckmark(Boolean enabled) {
+		done.setEnabled(enabled);
+	}
+
+	public String getLabelText() {
+		return labelText.getText();
 	}
 }

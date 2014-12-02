@@ -17,7 +17,6 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JTextField;
 
 import taskManager.JanewayModule;
 import taskManager.model.FetchWorkflowObserver;
@@ -167,16 +166,10 @@ public class StageController implements MouseListener, ActionListener {
 
 			switch (((JButton) button).getName()) {
 			case StageView.CHECK:
-				for (Component c : ((JButton) button).getParent()
-						.getComponents()) {
-					if (c instanceof JTextField
-							&& c.getName() == StageView.TEXT_LABEL) {
-						// If nothing has changed in the textbox, make the stage
-						// have the new name
-						if (!((JTextField) c).getText().equals(view.getName())) {
-							model.changeStageName(((JTextField) c).getText());
-						}
-					}
+				try {
+					model.changeStageName(view.getLabelText());
+				} catch (IllegalArgumentException ex) {
+					// TODO: show a pop-up saying the name must be unique
 				}
 				// fall through
 			case StageView.X:
