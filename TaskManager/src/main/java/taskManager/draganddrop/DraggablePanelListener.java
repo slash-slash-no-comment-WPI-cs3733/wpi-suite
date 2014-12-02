@@ -21,18 +21,35 @@ import javax.swing.TransferHandler;
  * @version Dec 1, 2014
  */
 public class DraggablePanelListener extends MouseAdapter {
+	private JComponent exportedComponent;
+
+	/**
+	 * @param exportedComponent
+	 *            component that will be exported in drag
+	 */
+	public DraggablePanelListener(JComponent exportedComponent) {
+		this.exportedComponent = exportedComponent;
+	}
+
+	/*
+	 * @see java.awt.event.MouseAdapter#mousePressed(java.awt.event.MouseEvent)
+	 */
+	@Override
 	public void mousePressed(MouseEvent e) {
 		System.out.println("Panel pressed");
 
-		JComponent comp = (JComponent) e.getSource();
-		comp.getTransferHandler().setDragImageOffset(e.getPoint());
+		exportedComponent.getTransferHandler().setDragImageOffset(e.getPoint());
 	}
 
+	/*
+	 * @see java.awt.event.MouseAdapter#mouseDragged(java.awt.event.MouseEvent)
+	 */
+	@Override
 	public void mouseDragged(MouseEvent e) {
 		System.out.println("Mouse dragged");
 
-		JComponent comp = (JComponent) e.getSource();
-		comp.getTransferHandler().exportAsDrag(comp, e, TransferHandler.MOVE);
+		exportedComponent.getTransferHandler().exportAsDrag(exportedComponent,
+				e, TransferHandler.MOVE);
 	}
 
 }

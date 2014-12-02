@@ -95,7 +95,7 @@ public class TaskView extends JPanel implements Transferable {
 
 		// -----------------------
 		// Drag and drop handling:
-		MouseAdapter listener = new DraggablePanelListener();
+		MouseAdapter listener = new DraggablePanelListener(this);
 		addMouseListener(listener);
 		addMouseMotionListener(listener);
 

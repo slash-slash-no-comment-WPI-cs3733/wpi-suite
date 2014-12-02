@@ -13,6 +13,8 @@ import java.awt.FlowLayout;
 import javax.swing.JPanel;
 
 import taskManager.controller.WorkflowController;
+import taskManager.draganddrop.DDTransferHandler;
+import taskManager.draganddrop.DropAreaPanel;
 
 /**
  * @author Beth Martino
@@ -25,13 +27,21 @@ public class WorkflowView extends JPanel {
 
 	private WorkflowController controller;
 
+	private DropAreaPanel stages;
+
 	/**
 	 * Constructor for WorkflowView.
 	 */
 	public WorkflowView() {
 
+		// The stages panel accepts stage drops
+		stages = new DropAreaPanel(DDTransferHandler.getStageFlavor());
+
 		// arranges the stages horizontally and evenly spaced
 		this.setLayout(new FlowLayout());
+
+		stages.setLayout(new FlowLayout());
+		this.add(stages);
 	}
 
 	/**
@@ -40,7 +50,12 @@ public class WorkflowView extends JPanel {
 	 *            house the stage view object sets the size and border
 	 */
 	public void addStageView(StageView stv) {
-		this.add(stv);
+		if (stages == null || stages.getParent() == null) {
+			stages = new DropAreaPanel(DDTransferHandler.getStageFlavor());
+			stages.setLayout(new FlowLayout());
+			add(stages);
+		}
+		stages.add(stv);
 	}
 
 	/*
@@ -75,9 +90,9 @@ public class WorkflowView extends JPanel {
 		try {
 			// goes through all of the stage views it contains until it finds
 			// the one that matches the name
-			for (int i = 1; i == this.getComponents().length; i++) {
-				if (this.getComponent(i).getName().equals(name)) {
-					return (StageView) this.getComponent(i);
+			for (int i = 1; i == stages.getComponents().length; i++) {
+				if (stages.getComponent(i).getName().equals(name)) {
+					return (StageView) stages.getComponent(i);
 				} else {
 					// do nothing, keep checking
 				}

@@ -14,6 +14,11 @@ package taskManager.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.MouseAdapter;
+import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -23,13 +28,14 @@ import javax.swing.JScrollPane;
 
 import taskManager.controller.StageController;
 import taskManager.draganddrop.DDTransferHandler;
+import taskManager.draganddrop.DraggablePanelListener;
 import taskManager.draganddrop.DropAreaPanel;
 
 /**
  * @author Beth Martino
  * @version November 9, 2014
  */
-public class StageView extends JPanel {
+public class StageView extends JPanel implements Transferable {
 
 	private static final long serialVersionUID = 1L;
 	private StageController controller;
@@ -48,6 +54,7 @@ public class StageView extends JPanel {
 	 */
 	public StageView(String name) {
 
+		// The tasks panel accepts task drops
 		tasks = new DropAreaPanel(DDTransferHandler.getTaskFlavor());
 
 		// stage view is a panel that contains the title and the scroll pane
@@ -81,6 +88,18 @@ public class StageView extends JPanel {
 		stage.setPreferredSize(new Dimension(175, 450));
 
 		updateTasks();
+
+		// -----------------------
+		// Drag and drop handling:
+		MouseAdapter listener = new DraggablePanelListener(this);
+		label.addMouseListener(listener);
+		label.addMouseMotionListener(listener);
+
+		setTransferHandler(new DDTransferHandler());
+
+		// setTransferHandler creates DropTarget by default; we don't want
+		// stages to respond to stage drops
+		setDropTarget(null);
 	}
 
 	/**
@@ -128,6 +147,42 @@ public class StageView extends JPanel {
 	 */
 	public StageController getController() {
 		return controller;
+	}
+
+	// ----------------------------
+	// Drag-and-drop transferable implementation
+
+	/*
+	 * @see
+	 * java.awt.datatransfer.Transferable#getTransferData(java.awt.datatransfer
+	 * .DataFlavor)
+	 */
+	@Override
+	public Object getTransferData(DataFlavor flavor)
+			throws UnsupportedFlavorException, IOException {
+		if (!flavor.equals(DDTransferHandler.getStageFlavor())) {
+			throw new UnsupportedFlavorException(flavor);
+		}
+		// return this panel as the transfer data
+		return this;
+	}
+
+	/*
+	 * @see java.awt.datatransfer.Transferable#getTransferDataFlavors()
+	 */
+	@Override
+	public DataFlavor[] getTransferDataFlavors() {
+		DataFlavor[] flavors = { DDTransferHandler.getStageFlavor() };
+		return flavors;
+	}
+
+	/*
+	 * @see java.awt.datatransfer.Transferable#isDataFlavorSupported(java.awt.
+	 * datatransfer.DataFlavor)
+	 */
+	@Override
+	public boolean isDataFlavorSupported(DataFlavor flavor) {
+		return flavor.equals(DDTransferHandler.getStageFlavor());
 	}
 
 }

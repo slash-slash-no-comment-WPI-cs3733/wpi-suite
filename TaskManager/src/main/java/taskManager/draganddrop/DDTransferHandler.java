@@ -20,6 +20,7 @@ import javax.swing.TransferHandler;
 
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.WorkflowModel;
+import taskManager.view.TaskView;
 
 /**
  * 
@@ -32,8 +33,11 @@ public class DDTransferHandler extends TransferHandler {
 
 	private static final long serialVersionUID = -7859524821673270515L;
 
-	// This DataFlavor represents a task being dragged
+	// DataFlavor representing a TaskView being dragged
 	private static DataFlavor taskFlavor;
+
+	// DataFlavor representing a StageView being dragged
+	private static DataFlavor stageFlavor;
 
 	public static boolean dragSaved = false;
 
@@ -44,6 +48,7 @@ public class DDTransferHandler extends TransferHandler {
 	 */
 	public static DataFlavor getTaskFlavor() {
 		if (taskFlavor == null) {
+			taskFlavor = new DataFlavor(TaskView.class, "TaskView");
 			try {
 				taskFlavor = new DataFlavor(
 						DataFlavor.javaJVMLocalObjectMimeType
@@ -53,6 +58,24 @@ public class DDTransferHandler extends TransferHandler {
 			}
 		}
 		return taskFlavor;
+	}
+
+	/**
+	 * Lazy-load the DataFlavor associated with stages
+	 *
+	 * @return the DataFlavor
+	 */
+	public static DataFlavor getStageFlavor() {
+		if (stageFlavor == null) {
+			try {
+				stageFlavor = new DataFlavor(
+						DataFlavor.javaJVMLocalObjectMimeType
+								+ ";class=taskManager.view.StageView");
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		return stageFlavor;
 	}
 
 	/**
