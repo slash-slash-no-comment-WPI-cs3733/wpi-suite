@@ -83,15 +83,15 @@ public class StageController implements MouseListener, ActionListener {
 
 	/**
 	 * 
-	 * Changes which title is visible, the label or the textbox. If edittable is
+	 * Changes which title is visible, the label or the textbox. If editable is
 	 * true, the textbox is visible.
 	 *
-	 * @param edittable
+	 * @param editable
 	 *            true to make the textbox visible, false to make the label
 	 *            visible
 	 */
-	public void switchTitle(Boolean edittable) {
-		if (edittable) {
+	public void switchTitle(Boolean editable) {
+		if (editable) {
 			for (Component c : view.getComponents()) {
 				if (c.getName() == StageView.TITLE) {
 					c.setVisible(false);

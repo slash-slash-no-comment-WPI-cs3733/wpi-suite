@@ -13,7 +13,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import java.util.List;
 
 import javax.swing.SwingUtilities;
@@ -21,7 +20,6 @@ import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 
 import taskManager.model.FetchWorkflowObserver;
-import taskManager.model.GetUsersObserver;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
@@ -158,8 +156,6 @@ public class WorkflowController implements MouseListener {
 			}
 			TaskController.anyTaskInfoOut = false;
 		}
-		// display without reloading
-		this.repaintView();
 	}
 
 	/**
@@ -174,15 +170,6 @@ public class WorkflowController implements MouseListener {
 			}
 		}
 		StageController.anyChangeTitleOut = false;
-	}
-
-	/**
-	 * 
-	 * repaints the WorkflowView.
-	 *
-	 */
-	public void repaintView() {
-		view.repaint();
 	}
 
 	@Override
