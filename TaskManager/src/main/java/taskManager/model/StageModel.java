@@ -369,14 +369,26 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 
 	/**
 	 * Changes this stagemodel to be identical to the inputted stage model,
-	 * while maintaining the pointer
+	 * while maintaining the pointer. Note: If a task is moved, we will delete
+	 * it from one stage and create it in the other. This simplifies
+	 * workflow-task interaction.
 	 *
 	 * @param stage
 	 *            The stage to copy
 	 */
-	public void makeIdenticalTo(StageModel stage) {
-		setID(stage.getID());
-		name = stage.getName();
+	public void makeIdenticalTo(StageModel savedStage) {
+		setID(savedStage.getID());
+		List<TaskModel> synchronizedTaskList = new ArrayList<TaskModel>();
+		for (TaskModel task : taskList) {
+			TaskModel savedTask = savedStage.findTaskByID(task.getID());
+			if (savedTask != null) {
+				synchronizedTaskList.add(savedTask);
+			} else {
+				synchronizedTaskList.add(task);
+			}
+		}
+		taskList = synchronizedTaskList;
+		name = savedStage.getName();
 	}
 
 	@Override
