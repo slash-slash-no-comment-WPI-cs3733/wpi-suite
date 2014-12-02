@@ -26,6 +26,7 @@ import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
 import taskManager.view.TaskView;
+import taskManager.view.ToolbarView;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 
@@ -235,8 +236,14 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		// Enable/disable the archive and delete icons when dragged.
+		boolean isArchived = model.isArchived();
+		if (isArchived) {
+			JanewayModule.toolV.setArchiveIcon(ToolbarView.UNARCHIVE);
+		} else {
+			JanewayModule.toolV.setArchiveIcon(ToolbarView.ARCHIVE);
+		}
 		JanewayModule.toolV.setArchiveEnabled(true);
-		JanewayModule.toolV.setDeleteEnabled(model.isArchived());
+		JanewayModule.toolV.setDeleteEnabled(isArchived);
 	}
 
 	@Override

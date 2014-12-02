@@ -43,6 +43,7 @@ public class ToolbarView extends JToolBar {
 	public static final String CREATE_TASK = "createTask";
 	public static final String WORKFLOW = "workflow";
 	public static final String ARCHIVE = "archive";
+	public static final String UNARCHIVE = "unarchive";
 	public static final String DELETE = "delete";
 
 	// toolbar information
@@ -196,5 +197,27 @@ public class ToolbarView extends JToolBar {
 
 	public boolean isArchiveShown() {
 		return archiveCheckBox.isSelected();
+	}
+
+	/**
+	 * 
+	 * Sets the archive icon to the specified type.
+	 *
+	 * @param iconType
+	 *            the string that describes which type to set the icon to.
+	 */
+	public void setArchiveIcon(String iconType) {
+		String imgFile = "";
+		if (iconType.equals(ARCHIVE)) {
+			imgFile = "archive-icon.png";
+		} else if (iconType.equals(UNARCHIVE)) {
+			imgFile = "unarchive-icon.png";
+		}
+		try {
+			archive.setIcon(new ImageIcon(ImageIO.read(this.getClass()
+					.getResourceAsStream(imgFile))));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
