@@ -47,7 +47,7 @@ public class DDTransferHandler extends TransferHandler {
 			try {
 				taskFlavor = new DataFlavor(
 						DataFlavor.javaJVMLocalObjectMimeType
-								+ ";class=taskManager.draganddrop.TaskPanel");
+								+ ";class=taskManager.view.TaskView");
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
