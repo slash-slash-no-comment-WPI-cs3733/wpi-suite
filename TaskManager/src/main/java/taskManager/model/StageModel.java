@@ -105,10 +105,12 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 *            Whether or not the stage can be removed.
 	 */
 	public StageModel(String name, int index, boolean removable) {
+
 		// Set name as ID
 		super(name);
+
 		// Enforce uniqueness of Stage names
-		this.name = name;
+		this.name = name.trim();
 		this.removable = removable;
 
 		taskList = new ArrayList<TaskModel>();

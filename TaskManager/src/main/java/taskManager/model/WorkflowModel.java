@@ -124,6 +124,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		if (findStageByName(newStage.getName()) != null) {
 			logger.log(Level.WARNING, "Stage named " + newStage.getName()
 					+ " already exists.");
+			throw new IllegalArgumentException();
 		} else {
 			stageList.add(index, newStage);
 			logger.log(Level.FINER, "Stage " + newStage.getName() + " added.");
