@@ -38,6 +38,7 @@ public class TestManageStageController {
 
 	@Before
 	public void setup() {
+		System.out.println("starting setup");
 		// creates a manage stage view
 		msv = new ManageStageView();
 
@@ -58,10 +59,12 @@ public class TestManageStageController {
 		fixture = new FrameFixture(frame);
 
 		fixture.show();
+		System.out.println("done with setup");
 	}
 
 	@Test
 	public void testAddStage() {
+		System.out.println("starting add stage");
 		// the stages we should end up with
 		final String[] result = { "first", "second", "third", "fourth", "NS" };
 
@@ -71,10 +74,12 @@ public class TestManageStageController {
 		fixture.button(ManageStageView.ADD_NEW_STAGE).click();
 
 		checkStages(result);
+		System.out.println("done with add stage");
 	}
 
 	@Test
 	public void testRemoveStage() {
+		System.out.println("starting remove stage");
 		// the stages we should end up with
 		final String[] result = { "first", "second", "fourth" };
 
@@ -89,10 +94,12 @@ public class TestManageStageController {
 
 		// make sure the delete button is disabled
 		fixture.panel("first").button(ManageStageView.DELETE).requireDisabled();
+		System.out.println("done with remove stage");
 	}
 
 	@Test
 	public void testMoveStage() {
+		System.out.println("starting move stage");
 		// move stage third up twice
 		fixture.panel("third").button(ManageStageView.MOVE_UP).click();
 		fixture.panel("third").button(ManageStageView.MOVE_UP).click();
@@ -107,6 +114,7 @@ public class TestManageStageController {
 		fixture.panel("second").button(ManageStageView.MOVE_DOWN).click();
 		String[] result2 = { "third", "first", "fourth", "second" };
 		checkStages(result2);
+		System.out.println("done with move stage");
 	}
 
 	/**
@@ -134,7 +142,9 @@ public class TestManageStageController {
 
 	@After
 	public void cleanup() {
+		System.out.println("starting cleanup");
 		fixture.cleanUp();
+		System.out.println("done with cleanup");
 	}
 
 }
