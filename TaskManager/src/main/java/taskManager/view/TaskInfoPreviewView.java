@@ -34,6 +34,7 @@ import taskManager.model.TaskModel;
  * The view that pop's up when a task is clicked on.
  *
  * @author Samee Swartz
+ * @author Clark Jacobsohn
  * @version Nov 21, 2014
  */
 public class TaskInfoPreviewView extends JPanel {
@@ -51,7 +52,7 @@ public class TaskInfoPreviewView extends JPanel {
 		this.taskC = controller;
 		this.controller = new TaskInfoPreviewController(this.taskC);
 		this.setLayout(new MigLayout("wrap 1", "5[]5", "0[]:push[]"));
-		setBoundsWithoutOverlap(loc, 250, 415);
+		setBoundsWithoutClipping(loc, 250, 415);
 
 		// Drop shadow
 		DropShadowBorder shadow = new DropShadowBorder();
@@ -181,7 +182,18 @@ public class TaskInfoPreviewView extends JPanel {
 		this.add(buttonPanel);
 	}
 
-	private void setBoundsWithoutOverlap(Point loc, int width, int height) {
+	/**
+	 * Sets the bounds of the view to the given location with the given width
+	 * and height, correcting for screen edges so that it does not go off screen
+	 * 
+	 * @param loc
+	 *            The location of the view
+	 * @param width
+	 *            The width of the view
+	 * @param height
+	 *            The height of the view
+	 */
+	private void setBoundsWithoutClipping(Point loc, int width, int height) {
 		int x, y;
 		Rectangle paneBounds = JanewayModule.getTabPaneView().getBounds();
 		x = (loc.x + StageView.STAGE_WIDTH + width > (paneBounds.getWidth())) ? loc.x
@@ -189,7 +201,7 @@ public class TaskInfoPreviewView extends JPanel {
 				: loc.x + StageView.STAGE_WIDTH;
 		y = (loc.y + height > (paneBounds.getHeight() - 35)) ? (int) paneBounds
 				.getHeight() - 35 - height : loc.y;
-		setBounds(x, y, width, height);
+		this.setBounds(x, y, width, height);
 	}
 
 	/**

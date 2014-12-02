@@ -133,6 +133,8 @@ public class StageController implements MouseListener, ActionListener {
 			// from the workflow
 			JanewayModule.tabPaneC.getTabView().getWorkflowController()
 					.reloadData();
+			JanewayModule.tabPaneC.getTabView().getWorkflowController()
+					.repaintView();
 		}
 	}
 

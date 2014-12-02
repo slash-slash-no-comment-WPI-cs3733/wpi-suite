@@ -45,6 +45,8 @@ public class TaskInfoPreviewController implements ActionListener {
 				// remove any taskInfo bubbles from the workflow
 				JanewayModule.tabPaneC.getTabView().getWorkflowController()
 						.reloadData();
+				JanewayModule.tabPaneC.getTabView().getWorkflowController()
+						.repaintView();
 				break;
 			}
 		}
