@@ -19,6 +19,7 @@ import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 
 import taskManager.JanewayModule;
@@ -114,6 +115,13 @@ public class EditTaskController implements ActionListener {
 					task.addActivity(act);
 				}
 
+				// Save the archived state.
+				if (etv.getArchiveButton().getText().equals("Unarchive")) {
+					task.setArchived(true);
+				} else {
+					task.setArchived(false);
+				}
+
 				// exit the edit view, this refreshes the workflow
 				this.returnToWorkflowView();
 				// makes all the fields blank again
@@ -126,26 +134,31 @@ public class EditTaskController implements ActionListener {
 
 				// archive this task
 				task = currentStage.findTaskByID(taskID);
-				task.setArchived(!task.isArchived());
-				if (task.isArchived()) {
-					etv.getArchiveButton().setText("Unarchive");
-				} else {
+				Boolean isArchived = etv.getArchiveButton().getText()
+						.equals("Unarchive");
+				if (isArchived) {
 					etv.getArchiveButton().setText("Archive");
+				} else {
+					etv.getArchiveButton().setText("Unarchive");
 				}
-				etv.setDeleteEnabled(task.isArchived());
+				etv.setDeleteEnabled(!isArchived);
 
 				break;
 
 			case EditTaskView.DELETE:
-				// archive this task
-				task = currentStage.findTaskByID(taskID);
-				currentStage.getTasks().remove(task);
-				etv.resetFields();
+				Integer choice = JOptionPane.showConfirmDialog(etv,
+						"Are you sure you want to delete this task?",
+						"Warning - Deleting a task", JOptionPane.YES_NO_OPTION);
+				if (choice.equals(JOptionPane.YES_OPTION)) {
+					// delete this task
+					task = currentStage.findTaskByID(taskID);
+					currentStage.getTasks().remove(task);
+					etv.resetFields();
 
-				// Save entire workflow whenever a task is deleted
-				wfm.save();
-				returnToWorkflowView();
-
+					// Save entire workflow whenever a task is deleted
+					wfm.save();
+					returnToWorkflowView();
+				}
 				break;
 
 			case EditTaskView.ADD_USER:
