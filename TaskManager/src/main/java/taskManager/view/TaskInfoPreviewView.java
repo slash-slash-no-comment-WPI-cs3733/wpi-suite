@@ -71,11 +71,14 @@ public class TaskInfoPreviewView extends JPanel {
 
 		// The task's titleBar contains the title and the 'x' button
 		JPanel titleBar = new JPanel();
-		titleBar.setLayout(new MigLayout("", "[]:push[]"));
+		titleBar.setLayout(new MigLayout("", "0[]:push[]"));
+		titleBar.setSize(new Dimension(240, 30));
 		JLabel title = new JLabel(this.taskM.getName());
-		title.setPreferredSize(new Dimension(185,
+		title.setFont(title.getFont().deriveFont(15.0f));
+		title.setPreferredSize(new Dimension(230,
 				title.getPreferredSize().height));
-		title.setMaximumSize(new Dimension(185, title.getPreferredSize().height));
+		title.setSize(new Dimension(230, title.getPreferredSize().height));
+		title.setMaximumSize(new Dimension(235, title.getPreferredSize().height));
 		titleBar.add(title);
 		// Closable 'x' button
 		final JButton closeButton = new JButton("\u2716");
@@ -89,7 +92,7 @@ public class TaskInfoPreviewView extends JPanel {
 		// The task's description
 		// TODO: Make this have a '...' when it overflows
 		JTextArea description = new JTextArea();
-		description.setText(this.taskM.getDescription());
+		description.setText(ellipsize(this.taskM.getDescription(), 150));
 		description.setSize(new Dimension(210, 80));
 		description.setMaximumSize(new Dimension(210, 80));
 		description.setMinimumSize(new Dimension(210, 80));
@@ -185,5 +188,48 @@ public class TaskInfoPreviewView extends JPanel {
 	 */
 	public TaskController getTaskController() {
 		return taskC;
+	}
+
+	/**
+	 * 
+	 * Takes a String and if its length is greater than max, it truncates and
+	 * adds '...'. This example is modified from:
+	 * http://stackoverflow.com/questions
+	 * /3597550/ideal-method-to-truncate-a-string-with-ellipsis
+	 *
+	 * @param text
+	 *            The string to add '...' to
+	 * @param max
+	 *            The max number of characters allowed
+	 * @return
+	 */
+	private static String ellipsize(String text, int max) {
+
+		if (text.length() <= max)
+			return text;
+
+		// Start by chopping off at the word before max
+		// the 3 is to account for '...'
+		int end = text.lastIndexOf(' ', max - 3);
+
+		// If text is one long word, this will add '...' in the word rather than
+		// split after the word
+		// if (end == -1) {
+		return text.substring(0, end) + "...";
+		// }
+
+		// Step forward as long as textWidth allows.
+		// int newEnd = end;
+		// do {
+		// end = newEnd;
+		// newEnd = text.indexOf(' ', end + 1);
+		//
+		// // No more spaces.
+		// if (newEnd == -1)
+		// newEnd = text.length();
+		//
+		// } while (textWidth(text.substring(0, newEnd) + "...") < max);
+
+		// return text.substring(0, end) + "...";
 	}
 }
