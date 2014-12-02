@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import taskManager.controller.WorkflowController;
+import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
 import edu.wpi.cs.wpisuitetng.network.Network;
 import edu.wpi.cs.wpisuitetng.network.Request;
 import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
@@ -32,6 +32,9 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	List<StageModel> stageList;
 
 	private static WorkflowModel instance = null;
+
+	public static boolean alive = true;
+	public static int timeout = 60000; // 1 minute
 
 	// Generic logger
 	private static final Logger logger = Logger.getLogger(WorkflowModel.class
@@ -59,6 +62,14 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 			new StageModel("Complete");
 		}
 		return instance;
+	}
+
+	/**
+	 * Tells the other threads to die
+	 *
+	 */
+	public static void dispose() {
+		alive = false;
 	}
 
 	/**
@@ -192,7 +203,6 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	public void makeIdenticalTo(WorkflowModel workflow) {
 		setID(workflow.getID());
 		stageList = workflow.getStages();
-		this.setID(workflow.getID());
 	}
 
 	/**
@@ -208,14 +218,10 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 
 	@Override
 	public void save() {
-		// Tell the fetch observer to ignore the next server response, because
-		// it may not have these changes yet
-		FetchWorkflowObserver.ignoreNextResponse = true;
-
 		final Request request = Network.getInstance().makeRequest(
-				"taskmanager/workflow", HttpMethod.POST);
+				"taskmanager/workflow/" + getID(), HttpMethod.POST);
 		request.setBody(toJson());
-		System.out.println("Saving: " + toJson());
+		System.out.println("Saving " + getClass() + ": " + toJson());
 		request.addObserver(getObserver());
 		request.send();
 	}
@@ -223,23 +229,50 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	@Override
 	public void delete() {
 		final Request request = Network.getInstance().makeRequest(
-				"taskmanager/workflow", HttpMethod.DELETE);
+				"taskmanager/workflow/" + getID(), HttpMethod.DELETE);
 		request.setBody(toJson());
-		System.out.println("Deleting: " + toJson());
+		System.out.println("Deleting " + getClass() + ": " + toJson());
 		request.addObserver(getObserver());
 		request.send();
 	}
 
 	/**
-	 * Retrieve all workspaces
+	 * Opens a connection to the server asking for workflows. The server will
+	 * respond when there is a change or the timeout happens
 	 *
-	 * @param controller
-	 *            The active workflow controller.
 	 */
-	public void update(WorkflowController controller) {
+	public void update() {
 		final Request request = Network.getInstance().makeRequest(
-				"taskmanager/workflow/" + getID(), HttpMethod.GET);
-		request.addObserver(new FetchWorkflowObserver(this));
+				"taskmanager/workflow", HttpMethod.GET);
+		request.addObserver(new FetchWorkflowObserver());
+		request.addHeader("long-polling",
+				Integer.toString(WorkflowModel.timeout));
+		// wait timeout + 5 sec (to allow for round trip time + database
+		// interaction)
+		request.setReadTimeout(WorkflowModel.timeout + 5 * 1000);
+		request.send();
+	}
+
+	/**
+	 * Asks the server to immediately give us all the workflows
+	 *
+	 */
+	public void updateNow() {
+		final Request request = Network.getInstance().makeRequest(
+				"taskmanager/workflow", HttpMethod.GET);
+		request.addObserver(new FetchWorkflowObserver(false));
+		request.send();
+	}
+
+	public void updateUsers() {
+		final Request request = Network.getInstance().makeRequest("core/user",
+				HttpMethod.GET);
+		request.addObserver(new GetUsersObserver());
+		request.addHeader("long-polling",
+				Integer.toString(WorkflowModel.timeout));
+		// wait timeout + 5 sec (to allow for round trip time + database
+		// interaction)
+		request.setReadTimeout(WorkflowModel.timeout + 5 * 1000);
 		request.send();
 	}
 
@@ -256,5 +289,14 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 			return ((WorkflowModel) o).getID().equals(this.getID());
 		}
 		return false;
+	}
+
+	@Override
+	public void setProject(Project p) {
+		super.setProject(p);
+		System.out.println("setting workflow project");
+		for (StageModel s : getStages()) {
+			s.setProject(p);
+		}
 	}
 }
