@@ -76,6 +76,7 @@ public class StageView extends JPanel {
 		label.setMaximumSize(new Dimension(STAGE_WIDTH - 15, 25));
 		// The stage's title label
 		labelName = new JLabel(name);
+		labelName.setName(name);
 		labelName.setSize(new Dimension(STAGE_WIDTH - 15, 25));
 		labelName.setMaximumSize(new Dimension(STAGE_WIDTH - 15, 25));
 		labelName.setMinimumSize(new Dimension(STAGE_WIDTH - 15, 25));
