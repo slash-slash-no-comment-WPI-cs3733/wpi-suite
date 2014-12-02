@@ -102,7 +102,7 @@ public class DDTransferHandler extends TransferHandler {
 		setDragImage(image);
 
 		// Create placeholder
-		StagePanel.generatePlaceholder(comp.getSize());
+		DropAreaPanel.generatePlaceholder(comp.getSize());
 
 		// Initiate the drag
 		super.exportAsDrag(comp, e, action);
@@ -127,7 +127,7 @@ public class DDTransferHandler extends TransferHandler {
 		}
 		DDTransferHandler.dragSaved = false;
 
-		// Show the task
+		// Show the component
 		comp.setVisible(true);
 	}
 

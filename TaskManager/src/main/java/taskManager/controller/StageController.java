@@ -10,8 +10,13 @@ package taskManager.controller;
 
 import java.util.List;
 
+import javax.swing.JPanel;
+
+import taskManager.draganddrop.DDTransferHandler;
+import taskManager.draganddrop.DropAreaSaveListener;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
+import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
 import taskManager.view.TaskView;
 
@@ -21,7 +26,7 @@ import taskManager.view.TaskView;
  * @author Stefan Alexander
  * @version November 9, 2014
  */
-public class StageController {
+public class StageController implements DropAreaSaveListener {
 
 	private final StageView view;
 	private final StageModel model;
@@ -54,17 +59,25 @@ public class StageController {
 
 	}
 
-	/**
-	 * Add a task to this stage
-	 *
-	 * @param tc
-	 *            task controller for task
-	 * @param index
-	 *            index at which to add it
-	 * @return whether the stage changed as a result
+	/*
+	 * @see
+	 * taskManager.draganddrop.DropAreaSaveListener#saveDrop(javax.swing.JPanel,
+	 * int)
 	 */
-	public boolean addTask(TaskController tc, int index) {
-		return tc.moveToStage(model, index);
+	@Override
+	public void saveDrop(JPanel panel, int index) {
+		// Make sure we cast safely
+		if (!(panel instanceof TaskView)) {
+			return;
+		}
+		TaskController tc = ((TaskView) panel).getController();
+		boolean changed = tc.moveToStage(model, index);
+
+		if (changed) {
+			WorkflowModel.getInstance().save();
+			DDTransferHandler.dragSaved = true;
+		}
+
 	}
 
 }

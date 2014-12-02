@@ -22,7 +22,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import taskManager.controller.StageController;
-import taskManager.draganddrop.StagePanel;
+import taskManager.draganddrop.DDTransferHandler;
+import taskManager.draganddrop.DropAreaPanel;
 
 /**
  * @author Beth Martino
@@ -33,7 +34,7 @@ public class StageView extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private StageController controller;
 
-	StagePanel tasks = new StagePanel();
+	DropAreaPanel tasks;
 	JScrollPane stage = new JScrollPane(tasks,
 			JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 			JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -46,6 +47,8 @@ public class StageView extends JPanel {
 	 *            The title of the stage being drawn
 	 */
 	public StageView(String name) {
+
+		tasks = new DropAreaPanel(DDTransferHandler.getTaskFlavor());
 
 		// stage view is a panel that contains the title and the scroll pane
 		// w/tasks
@@ -114,7 +117,7 @@ public class StageView extends JPanel {
 	 */
 	public void setController(StageController controller) {
 		this.controller = controller;
-		tasks.setController(controller);
+		tasks.setSaveListener(controller);
 
 	}
 
