@@ -376,19 +376,28 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 * @param stage
 	 *            The stage to copy
 	 */
-	public void makeIdenticalTo(StageModel savedStage) {
-		setID(savedStage.getID());
-		List<TaskModel> synchronizedTaskList = new ArrayList<TaskModel>();
-		for (TaskModel task : taskList) {
-			TaskModel savedTask = savedStage.findTaskByID(task.getID());
-			if (savedTask != null) {
-				synchronizedTaskList.add(savedTask);
+	public void makeIdenticalTo(StageModel toCopyStage) {
+		setID(toCopyStage.getID());
+		final List<TaskModel> localTasks = taskList;
+		final List<TaskModel> toCopyTasks = toCopyStage.getTasks();
+		boolean taskWasUsed[] = new boolean[localTasks.size()];
+		List<TaskModel> toSaveTasks = new ArrayList<TaskModel>();
+		for (TaskModel toCopyTask : toCopyTasks) {
+			TaskModel toSaveTask = this.findTaskByID(toCopyTask.getName());
+			if (toSaveTask != null) {
+				toSaveTasks.add(toSaveTask);
+				taskWasUsed[localTasks.indexOf(toSaveTask)] = true;
 			} else {
-				synchronizedTaskList.add(task);
+				toSaveTasks.add(toCopyTask);
 			}
 		}
-		taskList = synchronizedTaskList;
-		name = savedStage.getName();
+		taskList = toSaveTasks; // This does not change localTasks
+		for (int i = 0; i < localTasks.size(); i++) {
+			if (!taskWasUsed[i]) {
+				// Delete any tasks that are no longer in the task list.
+				localTasks.get(i).delete();
+			}
+		}
 	}
 
 	@Override
@@ -403,7 +412,6 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 
 	@Override
 	public void delete() {
-		workflow.deleteStage(this);
 		final Request request = Network.getInstance().makeRequest(
 				"taskmanager/stage/" + getID(), HttpMethod.DELETE);
 		request.setBody(toJson());
@@ -430,16 +438,5 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 		for (TaskModel t : getTasks()) {
 			t.setProject(p);
 		}
-	}
-
-	/**
-	 * Delete a task from the task list. Is called by TaskModel.delete(),
-	 * probably shouldn't be used elsewhere.
-	 *
-	 * @param task
-	 *            the task to delete.
-	 */
-	public void deleteTask(TaskModel task) {
-		taskList.remove(task);
 	}
 }

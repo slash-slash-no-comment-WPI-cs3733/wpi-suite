@@ -200,19 +200,29 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 * @param workflow
 	 *            The workflow to copy
 	 */
-	public void makeIdenticalTo(WorkflowModel savedWorkflow) {
-		setID(savedWorkflow.getID());
-		List<StageModel> synchronizedStageList = new ArrayList<StageModel>();
-		for (StageModel stage : stageList) {
-			StageModel savedStage = savedWorkflow.findStageByName(stage
-					.getName());
-			if (savedStage != null) {
-				synchronizedStageList.add(savedStage);
+	public void makeIdenticalTo(WorkflowModel toCopyWorkflow) {
+		setID(toCopyWorkflow.getID());
+		final List<StageModel> localStages = stageList;
+		final List<StageModel> toCopyStages = toCopyWorkflow.getStages();
+		boolean stageWasUsed[] = new boolean[localStages.size()];
+		List<StageModel> toSaveStages = new ArrayList<StageModel>();
+		for (StageModel toCopyStage : toCopyStages) {
+			StageModel toSaveStage = this
+					.findStageByName(toCopyStage.getName());
+			if (toSaveStage != null) {
+				toSaveStages.add(toSaveStage);
+				stageWasUsed[localStages.indexOf(toSaveStage)] = true;
 			} else {
-				synchronizedStageList.add(stage);
+				toSaveStages.add(toCopyStage);
 			}
 		}
-		stageList = synchronizedStageList;
+		stageList = toSaveStages; // This does not change localStages
+		for (int i = 0; i < localStages.size(); i++) {
+			if (!stageWasUsed[i]) {
+				// Delete any stages that are no longer in the stage list.
+				localStages.get(i).delete();
+			}
+		}
 	}
 
 	/**
@@ -317,7 +327,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 * @param stage
 	 *            the stage to delete.
 	 */
-	public void deleteStage(StageModel stage) {
+	public void removeStage(StageModel stage) {
 		stageList.remove(stage);
 	}
 }
