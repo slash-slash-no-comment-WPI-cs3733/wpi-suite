@@ -199,10 +199,19 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 * @param workflow
 	 *            The workflow to copy
 	 */
-	public void makeIdenticalTo(WorkflowModel workflow) {
-		setID(workflow.getID());
-		stageList = workflow.getStages();
-		this.setID(workflow.getID());
+	public void makeIdenticalTo(WorkflowModel savedWorkflow) {
+		setID(savedWorkflow.getID());
+		List<StageModel> synchronizedStageList = new ArrayList<StageModel>();
+		for (StageModel stage : stageList) {
+			StageModel savedStage = savedWorkflow.findStageByName(stage
+					.getName());
+			if (savedStage != null) {
+				synchronizedStageList.add(savedStage);
+			} else {
+				synchronizedStageList.add(stage);
+			}
+		}
+		stageList = synchronizedStageList;
 	}
 
 	/**
