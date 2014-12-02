@@ -68,10 +68,7 @@ public class ManageStageController implements ActionListener {
 					break;
 				}
 			}
-			if (stage != null) {
-				System.out.println("manage stage controller: button "
-						+ buttonName + " on stage " + stage.getName());
-			}
+
 			// take the appropriate action
 			switch (buttonName) {
 			case ManageStageView.DELETE:
@@ -111,8 +108,6 @@ public class ManageStageController implements ActionListener {
 				for (int i = 0; i < stages.size(); i++) {
 					if (stage == stages.get(i)) {
 						model.moveStage(i - 1, stage);
-						System.out.println("moving stage " + stage.getName()
-								+ " to position " + (i - 1));
 						break;
 					}
 				}
