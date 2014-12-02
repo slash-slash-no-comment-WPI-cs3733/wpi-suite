@@ -50,7 +50,7 @@ public class StageView extends JPanel {
 	private JScrollPane stage = new JScrollPane(tasks,
 			JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 			JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-	private final int STAGE_WIDTH = 200;
+	public static final int STAGE_WIDTH = 200;
 
 	/**
 	 * 

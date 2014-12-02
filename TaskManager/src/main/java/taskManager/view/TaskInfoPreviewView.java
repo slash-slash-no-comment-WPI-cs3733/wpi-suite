@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.Calendar;
 
 import javax.swing.JButton;
@@ -24,6 +25,7 @@ import net.miginfocom.swing.MigLayout;
 
 import org.jdesktop.swingx.border.DropShadowBorder;
 
+import taskManager.JanewayModule;
 import taskManager.controller.TaskController;
 import taskManager.controller.TaskInfoPreviewController;
 import taskManager.model.TaskModel;
@@ -49,7 +51,7 @@ public class TaskInfoPreviewView extends JPanel {
 		this.taskC = controller;
 		this.controller = new TaskInfoPreviewController(this.taskC);
 		this.setLayout(new MigLayout("wrap 1", "5[]5", "0[]:push[]"));
-		this.setBounds(loc.x + 190, 45, 250, 415);
+		setBoundsWithoutOverlap(loc, 250, 415);
 
 		// Drop shadow
 		DropShadowBorder shadow = new DropShadowBorder();
@@ -175,6 +177,17 @@ public class TaskInfoPreviewView extends JPanel {
 
 		this.add(info);
 		this.add(buttonPanel);
+	}
+
+	private void setBoundsWithoutOverlap(Point loc, int width, int height) {
+		int x, y;
+		Rectangle paneBounds = JanewayModule.getTabPaneView().getBounds();
+		x = (loc.x + StageView.STAGE_WIDTH + width > (paneBounds.getWidth())) ? loc.x
+				- width
+				: loc.x + StageView.STAGE_WIDTH;
+		y = (loc.y + height > (paneBounds.getHeight() - 35)) ? (int) paneBounds
+				.getHeight() - 35 - height : loc.y;
+		setBounds(x, y, width, height);
 	}
 
 	/**
