@@ -68,8 +68,10 @@ public class ManageStageController implements ActionListener {
 					break;
 				}
 			}
-			System.out.println("manage stage controller: button " + buttonName
-					+ " on stage " + stage.getName());
+			if (stage != null) {
+				System.out.println("manage stage controller: button "
+						+ buttonName + " on stage " + stage.getName());
+			}
 			// take the appropriate action
 			switch (buttonName) {
 			case ManageStageView.DELETE:
