@@ -49,7 +49,7 @@ public class WorkflowView extends JLayeredPane {
 	 * @param ti
 	 */
 	public void addTaskInfo(TaskInfoPreviewView ti) {
-		controller.removeTaskInfos();
+		controller.removeTaskInfos(true);
 		add(ti, new Integer(1));
 	}
 

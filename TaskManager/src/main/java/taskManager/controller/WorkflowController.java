@@ -87,7 +87,7 @@ public class WorkflowController implements MouseListener {
 		// Only reloadData if you are getting new information from the serv
 		if (!FetchWorkflowObserver.ignoreAllResponses) {
 			// clear the stages previously on the view
-			this.removeTaskInfos();
+			this.removeTaskInfos(false);
 			this.removeChangeTitles();
 			view.removeAll();
 
@@ -144,10 +144,15 @@ public class WorkflowController implements MouseListener {
 
 	/**
 	 * 
-	 * Removes all instances of TaskInfoPreviewView from the workflow.
+	 * Removes all instances of TaskInfoPreviewView from the workflow. The
+	 * repaint boolean is necessary because clicking from one task and then
+	 * another to switch the taskInfo bubbles, does not call reload data to
+	 * remove the previous bubble from the view.
 	 *
+	 * @param repaint
+	 *            whether or not to repaint the Workflow View
 	 */
-	public void removeTaskInfos() {
+	public void removeTaskInfos(Boolean repaint) {
 		for (Component c : view.getComponents()) {
 			if (c instanceof TaskInfoPreviewView) {
 				view.remove(c);
@@ -155,6 +160,10 @@ public class WorkflowController implements MouseListener {
 				((TaskInfoPreviewView) c).getTaskController().resetBackground();
 			}
 			TaskController.anyTaskInfoOut = false;
+		}
+		if (repaint) {
+			// display without reloading
+			this.repaintView();
 		}
 	}
 
@@ -170,6 +179,15 @@ public class WorkflowController implements MouseListener {
 			}
 		}
 		StageController.anyChangeTitleOut = false;
+	}
+
+	/**
+	 * 
+	 * repaints the WorkflowView.
+	 *
+	 */
+	public void repaintView() {
+		view.repaint();
 	}
 
 	@Override

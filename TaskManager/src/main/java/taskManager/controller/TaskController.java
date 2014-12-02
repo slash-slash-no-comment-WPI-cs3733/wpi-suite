@@ -204,9 +204,6 @@ public class TaskController implements MouseListener {
 		// another taskinfo bubble is already out
 		if ((!FetchWorkflowObserver.ignoreAllResponses || TaskController.anyTaskInfoOut)
 				&& !StageController.anyChangeTitleOut) {
-			// Remove any taskinfo bubbles already out
-			JanewayModule.tabPaneC.getTabView().getWorkflowController()
-					.removeTaskInfos();
 			// Don't reload (so the correct task can be highlighted while the
 			// bubble is up
 			FetchWorkflowObserver.ignoreAllResponses = true;
