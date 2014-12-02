@@ -30,7 +30,7 @@ dependencies{
 	
     //We depend on each modules
     modulesList.each {
-        runtime project(":${it}")
+        compile project(":${it}")
     }
 }
 
