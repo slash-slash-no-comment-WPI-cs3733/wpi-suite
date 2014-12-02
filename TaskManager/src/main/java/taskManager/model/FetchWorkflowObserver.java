@@ -20,21 +20,29 @@ import edu.wpi.cs.wpisuitetng.network.models.ResponseModel;
  */
 public class FetchWorkflowObserver extends GenericRequestObserver {
 
-	public static boolean ignoreNextResponse = false;
 	public static boolean ignoreAllResponses = false;
+	private boolean keepOpen;
 
 	final WorkflowModel model;
 
 	/**
+	 * Constructor for Observer. Defaults to keeping the connection with the
+	 * server open
+	 *
+	 */
+	public FetchWorkflowObserver() {
+		this(true);
+	}
+
+	/**
 	 * Constructor for Observer
 	 *
-	 * @param model
-	 *            the workflow model being fetched/overwritten
-	 * @param controller
-	 *            will be called upon success if it is passed; null is allowed
+	 * @param keepOpen
+	 *            If the connection should be kept
 	 */
-	public FetchWorkflowObserver(WorkflowModel model) {
+	public FetchWorkflowObserver(boolean keepOpen) {
 		this.model = WorkflowModel.getInstance();
+		this.keepOpen = keepOpen;
 	}
 
 	/**
@@ -43,13 +51,12 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 	@Override
 	public void responseSuccess(IRequest iReq) {
 
-		if (ignoreNextResponse) {
-			System.out.println("Ignoring response due to recent local changes");
-			ignoreNextResponse = false;
-			return;
-		}
 		if (ignoreAllResponses) {
 			System.out.println("Ignoring response due to global ignore flag");
+
+			// restart the connection
+			restartConnection();
+
 			return;
 		}
 
@@ -61,6 +68,8 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 				WorkflowModel[].class);
 		if (workflows == null) {
 			System.out.println("Workflow not found on server");
+			// restart the connection
+			restartConnection();
 			return;
 		}
 
@@ -69,6 +78,43 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 		model.rebuildAllRefs();
 
 		JanewayModule.tabPaneC.getTabView().reloadWorkflow();
+
+		// restart the connection
+		restartConnection();
+	}
+
+	/**
+	 * @see edu.wpi.cs.wpisuitetng.network.RequestObserver#responseError(edu.wpi.cs.wpisuitetng.network.models.IRequest)
+	 */
+	@Override
+	public void responseError(IRequest iReq) {
+		super.responseError(iReq);
+
+		// restart the connection
+		restartConnection();
+	}
+
+	/**
+	 * @see edu.wpi.cs.wpisuitetng.network.RequestObserver#fail(edu.wpi.cs.wpisuitetng.network.models.IRequest,
+	 *      java.lang.Exception)
+	 */
+	@Override
+	public void fail(IRequest iReq, Exception exception) {
+		super.fail(iReq, exception);
+
+		// restart the connection
+		restartConnection();
+	}
+
+	/**
+	 * The current architecture doesn't let us keep pushing data through open
+	 * connections, so we have to close and reopen the connection each time
+	 *
+	 */
+	private void restartConnection() {
+		if (WorkflowModel.alive && keepOpen) {
+			WorkflowModel.getInstance().update();
+		}
 	}
 
 }
