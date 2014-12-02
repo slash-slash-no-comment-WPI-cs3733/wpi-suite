@@ -127,6 +127,8 @@ public class ToolbarView extends JToolBar {
 		}
 		archive.setToolTipText("Drag here to archive task");
 		archive.setEnabled(false);
+
+		// Add mouse listener for toggling archive view.
 		archive.addMouseListener(new MouseListener() {
 
 			@Override
@@ -211,5 +213,13 @@ public class ToolbarView extends JToolBar {
 
 	public void setProjectName(String name) {
 		projectName.setText(name);
+	}
+
+	public void setArchiveEnabled(Boolean bool) {
+		archive.setEnabled(bool);
+	}
+
+	public void setDeleteEnabled(Boolean bool) {
+		delete.setEnabled(bool);
 	}
 }

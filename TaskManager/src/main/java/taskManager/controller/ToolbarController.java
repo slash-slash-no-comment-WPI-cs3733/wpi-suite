@@ -10,9 +10,7 @@ package taskManager.controller;
 
 import java.awt.Component;
 import java.awt.dnd.DropTargetAdapter;
-import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -98,55 +96,15 @@ public class ToolbarController extends DropTargetAdapter implements
 				if (target.isEnabled()) {
 					taskV.getController().deleteTask(); // remove from model
 					taskV.getParent().remove(taskV); // remove from view
-					target.setEnabled(false);
 					WorkflowModel.getInstance().save();
 				}
 				break;
 			case ToolbarView.ARCHIVE:
 				taskV.getController().setArchived(
 						!taskV.getController().isArchived());
-				target.setEnabled(false);
 				WorkflowModel.getInstance().save();
 				break;
 			}
 		}
-	}
-
-	/**
-	 * @see java.awt.dnd.DropTargetAdapter#dragEnter(java.awt.dnd.DropTargetDragEvent)
-	 */
-	@Override
-	public void dragEnter(DropTargetDragEvent e) {
-		Component comp = e.getDropTargetContext().getComponent();
-		if (comp instanceof JLabel) {
-			String name = ((JLabel) comp).getName();
-			TaskView taskV;
-			try {
-				taskV = (TaskView) e.getTransferable().getTransferData(
-						DDTransferHandler.getTaskFlavor());
-			} catch (Exception ex) {
-				System.out.println(ex.getStackTrace());
-				return;
-			}
-			switch (name) {
-			case ToolbarView.DELETE:
-				if (taskV.getController().isArchived()) {
-					comp.setEnabled(true);
-				}
-				break;
-			case ToolbarView.ARCHIVE:
-				comp.setEnabled(true);
-				break;
-			}
-		}
-	}
-
-	/**
-	 * @see java.awt.dnd.DropTargetAdapter#dragExit(java.awt.dnd.DropTargetEvent)
-	 */
-	@Override
-	public void dragExit(DropTargetEvent e) {
-		Component comp = e.getDropTargetContext().getComponent();
-		comp.setEnabled(false);
 	}
 }
