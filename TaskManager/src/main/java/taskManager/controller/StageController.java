@@ -17,6 +17,7 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 import taskManager.JanewayModule;
 import taskManager.model.FetchWorkflowObserver;
@@ -169,7 +170,14 @@ public class StageController implements MouseListener, ActionListener {
 				try {
 					model.changeStageName(view.getLabelText());
 				} catch (IllegalArgumentException ex) {
-					// TODO: show a pop-up saying the name must be unique
+					JOptionPane.showConfirmDialog(
+							view,
+							"Another stage already has the name "
+									+ view.getLabelText()
+									+ ". Please choose another name.",
+							"Warning - Duplicate stage names",
+							JOptionPane.CLOSED_OPTION);
+					return;
 				}
 				// fall through
 			case StageView.X:
