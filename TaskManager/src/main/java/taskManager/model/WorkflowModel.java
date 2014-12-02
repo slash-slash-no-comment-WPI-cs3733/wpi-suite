@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
 import edu.wpi.cs.wpisuitetng.network.Network;
 import edu.wpi.cs.wpisuitetng.network.Request;
 import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
@@ -202,7 +203,6 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	public void makeIdenticalTo(WorkflowModel workflow) {
 		setID(workflow.getID());
 		stageList = workflow.getStages();
-		this.setID(workflow.getID());
 	}
 
 	/**
@@ -219,9 +219,9 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	@Override
 	public void save() {
 		final Request request = Network.getInstance().makeRequest(
-				"taskmanager/workflow", HttpMethod.POST);
+				"taskmanager/workflow/" + getID(), HttpMethod.POST);
 		request.setBody(toJson());
-		System.out.println("Saving: " + toJson());
+		System.out.println("Saving " + getClass() + ": " + toJson());
 		request.addObserver(getObserver());
 		request.send();
 	}
@@ -229,9 +229,9 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	@Override
 	public void delete() {
 		final Request request = Network.getInstance().makeRequest(
-				"taskmanager/workflow", HttpMethod.DELETE);
+				"taskmanager/workflow/" + getID(), HttpMethod.DELETE);
 		request.setBody(toJson());
-		System.out.println("Deleting: " + toJson());
+		System.out.println("Deleting " + getClass() + ": " + toJson());
 		request.addObserver(getObserver());
 		request.send();
 	}
@@ -289,5 +289,14 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 			return ((WorkflowModel) o).getID().equals(this.getID());
 		}
 		return false;
+	}
+
+	@Override
+	public void setProject(Project p) {
+		super.setProject(p);
+		System.out.println("setting workflow project");
+		for (StageModel s : getStages()) {
+			s.setProject(p);
+		}
 	}
 }
