@@ -206,11 +206,13 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 
 	/**
 	 * 
-	 * Flips the boolean of archiveShown
+	 * Sets the archiveShown value to the given boolean.
 	 *
+	 * @param bool
+	 *            the boolean to set to.
 	 */
-	public void flipArchiveShown() {
-		archiveShown = !archiveShown;
+	public void setArchiveShown(Boolean bool) {
+		archiveShown = bool;
 	}
 
 	/**

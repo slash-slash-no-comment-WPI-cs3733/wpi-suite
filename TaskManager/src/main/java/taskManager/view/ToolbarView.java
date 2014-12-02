@@ -14,13 +14,14 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.dnd.DropTarget;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
@@ -128,40 +129,22 @@ public class ToolbarView extends JToolBar {
 		archive.setToolTipText("Drag here to archive task");
 		archive.setEnabled(false);
 
-		// Add mouse listener for toggling archive view.
-		archive.addMouseListener(new MouseListener() {
+		// Checkbox for toggling showing archived tasks.
+		JCheckBox archiveCheckBox = new JCheckBox("Show archived tasks");
+
+		// Add listener for toggling archive view.
+		archiveCheckBox.addItemListener(new ItemListener() {
 
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				WorkflowModel.getInstance().flipArchiveShown();
+			public void itemStateChanged(ItemEvent e) {
+				// Set the archive shown boolean to the checkbox value.
+				WorkflowModel.getInstance().setArchiveShown(
+						archiveCheckBox.isSelected());
 				WorkflowModel.getInstance().save();
 			}
 
-			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-
-			}
-
 		});
+
 		archive.setName(ARCHIVE);
 		delete.setToolTipText("Drag here to delete task");
 		delete.setEnabled(false);
@@ -177,6 +160,7 @@ public class ToolbarView extends JToolBar {
 		buttons.add(manageStages);
 		buttons.add(manageUsers);
 		buttons.add(statistics);
+		buttons.add(archiveCheckBox);
 		targets.add(archive);
 		targets.add(delete);
 
