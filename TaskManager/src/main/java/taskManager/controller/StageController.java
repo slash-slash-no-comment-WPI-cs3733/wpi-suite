@@ -80,4 +80,16 @@ public class StageController implements DropAreaSaveListener {
 
 	}
 
+	/**
+	 * Move associated stage to index in workflow
+	 *
+	 * @param index
+	 *            index to be moved to
+	 * @return whether the workflow changed as a result
+	 */
+	public boolean moveStageToIndex(int index) {
+		return WorkflowModel.getInstance().addStage(model, index);
+
+	}
+
 }

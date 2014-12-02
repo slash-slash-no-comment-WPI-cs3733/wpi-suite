@@ -53,6 +53,7 @@ public class WorkflowView extends JPanel {
 		if (stages == null || stages.getParent() == null) {
 			stages = new DropAreaPanel(DDTransferHandler.getStageFlavor());
 			stages.setLayout(new FlowLayout());
+			stages.setSaveListener(controller);
 			add(stages);
 		}
 		stages.add(stv);
@@ -77,6 +78,7 @@ public class WorkflowView extends JPanel {
 	 */
 	public void setController(WorkflowController controller) {
 		this.controller = controller;
+		stages.setSaveListener(controller);
 	}
 
 	/**

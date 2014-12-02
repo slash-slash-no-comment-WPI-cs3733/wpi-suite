@@ -12,10 +12,13 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 
+import taskManager.draganddrop.DDTransferHandler;
+import taskManager.draganddrop.DropAreaSaveListener;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
@@ -28,7 +31,7 @@ import taskManager.view.WorkflowView;
  * @author Stefan Alexander
  * @version November 9, 2014
  */
-public class WorkflowController {
+public class WorkflowController implements DropAreaSaveListener {
 
 	private final WorkflowView view;
 	private final WorkflowModel model;
@@ -118,5 +121,21 @@ public class WorkflowController {
 	 */
 	public WorkflowModel getModel() {
 		return model;
+	}
+
+	@Override
+	public void saveDrop(JPanel panel, int index) {
+		// Make sure we cast safely
+		if (!(panel instanceof StageView)) {
+			return;
+		}
+		StageController tc = ((StageView) panel).getController();
+		boolean changed = tc.moveStageToIndex(index);
+
+		if (changed) {
+			WorkflowModel.getInstance().save();
+			DDTransferHandler.dragSaved = true;
+		}
+
 	}
 }

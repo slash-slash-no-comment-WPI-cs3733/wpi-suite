@@ -107,9 +107,13 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 *
 	 * @param newStage
 	 *            Stage to be added.
+	 * @return whether the workflow changed as a result
 	 */
-	public void addStage(StageModel newStage) {
-		addStage(newStage, stageList.size());
+	public boolean addStage(StageModel stage) {
+		if (stageList.contains(stage)) {
+			return false;
+		}
+		return addStage(stage, -1);
 	}
 
 	/**
@@ -119,11 +123,27 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 *            Stage to be added.
 	 * @param index
 	 *            Index in the list of stages where we are adding the new stage.
+	 * @return whether the workflow changed as a result
 	 */
-	public void addStage(StageModel newStage, int index) {
-		stageList.add(index, newStage);
-		logger.log(Level.FINER, "Stage " + newStage.getName() + " added.");
-		// newStage.save();
+	public boolean addStage(StageModel stage, int index) {
+		if (index == -1 || index > stageList.size()) {// add to end of list
+			index = stageList.size();
+		}
+
+		// if nothing changed
+		if (index != stageList.size() && stageList.get(index).equals(stage)) {
+			return false;
+		}
+
+		if (!stageList.contains(stage)) {
+			logger.log(Level.FINER, "Stage " + stage.getName() + " added.");
+		} else {
+			stageList.remove(stage);
+		}
+
+		stageList.add(index, stage);
+		return true;
+
 	}
 
 	/**
