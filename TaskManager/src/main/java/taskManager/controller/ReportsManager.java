@@ -25,7 +25,6 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
-import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import taskManager.model.ActivityModel;
@@ -72,7 +71,7 @@ public class ReportsManager {
 		}
 	}
 
-	private CategoryDataset dataset;
+	private DefaultCategoryDataset dataset;
 	private Set<UserData> data;
 	private final WorkflowModel workflow;
 
@@ -123,8 +122,6 @@ public class ReportsManager {
 			throw new IllegalArgumentException("Invalid stage");
 		}
 
-		// We use a linked list here to have o(1) insertion. Since we only ever
-		// build this dataset and then read from it in order, this is efficient.
 		data = new TreeSet<UserData>();
 		for (TaskModel task : stage.getTasks()) {
 			Instant completed = null;
@@ -186,6 +183,7 @@ public class ReportsManager {
 			throw new IllegalStateException(
 					"Tried to generate a dataset without getting any data first!");
 		}
+		dataset = new DefaultCategoryDataset();
 		String intervalName = "Interval";
 		if (interval.equals(Period.ofDays(1))) {
 			intervalName = "Day ";
@@ -194,7 +192,6 @@ public class ReportsManager {
 		} else if (interval.equals(Period.ofMonths(1))) {
 			intervalName = "Month ";
 		}
-		final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		int seriesNum = 0;
 		final Instant boundary = start.plus(interval);
 		for (UserData userData : data) {
@@ -210,6 +207,9 @@ public class ReportsManager {
 				dataset.addValue(userData.effort, "Team", intervalName
 						+ seriesNum);
 			}
+		}
+		if (dataset == null) {
+			System.out.println(dataset);
 		}
 	}
 

@@ -11,15 +11,21 @@ package taskManager.controller;
 import static java.lang.Thread.sleep;
 
 import java.awt.Dimension;
-import java.util.Random;
+import java.time.Instant;
+import java.time.Period;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.fest.swing.fixture.FrameFixture;
-import org.jfree.data.category.DefaultCategoryDataset;
 import org.junit.Before;
 import org.junit.Test;
+
+import taskManager.model.TaskModel;
+import taskManager.model.WorkflowModel;
+import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
  * Tests for the edit task controller
@@ -28,11 +34,20 @@ import org.junit.Test;
  */
 public class TestReportsManager {
 
+	private Instant now;
+	private ReportsManager rm;
 	private FrameFixture fixture;
 	private JFrame frame;
 
 	@Before
 	public void setup() {
+		now = Instant.now();
+		WorkflowModel workflow = WorkflowModel.getInstance();
+		rm = new ReportsManager();
+		TaskModel tm1 = new TaskModel("Task", workflow.findStageByName("New"));
+		tm1.setEstimatedEffort(5);
+		User u1 = new User("User 1", "User 1", null, 42);
+		tm1.addAssigned(u1);
 		frame = new JFrame();
 		fixture = new FrameFixture(frame);
 		frame.setPreferredSize(new Dimension(800, 800));
@@ -40,26 +55,16 @@ public class TestReportsManager {
 	}
 
 	@Test
-	public void testStuff() throws InterruptedException {
-
-		// create a sample dataset
-		final DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-		String u1 = "User 1";
-		String u2 = "User 2";
-		Random r = new Random();
-		for (int i = 0; i < 7; i++) {
-			int x1 = r.nextInt();
-			int x2 = r.nextInt();
-			dataset.addValue(Integer.max(x1, -x1), u1, "Day " + i);
-			dataset.addValue(Integer.max(x2, -x2), u2, "Day " + i);
-		}
-
-		// create the chart
-		final JPanel chart = ReportsManager.createChart(dataset, "Title",
-				"Time", "Effort");
+	public void simpleTest() throws InterruptedException {
+		Set<String> users = new HashSet<String>();
+		users.add("User 1");
+		rm.findVelocityData(users, now, now.plusSeconds(60 * 60 * 24 * 7),
+				false);
+		rm.generateDataset(false, now, Period.ofDays(1));
+		final JPanel chart = rm.createChart("Title", "Time", "Effort");
 
 		frame.add(chart);
 		frame.revalidate();
-		sleep(1000);
+		sleep(10000);
 	}
 }
