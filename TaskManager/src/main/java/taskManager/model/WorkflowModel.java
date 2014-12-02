@@ -200,19 +200,9 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 * @param workflow
 	 *            The workflow to copy
 	 */
-	public void makeIdenticalTo(WorkflowModel savedWorkflow) {
-		setID(savedWorkflow.getID());
-		List<StageModel> synchronizedStageList = new ArrayList<StageModel>();
-		for (StageModel stage : stageList) {
-			StageModel savedStage = savedWorkflow.findStageByName(stage
-					.getName());
-			if (savedStage != null) {
-				synchronizedStageList.add(savedStage);
-			} else {
-				synchronizedStageList.add(stage);
-			}
-		}
-		stageList = synchronizedStageList;
+	public void makeIdenticalTo(WorkflowModel workflow) {
+		setID(workflow.getID());
+		stageList = workflow.getStages();
 	}
 
 	/**
@@ -308,5 +298,16 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		for (StageModel s : getStages()) {
 			s.setProject(p);
 		}
+	}
+
+	/**
+	 * Delete a stage from the stage list. Is called by StageModel.delete(),
+	 * probably shouldn't be used elsewhere.
+	 *
+	 * @param stage
+	 *            the stage to delete.
+	 */
+	public void deleteStage(StageModel stage) {
+		stageList.remove(stage);
 	}
 }

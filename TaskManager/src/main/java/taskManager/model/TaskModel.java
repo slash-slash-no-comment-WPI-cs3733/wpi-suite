@@ -391,6 +391,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 
 	@Override
 	public void delete() {
+		stage.deleteTask(this);
 		final Request request = Network.getInstance().makeRequest(
 				"taskmanager/task/" + getID(), HttpMethod.DELETE);
 		request.setBody(toJson());
