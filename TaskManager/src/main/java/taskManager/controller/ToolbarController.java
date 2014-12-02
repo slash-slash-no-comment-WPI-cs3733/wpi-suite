@@ -63,9 +63,6 @@ public class ToolbarController extends DropTargetAdapter implements
 			case ToolbarView.MANAGE_STAGES:
 				this.tabPaneC.addManageStagesTab();
 				break;
-			case ToolbarView.MANAGE_USERS:
-				this.tabPaneC.addManageUsersTab();
-				break;
 			case ToolbarView.REPORT:
 				break;
 
