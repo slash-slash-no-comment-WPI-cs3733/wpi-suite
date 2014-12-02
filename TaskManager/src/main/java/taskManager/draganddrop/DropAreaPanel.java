@@ -14,6 +14,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.LayoutManager;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.datatransfer.DataFlavor;
@@ -35,6 +36,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -248,11 +250,21 @@ public class DropAreaPanel extends JPanel {
 
 		System.out.println("Closest component" + Integer.toString(index));
 
+		// Determine layout axis
+		boolean vertical;
+		LayoutManager mgr = getLayout();
+		if (mgr instanceof BoxLayout) {
+			vertical = ((BoxLayout) mgr).getAxis() == BoxLayout.Y_AXIS;
+		} else {
+			vertical = false;
+		}
+		// Shift index by one as appropriate
 		if (index < 0) {
 			index = 0;
-		} else if (point.y > compCenters.get(closest).y) {
+		} else if (vertical && point.y > compCenters.get(closest).y
+				|| !vertical && point.x > compCenters.get(closest).x) {
 			index++;
-		}// TODO make general for horizontal?
+		}
 		System.out.println("Insert at " + Integer.toString(index));
 
 		return index;
