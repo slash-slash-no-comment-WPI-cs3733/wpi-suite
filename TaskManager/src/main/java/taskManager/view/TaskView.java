@@ -50,10 +50,8 @@ public class TaskView extends JPanel implements Transferable {
 	 *            the name of the task
 	 * @param duedate
 	 *            the due date of the task
-	 * @param taskID
-	 *            The ID of the task being displayed
-	 * @param archived
-	 *            Archived state of the task
+	 * @param estEffort
+	 *            the estimated effort of the task
 	 */
 	public TaskView(String name, Date duedate, int estEffort) {
 
