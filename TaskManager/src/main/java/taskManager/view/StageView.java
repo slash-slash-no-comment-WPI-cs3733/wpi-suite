@@ -56,8 +56,8 @@ public class StageView extends JPanel implements Transferable {
 
 	private JLabel labelName;
 	private JTextField labelText;
+	private JPanel changeLabel;
 	private JPanel label;
-	JPanel changeLabel;
 	private JButton done;
 	private JButton cancel;
 	private DropAreaPanel tasks;
@@ -107,6 +107,7 @@ public class StageView extends JPanel implements Transferable {
 		labelText = new JTextField();
 		labelText.setText(name);
 		labelText.setName(TEXT_LABEL);
+
 		labelText.addKeyListener(new StageTitleController(this));
 		labelText.setSize(new Dimension(135, 25));
 		labelText.setMinimumSize(new Dimension(135, 25));
@@ -129,6 +130,7 @@ public class StageView extends JPanel implements Transferable {
 		changeLabel.add(cancel);
 
 		changeLabel.setVisible(false);
+
 		label.setVisible(true);
 
 		this.add(label);
@@ -229,6 +231,28 @@ public class StageView extends JPanel implements Transferable {
 
 	public String getLabelText() {
 		return labelText.getText();
+	}
+
+	/**
+	 * makes the editable label field visible/not visible
+	 * 
+	 * @param q
+	 *            true is visible, false is not visible
+	 */
+	public void enableTitleEditing(boolean q) {
+
+		changeLabel.setVisible(q);
+		label.setVisible(!q);
+
+	}
+
+	/**
+	 * returns the editable label text field
+	 * 
+	 * @return the label text field
+	 */
+	public JTextField getLabelField() {
+		return labelText;
 	}
 
 	// ----------------------------

@@ -65,8 +65,10 @@ public class ToolbarController extends DropTargetAdapter implements
 			case ToolbarView.CREATE_TASK:
 				this.tabPaneC.addCreateTaskTab();
 				break;
-			case ToolbarView.MANAGE_STAGES:
-				this.tabPaneC.addManageStagesTab();
+			case ToolbarView.CREATE_STAGE:
+				// add a new stage from workflow controller
+				tabPaneV.getWorkflowController().addStageToView();
+
 				break;
 			case ToolbarView.REPORT:
 				break;
