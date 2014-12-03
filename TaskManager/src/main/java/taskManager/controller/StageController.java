@@ -250,6 +250,8 @@ public class StageController implements DropAreaSaveListener,
 					} else {
 						model.changeStageName(view.getLabelText());
 					}
+
+					// refresh the workflow with the new stage
 					JanewayModule.tabPaneC.getTabView().getWorkflowController()
 							.reloadData();
 					JanewayModule.tabPaneC.getTabView().getWorkflowController()
@@ -267,6 +269,8 @@ public class StageController implements DropAreaSaveListener,
 									"Cancel Stage Creation",
 									JOptionPane.YES_NO_OPTION);
 					if (opt == JOptionPane.YES_OPTION) {
+
+						// refresh the workflow with no new stage view
 						JanewayModule.tabPaneC.getTabView()
 								.getWorkflowController().reloadData();
 						JanewayModule.tabPaneC.getTabView()
