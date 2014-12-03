@@ -80,6 +80,7 @@ public class EditTaskView extends JPanel {
 	private JButton addReq;
 	private JButton submitComment;
 	private JButton refreshActivities;
+	
 
 	private JTextField titleField;
 	private JTextArea descripArea;
@@ -169,7 +170,7 @@ public class EditTaskView extends JPanel {
 		// sets all text fields editable and adds them to global variables
 		titleField = new JTextField(25);
 		titleField.setEditable(true);
-		descripArea = new JTextArea(2, 25);
+		descripArea = new JTextArea(4, 25);
 		descripArea.setEditable(true);
 		descripArea.setLineWrap(true);
 		JScrollPane descriptionScrollPane = new JScrollPane(descripArea);
@@ -277,7 +278,7 @@ public class EditTaskView extends JPanel {
 		BasicInfo.add(titleField);
 		BasicInfo.add(titleError, "wrap");
 		BasicInfo.add(descriptionLabel, "wrap");
-		BasicInfo.add(descripArea, "gapbottom 20px");
+		BasicInfo.add(descriptionScrollPane, "gapbottom 20px");
 		BasicInfo.add(descriptionError, "wrap");
 		BasicInfo.add(dueDateLabel);
 		BasicInfo.add(stageLabel, "wrap");
