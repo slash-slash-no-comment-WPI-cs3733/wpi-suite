@@ -13,6 +13,8 @@ import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -58,7 +60,7 @@ public class EditTaskController implements ActionListener {
 		this.etv = etv;
 		this.wfm = WorkflowModel.getInstance();
 
-		reloadData();
+		this.reloadData();
 	}
 
 	@Override
@@ -72,7 +74,7 @@ public class EditTaskController implements ActionListener {
 			// check to see if the task exists in the workflow and grabs the
 			// stage that the task is in
 			boolean exists = false;
-			StageModel currentStage = wfm.findStageByName("New");
+			StageModel currentStage = wfm.getStages().get(0);
 			for (StageModel stage : wfm.getStages()) {
 				if (stage.containsTaskByID(taskID)) {
 					exists = true;
@@ -121,6 +123,25 @@ public class EditTaskController implements ActionListener {
 				etv.resetFields();
 				// Save entire workflow whenever a task is saved
 				wfm.save();
+				break;
+
+			case EditTaskView.ARCHIVE:
+
+				// archive this task
+				task = currentStage.findTaskByID(taskID);
+				boolean isArchived = task.isArchived();
+				if (isArchived) {
+					etv.getArchiveButton().setText("Archive");
+				} else {
+					etv.getArchiveButton().setText("Unarchive");
+				}
+				task.setArchived(!isArchived);
+				etv.setDeleteEnabled(!isArchived);
+
+				// Save and reload the workflow.
+				JanewayModule.tabPaneC.getTabView().reloadWorkflow();
+				wfm.save();
+
 				break;
 
 			case EditTaskView.DELETE:
@@ -252,7 +273,7 @@ public class EditTaskController implements ActionListener {
 	 */
 	private void setTaskData(TaskModel t, StageModel s, Requirement r) {
 		// sets the text fields
-		t.setName(etv.getTitle().getText());
+		t.setName(etv.getTitle().getText().trim());
 		t.setDescription(etv.getDescription().getText());
 
 		// Try to set the effort values.
@@ -381,12 +402,13 @@ public class EditTaskController implements ActionListener {
 	 * 
 	 * @return boolean stating whether the task is edited.
 	 */
-	public Boolean isEdited() {
-		Boolean edited = false;
+	public boolean isEdited() {
+		boolean edited = false;
 
 		// Get the stage of the task.
 		boolean exists = false;
-		StageModel currentStage = wfm.findStageByName("New");
+
+		StageModel currentStage = wfm.getStages().get(0);
 		for (StageModel stage : wfm.getStages()) {
 			if (stage.containsTaskByID(getTaskID())) {
 				exists = true;
@@ -396,13 +418,19 @@ public class EditTaskController implements ActionListener {
 				exists = false;
 			}
 		}
+
+		TaskModel task = null;
 		if (!exists) {
-			return false;
+			// make a task with the default values to compare to
+			task = new TaskModel();
+			task.setName("");
+			task.setDescription("");
+			task.setStage(currentStage);
+		} else {
+			task = currentStage.findTaskByID(getTaskID());
 		}
 
 		// Compare the task info with the filled in info.
-		TaskModel task = currentStage.findTaskByID(getTaskID());
-
 		// Title.
 		if (!task.getName().equals(etv.getTitle().getText())) {
 			edited = true;
@@ -412,7 +440,7 @@ public class EditTaskController implements ActionListener {
 			edited = true;
 		}
 		// Due Date.
-		else if (!task.getDueDate().equals(etv.getDateField().getDate())) {
+		else if (checkDate(task)) {
 			edited = true;
 		}
 		// Stage.
@@ -438,6 +466,30 @@ public class EditTaskController implements ActionListener {
 		return edited;
 	}
 
+	public Boolean checkDate(TaskModel task) {
+		Date dueDate = task.getDueDate();
+
+		// if the task had a due date, check if it changed
+		if (dueDate != null && dueDate.equals(etv.getDateField().getDate())) {
+			return false;
+		} else {
+			// check if it has the default date (today)
+			Calendar cal1 = Calendar.getInstance();
+			Calendar cal2 = Calendar.getInstance();
+			cal1.setTime(etv.getDateField().getDate());
+			cal2.setTime(Calendar.getInstance().getTime());
+
+			// check if the two dates are the same day
+			if (cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
+					&& cal1.get(Calendar.DAY_OF_YEAR) == cal2
+							.get(Calendar.DAY_OF_YEAR)) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+	}
+
 	/**
 	 * 
 	 * Checks whether the users in the view and the users stored in the task are
@@ -447,14 +499,17 @@ public class EditTaskController implements ActionListener {
 	 *            task to check with.
 	 * @return true if there are edits.
 	 */
-	public Boolean checkUsers(TaskModel task) {
-		Boolean edited = false;
+	public boolean checkUsers(TaskModel task) {
+		boolean edited = false;
 		Set<String> taskAssigned = new HashSet<String>();
 		taskAssigned = task.getAssigned();
 		Set<String> usersAssigned = new HashSet<String>();
 		usersAssigned.addAll(etv.getUsersList().getAllValues());
-		if (!taskAssigned.equals(usersAssigned)) {
+		if (!usersAssigned.equals(taskAssigned)) {
 			edited = true;
+		}
+		if (usersAssigned.size() == 0 && taskAssigned == null) {
+			edited = false;
 		}
 		return edited;
 	}
@@ -468,8 +523,8 @@ public class EditTaskController implements ActionListener {
 	 *            task to check if.
 	 * @return true if there are edits.
 	 */
-	public Boolean checkEstEffort(TaskModel task) {
-		Boolean edited = false;
+	public boolean checkEstEffort(TaskModel task) {
+		boolean edited = false;
 		if (task.getEstimatedEffort() == 0) {
 			if (etv.getEstEffort().getText().isEmpty()) {
 				edited = false;
@@ -500,8 +555,8 @@ public class EditTaskController implements ActionListener {
 	 *            task to check if.
 	 * @return true if there are edits.
 	 */
-	public Boolean checkActEffort(TaskModel task) {
-		Boolean edited = false;
+	public boolean checkActEffort(TaskModel task) {
+		boolean edited = false;
 		if (task.getActualEffort() == 0) {
 			if (etv.getActEffort().getText().isEmpty()) {
 				edited = false;
@@ -532,11 +587,11 @@ public class EditTaskController implements ActionListener {
 	 *            task to check if.
 	 * @return true if there are edits.
 	 */
-	public Boolean checkReq(TaskModel task) {
-		Boolean edited = false;
+	public boolean checkReq(TaskModel task) {
+		boolean edited = false;
 		if (task.getReq() == null) {
 			if (etv.getRequirements().getSelectedItem().toString()
-					.equals("[None]")) {
+					.equals(EditTaskView.NO_REQ)) {
 				edited = false;
 			} else {
 				edited = true;

@@ -25,11 +25,10 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
+
 
 import net.miginfocom.swing.MigLayout;
 
@@ -145,10 +144,8 @@ public class EditTaskView extends JPanel {
 		JLabel descriptionLabel = new JLabel("Description ");
 		JLabel dueDateLabel = new JLabel("Due Date ");
 		JLabel stageLabel = new JLabel("Stage ");
-		JLabel usersLabel = new JLabel("Users ");
 		JLabel estimatedEffortLabel = new JLabel("Estimated Effort ");
 		JLabel actualEffortLabel = new JLabel("Actual Effort ");
-		JLabel commentsLabel = new JLabel("Comments ");
 		JLabel requirementLabel = new JLabel("Select Requirement ");
 
 
@@ -222,6 +219,9 @@ public class EditTaskView extends JPanel {
 		// Delete Task and close the window
 		delete = new JButton("Delete");
 		delete.setName(DELETE);
+		// Archive
+		archive = new JButton("Archive");
+		archive.setName(ARCHIVE);
 		// Add user to list
 		addUser = new JButton("<<");
 		addUser.setName(ADD_USER);
@@ -258,20 +258,6 @@ public class EditTaskView extends JPanel {
 		window.setLayout(new MigLayout());
 
 		window.add(titleLabel);
-
-
-
-
-		/**
-		 *   Start The Mig
-		 */
-
-		MigLayout ml = new MigLayout();
-		JSeparator separatorVert1 = new JSeparator(SwingConstants.VERTICAL);
-		JSeparator separatorHoriz1 = new JSeparator();
-		JSeparator separatorVert2 = new JSeparator(SwingConstants.VERTICAL);
-		JSeparator separatorHoriz2 = new JSeparator();
-
 
 
 		//This is where the 6 primary panels are defined
@@ -342,10 +328,14 @@ public class EditTaskView extends JPanel {
 		Requirements.add(addReq);
 
 		//EditSaveCancel Panel internal content
+		
+	
 		EditSaveCancel.add(save);
-		EditSaveCancel.add(archive);
-		EditSaveCancel.add(delete);
-		EditSaveCancel.add(cancel, "wrap");
+		EditSaveCancel.add(cancel);
+		if (this.mode == Mode.EDIT) {
+			EditSaveCancel.add(archive);
+			EditSaveCancel.add(delete);
+		}
 		EditSaveCancel.add(blankError);
 
 
@@ -358,10 +348,6 @@ public class EditTaskView extends JPanel {
 		window.add(Requirements, "w 30%, h 25%"); 
 		window.add(EditSaveCancel, "dock south, h 10%");
 		window.add(Activities, "w 30%, dock east, gapleft 5px");
-
-		/**
-		 *  End the Mig
-		 */
 
 		this.add(window);
 	}
@@ -381,6 +367,7 @@ public class EditTaskView extends JPanel {
 		removeUser.addActionListener(controller);
 		addReq.addActionListener(controller);
 		submitComment.addActionListener(controller);
+		archive.addActionListener(controller);
 		delete.addActionListener(controller);
 		refreshActivities.addActionListener(controller);
 	}
@@ -411,12 +398,12 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * gets the delete button object
+	 * gets the archive button object
 	 * 
-	 * @return the delete button object
+	 * @return the archive button object
 	 */
-	public JButton getDeleteButton() {
-		return this.delete;
+	public JButton getArchiveButton() {
+		return this.archive;
 	}
 
 	/**
@@ -650,17 +637,17 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * disables the delete button
+	 * disables the archive button
 	 */
-	public void disableDelete() {
-		this.delete.setEnabled(false);
+	public void disableArchive() {
+		this.archive.setEnabled(false);
 	}
 
 	/**
-	 * enables the delete button
+	 * enables the archive button
 	 */
-	public void enableDelete() {
-		this.delete.setEnabled(true);
+	public void enableArchive() {
+		this.archive.setEnabled(true);
 	}
 
 	/**
@@ -687,7 +674,7 @@ public class EditTaskView extends JPanel {
 	 *
 	 * @param boolean for whether or not to enable.
 	 */
-	public void setRefreshEnabled(Boolean b) {
+	public void setRefreshEnabled(boolean b) {
 		refreshActivities.setEnabled(b);
 	}
 
@@ -817,6 +804,17 @@ public class EditTaskView extends JPanel {
 	 */
 	public void addActivity(ActivityModel act) {
 		activities.add(act);
+	}
+
+	/**
+	 * 
+	 * Set the delete button to enabled/disabled.
+	 *
+	 * @param bool
+	 *            boolean to set the button to.
+	 */
+	public void setDeleteEnabled(boolean bool) {
+		delete.setEnabled(bool);
 	}
 
 	/*

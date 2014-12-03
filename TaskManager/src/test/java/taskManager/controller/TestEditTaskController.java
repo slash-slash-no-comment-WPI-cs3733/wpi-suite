@@ -30,6 +30,7 @@ import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
+import taskManager.view.TaskView;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
@@ -224,8 +225,9 @@ public class TestEditTaskController {
 		task.setReq(req);
 
 		// load the edit view
-		TaskController tc = new TaskController(null, task);
-		tc.mouseClicked(null);
+		TaskController tc = new TaskController(new TaskView("Task", new Date(),
+				0), task);
+		tc.editTask();
 
 		// make sure the requirement displays properly
 		fixture.comboBox(EditTaskView.REQUIREMENTS).requireSelection(
@@ -309,8 +311,9 @@ public class TestEditTaskController {
 		task.addAssigned(testUser);
 
 		// load the edit view
-		TaskController tc = new TaskController(null, task);
-		tc.mouseClicked(null);
+		TaskController tc = new TaskController(new TaskView("Task", new Date(),
+				0), task);
+		tc.editTask();
 		Component c = JanewayModule.tabPaneC.getTabView()
 				.getSelectedComponent();
 		if (c instanceof EditTaskView) {

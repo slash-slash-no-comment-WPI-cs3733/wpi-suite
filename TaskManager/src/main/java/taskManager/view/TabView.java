@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 
 import taskManager.JanewayModule;
 import taskManager.controller.EditTaskController;
+import taskManager.model.FetchWorkflowObserver;
 
 /**
  * 
@@ -123,6 +124,7 @@ public class TabView extends JPanel implements ActionListener {
 				tabPaneV.setSelectedIndex(0);
 			}
 		}
+		FetchWorkflowObserver.ignoreAllResponses = false;
 		tabPaneV.reloadWorkflow();
 	}
 

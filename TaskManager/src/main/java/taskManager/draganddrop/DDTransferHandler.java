@@ -18,8 +18,10 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 import javax.swing.TransferHandler;
 
+import taskManager.JanewayModule;
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.WorkflowModel;
+import taskManager.view.ToolbarView;
 
 /**
  * 
@@ -32,8 +34,11 @@ public class DDTransferHandler extends TransferHandler {
 
 	private static final long serialVersionUID = -7859524821673270515L;
 
-	// This DataFlavor represents a task being dragged
+	// DataFlavor representing a TaskView being dragged
 	private static DataFlavor taskFlavor;
+
+	// DataFlavor representing a StageView being dragged
+	private static DataFlavor stageFlavor;
 
 	public static boolean dragSaved = false;
 
@@ -47,12 +52,30 @@ public class DDTransferHandler extends TransferHandler {
 			try {
 				taskFlavor = new DataFlavor(
 						DataFlavor.javaJVMLocalObjectMimeType
-								+ ";class=taskManager.draganddrop.TaskPanel");
+								+ ";class=taskManager.view.TaskView");
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
 		}
 		return taskFlavor;
+	}
+
+	/**
+	 * Lazy-load the DataFlavor associated with stages
+	 *
+	 * @return the DataFlavor
+	 */
+	public static DataFlavor getStageFlavor() {
+		if (stageFlavor == null) {
+			try {
+				stageFlavor = new DataFlavor(
+						DataFlavor.javaJVMLocalObjectMimeType
+								+ ";class=taskManager.view.StageView");
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		return stageFlavor;
 	}
 
 	/**
@@ -90,22 +113,28 @@ public class DDTransferHandler extends TransferHandler {
 	 */
 	@Override
 	public void exportAsDrag(JComponent comp, InputEvent e, int action) {
+
+		// this is set to false before true to clear the workflow before
+		// dragging
 		// Ignore all responses from server while drag is active
-		FetchWorkflowObserver.ignoreAllResponses = true;
+		// TODO fix comment to make more clear ^
+		if (!FetchWorkflowObserver.ignoreAllResponses) {
+			FetchWorkflowObserver.ignoreAllResponses = true;
+			// Create drag image
+			Image image = new BufferedImage(comp.getWidth(), comp.getHeight(),
+					BufferedImage.TYPE_INT_ARGB);
+			Graphics g = image.getGraphics();
+			g = g.create();
+			comp.paint(g);
+			setDragImage(image);
 
-		// Create drag image
-		Image image = new BufferedImage(comp.getWidth(), comp.getHeight(),
-				BufferedImage.TYPE_INT_ARGB);
-		Graphics g = image.getGraphics();
-		g = g.create();
-		comp.paint(g);
-		setDragImage(image);
+			// Create placeholder
+			DropAreaPanel.generatePlaceholder(comp.getSize());
 
-		// Create placeholder
-		StagePanel.generatePlaceholder(comp.getSize());
+			// Initiate the drag
+			super.exportAsDrag(comp, e, action);
+		}
 
-		// Initiate the drag
-		super.exportAsDrag(comp, e, action);
 	}
 
 	/**
@@ -127,8 +156,14 @@ public class DDTransferHandler extends TransferHandler {
 		}
 		DDTransferHandler.dragSaved = false;
 
-		// Show the task
+		// Show the component
 		comp.setVisible(true);
+
+		// Set icons disabled.
+		JanewayModule.toolV.setArchiveEnabled(false);
+		JanewayModule.toolV.setDeleteEnabled(false);
+		// Set icon back to the archive icon.
+		JanewayModule.toolV.setArchiveIcon(ToolbarView.ARCHIVE);
 	}
 
 }

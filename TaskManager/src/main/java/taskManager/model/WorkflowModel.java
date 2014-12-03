@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
 import edu.wpi.cs.wpisuitetng.network.Network;
 import edu.wpi.cs.wpisuitetng.network.Request;
 import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
@@ -106,9 +107,13 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 *
 	 * @param newStage
 	 *            Stage to be added.
+	 * @return whether the workflow changed as a result
 	 */
-	public void addStage(StageModel newStage) {
-		addStage(newStage, stageList.size());
+	public boolean addStage(StageModel stage) {
+		if (stageList.contains(stage)) {
+			return false;
+		}
+		return addStage(stage, -1);
 	}
 
 	/**
@@ -118,11 +123,26 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 *            Stage to be added.
 	 * @param index
 	 *            Index in the list of stages where we are adding the new stage.
+	 * @return whether the workflow changed as a result
 	 */
-	public void addStage(StageModel newStage, int index) {
-		stageList.add(index, newStage);
-		logger.log(Level.FINER, "Stage " + newStage.getName() + " added.");
-		// newStage.save();
+	public boolean addStage(StageModel stage, int index) {
+		if (index == -1 || index > stageList.size()) {// add to end of list
+			index = stageList.size();
+		}
+
+		// if nothing changed
+		if (index != stageList.size() && stageList.get(index).equals(stage)) {
+			return false;
+		}
+
+		if (!stageList.contains(stage)) {
+			logger.log(Level.FINER, "Stage " + stage.getName() + " added.");
+		} else {
+			stageList.remove(stage);
+		}
+
+		stageList.add(index, stage);
+		return true;
 	}
 
 	/**
@@ -202,7 +222,6 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	public void makeIdenticalTo(WorkflowModel workflow) {
 		setID(workflow.getID());
 		stageList = workflow.getStages();
-		this.setID(workflow.getID());
 	}
 
 	/**
@@ -219,9 +238,9 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	@Override
 	public void save() {
 		final Request request = Network.getInstance().makeRequest(
-				"taskmanager/workflow", HttpMethod.POST);
+				"taskmanager/workflow/" + getID(), HttpMethod.POST);
 		request.setBody(toJson());
-		System.out.println("Saving: " + toJson());
+		System.out.println("Saving " + getClass() + ": " + toJson());
 		request.addObserver(getObserver());
 		request.send();
 	}
@@ -229,9 +248,9 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	@Override
 	public void delete() {
 		final Request request = Network.getInstance().makeRequest(
-				"taskmanager/workflow", HttpMethod.DELETE);
+				"taskmanager/workflow/" + getID(), HttpMethod.DELETE);
 		request.setBody(toJson());
-		System.out.println("Deleting: " + toJson());
+		System.out.println("Deleting " + getClass() + ": " + toJson());
 		request.addObserver(getObserver());
 		request.send();
 	}
@@ -289,5 +308,14 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 			return ((WorkflowModel) o).getID().equals(this.getID());
 		}
 		return false;
+	}
+
+	@Override
+	public void setProject(Project p) {
+		super.setProject(p);
+		System.out.println("setting workflow project");
+		for (StageModel s : getStages()) {
+			s.setProject(p);
+		}
 	}
 }
