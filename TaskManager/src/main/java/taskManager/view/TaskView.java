@@ -8,6 +8,7 @@
  *******************************************************************************/
 package taskManager.view;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -41,6 +42,14 @@ public class TaskView extends JPanel implements Transferable {
 	private static final long serialVersionUID = 1L;
 
 	private TaskController controller;
+
+	// colors
+	public final Color TASK = Color.decode("#FCFCFC");
+	public final Color TASK_HOVER = Color.LIGHT_GRAY;
+	public final Color TASK_CLICKED = Color.decode("#DEDEDE");
+	public final Color ARCHIVE = Color.decode("#FFCF33");
+	public final Color ARCHIVE_HOVER = Color.decode("#FFD263");
+	public final Color ARCHIVE_CLICKED = Color.decode("#FFD263");
 
 	/**
 	 * Constructor, creates a list-like view for the following information: the
