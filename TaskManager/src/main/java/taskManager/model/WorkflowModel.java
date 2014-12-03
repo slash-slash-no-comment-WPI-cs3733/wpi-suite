@@ -180,20 +180,6 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	}
 
 	/**
-	 * remove the given StageModel from the list of StageModels
-	 * 
-	 * @param s
-	 *            the stage to be removed
-	 */
-	public void removeStage(StageModel s) {
-		if (hasStage(s)) {
-			if (s.isRemovable()) {
-				stageList.remove(s);
-			}
-		}
-	}
-
-	/**
 	 * Find a StageModel in the workflow via its unique name
 	 *
 	 * @param stage
