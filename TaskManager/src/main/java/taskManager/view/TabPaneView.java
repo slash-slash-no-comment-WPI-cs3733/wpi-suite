@@ -67,6 +67,11 @@ public class TabPaneView extends JTabbedPane {
 		wfc.reloadData();
 	}
 
+	/**
+	 * return the workflow controller
+	 * 
+	 * @return the workflow controller
+	 */
 	public WorkflowController getWorkflowController() {
 		return wfc;
 	}

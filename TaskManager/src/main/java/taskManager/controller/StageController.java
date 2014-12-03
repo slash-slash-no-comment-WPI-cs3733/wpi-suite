@@ -56,21 +56,24 @@ public class StageController implements MouseListener, ActionListener {
 		this.model = model;
 
 		// Get all the tasks associated with this Stage.
-		final List<TaskModel> tasks = this.model.getTasks();
 
 		// Get state of archive shown check box.
 		boolean showArchive = JanewayModule.toolV.isArchiveShown();
 
 		// Add the tasks.
-		for (TaskModel task : tasks) {
-			// Add only if task is not archived or when task is archived and
-			// archive shown is set to true.
-			if (!task.isArchived() || (task.isArchived() && showArchive)) {
-				// create stage view and controller.
-				TaskView tkv = new TaskView(task.getName(), task.getDueDate(),
-						task.getEstimatedEffort(), task.isArchived());
-				tkv.setController(new TaskController(tkv, task));
-				this.view.addTaskView(tkv);
+		if (model != null) {
+			final List<TaskModel> tasks = this.model.getTasks();
+			for (TaskModel task : tasks) {
+				// Add only if task is not archived or when task is archived and
+				// archive shown is set to true.
+				if (!task.isArchived() || (task.isArchived() && showArchive)) {
+					// create stage view and controller.
+					TaskView tkv = new TaskView(task.getName(),
+							task.getDueDate(), task.getEstimatedEffort(),
+							task.isArchived());
+					tkv.setController(new TaskController(tkv, task));
+					this.view.addTaskView(tkv);
+				}
 			}
 		}
 
@@ -177,26 +180,31 @@ public class StageController implements MouseListener, ActionListener {
 
 			switch (((JButton) button).getName()) {
 			case StageView.CHECK:
-				if (model.getName() == null) {
-					WorkflowModel.getInstance().removeStage(model);
-					model = new StageModel(view.getLabelText());
+				if (WorkflowModel.getInstance().findStageByName(
+						view.getLabelText()) != null) {
+					JOptionPane.showConfirmDialog(
+							view,
+							"Another stage already has the name "
+									+ view.getLabelText()
+									+ ". Please choose another name.",
+							"Warning - Duplicate stage names",
+							JOptionPane.CLOSED_OPTION);
 				} else {
-					try {
+					if (model == null) {
+						model = new StageModel(view.getLabelText());
+					} else {
 						model.changeStageName(view.getLabelText());
-					} catch (IllegalArgumentException ex) {
-						JOptionPane.showConfirmDialog(
-								view,
-								"Another stage already has the name "
-										+ view.getLabelText()
-										+ ". Please choose another name.",
-								"Warning - Duplicate stage names",
-								JOptionPane.CLOSED_OPTION);
-						return;
 					}
+					JanewayModule.tabPaneC.getTabView().getWorkflowController()
+							.reloadData();
+					JanewayModule.tabPaneC.getTabView().getWorkflowController()
+							.repaintView();
 				}
-				// fall through
+				break;
+			// fall through
 			case StageView.X:
-				if (model.getName() == null) {
+				if (model == null) {
+					// ask the user if they want to cancel the new stage
 					int opt = JOptionPane
 							.showConfirmDialog(
 									view,
@@ -204,7 +212,6 @@ public class StageController implements MouseListener, ActionListener {
 									"Cancel Stage Creation",
 									JOptionPane.YES_NO_OPTION);
 					if (opt == JOptionPane.YES_OPTION) {
-						WorkflowModel.getInstance().removeStage(model);
 						JanewayModule.tabPaneC.getTabView()
 								.getWorkflowController().reloadData();
 						JanewayModule.tabPaneC.getTabView()

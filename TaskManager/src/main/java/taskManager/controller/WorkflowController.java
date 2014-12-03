@@ -125,9 +125,8 @@ public class WorkflowController implements MouseListener {
 	 * Adds a new stage panel to the workflow view
 	 */
 	public void addStageToView() {
-		StageModel newStage = new StageModel(null);
 		StageView newStageV = new StageView("");
-		newStageV.setController(new StageController(newStageV, newStage));
+		newStageV.setController(new StageController(newStageV, null));
 		newStageV.enableTitleEditing(true);
 		PromptSupport.setPrompt("New Stage Name", newStageV.getLabelField());
 		view.addStageView(newStageV);

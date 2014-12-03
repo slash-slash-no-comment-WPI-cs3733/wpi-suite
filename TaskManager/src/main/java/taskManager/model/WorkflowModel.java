@@ -150,7 +150,9 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 */
 	public void removeStage(StageModel s) {
 		if (hasStage(s)) {
-			stageList.remove(s);
+			if (s.isRemovable()) {
+				stageList.remove(s);
+			}
 		}
 	}
 
