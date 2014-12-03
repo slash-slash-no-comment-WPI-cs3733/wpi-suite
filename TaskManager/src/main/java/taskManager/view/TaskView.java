@@ -8,7 +8,6 @@
  *******************************************************************************/
 package taskManager.view;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -53,25 +52,10 @@ public class TaskView extends JPanel implements Transferable {
 	 *            the due date of the task
 	 * @param taskID
 	 *            The ID of the task being displayed
-	 */
-	public TaskView(String name, Date duedate, int estEffort) {
-		this(name, duedate, estEffort, false);
-	}
-
-	/**
-	 * Constructor, creates a list-like view for the following information: the
-	 * name of the task, the due date and the estimated effort
-	 * 
-	 * @param name
-	 *            the name of the task
-	 * @param duedate
-	 *            the due date of the task
-	 * @param taskID
-	 *            The ID of the task being displayed
 	 * @param archived
 	 *            Archived state of the task
 	 */
-	public TaskView(String name, Date duedate, int estEffort, Boolean archived) {
+	public TaskView(String name, Date duedate, int estEffort) {
 
 		// organizes the data in a vertical list
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -107,10 +91,6 @@ public class TaskView extends JPanel implements Transferable {
 
 		nameLabel.setMaximumSize(size);
 		nameLabel.setPreferredSize(size);
-
-		if (archived) {
-			setBackground(Color.decode("#FFBC00"));
-		}
 
 		nameLabel.setText(name);
 

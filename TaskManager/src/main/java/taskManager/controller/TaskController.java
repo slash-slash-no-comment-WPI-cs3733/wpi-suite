@@ -76,6 +76,10 @@ public class TaskController implements MouseListener, MouseMotionListener {
 		assignedUsers = model.getAssigned();
 
 		req = model.getReq();
+
+		if (model.isArchived()) {
+			view.setBackground(Color.decode("#FFBC00"));
+		}
 	}
 
 	/**

@@ -73,7 +73,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 			if (!task.isArchived() || (task.isArchived() && showArchive)) {
 				// create stage view and controller.
 				TaskView tkv = new TaskView(task.getName(), task.getDueDate(),
-						task.getEstimatedEffort(), task.isArchived());
+						task.getEstimatedEffort());
 				tkv.setController(new TaskController(tkv, task));
 				this.view.addTaskView(tkv);
 			}
