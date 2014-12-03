@@ -43,6 +43,7 @@ public class TaskView extends TaskPanel {
 	private final JMenuItem addTask = new JMenuItem("Add Task");
 	private final JMenuItem editTask = new JMenuItem("Edit Task");
 	private final JMenuItem delete = new JMenuItem("Delete Task");
+	private final JMenuItem archive = new JMenuItem("Archive Task");
 
 	/**
 	 * Constructor, creates a list-like view for the following information: the
@@ -73,15 +74,19 @@ public class TaskView extends TaskPanel {
 		contextMenu.add(editTask);
 		// Creates sub Menu that contains the names of all of the other stages.
 		moveTo = new JMenu("Move To");
-		moveTo.add(new JMenuItem("One"));
-		moveTo.add(new JMenuItem("Two"));
-		moveTo.add(new JMenuItem("Three"));
-		moveTo.add(new JMenuItem("Four"));
+		int i = 0;
+		while (i < WorkflowModel.getInstance().getStages().size()) {
+			JMenuItem jm = new JMenuItem(WorkflowModel.getInstance()
+					.getStages().get(i).getName());
+			moveTo.add(jm);
+			jm.addActionListener(controller);
+			i++;
+		}
 		contextMenu.add(moveTo);
 		// Finished with sub menu
 		contextMenu.add(delete);
-		//finished with context menu
-		
+		// finished with context menu
+
 		//
 		// convert Date object to Calendar object to avoid using deprecated
 		// Date methods.
@@ -129,7 +134,8 @@ public class TaskView extends TaskPanel {
 		this.addTask.addActionListener(controller);
 		this.delete.addActionListener(controller);
 		this.editTask.addActionListener(controller);
-
+		this.archive.addActionListener(controller);
+		
 	}
 
 	public TaskController getController() {

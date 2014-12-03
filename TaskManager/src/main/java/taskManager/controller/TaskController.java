@@ -241,7 +241,7 @@ public class TaskController implements MouseListener, ActionListener {
 			leftMouseClick();
 		if (((JMenuItem) e.getSource()).getText().equals("New Task"))
 			leftMouseClick();
-		
+		System.out.println(((JMenuItem)e.getSource()).getText());
 	}
 
 }
