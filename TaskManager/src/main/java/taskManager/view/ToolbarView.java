@@ -98,7 +98,7 @@ public class ToolbarView extends JToolBar {
 					"create-task-icon.png"));
 			createTask.setIcon(new ImageIcon(img));
 			img = ImageIO.read(this.getClass().getResourceAsStream(
-					"stages-icon.png"));
+					"create-stage-icon.png"));
 			createStage.setIcon(new ImageIcon(img));
 			img = ImageIO.read(this.getClass().getResourceAsStream(
 					"reports-icon.png"));
