@@ -105,7 +105,7 @@ public class TaskInfoPreviewView extends JPanel {
 		closeButton.addActionListener(this.controller);
 		titleBar.add(closeButton);
 		if (model.isArchived()) {
-			titleBar.setBackground(Colors.ARCHIVE);
+			titleBar.setBackground(Colors.ARCHIVE_CLICKED);
 		} else {
 			titleBar.setBackground(Colors.TASK_CLICKED);
 		}
