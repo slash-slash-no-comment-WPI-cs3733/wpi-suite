@@ -125,6 +125,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 *            Index in the list of stages where we are adding the new stage.
 	 * @return whether the workflow changed as a result
 	 */
+
 	public boolean addStage(StageModel stage, int index) {
 		if (index == -1 || index > stageList.size()) {// add to end of list
 			index = stageList.size();

@@ -20,6 +20,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 
+import org.jdesktop.swingx.prompt.PromptSupport;
+
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DropAreaSaveListener;
 import taskManager.model.FetchWorkflowObserver;
@@ -41,6 +43,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 
 	private final WorkflowView view;
 	private final WorkflowModel model;
+	private boolean hasNewStageView;
 
 	/**
 	 * Constructor for the WorkflowController, gets all the stages from the
@@ -53,6 +56,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	public WorkflowController(WorkflowView view) {
 		this.view = view;
 		this.model = WorkflowModel.getInstance();
+		hasNewStageView = false;
 
 		reloadData();
 
@@ -91,6 +95,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		// clear the stages previously on the view
 		this.removeTaskInfos(false);
 		this.removeChangeTitles();
+		hasNewStageView = false;
 		view.removeAll();
 
 		// get all the stages in this workflow
@@ -118,6 +123,23 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 
 	public void fetchUsers() {
 		model.updateUsers();
+	}
+
+	/**
+	 * Adds a new stage panel to the workflow view
+	 */
+	public void addStageToView() {
+		if (!hasNewStageView) {
+			hasNewStageView = true;
+			StageView newStageV = new StageView("");
+			newStageV.setController(new StageController(newStageV, null));
+			newStageV.enableTitleEditing(true);
+			PromptSupport
+					.setPrompt("New Stage Name", newStageV.getLabelField());
+			view.addStageView(newStageV);
+			view.revalidate();
+			view.repaint();
+		}
 	}
 
 	/**

@@ -110,15 +110,23 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 		super(name);
 
 		// Enforce uniqueness of Stage names
-		this.name = name.trim();
-		this.removable = removable;
+		if (name != null) {
+			this.name = name.trim();
+		}
 
-		taskList = new ArrayList<TaskModel>();
-
-		if (index == -1) {
-			workflow.addStage(this);
+		if (WorkflowModel.getInstance().findStageByName(name) != null) {
+			// How did you actually get here?
+			throw new IllegalArgumentException("This stage already exists");
 		} else {
-			workflow.addStage(this, index);
+			this.removable = removable;
+
+			taskList = new ArrayList<TaskModel>();
+
+			if (index == -1) {
+				workflow.addStage(this);
+			} else {
+				workflow.addStage(this, index);
+			}
 		}
 
 	}

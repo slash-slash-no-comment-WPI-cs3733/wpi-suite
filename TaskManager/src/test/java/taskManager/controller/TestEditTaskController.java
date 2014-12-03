@@ -12,7 +12,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -72,13 +71,8 @@ public class TestEditTaskController {
 		etv.setVisible(true);
 
 		frame = new JFrame();
+		// frame.setLayout(new FlowLayout());
 		frame.add(JanewayModule.tabPaneC.getTabView());
-		// Need all of these to get the test frame to be the correct size
-		frame.setMinimumSize(new Dimension(800, 800));
-		frame.setSize(new Dimension(800, 800));
-		frame.setPreferredSize(new Dimension(800, 800));
-		frame.setMaximumSize(new Dimension(800, 800));
-
 		fixture = new FrameFixture(frame);
 
 		fixture.show();
@@ -89,6 +83,7 @@ public class TestEditTaskController {
 
 		// create a new edit task tab
 		JanewayModule.tabPaneC.addEditTaskTab(etv);
+		frame.pack();
 
 		// enter information for a new task
 		getTitleBoxFixture().enterText("name");
@@ -109,6 +104,7 @@ public class TestEditTaskController {
 
 		// create a new edit task tab
 		JanewayModule.tabPaneC.addEditTaskTab(etv);
+		frame.pack();
 
 		getTitleBoxFixture().enterText("name");
 		getDescriptionBoxFixture().enterText("desc");
@@ -321,7 +317,7 @@ public class TestEditTaskController {
 		} else {
 			fail("oh god what's going on");
 		}
-
+		frame.pack();
 		return task;
 	}
 
