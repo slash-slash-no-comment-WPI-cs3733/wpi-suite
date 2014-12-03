@@ -53,6 +53,12 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	public static Boolean anyTaskInfoOut = false;
 	public Boolean thisTaskInfoOut = false;
 
+	// colors
+	public final Color TASK = Color.decode("#FFFFFF");
+	public final Color TASK_HOVER = Color.LIGHT_GRAY;
+	public final Color ARCHIVE = Color.decode("#FFCF33");
+	public final Color ARCHIVE_HOVER = Color.decode("#FFD263");
+
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
 	 * view and model parameters.
@@ -67,7 +73,6 @@ public class TaskController implements MouseListener, MouseMotionListener {
 		this.view = view;
 		this.model = model;
 		sm = model.getStage();
-		this.background = view.getBackground();
 
 		etv = new EditTaskView(Mode.EDIT);
 		etv.setController(new EditTaskController(etv));
@@ -79,8 +84,12 @@ public class TaskController implements MouseListener, MouseMotionListener {
 
 		// Set the background to orange if the task is archived.
 		if (model.isArchived()) {
-			view.setBackground(Color.decode("#FFBC00"));
+			view.setBackground(ARCHIVE);
+		} else {
+			view.setBackground(TASK);
 		}
+
+		this.background = view.getBackground();
 	}
 
 	/**
@@ -221,7 +230,11 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	 *
 	 */
 	public void setToHoverColor() {
-		view.setBackground(Color.lightGray);
+		if (isArchived()) {
+			view.setBackground(ARCHIVE_HOVER);
+		} else {
+			view.setBackground(TASK_HOVER);
+		}
 	}
 
 	/**

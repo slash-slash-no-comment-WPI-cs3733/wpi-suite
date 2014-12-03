@@ -45,6 +45,8 @@ public class TaskInfoPreviewView extends JPanel {
 	private TaskInfoPreviewController controller;
 	public static final String EDIT = "edit";
 	public static final String X = "x";
+	public final Color SHADOW_COLOR = Color.BLACK;
+	public final Color BACKGROUND = Color.decode("#ECF7F7");
 
 	public TaskInfoPreviewView(TaskModel model, TaskController controller,
 			Point loc) {
@@ -53,10 +55,11 @@ public class TaskInfoPreviewView extends JPanel {
 		this.controller = new TaskInfoPreviewController(this.taskC);
 		this.setLayout(new MigLayout("wrap 1", "5[]5", "0[]:push[]"));
 		setBoundsWithoutClipping(loc, 250, 415);
+		this.setBackground(BACKGROUND);
 
 		// Drop shadow
 		DropShadowBorder shadow = new DropShadowBorder();
-		shadow.setShadowColor(Color.BLACK);
+		shadow.setShadowColor(SHADOW_COLOR);
 		shadow.setShowLeftShadow(true);
 		shadow.setShowRightShadow(true);
 		shadow.setShowBottomShadow(true);
@@ -71,6 +74,7 @@ public class TaskInfoPreviewView extends JPanel {
 		info.setMinimumSize(new Dimension(212, 345));
 		info.setMaximumSize(new Dimension(212, 345));
 		info.setLayout(new MigLayout("wrap 1"));
+		info.setBackground(BACKGROUND);
 
 		// The task's titleBar contains the title and the 'x' button
 		JPanel titleBar = new JPanel();
@@ -103,6 +107,7 @@ public class TaskInfoPreviewView extends JPanel {
 		description.setEditable(false);
 		description.setLineWrap(true);
 		description.setWrapStyleWord(true);
+		description.setBackground(BACKGROUND);
 		info.add(description);
 
 		// The task's due date
