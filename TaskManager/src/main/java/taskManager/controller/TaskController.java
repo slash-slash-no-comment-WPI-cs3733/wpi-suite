@@ -9,8 +9,10 @@
 package taskManager.controller;
 
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -19,12 +21,14 @@ import javax.swing.JComboBox;
 
 import taskManager.JanewayModule;
 import taskManager.model.ActivityModel;
+import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
-import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
+import taskManager.view.TaskInfoPreviewView;
 import taskManager.view.TaskView;
+import taskManager.view.ToolbarView;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 
@@ -34,18 +38,20 @@ import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
  * @author Stefan Alexander
  * @version November 9, 2014
  */
-public class TaskController implements MouseListener {
+public class TaskController implements MouseListener, MouseMotionListener {
 
 	private final TaskView view;
 	private final TaskModel model;
 	private StageModel sm;
-	private final WorkflowModel wfm;
 	private TabPaneController tabPaneC;
 	private EditTaskView etv;
 	private Requirement req;
 	private final User[] projectUsers = JanewayModule.users;
 	private Set<String> assignedUsers;
 	private Color background;
+
+	public static Boolean anyTaskInfoOut = false;
+	public Boolean thisTaskInfoOut = false;
 
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
@@ -61,8 +67,8 @@ public class TaskController implements MouseListener {
 		this.view = view;
 		this.model = model;
 		sm = model.getStage();
+		this.background = view.getBackground();
 
-		wfm = WorkflowModel.getInstance();
 		etv = new EditTaskView(Mode.EDIT);
 		etv.setController(new EditTaskController(etv));
 		etv.setFieldController(new TaskInputController(etv));
@@ -70,6 +76,11 @@ public class TaskController implements MouseListener {
 		assignedUsers = model.getAssigned();
 
 		req = model.getReq();
+
+		// Set the background to orange if the task is archived.
+		if (model.isArchived()) {
+			view.setBackground(Color.decode("#FFBC00"));
+		}
 	}
 
 	/**
@@ -92,18 +103,37 @@ public class TaskController implements MouseListener {
 		model.getStage().removeTask(model);
 	}
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// makes the delete button unclickable
-		etv.enableDelete();
+	/**
+	 * Returns whether or not the task is archived
+	 *
+	 * @return the boolean.
+	 */
+	public boolean isArchived() {
+		return model.isArchived();
+	}
 
+	/**
+	 * 
+	 * Sets task's archived property to given boolean.
+	 *
+	 * @param bool
+	 *            The boolean to set the task's isArchived field.
+	 */
+	public void setArchived(boolean bool) {
+		model.setArchived(bool);
+	}
+
+	/**
+	 * 
+	 * Populates the EditTaskView with the information from this task.
+	 *
+	 */
+	public void editTask() {
 		// uses the title field to hold the unique id
 		etv.getTitle().setName(this.model.getID());
 
 		// uses description field to hold the name of the stage
 		etv.getDescription().setName(this.model.getStage().getName());
-		// makes the delete button unclickable
-		etv.enableDelete();
 
 		// populate editable fields with this tasks info
 		etv.setTitle(model.getName());
@@ -172,36 +202,111 @@ public class TaskController implements MouseListener {
 			etv.getRequirements().setSelectedItem(EditTaskView.NO_REQ);
 		}
 
+		// makes the archive button clickable
+		etv.enableArchive();
+
+		// Set text for archive button.
+		if (model.isArchived()) {
+			etv.getArchiveButton().setText("Unarchive");
+		} else {
+			etv.getArchiveButton().setText("Archive");
+		}
+		etv.setDeleteEnabled(model.isArchived());
+	}
+
+	/**
+	 * 
+	 * Make the task a darker color. Used for when the mouse is over a task or
+	 * when a bubble is out for this task
+	 *
+	 */
+	public void setToHoverColor() {
+		view.setBackground(Color.lightGray);
+	}
+
+	/**
+	 * 
+	 * Resets the task background to its original color
+	 *
+	 */
+	public void resetBackground() {
+		if (background != null) {
+			view.setBackground(background);
+		}
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// Show task bubble only if there are no stage title textboxes out AND
+		// the ignoreAllResponses flag has not been set OR
+		// another taskinfo bubble is already out
+		if ((!FetchWorkflowObserver.ignoreAllResponses || TaskController.anyTaskInfoOut)
+				&& !StageController.anyChangeTitleOut) {
+			// Don't reload (so the correct task can be highlighted while the
+			// bubble is up
+			FetchWorkflowObserver.ignoreAllResponses = true;
+
+			// Create the taskinfo bubble
+			Point stageLoc = view.getParent().getParent().getParent()
+					.getParent().getLocation();
+			Point stagesPanelLoc = view.getParent().getParent().getParent()
+					.getParent().getParent().getLocation();
+			Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
+					view.getLocation().y);
+			JanewayModule.tabPaneC.getTabView().getWorkflowController()
+					.setTaskInfo(new TaskInfoPreviewView(model, this, infoLoc));
+
+			// Set the correct flags
+			thisTaskInfoOut = true;
+			TaskController.anyTaskInfoOut = true;
+			// make the associated task a darker color while the bubble is out
+			this.setToHoverColor();
+		}
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
+		// do nothing
 
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
+		// do nothing
 
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		background = view.getBackground();
-		view.setBackground(Color.lightGray);
-		view.repaint();
+		setToHoverColor();
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		resetBackground();
+		// only reset the background if there is no taskInfo bubble out for this
+		// task
+		if (!thisTaskInfoOut) {
+			resetBackground();
+		}
 	}
 
-	public void resetBackground() {
-		if (background != null) {
-			view.setBackground(background);
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// Enable/disable the archive and delete icons when dragged.
+		boolean isArchived = model.isArchived();
+		if (isArchived) {
+			JanewayModule.toolV.setArchiveIcon(ToolbarView.UNARCHIVE);
+		} else {
+			JanewayModule.toolV.setArchiveIcon(ToolbarView.ARCHIVE);
 		}
+		JanewayModule.toolV.setArchiveEnabled(true);
+		JanewayModule.toolV.setDeleteEnabled(isArchived);
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

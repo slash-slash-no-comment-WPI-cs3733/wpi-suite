@@ -14,8 +14,10 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.LayoutManager;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDragEvent;
@@ -34,24 +36,22 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import taskManager.controller.StageController;
-import taskManager.model.WorkflowModel;
-import taskManager.view.TaskView;
-
 /**
- * The visible panel that contains tasks. It also manages the placeholder and
- * insertion index of the object being dragged.
+ * A panel that allows for dynamic drops of other panels into it. It also
+ * manages the placeholder and insertion index of the object being dragged.
  *
  * @author Sam Khalandovsky
  * @author Ezra Davis
  * @version Nov 17, 2014
  */
-public class StagePanel extends JPanel {
+public class DropAreaPanel extends JPanel {
 
 	private static final long serialVersionUID = -3746364753551742673L;
 
@@ -59,7 +59,7 @@ public class StagePanel extends JPanel {
 
 	private int lastIndex;
 	private Map<Component, Point> compCenters;
-	private StageController controller;
+	private DropAreaSaveListener listener;
 
 	private Map<Component, Rectangle> drawnBounds; // store animated panel
 													// bounds
@@ -67,11 +67,13 @@ public class StagePanel extends JPanel {
 	private Timer animTimer; // Timer for animating while dragging
 
 	/**
-	 * Creates a StagePanel and creates its handlers
+	 * Creates a DropAreaPanel and creates its handlers
 	 */
-	public StagePanel() {
+	public DropAreaPanel(DataFlavor flavor) {
 		this.setTransferHandler(new DDTransferHandler());
-		this.setDropTarget(new DropTarget(this, new StageDropListener(this)));
+
+		this.setDropTarget(new DropTarget(this, new DropAreaListener(this,
+				flavor)));
 
 		drawnBounds = new HashMap<Component, Rectangle>();
 
@@ -115,7 +117,7 @@ public class StagePanel extends JPanel {
 	 * @param dropLocation
 	 *            Where (relative to the stage) the panel was dropped.
 	 */
-	public void dropTask(TaskPanel transferredPanel, Point dropLocation) {
+	public void dropPanel(JPanel transferredPanel, Point dropLocation) {
 		int newIndex = getInsertionIndex(dropLocation);
 
 		// If transferredPanel is lower by index in the same stage, lower the
@@ -126,18 +128,12 @@ public class StagePanel extends JPanel {
 		}
 
 		add(transferredPanel, newIndex);
-
-		// TODO needs cleanup
-		boolean changed = controller.addTask(
-				((TaskView) transferredPanel).getController(), newIndex);
-
-		if (changed) {
-			WorkflowModel.getInstance().save();
-			DDTransferHandler.dragSaved = true;
-		}
-
 		setPlaceholderVisible(false);
 
+		// If listener assigned, save changes.
+		if (listener != null) {
+			listener.saveDrop(transferredPanel, newIndex);
+		}
 	}
 
 	/**
@@ -145,7 +141,7 @@ public class StagePanel extends JPanel {
 	 * Draws a placeholder at roughly the given location with the given size.
 	 *
 	 * @param point
-	 *            The location (relative to the StagePanel) where the
+	 *            The location (relative to the DropAreaPanel) where the
 	 *            placeholder should be drawn.
 	 */
 	public void drawPlaceholder(Point point) {
@@ -184,7 +180,7 @@ public class StagePanel extends JPanel {
 
 	/**
 	 * 
-	 * Places the placeholder at the appropriate location in the list of tasks.
+	 * Places the placeholder at the appropriate location.
 	 *
 	 * @param index
 	 *            Where the placeholder is to be placed.
@@ -206,8 +202,8 @@ public class StagePanel extends JPanel {
 
 	/**
 	 * 
-	 * Finds the center of each TaskPanel for dealing with the placeholder. Do
-	 * this only while placeholder is not visible in this stage
+	 * Finds the center of each child panel for dealing with the placeholder. Do
+	 * this only while placeholder is not visible in this DropAreaPanel
 	 *
 	 */
 	private void calculateCenters() {
@@ -255,11 +251,21 @@ public class StagePanel extends JPanel {
 
 		System.out.println("Closest component" + Integer.toString(index));
 
+		// Determine layout axis
+		boolean vertical;
+		LayoutManager mgr = getLayout();
+		if (mgr instanceof BoxLayout) {
+			vertical = ((BoxLayout) mgr).getAxis() == BoxLayout.Y_AXIS;
+		} else {
+			vertical = false;
+		}
+		// Shift index by one as appropriate
 		if (index < 0) {
 			index = 0;
-		} else if (point.y > compCenters.get(closest).y) {
+		} else if (vertical && point.y > compCenters.get(closest).y
+				|| !vertical && point.x > compCenters.get(closest).x) {
 			index++;
-		}// TODO make general for horizontal?
+		}
 		System.out.println("Insert at " + Integer.toString(index));
 
 		return index;
@@ -282,8 +288,8 @@ public class StagePanel extends JPanel {
 
 	}
 
-	public void setController(StageController controller) {
-		this.controller = controller;
+	public void setSaveListener(DropAreaSaveListener listener) {
+		this.listener = listener;
 	}
 
 	/**
@@ -360,23 +366,26 @@ public class StagePanel extends JPanel {
 
 /**
  * 
- * Listens for when a Task is dropped onto a stage, and while the drag occurs.
- * Adds the TaskPanel to its StagePanel.
+ * Listens for when a panel is dropped onto a the drop area, and while the drag
+ * occurs.
  *
  * @author Sam Khalandovsky
  * @author Ezra Davis
  * @version Nov 17, 2014
  */
-class StageDropListener implements DropTargetListener {
+class DropAreaListener implements DropTargetListener {
 
-	private StagePanel stage;
+	private DropAreaPanel panel;
+	private DataFlavor flavor;
 
-	StageDropListener(StagePanel stage) {
-		this.stage = stage;
+	DropAreaListener(DropAreaPanel panel, DataFlavor flavor) {
+		this.panel = panel;
+		this.flavor = flavor;
 	}
 
 	/**
-	 * Drops a task onto the stage after making sure that it is a taskPanel. <br>
+	 * Drops a panel onto the DropAreaPanel after making sure that it is
+	 * supported. <br>
 	 * <br>
 	 * {@inheritDoc}
 	 */
@@ -385,68 +394,82 @@ class StageDropListener implements DropTargetListener {
 		System.out.println("Dropping");
 
 		Transferable trans = e.getTransferable();
-		TaskPanel transferredPanel;
-		if (trans.isDataFlavorSupported(DDTransferHandler.getTaskFlavor())) {
+		JPanel transferredPanel;
+		if (trans.isDataFlavorSupported(flavor)) {
 			try {
-				transferredPanel = (TaskPanel) trans
-						.getTransferData(DDTransferHandler.getTaskFlavor());
+				transferredPanel = (JPanel) trans.getTransferData(flavor);
 			} catch (Exception ex) {
 				System.out.println(ex.getStackTrace());
 				return;
 			}
+			panel.dropPanel(transferredPanel, e.getLocation());
 
-		} else {
-			return;
+		} else { // if not supported, try to redispatch to ancestor
+			Component ancestor = panel.getParent();
+			// find ancestor with DropTarget
+			while (ancestor != null && ancestor.getDropTarget() == null) {
+				ancestor = ancestor.getParent();
+			}
+			// Redispatch to ancestor drop target
+			if (ancestor != null) {
+				ancestor.getDropTarget().drop(convertCoords(ancestor, e));
+			}
 		}
 
-		stage.dropTask(transferredPanel, e.getLocation());
 	}
 
 	/**
-	 * Hides the placeholder when the Task is no longer being dragged above the
-	 * stage.
+	 * Hides the placeholder when the panel is no longer being dragged above the
+	 * drop area.
 	 * 
-	 * Careful with this due to it being called after entering a TaskPanel <br>
 	 * <br>
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void dragExit(DropTargetEvent e) {
-		System.out.println("Stage drag exit");
-		stage.setPlaceholderVisible(false);
+		System.out.println("Drop area drag exit");
+		panel.setPlaceholderVisible(false);
 	}
 
 	/**
-	 * Draws the placeholder on the stage when a task is being dragged above it. <br>
+	 * Draws the placeholder on the drop area when a valid panel is being
+	 * dragged above it. <br>
 	 * <br>
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void dragOver(DropTargetDragEvent e) {
-		System.out.println("Stage drag over");
+		System.out.println("Drop area drag over");
 
-		// Getting placeholder's size & making sure it's a TaskPanel
+		// Getting placeholder's size & making sure it's supported
 		Transferable trans = e.getTransferable();
-		TaskPanel transferredPanel;
-		if (trans.isDataFlavorSupported(DDTransferHandler.getTaskFlavor())) {
+		JPanel transferredPanel;
+		if (trans.isDataFlavorSupported(flavor)) {
 			try {
-				transferredPanel = (TaskPanel) trans
-						.getTransferData(DDTransferHandler.getTaskFlavor());
+				transferredPanel = (JPanel) trans.getTransferData(flavor);
 			} catch (Exception ex) {
 				System.out.println(ex.getStackTrace());
 				return;
 			}
 
-		} else { // Not a TaskPanel
-			return;
+			transferredPanel.setVisible(false);
+
+			panel.drawPlaceholder(e.getLocation());
+
+		} else { // if not supported, try to redispatch to ancestor
+			Component ancestor = panel.getParent();
+			// find ancestor with DropTarget
+			while (ancestor != null && ancestor.getDropTarget() == null) {
+				ancestor = ancestor.getParent();
+			}
+			// Redispatch to ancestor drop target
+			if (ancestor != null) {
+				ancestor.getDropTarget().dragOver(convertCoords(ancestor, e));
+			}
 		}
 
-		transferredPanel.setVisible(false);
-
-		stage.drawPlaceholder(e.getLocation());
 	}
 
-	// Careful with this due to it being called after leaving a TaskPanel
 	@Override
 	public void dragEnter(DropTargetDragEvent e) {
 	}
@@ -456,4 +479,45 @@ class StageDropListener implements DropTargetListener {
 
 	}
 
+	/**
+	 * Convert DropTargetDropEvent to the coordinate system of a different
+	 * component
+	 *
+	 * @param comp
+	 *            target component to convert coordinates to
+	 * @param e
+	 *            event to convert
+	 * @return converted event
+	 */
+	public DropTargetDropEvent convertCoords(Component comp,
+			DropTargetDropEvent e) {
+
+		Point newPoint = SwingUtilities.convertPoint(e.getDropTargetContext()
+				.getComponent(), e.getLocation(), comp);
+		DropTargetDropEvent newE = new DropTargetDropEvent(
+				e.getDropTargetContext(), newPoint, e.getDropAction(),
+				e.getSourceActions());
+		return newE;
+	}
+
+	/**
+	 * Convert DropTargetDragEvent to the coordinate system of a different
+	 * component
+	 *
+	 * @param comp
+	 *            target component to convert coordinates to
+	 * @param e
+	 *            event to convert
+	 * @return converted event
+	 */
+	public DropTargetDragEvent convertCoords(Component comp,
+			DropTargetDragEvent e) {
+
+		Point newPoint = SwingUtilities.convertPoint(e.getDropTargetContext()
+				.getComponent(), e.getLocation(), comp);
+		DropTargetDragEvent newE = new DropTargetDragEvent(
+				e.getDropTargetContext(), newPoint, e.getDropAction(),
+				e.getSourceActions());
+		return newE;
+	}
 }

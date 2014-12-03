@@ -69,7 +69,7 @@ public class ManageStageView extends JPanel {
 	 *            If the stage is removable
 	 */
 	public void addStage(String name, String id, boolean removable) {
-		stageArea.add(newStagePanel(name, id, removable));
+		stageArea.add(newStagePanel(name.trim(), id.trim(), removable));
 	}
 
 	/**

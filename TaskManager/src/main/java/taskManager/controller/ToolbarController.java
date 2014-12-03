@@ -9,19 +9,24 @@
 package taskManager.controller;
 
 import java.awt.Component;
+import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DropTargetAdapter;
-import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 import taskManager.JanewayModule;
 import taskManager.draganddrop.DDTransferHandler;
+import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
+import taskManager.view.StageView;
 import taskManager.view.TabPaneView;
 import taskManager.view.TaskView;
 import taskManager.view.ToolbarView;
@@ -33,7 +38,7 @@ import taskManager.view.ToolbarView;
  * @author Sam Khalandovsky
  */
 public class ToolbarController extends DropTargetAdapter implements
-		ActionListener {
+		ActionListener, ItemListener {
 
 	private final TabPaneView tabPaneV;
 	private final TabPaneController tabPaneC;
@@ -60,11 +65,10 @@ public class ToolbarController extends DropTargetAdapter implements
 			case ToolbarView.CREATE_TASK:
 				this.tabPaneC.addCreateTaskTab();
 				break;
-			case ToolbarView.MANAGE_STAGES:
-				this.tabPaneC.addManageStagesTab();
-				break;
-			case ToolbarView.MANAGE_USERS:
-				this.tabPaneC.addManageUsersTab();
+			case ToolbarView.CREATE_STAGE:
+				// add a new stage from workflow controller
+				tabPaneV.getWorkflowController().addStageToView();
+
 				break;
 			case ToolbarView.REPORT:
 				break;
@@ -84,44 +88,90 @@ public class ToolbarController extends DropTargetAdapter implements
 		Component target = e.getDropTargetContext().getComponent();
 		if (target instanceof JLabel) {
 			String name = ((JLabel) target).getName();
-			TaskView taskV;
-			try {
-				taskV = (TaskView) e.getTransferable().getTransferData(
-						DDTransferHandler.getTaskFlavor());
-			} catch (Exception ex) {
-				System.out.println(ex.getStackTrace());
-				return;
+
+			Transferable trans = e.getTransferable();
+			if (trans.isDataFlavorSupported(DDTransferHandler.getTaskFlavor())) {
+				TaskView taskV;
+				try {
+					taskV = (TaskView) trans.getTransferData(DDTransferHandler
+							.getTaskFlavor());
+				} catch (Exception ex) {
+					System.out.println(ex.getStackTrace());
+					return;
+				}
+
+				switch (name) {
+				case ToolbarView.DELETE:
+					if (target.isEnabled()) {
+						taskV.getController().deleteTask(); // remove from model
+						taskV.getParent().remove(taskV); // remove from view
+						// Reload and save workflow.
+						JanewayModule.tabPaneC.getTabView().reloadWorkflow();
+						JanewayModule.tabPaneC.getTabView()
+								.getWorkflowController().repaintView();
+						WorkflowModel.getInstance().save();
+						DDTransferHandler.dragSaved = true;
+					}
+					break;
+				case ToolbarView.ARCHIVE:
+					taskV.getController().setArchived(
+							!taskV.getController().isArchived());
+					// Reload and save workflow.
+					JanewayModule.tabPaneC.getTabView().reloadWorkflow();
+					JanewayModule.tabPaneC.getTabView().getWorkflowController()
+							.repaintView();
+					WorkflowModel.getInstance().save();
+					DDTransferHandler.dragSaved = true;
+					break;
+				}
+			} else if (trans.isDataFlavorSupported(DDTransferHandler
+					.getStageFlavor())) {
+				StageView stageV;
+				try {
+					stageV = (StageView) trans
+							.getTransferData(DDTransferHandler.getStageFlavor());
+				} catch (Exception ex) {
+					System.out.println(ex.getStackTrace());
+					return;
+				}
+				StageController stageC = stageV.getController();
+				WorkflowModel model = WorkflowModel.getInstance();
+				List<StageModel> stages = model.getStages();
+
+				if (name == ToolbarView.DELETE) {
+					// Delete only when there are 2 or more stages.
+					if (stages.size() >= 2) {
+						// If the stage has tasks, show a confirmation dialog,
+						// else
+						// just delete the stage.
+						if (!stageC.isEmpty()) {
+							Integer choice = JOptionPane
+									.showConfirmDialog(
+											tabPaneV,
+											"The "
+													+ stageV.getName()
+													+ " stage contains tasks. Are you sure you want to delete this stage?",
+											"Warning - Deleting a stage containing tasks",
+											JOptionPane.YES_NO_OPTION);
+							if (choice.equals(JOptionPane.NO_OPTION)) {
+								return;
+							}
+						}
+					}
+					stageC.deleteStage();
+					DDTransferHandler.dragSaved = true;
+					model.save();
+					tabPaneC.getTabView().reloadWorkflow();
+				}
+
 			}
 
-			switch (name) {
-			case ToolbarView.DELETE:
-				taskV.getController().deleteTask(); // remove from model
-				taskV.getParent().remove(taskV); // remove from view
-				target.setEnabled(false);
-				WorkflowModel.getInstance().save();
-				break;
-			case ToolbarView.ARCHIVE:
-				break;
-			}
 		}
 	}
 
-	/**
-	 * @see java.awt.dnd.DropTargetAdapter#dragEnter(java.awt.dnd.DropTargetDragEvent)
-	 */
 	@Override
-	public void dragEnter(DropTargetDragEvent e) {
-		Component comp = e.getDropTargetContext().getComponent();
-		comp.setEnabled(true);
-
-	}
-
-	/**
-	 * @see java.awt.dnd.DropTargetAdapter#dragExit(java.awt.dnd.DropTargetEvent)
-	 */
-	@Override
-	public void dragExit(DropTargetEvent e) {
-		Component comp = e.getDropTargetContext().getComponent();
-		comp.setEnabled(false);
+	public void itemStateChanged(ItemEvent e) {
+		// Reload the workflow view.
+		JanewayModule.tabPaneC.getTabView().reloadWorkflow();
 	}
 }
