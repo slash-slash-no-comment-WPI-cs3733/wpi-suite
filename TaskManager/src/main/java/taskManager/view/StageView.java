@@ -133,7 +133,9 @@ public class StageView extends JPanel implements Transferable {
 		stage = new JScrollPane(tasks,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		stage.setBorder(BorderFactory.createLineBorder(Color.black));
+		stage.setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createEmptyBorder(0, 3, 0, 3),
+				BorderFactory.createLineBorder(Color.black)));
 		stage.setMinimumSize(new Dimension(STAGE_WIDTH, 300));
 		stage.setSize(new Dimension(STAGE_WIDTH, 405));
 
