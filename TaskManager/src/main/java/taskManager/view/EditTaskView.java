@@ -45,8 +45,9 @@ import taskManager.model.ActivityModel.activityModelType;
  */
 
 /**
- * @author Tyler Jaskoviak
+ * 
  * @author Thane Hunt
+ * @author Tyler Jaskoviak
  */
 
 public class EditTaskView extends JPanel {
@@ -134,7 +135,7 @@ public class EditTaskView extends JPanel {
 		this.setPreferredSize(panelSize);
 		this.setMinimumSize(panelSize);
 
-		window.setBorder(BorderFactory.createTitledBorder("Edit Task"));
+		//window.setBorder(BorderFactory.createTitledBorder("Edit Task"));
 
 		activities = new ArrayList<ActivityModel>();
 		newActivities = new ArrayList<ActivityModel>();
@@ -337,7 +338,7 @@ public class EditTaskView extends JPanel {
 		//Requirements Panel internal content
 		Requirements.setBorder(BorderFactory.createTitledBorder("Requirements"));
 		Requirements.add(requirementLabel, "wrap");
-		Requirements.add(requirements, "wrap");
+		Requirements.add(requirements);
 		Requirements.add(addReq);
 
 		//EditSaveCancel Panel internal content
