@@ -53,9 +53,9 @@ public class ReportsManager {
 			this.effort = effort;
 		}
 
-		String username;
-		Instant completion;
-		Double effort;
+		private String username;
+		private Instant completion;
+		private Double effort;
 
 		/**
 		 * Method compareTo.
@@ -71,6 +71,8 @@ public class ReportsManager {
 		}
 	}
 
+	private Instant start;
+	private Instant end;
 	private DefaultCategoryDataset dataset;
 	private Set<UserData> data;
 	private final WorkflowModel workflow;
@@ -79,6 +81,15 @@ public class ReportsManager {
 	 * Constructor for ReportsManager.
 	 */
 	public ReportsManager() {
+		workflow = WorkflowModel.getInstance();
+	}
+
+	/**
+	 * Constructor for ReportsManager.
+	 */
+	public ReportsManager(Instant start, Instant end) {
+		this.start = start;
+		this.end = end;
 		workflow = WorkflowModel.getInstance();
 	}
 
@@ -93,6 +104,8 @@ public class ReportsManager {
 	public void findVelocityData(Set<String> users, Instant start, Instant end,
 			boolean averageCredit) {
 		// Assume the completion stage is the final stage
+		this.start = start;
+		this.end = end;
 		final List<StageModel> stageList = workflow.getStages();
 		final StageModel finalStage = stageList.get(stageList.size() - 1);
 		findVelocityData(users, start, end, averageCredit, finalStage);
@@ -118,10 +131,11 @@ public class ReportsManager {
 	 */
 	public void findVelocityData(Set<String> users, Instant start, Instant end,
 			boolean averageCredit, StageModel stage) {
+		this.start = start;
+		this.end = end;
 		if (!workflow.getStages().contains(stage)) {
 			throw new IllegalArgumentException("Invalid stage");
 		}
-
 		data = new TreeSet<UserData>();
 		for (TaskModel task : stage.getTasks()) {
 			Instant completed = null;
@@ -130,7 +144,7 @@ public class ReportsManager {
 			// the final MOVE event. This event must have been to the current
 			// stage (it hasn't been moved after), and since we're in the final
 			// stage, this MOVE event must actually be a completion event.
-			for (int i = task.getActivities().size(); i >= 0; i--) {
+			for (int i = task.getActivities().size() - 1; i >= 0; i--) {
 				ActivityModel activity = task.getActivities().get(i);
 				if (activity.getType() == ActivityModel.activityModelType.MOVE) {
 					foundMoveEvent = true;
@@ -178,7 +192,7 @@ public class ReportsManager {
 	 * @param interval
 	 *            The interval to group the data by.
 	 */
-	public void generateDataset(boolean teamData, Instant start, Period interval) {
+	public void generateDataset(boolean teamData, Period interval) {
 		if (data == null) {
 			throw new IllegalStateException(
 					"Tried to generate a dataset without getting any data first!");
@@ -193,19 +207,27 @@ public class ReportsManager {
 			intervalName = "Month ";
 		}
 		int seriesNum = 0;
+		// We get this user to add some 0s to, rather than creating a "" user.
+		String dummyUsername = data.iterator().next().username;
+		// Populate the buckets with names before-hand.
+		for (Instant i = start; i.compareTo(end) < 0; i = i.plus(interval)) {
+			dataset.addValue(0, dummyUsername, intervalName + (seriesNum + 1));
+			seriesNum++;
+		}
+		seriesNum = 0;
 		final Instant boundary = start.plus(interval);
 		for (UserData userData : data) {
 			if (userData.completion.compareTo(boundary) > 0) {
 				seriesNum++;
 				boundary.plus(interval);
-				continue;
-			}
-			if (!teamData) {
-				dataset.addValue(userData.effort, userData.username,
-						intervalName + seriesNum);
 			} else {
-				dataset.addValue(userData.effort, "Team", intervalName
-						+ seriesNum);
+				if (!teamData) {
+					dataset.addValue(userData.effort, userData.username,
+							intervalName + (seriesNum + 1));
+				} else {
+					dataset.addValue(userData.effort, "Team", intervalName
+							+ (seriesNum + 1));
+				}
 			}
 		}
 		if (dataset == null) {

@@ -23,8 +23,8 @@ import org.fest.swing.fixture.FrameFixture;
 import org.junit.Before;
 import org.junit.Test;
 
+import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
-import taskManager.model.WorkflowModel;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
@@ -38,16 +38,19 @@ public class TestReportsManager {
 	private ReportsManager rm;
 	private FrameFixture fixture;
 	private JFrame frame;
+	private StageModel finished;
+	private User u1;
 
 	@Before
 	public void setup() {
 		now = Instant.now();
-		WorkflowModel workflow = WorkflowModel.getInstance();
+		finished = new StageModel("Finished");
 		rm = new ReportsManager();
-		TaskModel tm1 = new TaskModel("Task", workflow.findStageByName("New"));
+		TaskModel tm1 = new TaskModel("Task", new StageModel("Start"));
 		tm1.setEstimatedEffort(5);
-		User u1 = new User("User 1", "User 1", null, 42);
+		u1 = new User("User 1", "User 1", null, 42);
 		tm1.addAssigned(u1);
+		finished.addTask(tm1);
 		frame = new JFrame();
 		fixture = new FrameFixture(frame);
 		frame.setPreferredSize(new Dimension(800, 800));
@@ -59,10 +62,22 @@ public class TestReportsManager {
 		Set<String> users = new HashSet<String>();
 		users.add("User 1");
 		rm.findVelocityData(users, now, now.plusSeconds(60 * 60 * 24 * 7),
-				false);
-		rm.generateDataset(false, now, Period.ofDays(1));
+				false, finished);
+		rm.generateDataset(false, Period.ofDays(1));
 		final JPanel chart = rm.createChart("Title", "Time", "Effort");
+		frame.add(chart);
+		frame.revalidate();
+		sleep(10000);
+	}
 
+	@Test
+	public void testSingleUser() throws InterruptedException {
+		Set<String> users = new HashSet<String>();
+		users.add("User 1");
+		rm.findVelocityData(users, now, now.plusSeconds(60 * 60 * 24 * 7),
+				false, finished);
+		rm.generateDataset(false, Period.ofDays(1));
+		final JPanel chart = rm.createChart("Title", "Time", "Effort");
 		frame.add(chart);
 		frame.revalidate();
 		sleep(10000);
