@@ -84,26 +84,23 @@ public class WorkflowController implements MouseListener {
 	 *
 	 */
 	public synchronized void reloadData() {
-		// Only reloadData if you are getting new information from the serv
-		if (!FetchWorkflowObserver.ignoreAllResponses) {
-			// clear the stages previously on the view
-			this.removeTaskInfos(false);
-			this.removeChangeTitles();
-			view.removeAll();
+		// clear the stages previously on the view
+		this.removeTaskInfos(false);
+		this.removeChangeTitles();
+		view.removeAll();
 
-			// get all the stages in this workflow
-			final List<StageModel> stages = model.getStages();
-			// and add them all to the view
-			for (StageModel stage : stages) {
-				// create stage view and controller.
-				StageView stv = new StageView(stage.getName());
-				stv.setController(new StageController(stv, stage));
+		// get all the stages in this workflow
+		final List<StageModel> stages = model.getStages();
+		// and add them all to the view
+		for (StageModel stage : stages) {
+			// create stage view and controller.
+			StageView stv = new StageView(stage.getName());
+			stv.setController(new StageController(stv, stage));
 
-				// add stage view to workflow
-				view.addStageView(stv);
-			}
-			view.revalidate();
+			// add stage view to workflow
+			view.addStageView(stv);
 		}
+		view.revalidate();
 	}
 
 	/**
