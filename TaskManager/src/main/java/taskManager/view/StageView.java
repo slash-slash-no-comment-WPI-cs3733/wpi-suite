@@ -54,11 +54,6 @@ public class StageView extends JPanel {
 
 		// organizes the tasks in a vertical list
 		tasks.setLayout(new BoxLayout(tasks, BoxLayout.Y_AXIS));
-		// tasks.setLayout(new FlowLayout());
-		// tasks.setMinimumSize(new Dimension(175, 450));
-		// tasks.setSize(new Dimension(175, 450));
-		// tasks.setPreferredSize(new Dimension(175, 450));
-		// tasks.setMaximumSize(new Dimension(175, 450));
 
 		// creates the label for the name of the stage and adds it to the block
 		JPanel label = new JPanel();

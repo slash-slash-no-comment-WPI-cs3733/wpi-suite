@@ -111,6 +111,15 @@ public class WorkflowController {
 	}
 
 	/**
+	 * Adds a new stage panel to the workflow view
+	 */
+	public void addStageToView() {
+		view.addStageView(new StageView("Test name"));
+		view.revalidate();
+		view.repaint();
+	}
+
+	/**
 	 * 
 	 * Returns the workflow model.
 	 *

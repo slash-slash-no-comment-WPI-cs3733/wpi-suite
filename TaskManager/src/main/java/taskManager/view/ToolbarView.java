@@ -39,7 +39,7 @@ public class ToolbarView extends JToolBar {
 	public static final String STATISTICS = "statistics";
 	public static final String REFRESH = "refresh";
 	public static final String REPORT = "report";
-	public static final String MANAGE_STAGES = "manageStages";
+	public static final String CREATE_STAGE = "createStage";
 	public static final String CREATE_TASK = "createTask";
 	public static final String WORKFLOW = "workflow";
 	public static final String ARCHIVE = "archive";
@@ -48,7 +48,7 @@ public class ToolbarView extends JToolBar {
 
 	// toolbar information
 	private JButton createTask;
-	private JButton manageStages;
+	private JButton createStage;
 	private JButton statistics;
 	private JLabel archive;
 	private JLabel delete;
@@ -86,8 +86,8 @@ public class ToolbarView extends JToolBar {
 		// Construct the buttons
 		createTask = new JButton("Create Task");
 		createTask.setName(CREATE_TASK);
-		manageStages = new JButton("Manage Stages");
-		manageStages.setName(MANAGE_STAGES);
+		createStage = new JButton("Create Stage");
+		createStage.setName(CREATE_STAGE);
 		statistics = new JButton("Statistics");
 		statistics.setName(REPORT);
 
@@ -99,7 +99,7 @@ public class ToolbarView extends JToolBar {
 			createTask.setIcon(new ImageIcon(img));
 			img = ImageIO.read(this.getClass().getResourceAsStream(
 					"stages-icon.png"));
-			manageStages.setIcon(new ImageIcon(img));
+			createStage.setIcon(new ImageIcon(img));
 			img = ImageIO.read(this.getClass().getResourceAsStream(
 					"reports-icon.png"));
 			statistics.setIcon(new ImageIcon(img));
@@ -141,7 +141,7 @@ public class ToolbarView extends JToolBar {
 		// Add buttons to the content panel
 		title.add(projectName);
 		buttons.add(createTask);
-		buttons.add(manageStages);
+		buttons.add(createStage);
 		buttons.add(statistics);
 		buttons.add(archiveCheckBox);
 		targets.add(archive);
@@ -163,7 +163,7 @@ public class ToolbarView extends JToolBar {
 	public void setController(ToolbarController controller) {
 		this.controller = controller;
 		createTask.addActionListener(this.controller);
-		manageStages.addActionListener(this.controller);
+		createStage.addActionListener(this.controller);
 		statistics.addActionListener(this.controller);
 
 		archiveCheckBox.addItemListener(controller);
