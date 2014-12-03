@@ -95,7 +95,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		// clear the stages previously on the view
 		this.removeTaskInfos(false);
 		this.removeChangeTitles();
-		this.setHasNewStageView(false);
+		hasNewStageView = false;
 		view.removeAll();
 
 		// get all the stages in this workflow
@@ -129,34 +129,17 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 * Adds a new stage panel to the workflow view
 	 */
 	public void addStageToView() {
-		hasNewStageView = true;
-		StageView newStageV = new StageView("");
-		newStageV.setController(new StageController(newStageV, null));
-		newStageV.enableTitleEditing(true);
-		PromptSupport.setPrompt("New Stage Name", newStageV.getLabelField());
-		view.addStageView(newStageV);
-		view.revalidate();
-		view.repaint();
-	}
-
-	/**
-	 * returns whether or not a newly created stage view
-	 * 
-	 * @return true if there is a new stage view, false if there is no new stage
-	 *         view
-	 */
-	public boolean hasNewStageView() {
-		return this.hasNewStageView;
-	}
-
-	/**
-	 * sets the hasNewStageView variable to the given boolean
-	 * 
-	 * @param h
-	 *            the boolean to set the variable to
-	 */
-	public void setHasNewStageView(boolean h) {
-		hasNewStageView = h;
+		if (!hasNewStageView) {
+			hasNewStageView = true;
+			StageView newStageV = new StageView("");
+			newStageV.setController(new StageController(newStageV, null));
+			newStageV.enableTitleEditing(true);
+			PromptSupport
+					.setPrompt("New Stage Name", newStageV.getLabelField());
+			view.addStageView(newStageV);
+			view.revalidate();
+			view.repaint();
+		}
 	}
 
 	/**

@@ -67,10 +67,8 @@ public class ToolbarController extends DropTargetAdapter implements
 				break;
 			case ToolbarView.CREATE_STAGE:
 				// add a new stage from workflow controller
-				if (!JanewayModule.tabPaneC.getTabView()
-						.getWorkflowController().hasNewStageView()) {
-					tabPaneV.getWorkflowController().addStageToView();
-				}
+				tabPaneV.getWorkflowController().addStageToView();
+
 				break;
 			case ToolbarView.REPORT:
 				break;
