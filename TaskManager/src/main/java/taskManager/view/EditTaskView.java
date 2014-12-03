@@ -97,7 +97,7 @@ public class EditTaskView extends JPanel {
 
 	private ScrollList usersList;
 	private ScrollList projectUsersList;
-	
+
 	private JLabel blankError;
 	private JLabel titleError;
 	private JLabel descriptionError;
@@ -124,8 +124,8 @@ public class EditTaskView extends JPanel {
 		this.mode = mode;
 
 		window = new JPanel(new MigLayout());
-		
-		
+
+
 		this.setLayout(new FlowLayout());
 		Dimension panelSize = getPreferredSize();
 		panelSize.width = 1100; // TODO
@@ -135,7 +135,7 @@ public class EditTaskView extends JPanel {
 		this.setMinimumSize(panelSize);
 
 		window.setBorder(BorderFactory.createTitledBorder("Edit Task"));
-		
+
 		activities = new ArrayList<ActivityModel>();
 		newActivities = new ArrayList<ActivityModel>();
 
@@ -150,7 +150,7 @@ public class EditTaskView extends JPanel {
 		JLabel commentsLabel = new JLabel("Comments ");
 		JLabel requirementLabel = new JLabel("Select Requirement ");
 
-		
+
 		blankError = new JLabel("This field can not be left empty.");
 		blankError.setVisible(false);
 		blankError.setForeground(Color.RED);
@@ -176,9 +176,9 @@ public class EditTaskView extends JPanel {
 		descripArea.setLineWrap(true);
 		JScrollPane descriptionScrollPane = new JScrollPane(descripArea);
 		descriptionScrollPane
-				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		descriptionScrollPane
-				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
 		estEffortField = new JTextField(10);
 		estEffortField.setEditable(true);
@@ -202,7 +202,7 @@ public class EditTaskView extends JPanel {
 		((JButton) dateField.getComponent(1)).setIcon(new ImageIcon(
 				((new ImageIcon(getClass().getResource("calendar-icon.png")))
 						.getImage()).getScaledInstance(20, 20,
-						java.awt.Image.SCALE_SMOOTH)));
+								java.awt.Image.SCALE_SMOOTH)));
 
 		// JTextArea
 		// TODO
@@ -257,10 +257,10 @@ public class EditTaskView extends JPanel {
 		window.setLayout(new MigLayout());
 
 		window.add(titleLabel);
-		
-		
-		
-		
+
+
+
+
 		/**
 		 *   Start The Mig
 		 */
@@ -305,14 +305,14 @@ public class EditTaskView extends JPanel {
 		JPanel addRemoveButtons = new JPanel(new MigLayout());
 		usersListPanel.add(usersList);
 		projectUsersListPanel.add(projectUsersList);
-	
+
 		addRemoveButtons.add(addUser, "wrap");
 		addRemoveButtons.add(removeUser);
 
 		Users.add(usersListPanel, "w 100!");
 		Users.add(addRemoveButtons);
 		Users.add(projectUsersListPanel, "w 100!, gapright 15px");
-		
+
 
 		//Needs work
 		//Activities Panel internal content
@@ -332,7 +332,7 @@ public class EditTaskView extends JPanel {
 		//Effort.add(estimatedEffortError);
 		Effort.add(actEffortField);
 		//Effort.add(actualEffortError);
-		
+
 		//work in progress
 		//Requirements Panel internal content
 		Requirements.setBorder(BorderFactory.createTitledBorder("Requirements"));
@@ -358,16 +358,10 @@ public class EditTaskView extends JPanel {
 		window.add(EditSaveCancel, "dock south, h 10%");
 		window.add(Activities, "w 30%, dock east, gapleft 5px");
 
-		//Master panel is added to the window
-		
-	//	window.add(master);
-
 		/**
 		 *  End the Mig
 		 */
 
-		
-		
 		this.add(window);
 	}
 
@@ -586,7 +580,7 @@ public class EditTaskView extends JPanel {
 	public void setTitleErrorVisible(boolean v) {
 		titleError.setVisible(v);
 	}
-	
+
 	/**
 	 * 
 	 * Sets the blank error visible or invisible
@@ -598,8 +592,8 @@ public class EditTaskView extends JPanel {
 	public void setBlankErrorVisible(boolean v) {
 		blankError.setVisible(v);
 	}
-	
-	
+
+
 
 	/**
 	 * Sets the description error visible or invisible
