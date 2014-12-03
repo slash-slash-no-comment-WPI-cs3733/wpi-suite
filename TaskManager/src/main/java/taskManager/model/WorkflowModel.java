@@ -146,6 +146,25 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	}
 
 	/**
+	 * Remove a stage by object. This does not need to do any additional
+	 * processing.
+	 *
+	 * @param stage
+	 *            The stage to remove
+	 * 
+	 * @return The removed stage
+	 */
+	public StageModel removeStage(StageModel stage) {
+		if (!stageList.contains(stage)) {
+			logger.log(Level.WARNING,
+					"Tried to remove a stage that did not exist.");
+			throw new IndexOutOfBoundsException("No such stage.");
+		}
+		stageList.remove(stage);
+		return stage;
+	}
+
+	/**
 	 * Check if the workflow has a given stage
 	 *
 	 * @param stage

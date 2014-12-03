@@ -8,8 +8,7 @@
  *******************************************************************************/
 package taskManager.view;
 
-import java.awt.FlowLayout;
-
+import javax.swing.BoxLayout;
 import javax.swing.JLayeredPane;
 
 import taskManager.controller.WorkflowController;
@@ -41,7 +40,7 @@ public class WorkflowView extends JLayeredPane {
 		// arranges the stages horizontally and evenly spaced
 		this.setLayout(new WorkflowLayout());
 
-		stages.setLayout(new FlowLayout());
+		stages.setLayout(new BoxLayout(stages, BoxLayout.LINE_AXIS));
 		this.add(stages);
 
 		this.addMouseListener(controller);
@@ -57,7 +56,7 @@ public class WorkflowView extends JLayeredPane {
 	public void addStageView(StageView stv) {
 		if (stages == null || stages.getParent() == null) {
 			stages = new DropAreaPanel(DDTransferHandler.getStageFlavor());
-			stages.setLayout(new FlowLayout());
+			stages.setLayout(new BoxLayout(stages, BoxLayout.LINE_AXIS));
 			stages.setSaveListener(controller);
 			add(stages);
 		}

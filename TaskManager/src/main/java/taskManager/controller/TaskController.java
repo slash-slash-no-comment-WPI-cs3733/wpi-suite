@@ -76,6 +76,11 @@ public class TaskController implements MouseListener, MouseMotionListener {
 		assignedUsers = model.getAssigned();
 
 		req = model.getReq();
+
+		// Set the background to orange if the task is archived.
+		if (model.isArchived()) {
+			view.setBackground(Color.decode("#FFBC00"));
+		}
 	}
 
 	/**
@@ -242,10 +247,12 @@ public class TaskController implements MouseListener, MouseMotionListener {
 			FetchWorkflowObserver.ignoreAllResponses = true;
 
 			// Create the taskinfo bubble
-			Point infoLoc = view.getParent().getParent().getParent()
+			Point stageLoc = view.getParent().getParent().getParent()
 					.getParent().getLocation();
-			infoLoc.y = view.getLocation().y;
-			infoLoc.x = infoLoc.x;
+			Point stagesPanelLoc = view.getParent().getParent().getParent()
+					.getParent().getParent().getLocation();
+			Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
+					view.getLocation().y);
 			JanewayModule.tabPaneC.getTabView().getWorkflowController()
 					.setTaskInfo(new TaskInfoPreviewView(model, this, infoLoc));
 

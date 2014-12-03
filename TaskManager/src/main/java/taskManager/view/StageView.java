@@ -133,7 +133,9 @@ public class StageView extends JPanel implements Transferable {
 		stage = new JScrollPane(tasks,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		stage.setBorder(BorderFactory.createLineBorder(Color.black));
+		stage.setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createEmptyBorder(0, 3, 0, 3),
+				BorderFactory.createLineBorder(Color.black)));
 		stage.setMinimumSize(new Dimension(STAGE_WIDTH, 300));
 		stage.setSize(new Dimension(STAGE_WIDTH, 405));
 
@@ -190,6 +192,8 @@ public class StageView extends JPanel implements Transferable {
 		stage.addMouseListener(controller);
 		// listen for double click on the stage title to change it
 		labelName.addMouseListener(controller);
+		// listen for drag to enable icon
+		labelName.addMouseMotionListener(controller);
 		// listen for clicks on the 'change title' buttons
 		done.addActionListener(controller);
 		cancel.addActionListener(controller);
