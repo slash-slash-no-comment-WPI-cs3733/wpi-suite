@@ -18,6 +18,8 @@ import java.awt.dnd.DropTarget;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -70,13 +72,16 @@ public class ToolbarView extends JToolBar {
 		JPanel buttons = new JPanel();
 		JPanel title = new JPanel();
 		JPanel targets = new JPanel();
-		FlowLayout layout = new FlowLayout();
-		buttons.setLayout(layout);
+		FlowLayout flowLayout = new FlowLayout();
+		BoxLayout toolbarLayout = new BoxLayout(this, BoxLayout.LINE_AXIS);
+		BoxLayout targetsLayout = new BoxLayout(targets, BoxLayout.LINE_AXIS);
+		buttons.setLayout(flowLayout);
 		buttons.setOpaque(false);
-		title.setLayout(layout);
+		title.setLayout(flowLayout);
 		title.setOpaque(false);
-		targets.setLayout(layout);
+		targets.setLayout(targetsLayout);
 		targets.setOpaque(false);
+		this.setLayout(toolbarLayout);
 
 		Insets margins = new Insets(15, 5, 0, 5);
 		this.setMargin(margins);
@@ -84,10 +89,12 @@ public class ToolbarView extends JToolBar {
 		this.setFloatable(false);
 
 		// Construct the buttons
-		createTask = new JButton("Create Task");
+		createTask = new JButton("<html>Create<br/>Task</html>");
 		createTask.setName(CREATE_TASK);
-		createStage = new JButton("Create Stage");
+
+		createStage = new JButton("<html>Create<br>Stage</html>");
 		createStage.setName(CREATE_STAGE);
+
 		statistics = new JButton("Statistics");
 		statistics.setName(REPORT);
 
@@ -126,10 +133,6 @@ public class ToolbarView extends JToolBar {
 		archiveCheckBox = new JCheckBox("Show archived tasks");
 
 		archive.setName(ARCHIVE);
-		JPanel spacer = new JPanel();
-		spacer.setMinimumSize(new Dimension(40, 10));
-		spacer.setSize(new Dimension(40, 10));
-		spacer.setPreferredSize(new Dimension(40, 10));
 		delete.setToolTipText("Drag here to delete task");
 		delete.setEnabled(false);
 		delete.setName(DELETE);
@@ -145,13 +148,17 @@ public class ToolbarView extends JToolBar {
 		buttons.add(statistics);
 		buttons.add(archiveCheckBox);
 		targets.add(archive);
-		targets.add(spacer);
+		targets.add(new Box.Filler(new Dimension(5, 0), new Dimension(40, 0),
+				new Dimension(40, 0)));
 		targets.add(delete);
 
 		// Title and buttons to the toolbar
 		this.add(title);
+		this.add(Box.createHorizontalGlue());
 		this.add(buttons);
+		this.add(Box.createHorizontalGlue());
 		this.add(targets);
+		this.add(Box.createHorizontalGlue());
 	}
 
 	/**
@@ -181,7 +188,7 @@ public class ToolbarView extends JToolBar {
 	}
 
 	public void setProjectName(String name) {
-		projectName.setText(name);
+		projectName.setText("<html>" + name + "</html>");
 	}
 
 	public void setArchiveEnabled(boolean bool) {
