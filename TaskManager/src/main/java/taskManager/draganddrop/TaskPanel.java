@@ -51,13 +51,14 @@ public class TaskPanel extends JPanel implements Transferable {
 	 */
 	private class TaskMouseListener extends MouseAdapter {
 		public void mousePressed(MouseEvent e) {
-			System.out.println("Panel pressed");
-			getTransferHandler().setDragImageOffset(e.getPoint());
+			if (e.getButton() == MouseEvent.BUTTON1) {
+				System.out.println("Panel pressed");
+				getTransferHandler().setDragImageOffset(e.getPoint());
+			}
 		}
 
 		public void mouseDragged(MouseEvent e) {
 			System.out.println("Mouse dragged");
-
 			JComponent comp = (JComponent) e.getSource();
 			TransferHandler handler = comp.getTransferHandler();
 			handler.exportAsDrag(comp, e, TransferHandler.MOVE);

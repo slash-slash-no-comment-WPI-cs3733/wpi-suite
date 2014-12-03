@@ -9,6 +9,8 @@
 package taskManager.controller;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.swing.JComboBox;
+import javax.swing.JMenuItem;
 
 import taskManager.JanewayModule;
 import taskManager.model.ActivityModel;
@@ -34,12 +37,11 @@ import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
  * @author Stefan Alexander
  * @version November 9, 2014
  */
-public class TaskController implements MouseListener {
+public class TaskController implements MouseListener, ActionListener {
 
 	private final TaskView view;
 	private final TaskModel model;
 	private StageModel sm;
-	private final WorkflowModel wfm;
 	private TabPaneController tabPaneC;
 	private EditTaskView etv;
 	private Requirement req;
@@ -61,14 +63,10 @@ public class TaskController implements MouseListener {
 		this.view = view;
 		this.model = model;
 		sm = model.getStage();
-
-		wfm = WorkflowModel.getInstance();
 		etv = new EditTaskView(Mode.EDIT);
 		etv.setController(new EditTaskController(etv));
 		etv.setFieldController(new TaskInputController(etv));
-
 		assignedUsers = model.getAssigned();
-
 		req = model.getReq();
 	}
 
@@ -90,10 +88,14 @@ public class TaskController implements MouseListener {
 	 */
 	public void deleteTask() {
 		model.getStage().removeTask(model);
+		view.setVisible(false);
 	}
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
+	/**
+	 * Called when the user clicks the view with the left mouse button.
+	 */
+	private void leftMouseClick() {
+
 		// makes the delete button unclickable
 		etv.enableDelete();
 
@@ -171,7 +173,35 @@ public class TaskController implements MouseListener {
 		} else {
 			etv.getRequirements().setSelectedItem(EditTaskView.NO_REQ);
 		}
+	}
 
+	/**
+	 * Called when the user clicks the view with the middle mouse button.
+	 */
+	private void middleMouseClicked() {
+
+	}
+
+	/**
+	 * Called when the user clicks the view with the right mouse button.
+	 */
+	private void rightMouseClick() {
+
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		switch (e.getButton()) {
+		case MouseEvent.BUTTON1:
+			leftMouseClick();
+			break;
+		case MouseEvent.BUTTON2:
+			middleMouseClicked();
+			break;
+		case MouseEvent.BUTTON3:
+			rightMouseClick();
+			break;
+		}
 	}
 
 	@Override
@@ -202,6 +232,16 @@ public class TaskController implements MouseListener {
 		if (background != null) {
 			view.setBackground(background);
 		}
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		if (((JMenuItem) e.getSource()).getText().equals("Delete Task"))
+			deleteTask();
+		if (((JMenuItem) e.getSource()).getText().equals("Edit Task"))
+			leftMouseClick();
+		if (((JMenuItem) e.getSource()).getText().equals("New Task"))
+			leftMouseClick();
+		
 	}
 
 }

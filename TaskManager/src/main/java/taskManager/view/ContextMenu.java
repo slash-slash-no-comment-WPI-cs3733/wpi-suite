@@ -6,6 +6,7 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JPopupMenu;
 
+
 public class ContextMenu extends JPopupMenu implements MouseListener {
 
 	/**
@@ -14,7 +15,6 @@ public class ContextMenu extends JPopupMenu implements MouseListener {
 	 * JMenu. This class is a mouse listener for the given component.
 	 */
 	private static final long serialVersionUID = -2779863978648080386L;
-
 	/**
 	 * Constructor for the context menu.
 	 * 

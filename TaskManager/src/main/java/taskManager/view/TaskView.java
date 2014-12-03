@@ -11,15 +11,20 @@ package taskManager.view;
 import java.awt.Dimension;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
 import taskManager.controller.TaskController;
 import taskManager.draganddrop.TaskPanel;
+import taskManager.model.StageModel;
+import taskManager.model.WorkflowModel;
 
 /**
  * @author Beth Martino
@@ -33,6 +38,11 @@ public class TaskView extends TaskPanel {
 	private static final long serialVersionUID = 1L;
 
 	private TaskController controller;
+	private ContextMenu contextMenu;
+	private JMenu moveTo;
+	private final JMenuItem addTask = new JMenuItem("Add Task");
+	private final JMenuItem editTask = new JMenuItem("Edit Task");
+	private final JMenuItem delete = new JMenuItem("Delete Task");
 
 	/**
 	 * Constructor, creates a list-like view for the following information: the
@@ -48,7 +58,6 @@ public class TaskView extends TaskPanel {
 	 *            The ID of the task being displayed
 	 */
 	public TaskView(String name, Date duedate, int estEffort) {
-
 		// organizes the data in a vertical list
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		final Border raisedbevel = BorderFactory.createRaisedBevelBorder();
@@ -58,6 +67,21 @@ public class TaskView extends TaskPanel {
 		this.setBorder(title);
 		this.setMinimumSize(new Dimension(200, 100));
 
+		// Creates the ContextMenu.
+		contextMenu = new ContextMenu(this);
+		contextMenu.add(addTask);
+		contextMenu.add(editTask);
+		// Creates sub Menu that contains the names of all of the other stages.
+		moveTo = new JMenu("Move To");
+		moveTo.add(new JMenuItem("One"));
+		moveTo.add(new JMenuItem("Two"));
+		moveTo.add(new JMenuItem("Three"));
+		moveTo.add(new JMenuItem("Four"));
+		contextMenu.add(moveTo);
+		// Finished with sub menu
+		contextMenu.add(delete);
+		//finished with context menu
+		
 		//
 		// convert Date object to Calendar object to avoid using deprecated
 		// Date methods.
@@ -102,6 +126,10 @@ public class TaskView extends TaskPanel {
 	public void setController(TaskController controller) {
 		this.controller = controller;
 		this.addMouseListener(this.controller);
+		this.addTask.addActionListener(controller);
+		this.delete.addActionListener(controller);
+		this.editTask.addActionListener(controller);
+
 	}
 
 	public TaskController getController() {
