@@ -55,6 +55,7 @@ public class ScrollList extends JPanel {
 
 		JLabel title = new JLabel(t);
 		this.add(title, BorderLayout.NORTH);
+		this.setBackground(Colors.TASK);
 		this.add(listScroller, BorderLayout.CENTER);
 	}
 
