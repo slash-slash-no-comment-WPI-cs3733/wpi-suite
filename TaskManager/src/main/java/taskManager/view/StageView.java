@@ -141,7 +141,6 @@ public class StageView extends JPanel implements Transferable {
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-		// label.setBackground(Color.decode("#d0d8ff"));
 		label.setBackground(Colors.STAGE);
 		Border color = BorderFactory.createLineBorder(label.getBackground(), 3);
 		DropShadowBorder shadow = new DropShadowBorder();

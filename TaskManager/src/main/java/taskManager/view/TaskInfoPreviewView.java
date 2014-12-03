@@ -74,8 +74,6 @@ public class TaskInfoPreviewView extends JPanel {
 		Border compound = BorderFactory.createCompoundBorder(shadow, color);
 		this.setBorder(compound);
 
-		// this.setBorder(shadow);
-
 		// This panel will contain all of the task information
 		JPanel info = new JPanel();
 		info.setSize(new Dimension(this.getWidth(), 345));
@@ -85,7 +83,6 @@ public class TaskInfoPreviewView extends JPanel {
 		info.setLayout(new MigLayout("wrap 1"));
 		info.setOpaque(false);
 
-		// The task's titleBar contains the title and the 'x' button
 		// The task's titleBar contains the title and the 'x' button
 		JPanel titleBar = new JPanel();
 		titleBar.setLayout(new MigLayout("", "5[]:push[]"));
