@@ -100,6 +100,7 @@ public class ToolbarController extends DropTargetAdapter implements
 					JanewayModule.tabPaneC.getTabView().getWorkflowController()
 							.repaintView();
 					WorkflowModel.getInstance().save();
+					DDTransferHandler.dragSaved = true;
 				}
 				break;
 			case ToolbarView.ARCHIVE:
@@ -110,6 +111,7 @@ public class ToolbarController extends DropTargetAdapter implements
 				JanewayModule.tabPaneC.getTabView().getWorkflowController()
 						.repaintView();
 				WorkflowModel.getInstance().save();
+				DDTransferHandler.dragSaved = true;
 				break;
 			}
 		}
