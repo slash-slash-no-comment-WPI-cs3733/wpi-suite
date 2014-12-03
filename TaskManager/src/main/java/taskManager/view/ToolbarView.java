@@ -89,10 +89,10 @@ public class ToolbarView extends JToolBar {
 		this.setFloatable(false);
 
 		// Construct the buttons
-		createTask = new JButton("<html>Create<br/>Task</html>");
+		createTask = new JButton("Create Task");
 		createTask.setName(CREATE_TASK);
 
-		createStage = new JButton("<html>Create<br>Stage</html>");
+		createStage = new JButton("Create Stage");
 		createStage.setName(CREATE_STAGE);
 
 		statistics = new JButton("Statistics");
@@ -145,7 +145,7 @@ public class ToolbarView extends JToolBar {
 		title.add(projectName);
 		buttons.add(createTask);
 		buttons.add(createStage);
-		buttons.add(statistics);
+		// buttons.add(statistics);
 		buttons.add(archiveCheckBox);
 		targets.add(archive);
 		targets.add(new Box.Filler(new Dimension(5, 0), new Dimension(40, 0),
