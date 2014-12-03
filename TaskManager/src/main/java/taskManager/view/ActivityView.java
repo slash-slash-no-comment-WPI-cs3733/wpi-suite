@@ -55,7 +55,7 @@ public class ActivityView extends JPanel {
 		date.setName(MESSAGE_DATE);
 
 		// Content of the activity
-		message = new JTextArea(4, 25);
+		message = new JTextArea(14, 22);
 		message.setName(MESSAGE_BODY);
 		message.setLineWrap(true);
 		message.setEditable(false);
