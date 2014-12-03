@@ -18,9 +18,10 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 import javax.swing.TransferHandler;
 
+import taskManager.JanewayModule;
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.WorkflowModel;
-import taskManager.view.TaskView;
+import taskManager.view.ToolbarView;
 
 /**
  * 
@@ -48,7 +49,6 @@ public class DDTransferHandler extends TransferHandler {
 	 */
 	public static DataFlavor getTaskFlavor() {
 		if (taskFlavor == null) {
-			taskFlavor = new DataFlavor(TaskView.class, "TaskView");
 			try {
 				taskFlavor = new DataFlavor(
 						DataFlavor.javaJVMLocalObjectMimeType
@@ -113,22 +113,28 @@ public class DDTransferHandler extends TransferHandler {
 	 */
 	@Override
 	public void exportAsDrag(JComponent comp, InputEvent e, int action) {
+
+		// this is set to false before true to clear the workflow before
+		// dragging
 		// Ignore all responses from server while drag is active
-		FetchWorkflowObserver.ignoreAllResponses = true;
+		// TODO fix comment to make more clear ^
+		if (!FetchWorkflowObserver.ignoreAllResponses) {
+			FetchWorkflowObserver.ignoreAllResponses = true;
+			// Create drag image
+			Image image = new BufferedImage(comp.getWidth(), comp.getHeight(),
+					BufferedImage.TYPE_INT_ARGB);
+			Graphics g = image.getGraphics();
+			g = g.create();
+			comp.paint(g);
+			setDragImage(image);
 
-		// Create drag image
-		Image image = new BufferedImage(comp.getWidth(), comp.getHeight(),
-				BufferedImage.TYPE_INT_ARGB);
-		Graphics g = image.getGraphics();
-		g = g.create();
-		comp.paint(g);
-		setDragImage(image);
+			// Create placeholder
+			DropAreaPanel.generatePlaceholder(comp.getSize());
 
-		// Create placeholder
-		DropAreaPanel.generatePlaceholder(comp.getSize());
+			// Initiate the drag
+			super.exportAsDrag(comp, e, action);
+		}
 
-		// Initiate the drag
-		super.exportAsDrag(comp, e, action);
 	}
 
 	/**
@@ -152,6 +158,12 @@ public class DDTransferHandler extends TransferHandler {
 
 		// Show the component
 		comp.setVisible(true);
+
+		// Set icons disabled.
+		JanewayModule.toolV.setArchiveEnabled(false);
+		JanewayModule.toolV.setDeleteEnabled(false);
+		// Set icon back to the archive icon.
+		JanewayModule.toolV.setArchiveIcon(ToolbarView.ARCHIVE);
 	}
 
 }

@@ -10,7 +10,7 @@ package taskManager.view;
 
 import java.awt.FlowLayout;
 
-import javax.swing.JPanel;
+import javax.swing.JLayeredPane;
 
 import taskManager.controller.WorkflowController;
 import taskManager.draganddrop.DDTransferHandler;
@@ -18,10 +18,10 @@ import taskManager.draganddrop.DropAreaPanel;
 
 /**
  * @author Beth Martino
+ * @author Clark Jacobsohn
  * @version November 9, 2014
  */
-
-public class WorkflowView extends JPanel {
+public class WorkflowView extends JLayeredPane {
 
 	private static final long serialVersionUID = 1L;
 
@@ -38,16 +38,20 @@ public class WorkflowView extends JPanel {
 		stages = new DropAreaPanel(DDTransferHandler.getStageFlavor());
 
 		// arranges the stages horizontally and evenly spaced
-		this.setLayout(new FlowLayout());
+		this.setLayout(new WorkflowLayout());
 
 		stages.setLayout(new FlowLayout());
 		this.add(stages);
+
+		this.addMouseListener(controller);
 	}
 
 	/**
+	 * 
+	 * Adds a stageView to the workflow.
+	 * 
 	 * @param stv
-	 *            of the new stage to be added creates a new scroll panel to
-	 *            house the stage view object sets the size and border
+	 *            the new stage to be added
 	 */
 	public void addStageView(StageView stv) {
 		if (stages == null || stages.getParent() == null) {
@@ -59,12 +63,15 @@ public class WorkflowView extends JPanel {
 		stages.add(stv);
 	}
 
-	/*
-	 * @see java.awt.Component#getName()
+	/**
+	 * 
+	 * Adds a TaskInfoPreviewView bubble to the workflow.
+	 *
+	 * @param ti
 	 */
-	@Override
-	public String getName() {
-		return super.getName();
+	public void addTaskInfo(TaskInfoPreviewView ti) {
+		controller.removeTaskInfos(true);
+		add(ti, new Integer(1));
 	}
 
 	/**
@@ -78,7 +85,11 @@ public class WorkflowView extends JPanel {
 	 */
 	public void setController(WorkflowController controller) {
 		this.controller = controller;
+
 		stages.setSaveListener(controller);
+
+		this.addMouseListener(controller);
+
 	}
 
 	/**
@@ -92,11 +103,10 @@ public class WorkflowView extends JPanel {
 		try {
 			// goes through all of the stage views it contains until it finds
 			// the one that matches the name
+
 			for (int i = 1; i == stages.getComponents().length; i++) {
 				if (stages.getComponent(i).getName().equals(name)) {
 					return (StageView) stages.getComponent(i);
-				} else {
-					// do nothing, keep checking
 				}
 			}
 		} catch (NullPointerException e) {
@@ -115,5 +125,4 @@ public class WorkflowView extends JPanel {
 		}
 		super.setVisible(visible);
 	}
-
 }

@@ -143,7 +143,6 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 
 		stageList.add(index, stage);
 		return true;
-
 	}
 
 	/**

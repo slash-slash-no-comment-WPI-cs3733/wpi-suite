@@ -10,11 +10,11 @@ package taskManager.controller;
 
 import java.awt.Component;
 import java.awt.dnd.DropTargetAdapter;
-import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
-import java.awt.dnd.DropTargetEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -33,7 +33,7 @@ import taskManager.view.ToolbarView;
  * @author Sam Khalandovsky
  */
 public class ToolbarController extends DropTargetAdapter implements
-		ActionListener {
+		ActionListener, ItemListener {
 
 	private final TabPaneView tabPaneV;
 	private final TabPaneController tabPaneC;
@@ -62,9 +62,6 @@ public class ToolbarController extends DropTargetAdapter implements
 				break;
 			case ToolbarView.MANAGE_STAGES:
 				this.tabPaneC.addManageStagesTab();
-				break;
-			case ToolbarView.MANAGE_USERS:
-				this.tabPaneC.addManageUsersTab();
 				break;
 			case ToolbarView.REPORT:
 				break;
@@ -95,33 +92,28 @@ public class ToolbarController extends DropTargetAdapter implements
 
 			switch (name) {
 			case ToolbarView.DELETE:
-				taskV.getController().deleteTask(); // remove from model
-				taskV.getParent().remove(taskV); // remove from view
-				target.setEnabled(false);
-				WorkflowModel.getInstance().save();
+				if (target.isEnabled()) {
+					taskV.getController().deleteTask(); // remove from model
+					taskV.getParent().remove(taskV); // remove from view
+					// Reload and save workflow.
+					JanewayModule.tabPaneC.getTabView().reloadWorkflow();
+					WorkflowModel.getInstance().save();
+				}
 				break;
 			case ToolbarView.ARCHIVE:
+				taskV.getController().setArchived(
+						!taskV.getController().isArchived());
+				// Reload and save workflow.
+				JanewayModule.tabPaneC.getTabView().reloadWorkflow();
+				WorkflowModel.getInstance().save();
 				break;
 			}
 		}
 	}
 
-	/**
-	 * @see java.awt.dnd.DropTargetAdapter#dragEnter(java.awt.dnd.DropTargetDragEvent)
-	 */
 	@Override
-	public void dragEnter(DropTargetDragEvent e) {
-		Component comp = e.getDropTargetContext().getComponent();
-		comp.setEnabled(true);
-
-	}
-
-	/**
-	 * @see java.awt.dnd.DropTargetAdapter#dragExit(java.awt.dnd.DropTargetEvent)
-	 */
-	@Override
-	public void dragExit(DropTargetEvent e) {
-		Component comp = e.getDropTargetContext().getComponent();
-		comp.setEnabled(false);
+	public void itemStateChanged(ItemEvent e) {
+		// Reload the workflow view.
+		JanewayModule.tabPaneC.getTabView().reloadWorkflow();
 	}
 }

@@ -117,6 +117,19 @@ public class TestManageStageController {
 		System.out.println("done with move stage");
 	}
 
+	@Test
+	public void testAddInvalidStage() {
+		// the stages we should end up with
+		final String[] result = { "first", "second", "third", "fourth" };
+
+		// add a new stage named NS
+		fixture.textBox(ManageStageView.NEW_STAGE_NAME).deleteText()
+				.enterText("first");
+		fixture.button(ManageStageView.ADD_NEW_STAGE).click();
+
+		checkStages(result);
+	}
+
 	/**
 	 * Checks to make sure that the names of the stages are what is expected
 	 *

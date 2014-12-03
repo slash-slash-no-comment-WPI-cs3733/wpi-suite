@@ -14,6 +14,8 @@ package taskManager.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Insets;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -22,11 +24,14 @@ import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 
 import taskManager.controller.StageController;
+import taskManager.controller.StageTitleController;
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DraggablePanelListener;
 import taskManager.draganddrop.DropAreaPanel;
@@ -40,10 +45,20 @@ public class StageView extends JPanel implements Transferable {
 	private static final long serialVersionUID = 1L;
 	private StageController controller;
 
-	DropAreaPanel tasks;
-	JScrollPane stage = new JScrollPane(tasks,
-			JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-			JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+	public static final String TITLE = "label";
+	public static final String CHANGE_TITLE = "changeLabel";
+	public static final String CHECK = "check";
+	public static final String X = "x";
+	public static final String TEXT_LABEL = "textLabel";
+
+	private JLabel labelName;
+	private JTextField labelText;
+	private JPanel label;
+	private JButton done;
+	private JButton cancel;
+	private DropAreaPanel tasks;
+	private JScrollPane stage;
+	public static final int STAGE_WIDTH = 200;
 
 	/**
 	 * 
@@ -60,40 +75,76 @@ public class StageView extends JPanel implements Transferable {
 		// stage view is a panel that contains the title and the scroll pane
 		// w/tasks
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		this.setPreferredSize(new Dimension(200, 450));
+		this.setPreferredSize(new Dimension(STAGE_WIDTH, 450));
+		this.setName(name);
 
 		// organizes the tasks in a vertical list
 		tasks.setLayout(new BoxLayout(tasks, BoxLayout.Y_AXIS));
-		// tasks.setLayout(new FlowLayout());
-		// tasks.setMinimumSize(new Dimension(175, 450));
-		// tasks.setSize(new Dimension(175, 450));
-		// tasks.setPreferredSize(new Dimension(175, 450));
-		// tasks.setMaximumSize(new Dimension(175, 450));
 
 		// creates the label for the name of the stage and adds it to the block
-		JPanel label = new JPanel();
-		label.setMaximumSize(new Dimension(175, 25));
-		JLabel labelText = new JLabel(name);
-		labelText.setName(name);
-		label.add(labelText);
+		label = new JPanel();
+		label.setName(TITLE);
+		label.setMaximumSize(new Dimension(STAGE_WIDTH - 15, 25));
+		// The stage's title label
+		labelName = new JLabel(name);
+		labelName.setName(name);
+		labelName.setSize(new Dimension(STAGE_WIDTH - 15, 25));
+		labelName.setMaximumSize(new Dimension(STAGE_WIDTH - 15, 25));
+		labelName.setMinimumSize(new Dimension(STAGE_WIDTH - 15, 25));
+		labelName.setPreferredSize(new Dimension(STAGE_WIDTH - 15, 25));
+		label.add(labelName);
+
+		// The text field to change the stage's title
+		JPanel changeLabel = new JPanel();
+		changeLabel.setMaximumSize(new Dimension(185, 25));
+		changeLabel.setLayout(new FlowLayout(FlowLayout.LEADING));
+		changeLabel.setName(CHANGE_TITLE);
+		labelText = new JTextField();
+		labelText.setText(name);
+		labelText.setName(TEXT_LABEL);
+		labelText.addKeyListener(new StageTitleController(this));
+		labelText.setSize(new Dimension(135, 25));
+		labelText.setMinimumSize(new Dimension(135, 25));
+		labelText.setMaximumSize(new Dimension(135, 25));
+		labelText.setPreferredSize(new Dimension(135, 25));
+		// Checkmark button
+		done = new JButton("\u2713");
+		done.setName(CHECK);
+		done.setEnabled(false);
+		done.setFont(done.getFont().deriveFont((float) 12));
+		done.setMargin(new Insets(0, 0, 0, 0));
+		// 'x' button
+		cancel = new JButton("\u2716");
+		cancel.setName(X);
+		cancel.setFont(cancel.getFont().deriveFont((float) 12));
+		cancel.setMargin(new Insets(0, 0, 0, 0));
+
+		changeLabel.add(labelText);
+		changeLabel.add(done);
+		changeLabel.add(cancel);
+
+		changeLabel.setVisible(false);
+		label.setVisible(true);
+
 		this.add(label);
+		this.add(changeLabel);
 
 		// creates the scroll containing the stage view and adds it to the block
 		stage = new JScrollPane(tasks,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		stage.setBorder(BorderFactory.createLineBorder(Color.black));
-		stage.setMinimumSize(new Dimension(175, 450));
-		stage.setSize(new Dimension(175, 450));
-		stage.setPreferredSize(new Dimension(175, 450));
+		stage.setMinimumSize(new Dimension(STAGE_WIDTH, 300));
+		stage.setSize(new Dimension(STAGE_WIDTH, 405));
 
+		this.setName(name);
 		updateTasks();
 
 		// -----------------------
 		// Drag and drop handling:
 		MouseAdapter listener = new DraggablePanelListener(this);
-		label.addMouseListener(listener);
-		label.addMouseMotionListener(listener);
+		labelName.addMouseListener(listener);
+		labelName.addMouseMotionListener(listener);
 
 		setTransferHandler(new DDTransferHandler());
 
@@ -107,11 +158,7 @@ public class StageView extends JPanel implements Transferable {
 	 */
 	public void updateTasks() {
 		this.remove(stage);
-		stage = new JScrollPane(tasks,
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		stage.setBorder(BorderFactory.createLineBorder(Color.black));
-		stage.setMinimumSize(new Dimension(175, 350));
+		stage.setViewportView(tasks);
 		this.add(stage);
 	}
 
@@ -136,8 +183,16 @@ public class StageView extends JPanel implements Transferable {
 	 */
 	public void setController(StageController controller) {
 		this.controller = controller;
+
 		tasks.setSaveListener(controller);
 
+		// listen for clicks on the stage to remove stuff from view
+		stage.addMouseListener(controller);
+		// listen for double click on the stage title to change it
+		labelName.addMouseListener(controller);
+		// listen for clicks on the 'change title' buttons
+		done.addActionListener(controller);
+		cancel.addActionListener(controller);
 	}
 
 	/**
@@ -147,6 +202,14 @@ public class StageView extends JPanel implements Transferable {
 	 */
 	public StageController getController() {
 		return controller;
+	}
+
+	public void enableChangeTitleCheckmark(Boolean enabled) {
+		done.setEnabled(enabled);
+	}
+
+	public String getLabelText() {
+		return labelText.getText();
 	}
 
 	// ----------------------------
