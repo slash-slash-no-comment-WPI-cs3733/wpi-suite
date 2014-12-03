@@ -207,7 +207,9 @@ public class EditTaskView extends JPanel {
 		// TODO
 		// Get to add users
 		usersList = new ScrollList("Assigned Users");
+		usersList.setBackground(this.getBackground());
 		projectUsersList = new ScrollList("Project Users");
+		projectUsersList.setBackground(this.getBackground());
 
 		// Comment Pane
 		activityPane = new ActivityView();
