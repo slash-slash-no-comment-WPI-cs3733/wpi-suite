@@ -81,13 +81,12 @@ public class EditTaskView extends JPanel {
 	private JButton submitComment;
 	private JButton refreshActivities;
 	
-
+	private JTextArea commentsField;
 	private JTextField titleField;
 	private JTextArea descripArea;
 	private JXDatePicker dateField;
 	private JTextField estEffortField;
 	private JTextField actEffortField;
-	private JTextField commentsField;
 	private JPanel window;
 
 	private Mode mode;
@@ -99,7 +98,6 @@ public class EditTaskView extends JPanel {
 	private ScrollList usersList;
 	private ScrollList projectUsersList;
 
-	private JLabel blankError;
 	private JLabel titleError;
 	private JLabel descriptionError;
 	private JLabel estimatedEffortError;
@@ -150,24 +148,22 @@ public class EditTaskView extends JPanel {
 		JLabel requirementLabel = new JLabel("Select Requirement ");
 
 
-		blankError = new JLabel("This field can not be left empty.");
-		blankError.setVisible(false);
-		blankError.setForeground(Color.RED);
-		titleError = new JLabel("*");
+		titleError = new JLabel("Cannot be empty");
 		titleError.setVisible(false);
 		titleError.setForeground(Color.RED);
-		descriptionError = new JLabel("*");
+		descriptionError = new JLabel("Cannot be empty");
 		descriptionError.setVisible(false);
 		descriptionError.setForeground(Color.RED);
 		estimatedEffortError = new JLabel("*");
 		estimatedEffortError.setVisible(false);
 		estimatedEffortError.setForeground(Color.RED);
-		actualEffortError = new JLabel("");
+		actualEffortError = new JLabel("*");
 		actualEffortError.setVisible(false);
 		actualEffortError.setForeground(Color.RED);
 
 		// JTextFields
 		// sets all text fields editable and adds them to global variables
+		
 		titleField = new JTextField(25);
 		titleField.setEditable(true);
 		descripArea = new JTextArea(4, 25);
@@ -179,14 +175,22 @@ public class EditTaskView extends JPanel {
 		descriptionScrollPane
 		.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
-		estEffortField = new JTextField(10);
+		commentsField = new JTextArea(2, 22);
+		JScrollPane commentScrollPane = new JScrollPane(commentsField);
+		commentScrollPane
+		.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		commentScrollPane
+		.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		
+		
+		estEffortField = new JTextField(4);
 		estEffortField.setEditable(true);
 		estEffortField.setName(EST_EFFORT);
-		actEffortField = new JTextField(10);
+		actEffortField = new JTextField(4);
 		actEffortField.setEditable(true);
 		actEffortField.setName(ACT_EFFORT);
-		commentsField = new JTextField(25);
 		commentsField.setEditable(true);
+		commentsField.setLineWrap(true);
 		commentsField.setName(COMMENTS);
 
 		// adds calendar
@@ -211,7 +215,6 @@ public class EditTaskView extends JPanel {
 
 		// Comment Pane
 		activityPane = new ActivityView();
-
 		// Requirement Pane
 		requirements = new JComboBox<String>();
 		requirements.setName(REQUIREMENTS);
@@ -297,31 +300,36 @@ public class EditTaskView extends JPanel {
 		addRemoveButtons.add(addUser, "wrap");
 		addRemoveButtons.add(removeUser);
 
-		Users.add(usersListPanel, "w 100!");
+		Users.add(usersListPanel, "w 100!, gapleft 15px");
 		Users.add(addRemoveButtons);
 		Users.add(projectUsersListPanel, "w 100!, gapright 15px");
 
 
-		//Needs work
+		
 		//Activities Panel internal content
 		Activities.setBorder(BorderFactory.createTitledBorder("Activities"));
-		Activities.add(activityPane, "wrap");
-		Activities.add(commentsField, "wrap");
-		Activities.add(submitComment, "dock south");
+		Activities.add(activityPane, "wrap, gapbottom 20px");
+		Activities.add(commentScrollPane, "center, wrap, gapbottom 10px");
+	    Activities.add(submitComment, "dock south, gapleft 30px, gapright 30px");
 
 
 
-		//ready to go
+	
 		//Effort Panel internal content
+		
 		Effort.setBorder(BorderFactory.createTitledBorder("Effort"));
 		Effort.add(estimatedEffortLabel);
 		Effort.add(actualEffortLabel, "wrap");
 		Effort.add(estEffortField);
-		//Effort.add(estimatedEffortError);
-		Effort.add(actEffortField);
-		//Effort.add(actualEffortError);
+		Effort.add(actEffortField, "wrap");
+		JPanel Errors = new JPanel(new MigLayout());
+		Errors.add(estimatedEffortError, "wrap");
+		Errors.add(actualEffortError); 
+		
+		
+		
 
-		//work in progress
+		
 		//Requirements Panel internal content
 		Requirements.setBorder(BorderFactory.createTitledBorder("Requirements"));
 		Requirements.add(requirementLabel, "wrap");
@@ -330,26 +338,25 @@ public class EditTaskView extends JPanel {
 
 		//EditSaveCancel Panel internal content
 		
-	
 		EditSaveCancel.add(save);
 		EditSaveCancel.add(cancel);
 		if (this.mode == Mode.EDIT) {
 			EditSaveCancel.add(archive);
 			EditSaveCancel.add(delete);
 		}
-		EditSaveCancel.add(blankError);
+		EditSaveCancel.add(Errors);
+		
 
 
 		//The finished panels are added to the main window panel
-
+		
 		window.add(Spacer, "dock north");
-		window.add(BasicInfo, "w 35%, h 50%, gapbottom 20px");
+		window.add(BasicInfo, "w 30%, h 50%, gapbottom 20px");
 		window.add(Users, "w 30%, h 50%, gapbottom 20px, wrap");
-		window.add(Effort, "w 35%, h 25%");
-		window.add(Requirements, "w 30%, h 25%"); 
+		window.add(Effort, "w 30%, h 20%");
+		window.add(Requirements, "w 30%, h 20%"); 
 		window.add(EditSaveCancel, "dock south, h 10%");
-		window.add(Activities, "w 30%, dock east, gapleft 5px");
-
+		window.add(Activities, "w 25%, dock east, gapleft 5px");
 		this.add(window);
 	}
 
@@ -568,18 +575,6 @@ public class EditTaskView extends JPanel {
 	 */
 	public void setTitleErrorVisible(boolean v) {
 		titleError.setVisible(v);
-	}
-
-	/**
-	 * 
-	 * Sets the blank error visible or invisible
-	 * 
-	 * @param v
-	 *            true will make the title error visible, false will make the
-	 *            title error invisible
-	 */
-	public void setBlankErrorVisible(boolean v) {
-		blankError.setVisible(v);
 	}
 
 
