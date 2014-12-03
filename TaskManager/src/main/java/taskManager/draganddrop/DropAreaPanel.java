@@ -491,7 +491,6 @@ class DropAreaListener implements DropTargetListener {
 	 */
 	public DropTargetDropEvent convertCoords(Component comp,
 			DropTargetDropEvent e) {
-
 		Point newPoint = SwingUtilities.convertPoint(e.getDropTargetContext()
 				.getComponent(), e.getLocation(), comp);
 		DropTargetDropEvent newE = new DropTargetDropEvent(
