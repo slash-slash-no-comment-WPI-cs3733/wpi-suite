@@ -196,6 +196,7 @@ public class WorkflowController implements MouseListener {
 			// Removes the task info bubble from the screen
 			FetchWorkflowObserver.ignoreAllResponses = false;
 			this.reloadData();
+			this.repaintView();
 		}
 	}
 
