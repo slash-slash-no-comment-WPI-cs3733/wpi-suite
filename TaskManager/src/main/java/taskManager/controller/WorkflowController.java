@@ -19,6 +19,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 
+import org.jdesktop.swingx.prompt.PromptSupport;
+
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
@@ -123,9 +125,11 @@ public class WorkflowController implements MouseListener {
 	 * Adds a new stage panel to the workflow view
 	 */
 	public void addStageToView() {
-		StageModel newStage = new StageModel("Test Name");
-		StageView newStageV = new StageView(newStage.getName());
+		StageModel newStage = new StageModel(null);
+		StageView newStageV = new StageView("");
 		newStageV.setController(new StageController(newStageV, newStage));
+		newStageV.enableTitleEditing(true);
+		PromptSupport.setPrompt("New Stage Name", newStageV.getLabelField());
 		view.addStageView(newStageV);
 		view.revalidate();
 		view.repaint();

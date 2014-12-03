@@ -23,6 +23,7 @@ import taskManager.JanewayModule;
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
+import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
 import taskManager.view.TaskView;
 
@@ -35,7 +36,7 @@ import taskManager.view.TaskView;
 public class StageController implements MouseListener, ActionListener {
 
 	private final StageView view;
-	private final StageModel model;
+	private StageModel model;
 
 	public static Boolean anyChangeTitleOut = false;
 	public Boolean thisChangeTitleOut = false;
@@ -176,26 +177,50 @@ public class StageController implements MouseListener, ActionListener {
 
 			switch (((JButton) button).getName()) {
 			case StageView.CHECK:
-				try {
-					model.changeStageName(view.getLabelText());
-				} catch (IllegalArgumentException ex) {
-					JOptionPane.showConfirmDialog(
-							view,
-							"Another stage already has the name "
-									+ view.getLabelText()
-									+ ". Please choose another name.",
-							"Warning - Duplicate stage names",
-							JOptionPane.CLOSED_OPTION);
-					return;
+				if (model.getName() == null) {
+					WorkflowModel.getInstance().removeStage(model);
+					model = new StageModel(view.getLabelText());
+				} else {
+					try {
+						model.changeStageName(view.getLabelText());
+					} catch (IllegalArgumentException ex) {
+						JOptionPane.showConfirmDialog(
+								view,
+								"Another stage already has the name "
+										+ view.getLabelText()
+										+ ". Please choose another name.",
+								"Warning - Duplicate stage names",
+								JOptionPane.CLOSED_OPTION);
+						return;
+					}
 				}
 				// fall through
 			case StageView.X:
-				// reset the flags
-				thisChangeTitleOut = false;
-				FetchWorkflowObserver.ignoreAllResponses = false;
-				// reload which will remove the textbox
-				JanewayModule.tabPaneC.getTabView().getWorkflowController()
-						.reloadData();
+				if (model.getName() == null) {
+					int opt = JOptionPane
+							.showConfirmDialog(
+									view,
+									"Are you sure you want to cancel creating the stage?",
+									"Cancel Stage Creation",
+									JOptionPane.YES_NO_OPTION);
+					if (opt == JOptionPane.YES_OPTION) {
+						WorkflowModel.getInstance().removeStage(model);
+						JanewayModule.tabPaneC.getTabView()
+								.getWorkflowController().reloadData();
+						JanewayModule.tabPaneC.getTabView()
+								.getWorkflowController().repaintView();
+					}
+
+				} else {
+					// reset the flags
+					thisChangeTitleOut = false;
+					FetchWorkflowObserver.ignoreAllResponses = false;
+					// reload which will remove the textbox
+					JanewayModule.tabPaneC.getTabView().getWorkflowController()
+							.reloadData();
+
+				}
+
 				break;
 			}
 		}

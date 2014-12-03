@@ -45,6 +45,7 @@ public class StageView extends JPanel {
 
 	private JLabel labelName;
 	private JTextField labelText;
+	private JPanel changeLabel;
 	private JPanel label;
 	private JButton done;
 	private JButton cancel;
@@ -86,13 +87,14 @@ public class StageView extends JPanel {
 		label.add(labelName);
 
 		// The text field to change the stage's title
-		JPanel changeLabel = new JPanel();
+		changeLabel = new JPanel();
 		changeLabel.setMaximumSize(new Dimension(185, 25));
 		changeLabel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		changeLabel.setName(CHANGE_TITLE);
 		labelText = new JTextField();
 		labelText.setText(name);
 		labelText.setName(TEXT_LABEL);
+
 		labelText.addKeyListener(new StageTitleController(this));
 		labelText.setSize(new Dimension(135, 25));
 		labelText.setMinimumSize(new Dimension(135, 25));
@@ -115,6 +117,7 @@ public class StageView extends JPanel {
 		changeLabel.add(cancel);
 
 		changeLabel.setVisible(false);
+
 		label.setVisible(true);
 
 		this.add(label);
@@ -187,5 +190,27 @@ public class StageView extends JPanel {
 
 	public String getLabelText() {
 		return labelText.getText();
+	}
+
+	/**
+	 * makes the editable label field visible/not visible
+	 * 
+	 * @param q
+	 *            true is visible, false is not visible
+	 */
+	public void enableTitleEditing(boolean q) {
+
+		changeLabel.setVisible(q);
+		label.setVisible(!q);
+
+	}
+
+	/**
+	 * returns the editable label text field
+	 * 
+	 * @return the label text field
+	 */
+	public JTextField getLabelField() {
+		return labelText;
 	}
 }
