@@ -54,6 +54,7 @@ public class TestManageStageController {
 
 		JFrame frame = new JFrame();
 		frame.add(msv);
+		frame.pack();
 
 		fixture = new FrameFixture(frame);
 
