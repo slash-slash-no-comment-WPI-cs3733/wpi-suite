@@ -66,7 +66,7 @@ public class TaskInputController implements KeyListener, FocusListener,
 		// Estimated Effort
 		if (!etv.getEstEffort().getText().isEmpty()) {
 			try {
-				
+
 				if (Integer.parseInt(etv.getEstEffort().getText()) <= 0) {
 					estEffortValid = false;
 					etv.setEstEffortErrorText("Must be a positive integer");
@@ -91,7 +91,7 @@ public class TaskInputController implements KeyListener, FocusListener,
 				}
 			} catch (NumberFormatException e) {
 				actEffortValid = false;
-				etv.setActualEffortErrorText("Must be a positive integer");
+				etv.setActualEffortErrorText("Must be a non negative integer");
 			}
 		}
 
