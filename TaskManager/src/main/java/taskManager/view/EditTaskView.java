@@ -57,6 +57,7 @@ public class EditTaskView extends JPanel {
 	public static final String ADD_USER = "addUser";
 	public static final String REMOVE_USER = "removeUser";
 	public static final String DELETE = "delete";
+	public static final String ARCHIVE = "archive";
 	public static final String COMMENTS = "comments";
 	public static final String ACT_EFFORT = "act_effort";
 	public static final String EST_EFFORT = "est_effort";
@@ -71,6 +72,7 @@ public class EditTaskView extends JPanel {
 	private JButton cancel;
 	private JButton addUser;
 	private JButton removeUser;
+	private JButton archive;
 	private JButton delete;
 	private JButton addReq;
 	private JButton submitComment;
@@ -210,6 +212,9 @@ public class EditTaskView extends JPanel {
 		// Delete Task and close the window
 		delete = new JButton("Delete");
 		delete.setName(DELETE);
+		// Archive
+		archive = new JButton("Archive");
+		archive.setName(ARCHIVE);
 		// Add user to list
 		addUser = new JButton("Add User");
 		addUser.setName(ADD_USER);
@@ -363,6 +368,7 @@ public class EditTaskView extends JPanel {
 		bottomBtns.add(save);
 		bottomBtns.add(cancel);
 		if (this.mode == Mode.EDIT) {
+			bottomBtns.add(archive);
 			bottomBtns.add(delete);
 		}
 		newTaskGridBag.gridy = 11;
@@ -395,6 +401,7 @@ public class EditTaskView extends JPanel {
 		removeUser.addActionListener(controller);
 		addReq.addActionListener(controller);
 		submitComment.addActionListener(controller);
+		archive.addActionListener(controller);
 		delete.addActionListener(controller);
 		refreshActivities.addActionListener(controller);
 	}
@@ -425,12 +432,12 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * gets the delete button object
+	 * gets the archive button object
 	 * 
-	 * @return the delete button object
+	 * @return the archive button object
 	 */
-	public JButton getDeleteButton() {
-		return this.delete;
+	public JButton getArchiveButton() {
+		return this.archive;
 	}
 
 	/**
@@ -650,17 +657,17 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * disables the delete button
+	 * disables the archive button
 	 */
-	public void disableDelete() {
-		this.delete.setEnabled(false);
+	public void disableArchive() {
+		this.archive.setEnabled(false);
 	}
 
 	/**
-	 * enables the delete button
+	 * enables the archive button
 	 */
-	public void enableDelete() {
-		this.delete.setEnabled(true);
+	public void enableArchive() {
+		this.archive.setEnabled(true);
 	}
 
 	/**
@@ -687,7 +694,7 @@ public class EditTaskView extends JPanel {
 	 *
 	 * @param boolean for whether or not to enable.
 	 */
-	public void setRefreshEnabled(Boolean b) {
+	public void setRefreshEnabled(boolean b) {
 		refreshActivities.setEnabled(b);
 	}
 
@@ -817,6 +824,17 @@ public class EditTaskView extends JPanel {
 	 */
 	public void addActivity(ActivityModel act) {
 		activities.add(act);
+	}
+
+	/**
+	 * 
+	 * Set the delete button to enabled/disabled.
+	 *
+	 * @param bool
+	 *            boolean to set the button to.
+	 */
+	public void setDeleteEnabled(boolean bool) {
+		delete.setEnabled(bool);
 	}
 
 	/*

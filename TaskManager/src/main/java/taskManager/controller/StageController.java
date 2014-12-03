@@ -10,6 +10,7 @@ package taskManager.controller;
 
 import java.util.List;
 
+import taskManager.JanewayModule;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.view.StageView;
@@ -43,13 +44,20 @@ public class StageController {
 		// Get all the tasks associated with this Stage.
 		final List<TaskModel> tasks = this.model.getTasks();
 
+		// Get state of archive shown check box.
+		boolean showArchive = JanewayModule.toolV.isArchiveShown();
+
 		// Add the tasks.
 		for (TaskModel task : tasks) {
-			// create stage view and controller.
-			TaskView tkv = new TaskView(task.getName(), task.getDueDate(),
-					task.getEstimatedEffort());
-			tkv.setController(new TaskController(tkv, task));
-			this.view.addTaskView(tkv);
+			// Add only if task is not archived or when task is archived and
+			// archive shown is set to true.
+			if (!task.isArchived() || (task.isArchived() && showArchive)) {
+				// create stage view and controller.
+				TaskView tkv = new TaskView(task.getName(), task.getDueDate(),
+						task.getEstimatedEffort(), task.isArchived());
+				tkv.setController(new TaskController(tkv, task));
+				this.view.addTaskView(tkv);
+			}
 		}
 
 	}
