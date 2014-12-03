@@ -1,4 +1,3 @@
-
 /*******************************************************************************
  * Copyright (c) 2012-2014 -- WPI Suite
  *
@@ -28,7 +27,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
-
 
 import net.miginfocom.swing.MigLayout;
 
@@ -80,7 +78,7 @@ public class EditTaskView extends JPanel {
 	private JButton addReq;
 	private JButton submitComment;
 	private JButton refreshActivities;
-	
+
 	private JTextArea commentsField;
 	private JTextField titleField;
 	private JTextArea descripArea;
@@ -124,7 +122,6 @@ public class EditTaskView extends JPanel {
 
 		window = new JPanel(new MigLayout());
 
-
 		this.setLayout(new FlowLayout());
 		Dimension panelSize = getPreferredSize();
 		panelSize.width = 1100; // TODO
@@ -133,7 +130,7 @@ public class EditTaskView extends JPanel {
 		this.setPreferredSize(panelSize);
 		this.setMinimumSize(panelSize);
 
-		//window.setBorder(BorderFactory.createTitledBorder("Edit Task"));
+		// window.setBorder(BorderFactory.createTitledBorder("Edit Task"));
 
 		activities = new ArrayList<ActivityModel>();
 		newActivities = new ArrayList<ActivityModel>();
@@ -146,7 +143,6 @@ public class EditTaskView extends JPanel {
 		JLabel estimatedEffortLabel = new JLabel("Estimated Effort ");
 		JLabel actualEffortLabel = new JLabel("Actual Effort ");
 		JLabel requirementLabel = new JLabel("Select Requirement ");
-
 
 		titleError = new JLabel("Cannot be empty");
 		titleError.setVisible(false);
@@ -163,7 +159,7 @@ public class EditTaskView extends JPanel {
 
 		// JTextFields
 		// sets all text fields editable and adds them to global variables
-		
+
 		titleField = new JTextField(25);
 		titleField.setEditable(true);
 		descripArea = new JTextArea(4, 25);
@@ -171,18 +167,17 @@ public class EditTaskView extends JPanel {
 		descripArea.setLineWrap(true);
 		JScrollPane descriptionScrollPane = new JScrollPane(descripArea);
 		descriptionScrollPane
-		.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		descriptionScrollPane
-		.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
 		commentsField = new JTextArea(2, 22);
 		JScrollPane commentScrollPane = new JScrollPane(commentsField);
 		commentScrollPane
-		.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		commentScrollPane
-		.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		
-		
+				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
 		estEffortField = new JTextField(4);
 		estEffortField.setEditable(true);
 		estEffortField.setName(EST_EFFORT);
@@ -205,7 +200,7 @@ public class EditTaskView extends JPanel {
 		((JButton) dateField.getComponent(1)).setIcon(new ImageIcon(
 				((new ImageIcon(getClass().getResource("calendar-icon.png")))
 						.getImage()).getScaledInstance(20, 20,
-								java.awt.Image.SCALE_SMOOTH)));
+						java.awt.Image.SCALE_SMOOTH)));
 
 		// JTextArea
 		// TODO
@@ -263,8 +258,7 @@ public class EditTaskView extends JPanel {
 
 		window.add(titleLabel);
 
-
-		//This is where the 6 primary panels are defined
+		// This is where the 6 primary panels are defined
 		JPanel Spacer = new JPanel(new MigLayout());
 		JPanel BasicInfo = new JPanel(new MigLayout());
 		JPanel Users = new JPanel(new MigLayout());
@@ -273,9 +267,8 @@ public class EditTaskView extends JPanel {
 		JPanel Requirements = new JPanel(new MigLayout());
 		JPanel EditSaveCancel = new JPanel(new MigLayout());
 
-
-		//ready to go
-		//BasicInfo Panel internal content
+		// ready to go
+		// BasicInfo Panel internal content
 		BasicInfo.setBorder(BorderFactory.createTitledBorder("Basic Info"));
 		BasicInfo.add(titleLabel, "wrap");
 		BasicInfo.add(titleField);
@@ -288,8 +281,7 @@ public class EditTaskView extends JPanel {
 		BasicInfo.add(dateField);
 		BasicInfo.add(stages);
 
-
-		//Users Panel internal content
+		// Users Panel internal content
 		Users.setBorder(BorderFactory.createTitledBorder("Users"));
 		JPanel usersListPanel = new JPanel(new MigLayout());
 		JPanel projectUsersListPanel = new JPanel(new MigLayout());
@@ -304,19 +296,15 @@ public class EditTaskView extends JPanel {
 		Users.add(addRemoveButtons);
 		Users.add(projectUsersListPanel, "w 100!, gapright 15px");
 
-
-		
-		//Activities Panel internal content
+		// Activities Panel internal content
 		Activities.setBorder(BorderFactory.createTitledBorder("Activities"));
 		Activities.add(activityPane, "wrap, gapbottom 20px");
 		Activities.add(commentScrollPane, "center, wrap, gapbottom 10px");
-	    Activities.add(submitComment, "dock south, gapleft 30px, gapright 30px");
+		Activities
+				.add(submitComment, "dock south, gapleft 30px, gapright 30px");
 
+		// Effort Panel internal content
 
-
-	
-		//Effort Panel internal content
-		
 		Effort.setBorder(BorderFactory.createTitledBorder("Effort"));
 		Effort.add(estimatedEffortLabel);
 		Effort.add(actualEffortLabel, "wrap");
@@ -324,20 +312,17 @@ public class EditTaskView extends JPanel {
 		Effort.add(actEffortField, "wrap");
 		JPanel Errors = new JPanel(new MigLayout());
 		Errors.add(estimatedEffortError, "wrap");
-		Errors.add(actualEffortError); 
-		
-		
-		
+		Errors.add(actualEffortError);
 
-		
-		//Requirements Panel internal content
-		Requirements.setBorder(BorderFactory.createTitledBorder("Requirements"));
+		// Requirements Panel internal content
+		Requirements
+				.setBorder(BorderFactory.createTitledBorder("Requirements"));
 		Requirements.add(requirementLabel, "wrap");
 		Requirements.add(requirements);
 		Requirements.add(addReq);
 
-		//EditSaveCancel Panel internal content
-		
+		// EditSaveCancel Panel internal content
+
 		EditSaveCancel.add(save);
 		EditSaveCancel.add(cancel);
 		if (this.mode == Mode.EDIT) {
@@ -345,16 +330,14 @@ public class EditTaskView extends JPanel {
 			EditSaveCancel.add(delete);
 		}
 		EditSaveCancel.add(Errors);
-		
 
+		// The finished panels are added to the main window panel
 
-		//The finished panels are added to the main window panel
-		
 		window.add(Spacer, "dock north");
 		window.add(BasicInfo, "w 30%, h 50%, gapbottom 20px");
 		window.add(Users, "w 30%, h 50%, gapbottom 20px, wrap");
 		window.add(Effort, "w 30%, h 20%");
-		window.add(Requirements, "w 30%, h 20%"); 
+		window.add(Requirements, "w 30%, h 20%");
 		window.add(EditSaveCancel, "dock south, h 10%");
 		window.add(Activities, "w 25%, dock east, gapleft 5px");
 		this.add(window);
@@ -576,8 +559,6 @@ public class EditTaskView extends JPanel {
 	public void setTitleErrorVisible(boolean v) {
 		titleError.setVisible(v);
 	}
-
-
 
 	/**
 	 * Sets the description error visible or invisible
@@ -845,4 +826,3 @@ public class EditTaskView extends JPanel {
 		return controller;
 	}
 }
-
