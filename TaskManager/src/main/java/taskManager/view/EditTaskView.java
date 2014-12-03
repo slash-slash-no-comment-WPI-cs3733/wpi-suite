@@ -862,4 +862,19 @@ public class EditTaskView extends JPanel {
 	public Mode getMode() {
 		return mode;
 	}
+
+	/**
+	 * Whether this view is equivalent to the other. EditTaskViews are
+	 * equivalent if they use the same model. If it's mode is CREATE (and there
+	 * is not TaskModel associated with it), it is unique.
+	 */
+	public boolean equals(Object other) {
+		if (other instanceof EditTaskView) {
+			return getController().equals(
+					((EditTaskView) other).getController());
+		} else {
+			return false;
+		}
+	}
+
 }

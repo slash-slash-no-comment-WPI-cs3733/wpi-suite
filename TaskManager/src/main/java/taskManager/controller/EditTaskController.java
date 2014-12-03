@@ -407,7 +407,15 @@ public class EditTaskController implements ActionListener {
 		}
 	}
 
-	public void initializeView(TabPaneController tabPaneC) {
+	/**
+	 * 
+	 * Opens an initialized view allowing the task associated with this
+	 * controller to be edited.
+	 *
+	 */
+	private void initializeView() {
+
+		reloadData();
 
 		// makes the delete button unclickable
 		etv.enableDelete();
@@ -430,18 +438,18 @@ public class EditTaskController implements ActionListener {
 			etv.setActEffort(model.getActualEffort());
 		}
 
-		tabPaneC.addEditTaskTab(etv);
-
 		// figures out the index of the stage, then sets the drop down to the
 		// stage at that index
 		JComboBox<String> stages = etv.getStages();
 		for (int i = 0; i < stages.getItemCount(); i++) {
+
 			if (etv.getStages().getItemAt(i) == model.getStage().getName()) {
 				etv.setStageDropdown(i);
 				break;
 			}
 		}
 
+		// TODO: Make not rely on StageName uniqueness.
 		etv.getStages().setSelectedItem(model.getStage().getName());
 
 		// populates the project users list
@@ -483,23 +491,65 @@ public class EditTaskController implements ActionListener {
 		} else {
 			etv.getRequirements().setSelectedItem(EditTaskView.NO_REQ);
 		}
-
 	}
 
+	/**
+	 * 
+	 * Opens an appropriate EditTabView (the form) for this controller to either
+	 * create or edit a task.
+	 *
+	 * @param tpc
+	 *            The tab pane the new view is added to.
+	 */
 	public void addTab(TabPaneController tpc) {
 		String tabName = "Create Task";
 		if (!Mode.CREATE.equals(etv.getMode())) {
 			tabName = model.getName();
 		}
-		tpc.addTab(tabName, etv, true);
 
+		if (tpc.getTabView().indexOfComponent(etv) == -1) {
+			// If tpc doesn't contain etv already
+			tpc.addTab(tabName, etv, true);
+		}
+
+		tpc.getTabView().setSelectedComponent(etv);
+
+		if (Mode.EDIT.equals(etv.getMode())) {
+			initializeView(); // Must be called after setSelectedComponent...
+								// (or stagedropdown is messed up.)
+		}
+		System.out.println(etv.getStages().getSelectedItem());
 	}
 
-	public boolean isDuplicateView(EditTaskView etv2) {
-		return getTaskID() != null
-				&& getTaskID().equals(etv2.getController().getTaskID());
+	/**
+	 * An EditTaskController is equal if they both are connected to a task with
+	 * the same ID. New EditTaskControllers (associated with creating a task)
+	 * are not duplicates.
+	 */
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		}
+
+		if (other instanceof EditTaskController) {
+			if (getTaskID() == null) {
+				return false; // The form to create a task is never a duplicate
+			}
+			if (getTaskID().equals(((EditTaskController) other).getTaskID())) {
+				return true; // They share the same task (or at least the same
+								// ID)
+			}
+		}
+
+		return false;
 	}
 
+	/**
+	 * 
+	 * Gets the task id of the associated task.
+	 *
+	 * @return The task's ID.
+	 */
 	private String getTaskID() {
 		return taskID;
 	}

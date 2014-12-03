@@ -76,7 +76,7 @@ public class TaskController implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		etc.initializeView(tabPaneC);
+		etc.addTab(tabPaneC);
 	}
 
 	@Override
