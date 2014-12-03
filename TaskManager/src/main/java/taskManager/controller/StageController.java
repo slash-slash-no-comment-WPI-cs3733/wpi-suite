@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -37,8 +38,14 @@ import taskManager.view.TaskView;
  * @version November 9, 2014
  */
 
-public class StageController implements DropAreaSaveListener, MouseListener,
-		ActionListener {
+/**
+ * Description
+ *
+ * @author Sam Khalandovsky
+ * @version Dec 3, 2014
+ */
+public class StageController implements DropAreaSaveListener,
+		MouseMotionListener, MouseListener, ActionListener {
 
 	private final StageView view;
 	private StageModel model;
@@ -74,8 +81,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 				if (!task.isArchived() || (task.isArchived() && showArchive)) {
 					// create stage view and controller.
 					TaskView tkv = new TaskView(task.getName(),
-							task.getDueDate(), task.getEstimatedEffort(),
-							task.isArchived());
+							task.getDueDate(), task.getEstimatedEffort());
 					tkv.setController(new TaskController(tkv, task));
 					this.view.addTaskView(tkv);
 				}
@@ -115,6 +121,19 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 	public boolean moveStageToIndex(int index) {
 		return WorkflowModel.getInstance().addStage(model, index);
 
+	}
+
+	public void deleteStage() {
+		WorkflowModel.getInstance().removeStage(model);
+	}
+
+	/**
+	 * Checks if stage is empty
+	 *
+	 * @return whether or not it is empty
+	 */
+	public boolean isEmpty() {
+		return model.getTasks().isEmpty();
 	}
 
 	/**
@@ -199,6 +218,17 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 	}
 
 	@Override
+	public void mouseDragged(MouseEvent e) {
+		JanewayModule.toolV.setDeleteEnabled(true);
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object button = e.getSource();
 		if (button instanceof JButton) {
@@ -258,4 +288,5 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 		}
 
 	}
+
 }

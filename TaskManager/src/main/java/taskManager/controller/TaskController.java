@@ -76,6 +76,11 @@ public class TaskController implements MouseListener, MouseMotionListener {
 		assignedUsers = model.getAssigned();
 
 		req = model.getReq();
+
+		// Set the background to orange if the task is archived.
+		if (model.isArchived()) {
+			view.setBackground(Color.decode("#FFBC00"));
+		}
 	}
 
 	/**
