@@ -358,7 +358,6 @@ public class EditTaskView extends JPanel {
 		removeUser.addActionListener(controller);
 		addReq.addActionListener(controller);
 		submitComment.addActionListener(controller);
-		archive.addActionListener(controller);
 		delete.addActionListener(controller);
 		refreshActivities.addActionListener(controller);
 	}
