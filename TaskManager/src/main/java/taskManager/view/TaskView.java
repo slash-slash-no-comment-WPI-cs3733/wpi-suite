@@ -17,6 +17,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import taskManager.controller.TaskController;
@@ -43,23 +44,40 @@ public class TaskView extends TaskPanel {
 	 *            the name of the task
 	 * @param duedate
 	 *            the due date of the task
-	 * @param estEffort
-	 *            the estimated effort for the task
 	 * @param taskID
 	 *            The ID of the task being displayed
+	 */
+	public TaskView(String name, Date duedate, int estEffort) {
+		this(name, duedate, estEffort, false);
+	}
+
+	/**
+	 * Constructor, creates a list-like view for the following information: the
+	 * name of the task, the due date and the estimated effort
+	 * 
+	 * @param name
+	 *            the name of the task
+	 * @param duedate
+	 *            the due date of the task
+	 * @param taskID
+	 *            The ID of the task being displayed
+	 * @param archived
+	 *            Archived state of the task
 	 */
 	public TaskView(String name, Date duedate, int estEffort, Boolean archived) {
 
 		// organizes the data in a vertical list
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		final Border raisedbevel = BorderFactory.createRaisedBevelBorder();
+		final Border raisedbevel = BorderFactory
+				.createEtchedBorder(EtchedBorder.LOWERED);
 		final TitledBorder title = BorderFactory
 				.createTitledBorder(raisedbevel);
 		title.setTitlePosition(TitledBorder.LEFT);
 		this.setBorder(title);
-		this.setMinimumSize(new Dimension(200, 100));
+		this.setMinimumSize(new Dimension(200, 40));
+		this.setPreferredSize(new Dimension(200, 40));
+		this.setMaximumSize(new Dimension(200, 40));
 
-		//
 		// convert Date object to Calendar object to avoid using deprecated
 		// Date methods.
 		final Calendar date = Calendar.getInstance();
@@ -77,7 +95,7 @@ public class TaskView extends TaskPanel {
 		// This creates a maximum text-string length before the name gets
 		// truncated in the view
 
-		nameLabel.setText("Average Name Length");
+		nameLabel.setText("Average Name Length plu");
 		final Dimension size = nameLabel.getPreferredSize();
 
 		nameLabel.setMaximumSize(size);
@@ -110,14 +128,19 @@ public class TaskView extends TaskPanel {
 		this.addMouseMotionListener(controller);
 	}
 
-	public TaskController getController() {
-		return controller;
-	}
-
 	@Override
 	public void setVisible(boolean visible) {
 		controller.resetBackground();
 		super.setVisible(visible);
 	}
 
+	/**
+	 * 
+	 * Returns the TaskController.
+	 *
+	 * @return the TaskController
+	 */
+	public TaskController getController() {
+		return controller;
+	}
 }

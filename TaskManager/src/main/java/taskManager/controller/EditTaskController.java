@@ -60,7 +60,7 @@ public class EditTaskController implements ActionListener {
 		this.etv = etv;
 		this.wfm = WorkflowModel.getInstance();
 
-		reloadData();
+		this.reloadData();
 	}
 
 	@Override
