@@ -11,6 +11,7 @@ package taskManager.controller;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +26,7 @@ import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
 import taskManager.view.TaskView;
+import taskManager.view.ToolbarView;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 
@@ -34,7 +36,7 @@ import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
  * @author Stefan Alexander
  * @version November 9, 2014
  */
-public class TaskController implements MouseListener {
+public class TaskController implements MouseListener, MouseMotionListener {
 
 	private final TaskView view;
 	private final TaskModel model;
@@ -92,18 +94,45 @@ public class TaskController implements MouseListener {
 		model.getStage().removeTask(model);
 	}
 
+	/**
+	 * 
+	 * Returns whether or not the task is archived
+	 *
+	 * @return the boolean.
+	 */
+	public boolean isArchived() {
+		return model.isArchived();
+	}
+
+	/**
+	 * 
+	 * Sets task's archived property to given boolean.
+	 *
+	 * @param bool
+	 *            The boolean to set the task's isArchived field.
+	 */
+	public void setArchived(boolean bool) {
+		model.setArchived(bool);
+	}
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// makes the delete button unclickable
-		etv.enableDelete();
+		// makes the archive button clickable
+		etv.enableArchive();
+
+		// Set text for archive button.
+		if (model.isArchived()) {
+			etv.getArchiveButton().setText("Unarchive");
+		} else {
+			etv.getArchiveButton().setText("Archive");
+		}
+		etv.setDeleteEnabled(model.isArchived());
 
 		// uses the title field to hold the unique id
 		etv.getTitle().setName(this.model.getID());
 
 		// uses description field to hold the name of the stage
 		etv.getDescription().setName(this.model.getStage().getName());
-		// makes the delete button unclickable
-		etv.enableDelete();
 
 		// populate editable fields with this tasks info
 		etv.setTitle(model.getName());
@@ -202,6 +231,25 @@ public class TaskController implements MouseListener {
 		if (background != null) {
 			view.setBackground(background);
 		}
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// Enable/disable the archive and delete icons when dragged.
+		boolean isArchived = model.isArchived();
+		if (isArchived) {
+			JanewayModule.toolV.setArchiveIcon(ToolbarView.UNARCHIVE);
+		} else {
+			JanewayModule.toolV.setArchiveIcon(ToolbarView.ARCHIVE);
+		}
+		JanewayModule.toolV.setArchiveEnabled(true);
+		JanewayModule.toolV.setDeleteEnabled(isArchived);
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

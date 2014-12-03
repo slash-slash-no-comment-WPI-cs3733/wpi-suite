@@ -105,21 +105,22 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 *            Whether or not the stage can be removed.
 	 */
 	public StageModel(String name, int index, boolean removable) {
+
 		// Set name as ID
 		super(name);
+
 		// Enforce uniqueness of Stage names
-		if (workflow.findStageByName(name) != null) {
-			throw new IllegalArgumentException("Stage name must be unique.");
-		}
-		this.name = name;
+		this.name = name.trim();
 		this.removable = removable;
 
 		taskList = new ArrayList<TaskModel>();
+
 		if (index == -1) {
 			workflow.addStage(this);
 		} else {
 			workflow.addStage(this, index);
 		}
+
 	}
 
 	/**

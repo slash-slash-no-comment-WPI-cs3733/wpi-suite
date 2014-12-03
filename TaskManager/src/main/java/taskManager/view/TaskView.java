@@ -8,6 +8,7 @@
  *******************************************************************************/
 package taskManager.view;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.util.Calendar;
 import java.util.Date;
@@ -47,7 +48,7 @@ public class TaskView extends TaskPanel {
 	 * @param taskID
 	 *            The ID of the task being displayed
 	 */
-	public TaskView(String name, Date duedate, int estEffort) {
+	public TaskView(String name, Date duedate, int estEffort, Boolean archived) {
 
 		// organizes the data in a vertical list
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -81,11 +82,15 @@ public class TaskView extends TaskPanel {
 
 		nameLabel.setMaximumSize(size);
 		nameLabel.setPreferredSize(size);
+
+		if (archived) {
+			setBackground(Color.decode("#FFBC00"));
+		}
+
 		nameLabel.setText(name);
 
 		this.add(nameLabel);
 		this.add(dueLabel);
-
 	}
 
 	@Override
@@ -101,7 +106,8 @@ public class TaskView extends TaskPanel {
 	 */
 	public void setController(TaskController controller) {
 		this.controller = controller;
-		this.addMouseListener(this.controller);
+		this.addMouseListener(controller);
+		this.addMouseMotionListener(controller);
 	}
 
 	public TaskController getController() {

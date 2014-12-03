@@ -121,8 +121,14 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 *            Index in the list of stages where we are adding the new stage.
 	 */
 	public void addStage(StageModel newStage, int index) {
-		stageList.add(index, newStage);
-		logger.log(Level.FINER, "Stage " + newStage.getName() + " added.");
+		if (findStageByName(newStage.getName()) != null) {
+			logger.log(Level.WARNING, "Stage named " + newStage.getName()
+					+ " already exists.");
+			throw new IllegalArgumentException();
+		} else {
+			stageList.add(index, newStage);
+			logger.log(Level.FINER, "Stage " + newStage.getName() + " added.");
+		}
 		// newStage.save();
 	}
 
