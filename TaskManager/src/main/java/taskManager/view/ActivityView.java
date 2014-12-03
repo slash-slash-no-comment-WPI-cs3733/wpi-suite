@@ -58,6 +58,7 @@ public class ActivityView extends JPanel {
 		message = new JTextArea(14, 22);
 		message.setName(MESSAGE_BODY);
 		message.setLineWrap(true);
+		message.setWrapStyleWord(true);
 		message.setEditable(false);
 		JScrollPane messageScrollPane = new JScrollPane(message);
 		messageScrollPane

@@ -165,6 +165,7 @@ public class EditTaskView extends JPanel {
 		descripArea = new JTextArea(4, 25);
 		descripArea.setEditable(true);
 		descripArea.setLineWrap(true);
+		descripArea.setWrapStyleWord(true);
 		JScrollPane descriptionScrollPane = new JScrollPane(descripArea);
 		descriptionScrollPane
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
