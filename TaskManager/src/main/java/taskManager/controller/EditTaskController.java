@@ -60,7 +60,7 @@ public class EditTaskController implements ActionListener {
 		this.etv = etv;
 		this.wfm = WorkflowModel.getInstance();
 
-		reloadData();
+		this.reloadData();
 	}
 
 	@Override
@@ -123,6 +123,25 @@ public class EditTaskController implements ActionListener {
 				etv.resetFields();
 				// Save entire workflow whenever a task is saved
 				wfm.save();
+				break;
+
+			case EditTaskView.ARCHIVE:
+
+				// archive this task
+				task = currentStage.findTaskByID(taskID);
+				boolean isArchived = task.isArchived();
+				if (isArchived) {
+					etv.getArchiveButton().setText("Archive");
+				} else {
+					etv.getArchiveButton().setText("Unarchive");
+				}
+				task.setArchived(!isArchived);
+				etv.setDeleteEnabled(!isArchived);
+
+				// Save and reload the workflow.
+				JanewayModule.tabPaneC.getTabView().reloadWorkflow();
+				wfm.save();
+
 				break;
 
 			case EditTaskView.DELETE:
@@ -254,7 +273,7 @@ public class EditTaskController implements ActionListener {
 	 */
 	private void setTaskData(TaskModel t, StageModel s, Requirement r) {
 		// sets the text fields
-		t.setName(etv.getTitle().getText());
+		t.setName(etv.getTitle().getText().trim());
 		t.setDescription(etv.getDescription().getText());
 
 		// Try to set the effort values.
@@ -383,8 +402,8 @@ public class EditTaskController implements ActionListener {
 	 * 
 	 * @return boolean stating whether the task is edited.
 	 */
-	public Boolean isEdited() {
-		Boolean edited = false;
+	public boolean isEdited() {
+		boolean edited = false;
 
 		// Get the stage of the task.
 		boolean exists = false;
@@ -480,8 +499,8 @@ public class EditTaskController implements ActionListener {
 	 *            task to check with.
 	 * @return true if there are edits.
 	 */
-	public Boolean checkUsers(TaskModel task) {
-		Boolean edited = false;
+	public boolean checkUsers(TaskModel task) {
+		boolean edited = false;
 		Set<String> taskAssigned = new HashSet<String>();
 		taskAssigned = task.getAssigned();
 		Set<String> usersAssigned = new HashSet<String>();
@@ -504,8 +523,8 @@ public class EditTaskController implements ActionListener {
 	 *            task to check if.
 	 * @return true if there are edits.
 	 */
-	public Boolean checkEstEffort(TaskModel task) {
-		Boolean edited = false;
+	public boolean checkEstEffort(TaskModel task) {
+		boolean edited = false;
 		if (task.getEstimatedEffort() == 0) {
 			if (etv.getEstEffort().getText().isEmpty()) {
 				edited = false;
@@ -536,8 +555,8 @@ public class EditTaskController implements ActionListener {
 	 *            task to check if.
 	 * @return true if there are edits.
 	 */
-	public Boolean checkActEffort(TaskModel task) {
-		Boolean edited = false;
+	public boolean checkActEffort(TaskModel task) {
+		boolean edited = false;
 		if (task.getActualEffort() == 0) {
 			if (etv.getActEffort().getText().isEmpty()) {
 				edited = false;
@@ -568,8 +587,8 @@ public class EditTaskController implements ActionListener {
 	 *            task to check if.
 	 * @return true if there are edits.
 	 */
-	public Boolean checkReq(TaskModel task) {
-		Boolean edited = false;
+	public boolean checkReq(TaskModel task) {
+		boolean edited = false;
 		if (task.getReq() == null) {
 			if (etv.getRequirements().getSelectedItem().toString()
 					.equals(EditTaskView.NO_REQ)) {
