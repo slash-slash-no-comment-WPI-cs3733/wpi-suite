@@ -34,8 +34,11 @@ public class DDTransferHandler extends TransferHandler {
 
 	private static final long serialVersionUID = -7859524821673270515L;
 
-	// This DataFlavor represents a task being dragged
+	// DataFlavor representing a TaskView being dragged
 	private static DataFlavor taskFlavor;
+
+	// DataFlavor representing a StageView being dragged
+	private static DataFlavor stageFlavor;
 
 	public static boolean dragSaved = false;
 
@@ -49,12 +52,30 @@ public class DDTransferHandler extends TransferHandler {
 			try {
 				taskFlavor = new DataFlavor(
 						DataFlavor.javaJVMLocalObjectMimeType
-								+ ";class=taskManager.draganddrop.TaskPanel");
+								+ ";class=taskManager.view.TaskView");
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
 		}
 		return taskFlavor;
+	}
+
+	/**
+	 * Lazy-load the DataFlavor associated with stages
+	 *
+	 * @return the DataFlavor
+	 */
+	public static DataFlavor getStageFlavor() {
+		if (stageFlavor == null) {
+			try {
+				stageFlavor = new DataFlavor(
+						DataFlavor.javaJVMLocalObjectMimeType
+								+ ";class=taskManager.view.StageView");
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
+		return stageFlavor;
 	}
 
 	/**
@@ -92,9 +113,11 @@ public class DDTransferHandler extends TransferHandler {
 	 */
 	@Override
 	public void exportAsDrag(JComponent comp, InputEvent e, int action) {
-		// Ignore all responses from server while drag is active
+
 		// this is set to false before true to clear the workflow before
 		// dragging
+		// Ignore all responses from server while drag is active
+		// TODO fix comment to make more clear ^
 		if (!FetchWorkflowObserver.ignoreAllResponses) {
 			FetchWorkflowObserver.ignoreAllResponses = true;
 			// Create drag image
@@ -106,11 +129,12 @@ public class DDTransferHandler extends TransferHandler {
 			setDragImage(image);
 
 			// Create placeholder
-			StagePanel.generatePlaceholder(comp.getSize());
+			DropAreaPanel.generatePlaceholder(comp.getSize());
 
 			// Initiate the drag
 			super.exportAsDrag(comp, e, action);
 		}
+
 	}
 
 	/**
@@ -132,7 +156,7 @@ public class DDTransferHandler extends TransferHandler {
 		}
 		DDTransferHandler.dragSaved = false;
 
-		// Show the task
+		// Show the component
 		comp.setVisible(true);
 
 		// Set icons disabled.

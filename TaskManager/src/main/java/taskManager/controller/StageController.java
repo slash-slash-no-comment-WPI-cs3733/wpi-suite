@@ -18,8 +18,11 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import taskManager.JanewayModule;
+import taskManager.draganddrop.DDTransferHandler;
+import taskManager.draganddrop.DropAreaSaveListener;
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
@@ -33,7 +36,9 @@ import taskManager.view.TaskView;
  * @author Stefan Alexander
  * @version November 9, 2014
  */
-public class StageController implements MouseListener, ActionListener {
+
+public class StageController implements DropAreaSaveListener, MouseListener,
+		ActionListener {
 
 	private final StageView view;
 	private StageModel model;
@@ -79,17 +84,37 @@ public class StageController implements MouseListener, ActionListener {
 
 	}
 
-	/**
-	 * Add a task to this stage
-	 *
-	 * @param tc
-	 *            task controller for task
-	 * @param index
-	 *            index at which to add it
-	 * @return whether the stage changed as a result
+	/*
+	 * @see
+	 * taskManager.draganddrop.DropAreaSaveListener#saveDrop(javax.swing.JPanel,
+	 * int)
 	 */
-	public boolean addTask(TaskController tc, int index) {
-		return tc.moveToStage(model, index);
+	@Override
+	public void saveDrop(JPanel panel, int index) {
+		// Make sure we cast safely
+		if (!(panel instanceof TaskView)) {
+			return;
+		}
+		TaskController tc = ((TaskView) panel).getController();
+		boolean changed = tc.moveToStage(model, index);
+
+		if (changed) {
+			WorkflowModel.getInstance().save();
+			DDTransferHandler.dragSaved = true;
+		}
+
+	}
+
+	/**
+	 * Move associated stage to index in workflow
+	 *
+	 * @param index
+	 *            index to be moved to
+	 * @return whether the workflow changed as a result
+	 */
+	public boolean moveStageToIndex(int index) {
+		return WorkflowModel.getInstance().addStage(model, index);
+
 	}
 
 	/**

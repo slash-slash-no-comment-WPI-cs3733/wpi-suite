@@ -16,6 +16,11 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Insets;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.MouseAdapter;
+import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -27,16 +32,19 @@ import javax.swing.JTextField;
 
 import taskManager.controller.StageController;
 import taskManager.controller.StageTitleController;
-import taskManager.draganddrop.StagePanel;
+import taskManager.draganddrop.DDTransferHandler;
+import taskManager.draganddrop.DraggablePanelListener;
+import taskManager.draganddrop.DropAreaPanel;
 
 /**
  * @author Beth Martino
  * @version November 9, 2014
  */
-public class StageView extends JPanel {
+public class StageView extends JPanel implements Transferable {
 
 	private static final long serialVersionUID = 1L;
 	private StageController controller;
+
 	public static final String TITLE = "label";
 	public static final String CHANGE_TITLE = "changeLabel";
 	public static final String CHECK = "check";
@@ -49,10 +57,8 @@ public class StageView extends JPanel {
 	private JPanel label;
 	private JButton done;
 	private JButton cancel;
-	private StagePanel tasks = new StagePanel();
-	private JScrollPane stage = new JScrollPane(tasks,
-			JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-			JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+	private DropAreaPanel tasks;
+	private JScrollPane stage;
 	public static final int STAGE_WIDTH = 200;
 
 	/**
@@ -63,6 +69,9 @@ public class StageView extends JPanel {
 	 *            The title of the stage being drawn
 	 */
 	public StageView(String name) {
+
+		// The tasks panel accepts task drops
+		tasks = new DropAreaPanel(DDTransferHandler.getTaskFlavor());
 
 		// stage view is a panel that contains the title and the scroll pane
 		// w/tasks
@@ -133,6 +142,18 @@ public class StageView extends JPanel {
 
 		this.setName(name);
 		updateTasks();
+
+		// -----------------------
+		// Drag and drop handling:
+		MouseAdapter listener = new DraggablePanelListener(this);
+		labelName.addMouseListener(listener);
+		labelName.addMouseMotionListener(listener);
+
+		setTransferHandler(new DDTransferHandler());
+
+		// setTransferHandler creates DropTarget by default; we don't want
+		// stages to respond to stage drops
+		setDropTarget(null);
 	}
 
 	/**
@@ -165,7 +186,9 @@ public class StageView extends JPanel {
 	 */
 	public void setController(StageController controller) {
 		this.controller = controller;
-		tasks.setController(controller);
+
+		tasks.setSaveListener(controller);
+
 		// listen for clicks on the stage to remove stuff from view
 		stage.addMouseListener(controller);
 		// listen for double click on the stage title to change it
@@ -213,4 +236,41 @@ public class StageView extends JPanel {
 	public JTextField getLabelField() {
 		return labelText;
 	}
+
+	// ----------------------------
+	// Drag-and-drop transferable implementation
+
+	/*
+	 * @see
+	 * java.awt.datatransfer.Transferable#getTransferData(java.awt.datatransfer
+	 * .DataFlavor)
+	 */
+	@Override
+	public Object getTransferData(DataFlavor flavor)
+			throws UnsupportedFlavorException, IOException {
+		if (!flavor.equals(DDTransferHandler.getStageFlavor())) {
+			throw new UnsupportedFlavorException(flavor);
+		}
+		// return this panel as the transfer data
+		return this;
+	}
+
+	/*
+	 * @see java.awt.datatransfer.Transferable#getTransferDataFlavors()
+	 */
+	@Override
+	public DataFlavor[] getTransferDataFlavors() {
+		DataFlavor[] flavors = { DDTransferHandler.getStageFlavor() };
+		return flavors;
+	}
+
+	/*
+	 * @see java.awt.datatransfer.Transferable#isDataFlavorSupported(java.awt.
+	 * datatransfer.DataFlavor)
+	 */
+	@Override
+	public boolean isDataFlavorSupported(DataFlavor flavor) {
+		return flavor.equals(DDTransferHandler.getStageFlavor());
+	}
+
 }

@@ -98,7 +98,10 @@ public class ToolbarController extends DropTargetAdapter implements
 					taskV.getParent().remove(taskV); // remove from view
 					// Reload and save workflow.
 					JanewayModule.tabPaneC.getTabView().reloadWorkflow();
+					JanewayModule.tabPaneC.getTabView().getWorkflowController()
+							.repaintView();
 					WorkflowModel.getInstance().save();
+					DDTransferHandler.dragSaved = true;
 				}
 				break;
 			case ToolbarView.ARCHIVE:
@@ -106,7 +109,10 @@ public class ToolbarController extends DropTargetAdapter implements
 						!taskV.getController().isArchived());
 				// Reload and save workflow.
 				JanewayModule.tabPaneC.getTabView().reloadWorkflow();
+				JanewayModule.tabPaneC.getTabView().getWorkflowController()
+						.repaintView();
 				WorkflowModel.getInstance().save();
+				DDTransferHandler.dragSaved = true;
 				break;
 			}
 		}

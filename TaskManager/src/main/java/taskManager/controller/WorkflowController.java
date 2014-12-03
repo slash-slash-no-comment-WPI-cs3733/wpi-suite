@@ -15,12 +15,15 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 
 import org.jdesktop.swingx.prompt.PromptSupport;
 
+import taskManager.draganddrop.DDTransferHandler;
+import taskManager.draganddrop.DropAreaSaveListener;
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
@@ -35,7 +38,8 @@ import taskManager.view.WorkflowView;
  * @author Stefan Alexander
  * @version November 9, 2014
  */
-public class WorkflowController implements MouseListener {
+
+public class WorkflowController implements DropAreaSaveListener, MouseListener {
 
 	private final WorkflowView view;
 	private final WorkflowModel model;
@@ -86,26 +90,23 @@ public class WorkflowController implements MouseListener {
 	 *
 	 */
 	public synchronized void reloadData() {
-		// Only reloadData if you are getting new information from the serv
-		if (!FetchWorkflowObserver.ignoreAllResponses) {
-			// clear the stages previously on the view
-			this.removeTaskInfos(false);
-			this.removeChangeTitles();
-			view.removeAll();
+		// clear the stages previously on the view
+		this.removeTaskInfos(false);
+		this.removeChangeTitles();
+		view.removeAll();
 
-			// get all the stages in this workflow
-			final List<StageModel> stages = model.getStages();
-			// and add them all to the view
-			for (StageModel stage : stages) {
-				// create stage view and controller.
-				StageView stv = new StageView(stage.getName());
-				stv.setController(new StageController(stv, stage));
+		// get all the stages in this workflow
+		final List<StageModel> stages = model.getStages();
+		// and add them all to the view
+		for (StageModel stage : stages) {
+			// create stage view and controller.
+			StageView stv = new StageView(stage.getName());
+			stv.setController(new StageController(stv, stage));
 
-				// add stage view to workflow
-				view.addStageView(stv);
-			}
-			view.revalidate();
+			// add stage view to workflow
+			view.addStageView(stv);
 		}
+		view.revalidate();
 	}
 
 	/**
@@ -142,6 +143,21 @@ public class WorkflowController implements MouseListener {
 	 */
 	public WorkflowModel getModel() {
 		return model;
+	}
+
+	@Override
+	public void saveDrop(JPanel panel, int index) {
+		// Make sure we cast safely
+		if (!(panel instanceof StageView)) {
+			return;
+		}
+		StageController tc = ((StageView) panel).getController();
+		boolean changed = tc.moveStageToIndex(index);
+
+		if (changed) {
+			WorkflowModel.getInstance().save();
+			DDTransferHandler.dragSaved = true;
+		}
 	}
 
 	/**
@@ -211,6 +227,7 @@ public class WorkflowController implements MouseListener {
 			// Removes the task info bubble from the screen
 			FetchWorkflowObserver.ignoreAllResponses = false;
 			this.reloadData();
+			this.repaintView();
 		}
 	}
 
