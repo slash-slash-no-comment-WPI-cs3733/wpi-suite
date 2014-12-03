@@ -15,6 +15,7 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
+import taskManager.JanewayModule;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.ManageStageView;
@@ -128,15 +129,29 @@ public class ManageStageController implements ActionListener {
 				break;
 			case ManageStageView.ADD_NEW_STAGE:
 				// Create a new stage at the end
-				String newStageName = view.getNewStageNameField().getText();
 
-				StageModel newStage = new StageModel(newStageName);
-				view.addStage(newStage.getName(), newStage.getName(), true);
-				// refresh the view
-				view.getNewStageNameField().setText(
-						ManageStageView.NEW_STAGE_NAME);
-				view.updateUI();
-				reloadData();
+				// grabs the desired stage name and removes leading and trailing
+				// white spaces
+				String newStageName = view.getNewStageNameField().getText()
+						.trim();
+
+				// check to see if a stage of that name already exists
+				if (model.findStageByName(newStageName) != null) {
+					JOptionPane.showMessageDialog(
+							JanewayModule.getTabPaneView(),
+							"This stage already exists");
+					return;
+				}
+				// if the stage doesn't exist, make a new stage
+				else {
+					StageModel newStage = new StageModel(newStageName);
+					view.addStage(newStage.getName(), newStage.getName(), true);
+					// refresh the view
+					view.getNewStageNameField().setText(
+							ManageStageView.NEW_STAGE_NAME);
+					view.updateUI();
+					reloadData();
+				}
 				break;
 			default:
 				System.out.println("Unknown button pushed");

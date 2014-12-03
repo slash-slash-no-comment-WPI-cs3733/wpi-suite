@@ -62,19 +62,22 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	private int estimatedEffort;
 
 	// Boolean stating whether estimated effort is set.
-	private Boolean hasEstimatedEffort = false;
+	private boolean hasEstimatedEffort = false;
 
 	// Effort actually expended to complete
 	private int actualEffort;
 
 	// Boolean stating whether actual effort is set.
-	private Boolean hasActualEffort = false;
+	private boolean hasActualEffort = false;
 
 	// Actions and comments relevant to task
 	private List<ActivityModel> activities;
 
 	// Associated requirement that this task corresponds to
 	private Integer reqID;
+
+	// Boolean for whether the tasked is archived or not.
+	private boolean isArchived = false;
 
 	/**
 	 * Constructor assigns name, task id, and stage.
@@ -186,7 +189,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 *
 	 * @return the boolean.
 	 */
-	public Boolean isEstimatedEffortSet() {
+	public boolean isEstimatedEffortSet() {
 		return hasEstimatedEffort;
 	}
 
@@ -196,7 +199,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 *
 	 * @param flag
 	 */
-	public void setHasEstimatedEffort(Boolean flag) {
+	public void setHasEstimatedEffort(boolean flag) {
 		hasEstimatedEffort = flag;
 	}
 
@@ -226,7 +229,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 *
 	 * @return the boolean.
 	 */
-	public Boolean isActualEffortSet() {
+	public boolean isActualEffortSet() {
 		return hasActualEffort;
 	}
 
@@ -236,7 +239,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 *
 	 * @param flag
 	 */
-	public void setHasActualEffort(Boolean flag) {
+	public void setHasActualEffort(boolean flag) {
 		hasActualEffort = flag;
 	}
 
@@ -357,6 +360,27 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	public void editActivity(int index, String newText) {
 		final ActivityModel toEdit = activities.get(index);
 		toEdit.setDescription(newText);
+	}
+
+	/**
+	 * 
+	 * Returns whether or not the task is archived
+	 *
+	 * @return the boolean.
+	 */
+	public boolean isArchived() {
+		return isArchived;
+	}
+
+	/**
+	 * 
+	 * Sets task's archived property to given boolean.
+	 *
+	 * @param bool
+	 *            The boolean to set the task's isArchived field.
+	 */
+	public void setArchived(boolean bool) {
+		isArchived = bool;
 	}
 
 	/**
