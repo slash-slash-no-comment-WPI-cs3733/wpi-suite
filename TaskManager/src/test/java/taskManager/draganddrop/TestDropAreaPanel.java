@@ -8,6 +8,8 @@
  *******************************************************************************/
 package taskManager.draganddrop;
 
+import static org.junit.Assert.assertFalse;
+
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.Date;
@@ -24,6 +26,7 @@ import taskManager.controller.WorkflowController;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.WorkflowView;
+import edu.wpi.cs.wpisuitetng.network.Request;
 
 /**
  * Tests for Drop Area Panel
@@ -36,6 +39,7 @@ public class TestDropAreaPanel {
 	private final WorkflowModel wfm = WorkflowModel.getInstance();
 	private FrameFixture fixture;
 	private TaskModel task;
+	private boolean shouldFail = false;
 
 	@Before
 	public void setup() {
@@ -63,6 +67,18 @@ public class TestDropAreaPanel {
 
 	@Test
 	public void dragOnePixel() {
+		// catch exceptions from EDT
+		Thread.UncaughtExceptionHandler h = new Thread.UncaughtExceptionHandler() {
+			public void uncaughtException(Thread th, Throwable ex) {
+				// ignore networking stuff
+				StackTraceElement[] x = ex.getStackTrace();
+				if (!x[0].getClassName().equals(Request.class.getName())) {
+					shouldFail = true;
+				}
+			}
+		};
+		java.lang.Thread.setDefaultUncaughtExceptionHandler(h);
+
 		// get the fixture for the task panel
 		JPanelFixture taskFixture = fixture.panel("test");
 
@@ -78,7 +94,12 @@ public class TestDropAreaPanel {
 		location.x += 1;
 		taskFixture.robot.moveMouse(taskFixture.target.getParent(), location);
 		taskFixture.robot.releaseMouseButtons();
+
+		// let it process things
 		fixture.robot.waitForIdle();
+
+		// check if anything failed in other threads
+		assertFalse(shouldFail);
 	}
 
 	@After
