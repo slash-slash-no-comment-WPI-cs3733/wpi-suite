@@ -50,9 +50,7 @@ eclipse{
 jar {
     manifest{
         attributes('Class-Path': configurations.runtime.files.collect {
-            //Don't include the modules in the manifest, we're including them in the modules folder
-            if(!modulesList.contains(it.name.minus(".jar"))) 
-            {"${libsDir}/${it.name}"}}.join(' ') )
+            "${libsDir}/${it.name}"}.join(' ') )
         attributes('Main-Class': "${mainClassName}")
     }
 }
@@ -94,7 +92,7 @@ task distribution(type: Zip){
         into "${project.name}/${libsDir}"
         //Exclude modules
         modulesList.each{
-            excludes.add("${it}.jar")
+            //excludes.add("${it}.jar")
         }
     }
     

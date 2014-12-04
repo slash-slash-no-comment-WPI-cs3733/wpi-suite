@@ -102,10 +102,10 @@ public class DropAreaPanel extends JPanel {
 		Image image = new BufferedImage(size.width, size.height,
 				BufferedImage.TYPE_INT_ARGB);
 		placeholder = new JLabel(new ImageIcon(image));
-		placeholder.setAlignmentX(CENTER_ALIGNMENT);
 		// Create border with color, thickness, length, spacing, rounded
 		placeholder.setBorder(BorderFactory.createDashedBorder(Color.GRAY, 2,
 				6, 4, true));
+		placeholder.setAlignmentX(CENTER_ALIGNMENT);
 	}
 
 	/**
