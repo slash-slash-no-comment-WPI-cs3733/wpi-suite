@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -35,6 +37,31 @@ public class StageModelTest {
 		stage2.removeTask(task2);
 		assertFalse(stage2.containsTask(task2));
 		assertFalse(stage.containsTask(task2));
+	}
+
+	@Test
+	public void testCreateStage() {
+		StageModel st = new StageModel("Stage3");
+		assertTrue(st.isRemovable());
+		assertSame(st, wf.getStages().get(wf.getStages().size() - 1));
+
+		st = new StageModel("Stage4", false);
+		assertFalse(st.isRemovable());
+		assertSame(st, wf.getStages().get(wf.getStages().size() - 1));
+
+		st = new StageModel("Stage5", 2);
+		assertTrue(st.isRemovable());
+		assertSame(st, wf.getStages().get(2));
+
+		st = new StageModel("Stage6", 1, false);
+		assertFalse(st.isRemovable());
+		assertSame(st, wf.getStages().get(1));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testDuplicateStage() {
+		new StageModel("Stage3");
+		new StageModel(" Stage3  ");
 	}
 
 	@Test

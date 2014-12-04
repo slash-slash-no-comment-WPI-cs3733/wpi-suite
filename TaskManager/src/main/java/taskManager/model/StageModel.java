@@ -107,15 +107,13 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	public StageModel(String name, int index, boolean removable) {
 
 		// Set name as ID
-		super(name);
+		super(name.trim());
+
+		// Remove whitespace
+		this.name = name.trim();
 
 		// Enforce uniqueness of Stage names
-		if (name != null) {
-			this.name = name.trim();
-		}
-
-		if (WorkflowModel.getInstance().findStageByName(name) != null) {
-			// How did you actually get here?
+		if (WorkflowModel.getInstance().findStageByName(this.name) != null) {
 			throw new IllegalArgumentException("This stage already exists");
 		} else {
 			this.removable = removable;
