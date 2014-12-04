@@ -338,7 +338,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 		boolean taskWasUsed[] = new boolean[localTasks.size()];
 		List<TaskModel> toSaveTasks = new ArrayList<TaskModel>();
 		for (TaskModel toCopyTask : toCopyTasks) {
-			TaskModel toSaveTask = this.findTaskByID(toCopyTask.getName());
+			TaskModel toSaveTask = this.findTaskByID(toCopyTask.getID());
 			if (toSaveTask != null) {
 				toSaveTasks.add(toSaveTask);
 				taskWasUsed[localTasks.indexOf(toSaveTask)] = true;

@@ -358,15 +358,4 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 			s.setProject(p);
 		}
 	}
-
-	/**
-	 * Delete a stage from the stage list. Is called by StageModel.delete(),
-	 * probably shouldn't be used elsewhere.
-	 *
-	 * @param stage
-	 *            the stage to delete.
-	 */
-	public void removeStage(StageModel stage) {
-		stageList.remove(stage);
-	}
 }
