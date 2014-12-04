@@ -347,17 +347,6 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 		request.send();
 	}
 
-	/*
-	 * @see edu.wpi.cs.wpisuitetng.modules.Model#identify(java.lang.Object)
-	 */
-	@Override
-	public Boolean identify(Object o) {
-		if (o instanceof StageModel) {
-			return ((StageModel) o).name.equals(name);
-		}
-		return false;
-	}
-
 	/**
 	 * 
 	 * Changes the stage name and saves it to the database. Throws an
