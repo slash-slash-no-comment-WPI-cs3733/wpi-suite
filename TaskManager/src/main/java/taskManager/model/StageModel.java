@@ -302,60 +302,6 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	}
 
 	/**
-	 * Remove a task from the current stage using the task name. Since there are
-	 * multiple tasks with the same public name, this may be unclear. If there
-	 * is only one task in the current stage with the given name, no issue
-	 * should be raised.
-	 *
-	 * @param taskName
-	 *            The name of the task to search for.
-	 *
-	 *
-	 *
-	 * @return The removed task, null if no task removed.
-	 */
-	public TaskModel removeTaskByName(String taskName) {
-		final List<TaskModel> possibleTasks = findTaskByName(taskName);
-		switch (possibleTasks.size()) {
-		case 0:
-			logger.log(Level.WARNING,
-					"Tried to remove a task that did not exist.");
-			throw new IndexOutOfBoundsException("No such task.");
-		case 1:
-			taskList.remove(possibleTasks.get(0));
-			return possibleTasks.get(0);
-		default:
-			logger.log(Level.FINE,
-					"Tried to remove a task, but multiple available");
-			throw new IllegalArgumentException(
-					"Referenced task could refer to multiple.");
-		}
-	}
-
-	/**
-	 * Remove a task from the current stage by id. Since id is unique, this will
-	 * not have any duplication issues.
-	 *
-	 * @param id
-	 *            The id of the task to remove.
-	 *
-	 *
-	 *
-	 * @return The removed task, null if no task removed.
-	 */
-	public TaskModel removeTaskByID(String id) {
-		for (TaskModel existingTask : taskList) {
-			if (existingTask.getID().equals(id)) {
-				taskList.remove(existingTask);
-				logger.log(Level.FINER, "Removed task by id: " + id + ".");
-				return existingTask;
-			}
-		}
-		logger.log(Level.WARNING, "Tried to remove a task that did not exist.");
-		throw new IndexOutOfBoundsException("No such task.");
-	}
-
-	/**
 	 * Remove a task by object. This does not need to do any additional
 	 * processing.
 	 *
