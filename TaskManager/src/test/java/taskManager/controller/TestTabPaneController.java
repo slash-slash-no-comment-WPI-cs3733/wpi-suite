@@ -50,7 +50,6 @@ public class TestTabPaneController {
 	@Test
 	public void testOpenEditTaskTab() {
 		wfv.getStageViewByName("New");
-
 	}
 
 	public void createDummyTasks() {

@@ -21,6 +21,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.MouseAdapter;
 import java.io.IOException;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -252,6 +253,22 @@ public class StageView extends JPanel implements Transferable {
 	 */
 	public JTextField getLabelField() {
 		return labelText;
+	}
+
+	public TaskView getTaskViewByName(String name) {
+		try {
+			// goes through all of the stage views it contains until it finds
+			// the one that matches the name
+
+			for (int i = 1; i == tasks.getComponents().length; i++) {
+				if (tasks.getComponent(i).getName().equals(name)) {
+					return (TaskView) tasks.getComponent(i);
+				}
+			}
+		} catch (NullPointerException e) {
+			System.out.println("How did you actually do this?");
+		}
+		return new TaskView(name, new Date(), 0);
 	}
 
 	// ----------------------------
