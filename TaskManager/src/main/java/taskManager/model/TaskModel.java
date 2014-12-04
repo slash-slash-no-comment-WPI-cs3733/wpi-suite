@@ -393,6 +393,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	public void makeIdenticalTo(TaskModel task) {
 		setID(task.getID());
 		name = task.getName();
+		isArchived = task.isArchived();
 		description = task.getDescription();
 		stage = task.getStage();
 		assigned = task.getAssigned();
