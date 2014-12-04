@@ -18,7 +18,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import taskManager.controller.WorkflowController;
-import taskManager.model.WorkflowModel;
 
 /**
  * 
@@ -31,8 +30,6 @@ import taskManager.model.WorkflowModel;
 public class TabPaneView extends JTabbedPane {
 
 	private static final long serialVersionUID = -4912871689110151496L;
-	// Because the workflow is a permanent tab, tabview should keep track of it
-	private final WorkflowController wfc;
 
 	public TabPaneView() {
 		setTabPlacement(TOP);
@@ -41,29 +38,12 @@ public class TabPaneView extends JTabbedPane {
 		this.setSize(new Dimension(500, 500));
 
 		// Create a workflow view, controller, and model
-		wfc = new WorkflowController();
 
 		// Make workflow scrollable
-		JScrollPane scroll = new JScrollPane(wfc.getView());
+		JScrollPane scroll = new JScrollPane(WorkflowController.getInstance()
+				.getView());
 		scroll.setBorder(BorderFactory.createLineBorder(Color.black));
 
 		this.addTab("Workflow", new ImageIcon(), scroll, "Workflow");
-	}
-
-	public void refreshWorkflow() {
-		wfc.fetch();
-	}
-
-	public void reloadWorkflow() {
-		wfc.reloadData();
-	}
-
-	/**
-	 * return the workflow controller
-	 * 
-	 * @return the workflow controller
-	 */
-	public WorkflowController getWorkflowController() {
-		return wfc;
 	}
 }

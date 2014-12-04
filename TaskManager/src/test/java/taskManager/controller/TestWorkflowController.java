@@ -34,9 +34,8 @@ public class TestWorkflowController {
 
 	@Before
 	public void setup() {
-		WorkflowController wfc = new WorkflowController();
 		// creates a workflow view
-		wfv = wfc.getView();
+		wfv = WorkflowController.getInstance().getView();
 
 		// create a new workflow model
 		wfm.makeIdenticalTo(new WorkflowModel());

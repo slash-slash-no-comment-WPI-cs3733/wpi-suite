@@ -139,7 +139,7 @@ public class EditTaskController implements ActionListener {
 				etv.setDeleteEnabled(!isArchived);
 
 				// Save and reload the workflow.
-				JanewayModule.tabPaneC.getTabView().reloadWorkflow();
+				WorkflowController.getInstance().reloadData();
 				wfm.save();
 
 				break;
@@ -251,7 +251,7 @@ public class EditTaskController implements ActionListener {
 	 */
 	private void returnToWorkflowView() {
 		JanewayModule.tabPaneC.removeTabByComponent(etv);
-		JanewayModule.tabPaneC.getTabView().reloadWorkflow();
+		WorkflowController.getInstance().reloadData();
 	}
 
 	/**

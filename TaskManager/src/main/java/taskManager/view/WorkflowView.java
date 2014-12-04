@@ -45,8 +45,6 @@ public class WorkflowView extends JLayeredPane {
 
 		stages.setLayout(new BoxLayout(stages, BoxLayout.LINE_AXIS));
 		this.add(stages);
-
-		this.addMouseListener(controller);
 	}
 
 	/**

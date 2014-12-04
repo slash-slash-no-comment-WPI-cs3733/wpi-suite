@@ -273,7 +273,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		return view;
 	}
 	
-	public WorkflowController getInstance(){
+	public static WorkflowController getInstance(){
 		if(instance == null){
 			instance = new WorkflowController();
 		}
