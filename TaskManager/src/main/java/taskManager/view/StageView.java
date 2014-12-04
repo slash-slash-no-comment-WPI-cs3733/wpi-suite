@@ -208,8 +208,6 @@ public class StageView extends JPanel implements Transferable {
 		stage.addMouseListener(controller);
 		// listen for double click on the stage title to change it
 		labelName.addMouseListener(controller);
-		// listen for drag to enable icon
-		labelName.addMouseMotionListener(controller);
 		// listen for clicks on the 'change title' buttons
 		done.addActionListener(controller);
 		cancel.addActionListener(controller);

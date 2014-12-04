@@ -58,8 +58,6 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		this.model = WorkflowModel.getInstance();
 		hasNewStageView = false;
 
-		reloadData();
-
 		view.addAncestorListener(new AncestorListener() {
 
 			@Override

@@ -19,6 +19,7 @@ import java.awt.event.ItemListener;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -42,13 +43,15 @@ public class ToolbarController extends DropTargetAdapter implements
 
 	private final TabPaneView tabPaneV;
 	private final TabPaneController tabPaneC;
+	private final ToolbarView view;
 
 	/**
 	 * 
 	 * @param tabV
 	 *            tabView used to add tabs to the tab-bar
 	 */
-	public ToolbarController(TabPaneView tabV) {
+	public ToolbarController(ToolbarView view, TabPaneView tabV) {
+		this.view = view;
 		this.tabPaneV = tabV;
 		this.tabPaneC = JanewayModule.tabPaneC;
 	}
@@ -173,5 +176,46 @@ public class ToolbarController extends DropTargetAdapter implements
 	public void itemStateChanged(ItemEvent e) {
 		// Reload the workflow view.
 		JanewayModule.tabPaneC.getTabView().reloadWorkflow();
+	}
+
+	public void setProjectName(String projectName) {
+		view.setTitle(projectName);
+
+	}
+
+	public boolean isArchiveShown() {
+		return view.isArchiveShown();
+	}
+
+	/**
+	 * Set toolbar icons during drag action
+	 *
+	 * @param flavor
+	 *            DataFlavor of drag
+	 * @param comp
+	 *            component being dragged
+	 */
+	public void setIconState(JComponent comp) {
+		if (comp instanceof TaskView) {
+			boolean isArchived = ((TaskView) comp).getController().isArchived();
+			if (isArchived) {
+				view.setArchiveIcon(ToolbarView.UNARCHIVE);
+			} else {
+				view.setArchiveIcon(ToolbarView.ARCHIVE);
+			}
+			view.setDeleteEnabled(isArchived);
+			view.setArchiveEnabled(true);
+		} else if (comp instanceof StageView) {
+			view.setDeleteEnabled(true);
+			view.setArchiveEnabled(false);
+		}
+	}
+
+	/**
+	 * Reset the state of the icons
+	 */
+	public void resetIconState() {
+		view.setArchiveEnabled(false);
+		view.setDeleteEnabled(false);
 	}
 }

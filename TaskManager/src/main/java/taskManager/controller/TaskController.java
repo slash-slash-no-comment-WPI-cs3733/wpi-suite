@@ -12,7 +12,6 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -29,7 +28,6 @@ import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
 import taskManager.view.TaskInfoPreviewView;
 import taskManager.view.TaskView;
-import taskManager.view.ToolbarView;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 
@@ -39,7 +37,7 @@ import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
  * @author Stefan Alexander
  * @version November 9, 2014
  */
-public class TaskController implements MouseListener, MouseMotionListener {
+public class TaskController implements MouseListener {
 
 	private final TaskView view;
 	private final TaskModel model;
@@ -298,24 +296,4 @@ public class TaskController implements MouseListener, MouseMotionListener {
 			resetBackground();
 		}
 	}
-
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		// Enable/disable the archive and delete icons when dragged.
-		boolean isArchived = model.isArchived();
-		if (isArchived) {
-			JanewayModule.toolV.setArchiveIcon(ToolbarView.UNARCHIVE);
-		} else {
-			JanewayModule.toolV.setArchiveIcon(ToolbarView.ARCHIVE);
-		}
-		JanewayModule.toolV.setArchiveEnabled(true);
-		JanewayModule.toolV.setDeleteEnabled(isArchived);
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

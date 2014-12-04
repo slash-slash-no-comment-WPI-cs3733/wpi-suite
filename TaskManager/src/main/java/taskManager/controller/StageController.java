@@ -13,7 +13,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -44,8 +43,8 @@ import taskManager.view.TaskView;
  * @author Sam Khalandovsky
  * @version Dec 3, 2014
  */
-public class StageController implements DropAreaSaveListener,
-		MouseMotionListener, MouseListener, ActionListener {
+public class StageController implements DropAreaSaveListener, MouseListener,
+		ActionListener {
 
 	private final StageView view;
 	private StageModel model;
@@ -70,7 +69,7 @@ public class StageController implements DropAreaSaveListener,
 		// Get all the tasks associated with this Stage.
 
 		// Get state of archive shown check box.
-		boolean showArchive = JanewayModule.toolV.isArchiveShown();
+		boolean showArchive = JanewayModule.toolC.isArchiveShown();
 
 		// Add the tasks.
 		if (model != null) {
@@ -214,17 +213,6 @@ public class StageController implements DropAreaSaveListener,
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// Do nothing
-
-	}
-
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		JanewayModule.toolV.setDeleteEnabled(true);
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 

@@ -21,7 +21,6 @@ import javax.swing.TransferHandler;
 import taskManager.JanewayModule;
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.WorkflowModel;
-import taskManager.view.ToolbarView;
 
 /**
  * 
@@ -131,6 +130,9 @@ public class DDTransferHandler extends TransferHandler {
 			// Create placeholder
 			DropAreaPanel.generatePlaceholder(comp.getSize());
 
+			// Set toolbar icon state
+			JanewayModule.toolC.setIconState(comp);
+
 			// Initiate the drag
 			super.exportAsDrag(comp, e, action);
 		}
@@ -159,11 +161,8 @@ public class DDTransferHandler extends TransferHandler {
 		// Show the component
 		comp.setVisible(true);
 
-		// Set icons disabled.
-		JanewayModule.toolV.setArchiveEnabled(false);
-		JanewayModule.toolV.setDeleteEnabled(false);
-		// Set icon back to the archive icon.
-		JanewayModule.toolV.setArchiveIcon(ToolbarView.ARCHIVE);
+		// Reset icons
+		JanewayModule.toolC.resetIconState();
 	}
 
 }

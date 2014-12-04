@@ -34,8 +34,10 @@ public class JanewayModule implements IJanewayModule {
 	// The tabs used by this module
 
 	private final ArrayList<JanewayTabModel> tabs;
-	public static final ToolbarView toolV = new ToolbarView();
+	private static final ToolbarView toolV = new ToolbarView();
 	private static final TabPaneView tabPaneV = new TabPaneView();
+	public static final ToolbarController toolC = new ToolbarController(toolV,
+			tabPaneV);
 	public static final TabPaneController tabPaneC = new TabPaneController(
 			tabPaneV);
 	public static User[] users = {};
@@ -45,7 +47,7 @@ public class JanewayModule implements IJanewayModule {
 	 * Construct a blank tab
 	 */
 	public JanewayModule() {
-		toolV.setController(new ToolbarController(tabPaneV));
+		toolV.setController(toolC);
 
 		tabs = new ArrayList<JanewayTabModel>();
 		JanewayTabModel tab = new JanewayTabModel("Task Manager",
