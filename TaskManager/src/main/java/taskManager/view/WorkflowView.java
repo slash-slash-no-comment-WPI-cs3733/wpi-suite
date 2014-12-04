@@ -32,10 +32,13 @@ public class WorkflowView extends JLayeredPane {
 	/**
 	 * Constructor for WorkflowView.
 	 */
-	public WorkflowView() {
+	public WorkflowView(WorkflowController controller) {
+		this.controller = controller;
+		this.addMouseListener(controller);
 
 		// The stages panel accepts stage drops
 		stages = new DropAreaPanel(DDTransferHandler.getStageFlavor());
+		stages.setSaveListener(controller);
 
 		// arranges the stages horizontally and evenly spaced
 		this.setLayout(new WorkflowLayout());

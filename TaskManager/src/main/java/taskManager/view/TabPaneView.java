@@ -33,8 +33,6 @@ public class TabPaneView extends JTabbedPane {
 	private static final long serialVersionUID = -4912871689110151496L;
 	// Because the workflow is a permanent tab, tabview should keep track of it
 	private final WorkflowController wfc;
-	private final WorkflowModel wfm;
-	private final WorkflowView wfv;
 
 	public TabPaneView() {
 		setTabPlacement(TOP);
@@ -43,13 +41,10 @@ public class TabPaneView extends JTabbedPane {
 		this.setSize(new Dimension(500, 500));
 
 		// Create a workflow view, controller, and model
-		wfv = new WorkflowView();
-		wfm = WorkflowModel.getInstance();
-		wfc = new WorkflowController(wfv);
-		wfv.setController(wfc);
+		wfc = new WorkflowController();
 
 		// Make workflow scrollable
-		JScrollPane scroll = new JScrollPane(wfv);
+		JScrollPane scroll = new JScrollPane(wfc.getView());
 		scroll.setBorder(BorderFactory.createLineBorder(Color.black));
 
 		this.addTab("Workflow", new ImageIcon(), scroll, "Workflow");
@@ -57,10 +52,6 @@ public class TabPaneView extends JTabbedPane {
 
 	public void refreshWorkflow() {
 		wfc.fetch();
-	}
-
-	public WorkflowModel getWorkflowModel() {
-		return wfm;
 	}
 
 	public void reloadWorkflow() {

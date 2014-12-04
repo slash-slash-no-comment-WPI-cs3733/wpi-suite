@@ -34,8 +34,9 @@ public class TestWorkflowController {
 
 	@Before
 	public void setup() {
+		WorkflowController wfc = new WorkflowController();
 		// creates a workflow view
-		wfv = new WorkflowView();
+		wfv = wfc.getView();
 
 		// create a new workflow model
 		wfm.makeIdenticalTo(new WorkflowModel());
@@ -43,9 +44,6 @@ public class TestWorkflowController {
 		for (String name : stageNames) {
 			new StageModel(name, false);
 		}
-
-		// create controller for view
-		wfv.setController(new WorkflowController(wfv));
 
 		JFrame frame = new JFrame();
 		frame.add(wfv);
