@@ -307,19 +307,14 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 *
 	 * @param task
 	 *            The task to add
-	 *
-	 *
-	 *
-	 * @return The removed task, null if no task removed.
 	 */
-	public TaskModel removeTask(TaskModel task) {
+	public void removeTask(TaskModel task) {
 		if (!taskList.contains(task)) {
 			logger.log(Level.WARNING,
 					"Tried to remove a task that did not exist.");
-			throw new IndexOutOfBoundsException("No such task.");
+			throw new IllegalArgumentException("No such task.");
 		}
 		taskList.remove(task);
-		return task;
 	}
 
 	/**

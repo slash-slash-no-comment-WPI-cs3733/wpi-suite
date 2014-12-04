@@ -1,6 +1,7 @@
 package taskManager.model;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -10,12 +11,30 @@ import org.junit.Test;
 public class StageModelTest {
 	WorkflowModel wf;
 	StageModel stage;
+	StageModel stage2;
 
 	@Before
 	public void initializeWorkflow() {
 		wf = WorkflowModel.getInstance();
 		wf.makeIdenticalTo(new WorkflowModel("Workflow"));
 		stage = new StageModel("Stage");
+		stage2 = new StageModel("Stage2");
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testRemoveWrongTask() {
+		TaskModel task = new TaskModel("Task", stage);
+		TaskModel task2 = new TaskModel("Task", stage2);
+		stage2.removeTask(task);
+	}
+
+	@Test
+	public void testRemoveRightTask() {
+		TaskModel task = new TaskModel("Task", stage);
+		TaskModel task2 = new TaskModel("Task", stage2);
+		stage2.removeTask(task2);
+		assertFalse(stage2.containsTask(task2));
+		assertFalse(stage.containsTask(task2));
 	}
 
 	@Test
@@ -42,7 +61,6 @@ public class StageModelTest {
 
 	@Test
 	public void testTasklistSynchronizationMove() {
-		StageModel stage2 = new StageModel("Stage2");
 		TaskModel task = new TaskModel("Task", stage);
 		task.setEstimatedEffort(5);
 		wf = AbstractJsonableModel.fromJson(wf.toJson(), WorkflowModel.class);
