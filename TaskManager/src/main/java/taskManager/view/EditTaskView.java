@@ -297,7 +297,7 @@ public class EditTaskView extends JPanel {
 
 		Users.add(usersListPanel, "w 100!, gapleft 15px");
 		Users.add(addRemoveButtons);
-		Users.add(projectUsersListPanel, "w 100!, gapright 15px");
+		Users.add(projectUsersListPanel, "w 100!");
 
 		// Activities Panel internal content
 		Activities.setBorder(BorderFactory.createTitledBorder("Activities"));
