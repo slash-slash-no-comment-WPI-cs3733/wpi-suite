@@ -15,8 +15,6 @@ import java.util.ArrayList;
 import taskManager.JanewayModule;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
-import taskManager.view.ManageStageView;
-import taskManager.view.ManageUsersView;
 import taskManager.view.TabPaneView;
 import taskManager.view.TabView;
 import taskManager.view.WorkflowView;
@@ -33,10 +31,6 @@ public class TabPaneController {
 
 	// singleton TabPaneView
 	private TabPaneView tabPaneV;
-	// booleans to make sure there is only one tab for manageStages and
-	// manageUsers out at a time
-	boolean manageStagesTabOpen = false;
-	boolean manageUsersTabOpen = false;
 
 	public TabPaneController(TabPaneView tabPaneV) {
 		this.tabPaneV = tabPaneV;
@@ -112,44 +106,6 @@ public class TabPaneController {
 
 	/**
 	 * 
-	 * Creates a new manageStages tab if there is not one out or focuses on one
-	 * that is already out
-	 *
-	 */
-	public void addManageStagesTab() {
-		// There should only be one tab for manageStages up at a time
-		if (!manageStagesTabOpen) {
-			ManageStageView view = new ManageStageView();
-			ManageStageController msc = new ManageStageController(view);
-			view.setController(msc);
-			addTab("Manage Stages", view, true);
-			manageStagesTabOpen = true;
-		}
-		// Focuses on the new or old manageStagesTab
-		tabPaneV.setSelectedIndex(tabPaneV.indexOfTab("Manage Stages"));
-	}
-
-	/**
-	 * 
-	 * Creates a new manageUsers tab if there is not one out or focuses on one
-	 * that is already out
-	 *
-	 */
-	public void addManageUsersTab() {
-		// There should only be one tab for manageUsers up at a time
-		if (!manageUsersTabOpen) {
-			ManageUsersView muv = new ManageUsersView();
-			// ManageUsersController muc = new
-			// ManageUsersController(tabPaneV.getWorkflowModel(), muv);
-			addTab("Manage Users", muv, true);
-			manageUsersTabOpen = true;
-		}
-		// Focuses on the new or old manageStagesTab
-		tabPaneV.setSelectedIndex(tabPaneV.indexOfTab("Manage Users"));
-	}
-
-	/**
-	 * 
 	 * Adds a new tab with the given information
 	 *
 	 * @param title
@@ -174,16 +130,6 @@ public class TabPaneController {
 	 *            Instance of the component being displayed
 	 */
 	public void removeTabByComponent(Component component) {
-		// resets the manageStagesTab boolean so a new manageStages can be
-		// opened later
-		if (component instanceof ManageStageView) {
-			manageStagesTabOpen = false;
-		}
-		// resets the manageUsersTab boolean so a new manageUsers can be
-		// opened later
-		if (component instanceof ManageUsersView) {
-			manageUsersTabOpen = false;
-		}
 		if (!(component instanceof WorkflowView)) {
 			tabPaneV.remove(component);
 		}
