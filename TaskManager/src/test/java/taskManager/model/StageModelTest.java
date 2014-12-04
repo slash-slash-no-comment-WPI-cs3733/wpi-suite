@@ -10,6 +10,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
+
 public class StageModelTest {
 	WorkflowModel wf;
 	StageModel stage;
@@ -62,6 +64,29 @@ public class StageModelTest {
 	public void testDuplicateStage() {
 		new StageModel("Stage3");
 		new StageModel(" Stage3  ");
+	}
+
+	@Test
+	public void testSetProject() {
+		Project p = new Project("Project", "ID");
+		StageModel st = new StageModel("Stage3");
+		TaskModel t1 = new TaskModel("T1", st);
+		TaskModel t2 = new TaskModel("T2", st);
+		st.setProject(p);
+		assertSame(p, st.getProject());
+		assertSame(p, t1.getProject());
+		assertSame(p, t2.getProject());
+	}
+
+	@Test
+	public void testChangeName() {
+		stage2.changeStageName("Stage2++ ");
+		assertEquals("Stage2++", stage2.getName());
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testInvalidChangeName() {
+		stage2.changeStageName("Stage ");
 	}
 
 	@Test

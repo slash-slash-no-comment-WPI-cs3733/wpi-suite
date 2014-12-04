@@ -251,6 +251,8 @@ public class StageController implements DropAreaSaveListener,
 						model.changeStageName(view.getLabelText());
 					}
 
+					WorkflowModel.getInstance().save();
+
 					// refresh the workflow with the new stage
 					JanewayModule.tabPaneC.getTabView().getWorkflowController()
 							.reloadData();

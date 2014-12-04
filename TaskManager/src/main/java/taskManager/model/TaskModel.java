@@ -422,12 +422,4 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		request.addObserver(getObserver());
 		request.send();
 	}
-
-	@Override
-	public Boolean identify(Object o) {
-		if (o instanceof TaskModel) {
-			return ((TaskModel) o).getID().equals(this.getID());
-		}
-		return false;
-	}
 }

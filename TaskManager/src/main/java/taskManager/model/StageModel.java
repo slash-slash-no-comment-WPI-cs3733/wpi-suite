@@ -349,18 +349,18 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 
 	/**
 	 * 
-	 * Changes the stage name and saves it to the database. Throws an
-	 * IllegalArgumentException if the stage name is not unique
+	 * Changes the stage name. Throws an IllegalArgumentException if the stage
+	 * name is not unique
 	 *
 	 * @param newName
 	 *            The new name of the stage
 	 */
 	public void changeStageName(String newName) {
+		newName = newName.trim();
 		if (workflow.findStageByName(newName) != null) {
 			throw new IllegalArgumentException("Stage name must be unique.");
 		}
 		this.name = newName;
-		workflow.save();
 	}
 
 	@Override

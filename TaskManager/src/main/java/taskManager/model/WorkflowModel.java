@@ -315,21 +315,6 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		request.send();
 	}
 
-	/**
-	 * Compare a given object to the current workflow
-	 *
-	 * @param o
-	 *            The object to compare against
-	 * @return Whether the object matches the current workflow.
-	 */
-	@Override
-	public Boolean identify(Object o) {
-		if (o instanceof WorkflowModel) {
-			return ((WorkflowModel) o).getID().equals(this.getID());
-		}
-		return false;
-	}
-
 	@Override
 	public void setProject(Project p) {
 		super.setProject(p);

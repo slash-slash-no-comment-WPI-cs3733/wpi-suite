@@ -97,4 +97,19 @@ public abstract class AbstractJsonableModel<T> extends AbstractModel {
 	public String toJson() {
 		return new Gson().toJson(this, this.getClass());
 	}
+
+	/*
+	 * @see edu.wpi.cs.wpisuitetng.modules.Model#identify(java.lang.Object)
+	 */
+	@Override
+	public Boolean identify(Object o) {
+		Boolean identical = false;
+		if (o instanceof AbstractJsonableModel) {
+			identical = id == ((AbstractJsonableModel) o).getID();
+		}
+		if (o instanceof String) {
+			identical = id == (String) o;
+		}
+		return identical;
+	}
 }
