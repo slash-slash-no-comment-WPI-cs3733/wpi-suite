@@ -10,12 +10,15 @@ package taskManager.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
 
 import org.junit.Test;
+
+import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
 
 /**
  * Description
@@ -94,6 +97,47 @@ public class WorkflowModelTest {
 		StageModel sm4cpy = AbstractJsonableModel.fromJson(sm4.toJson(),
 				StageModel.class);
 		verifyStage(sm4, sm4cpy);
+	}
+
+	@Test
+	public void testRemoveStage() {
+		WorkflowModel wm = WorkflowModel.getInstance();
+		wm.makeIdenticalTo(new WorkflowModel("Workflow"));
+		StageModel sm1 = new StageModel("Stage1");
+		StageModel sm2 = new StageModel("Stage2");
+		wm.removeStage(sm1);
+		assertFalse(wm.getStages().contains(sm1));
+		assertTrue(wm.getStages().contains(sm2));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testRemoveInvalidStage() {
+		WorkflowModel wm = WorkflowModel.getInstance();
+		wm.makeIdenticalTo(new WorkflowModel("Workflow"));
+		StageModel sm1 = new StageModel("Stage1");
+		StageModel sm2 = new StageModel("Stage2");
+		wm.removeStage(new StageModel());
+	}
+
+	@Test
+	public void testSetProject() {
+		WorkflowModel wm = WorkflowModel.getInstance();
+		wm.makeIdenticalTo(new WorkflowModel("Workflow"));
+		Project p = new Project("Name", "ID");
+		StageModel sm1 = new StageModel("Stage1");
+		StageModel sm2 = new StageModel("Stage2");
+		TaskModel tm1 = new TaskModel("T1", sm1);
+		TaskModel tm2 = new TaskModel("T1", sm2);
+		TaskModel tm3 = new TaskModel("T1", sm2);
+
+		wm.setProject(p);
+
+		assertSame(p, wm.getProject());
+		assertSame(p, sm1.getProject());
+		assertSame(p, sm2.getProject());
+		assertSame(p, tm3.getProject());
+		assertSame(p, tm2.getProject());
+		assertSame(p, tm3.getProject());
 	}
 
 	@Test

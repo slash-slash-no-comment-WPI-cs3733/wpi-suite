@@ -159,7 +159,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		if (!stageList.contains(stage)) {
 			logger.log(Level.WARNING,
 					"Tried to remove a stage that did not exist.");
-			throw new IndexOutOfBoundsException("No such stage.");
+			throw new IllegalArgumentException("No such stage.");
 		}
 		stageList.remove(stage);
 		return stage;
