@@ -48,8 +48,9 @@ public class TestWorkflowView {
 		StageView view = new StageView("test");
 		StageView view2 = wfv.getStageViewByName("test");
 
-		// it should have created a new view
+		// it should have created a new view with the same name
 		assertNotEquals(view, view2);
+		assertEquals(view2.getName(), "test");
 
 		wfv.addStageView(view);
 		view2 = wfv.getStageViewByName("test");

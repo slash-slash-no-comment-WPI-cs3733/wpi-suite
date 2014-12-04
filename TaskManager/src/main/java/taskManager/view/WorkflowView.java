@@ -104,17 +104,13 @@ public class WorkflowView extends JLayeredPane {
 		if (name == null) {
 			throw new NullPointerException("name must not be null");
 		}
-		try {
-			// goes through all of the stage views it contains until it finds
-			// the one that matches the name
+		// goes through all of the stage views it contains until it finds
+		// the one that matches the name
 
-			for (Component c : stages.getComponents()) {
-				if (name.equals(c.getName())) {
-					return (StageView) c;
-				}
+		for (Component c : stages.getComponents()) {
+			if (name.equals(c.getName())) {
+				return (StageView) c;
 			}
-		} catch (NullPointerException e) {
-			System.out.println("How did you actually do this?");
 		}
 		return new StageView(name);
 	}
