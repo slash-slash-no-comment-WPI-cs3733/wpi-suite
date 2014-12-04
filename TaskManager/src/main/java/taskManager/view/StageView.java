@@ -29,6 +29,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
+
+import org.jdesktop.swingx.border.DropShadowBorder;
 
 import taskManager.controller.StageController;
 import taskManager.controller.StageTitleController;
@@ -70,6 +73,8 @@ public class StageView extends JPanel implements Transferable {
 	 */
 	public StageView(String name) {
 
+		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+
 		// The tasks panel accepts task drops
 		tasks = new DropAreaPanel(DDTransferHandler.getTaskFlavor());
 
@@ -77,7 +82,6 @@ public class StageView extends JPanel implements Transferable {
 		// w/tasks
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setPreferredSize(new Dimension(STAGE_WIDTH, 450));
-		this.setName(name);
 
 		// organizes the tasks in a vertical list
 		tasks.setLayout(new BoxLayout(tasks, BoxLayout.Y_AXIS));
@@ -136,9 +140,18 @@ public class StageView extends JPanel implements Transferable {
 		stage = new JScrollPane(tasks,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		stage.setBorder(BorderFactory.createCompoundBorder(
-				BorderFactory.createEmptyBorder(0, 3, 0, 3),
-				BorderFactory.createLineBorder(Color.black)));
+
+		label.setBackground(Colors.STAGE);
+		Border color = BorderFactory.createLineBorder(label.getBackground(), 3);
+		DropShadowBorder shadow = new DropShadowBorder();
+		shadow.setShadowColor(Color.BLACK);
+		shadow.setShowLeftShadow(true);
+		shadow.setShowRightShadow(true);
+		shadow.setShowBottomShadow(true);
+		shadow.setShowTopShadow(true);
+		Border compound = BorderFactory.createCompoundBorder(shadow, color);
+		this.setBorder(compound);
+
 		stage.setMinimumSize(new Dimension(STAGE_WIDTH, 300));
 		stage.setSize(new Dimension(STAGE_WIDTH, 405));
 

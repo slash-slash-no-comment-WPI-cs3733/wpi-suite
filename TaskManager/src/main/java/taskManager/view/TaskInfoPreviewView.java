@@ -14,12 +14,14 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.Calendar;
+import java.util.Set;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.border.Border;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -45,16 +47,23 @@ public class TaskInfoPreviewView extends JPanel {
 	private TaskInfoPreviewController controller;
 	public static final String EDIT = "edit";
 	public static final String X = "x";
+	public final int WIDTH = 220;
 
 	public TaskInfoPreviewView(TaskModel model, TaskController controller,
 			Point loc) {
 		this.taskM = model;
 		this.taskC = controller;
 		this.controller = new TaskInfoPreviewController(this.taskC);
-		this.setLayout(new MigLayout("wrap 1", "5[]5", "0[]:push[]"));
-		setBoundsWithoutClipping(loc, 250, 415);
 
-		// Drop shadow
+		this.setLayout(null);
+		this.setOpaque(false);
+
+		JPanel bgPane = new JPanel();
+		bgPane.setLayout(new MigLayout("wrap 1", "5[]5", "0[]:push[]"));
+		setBoundsWithoutClipping(loc, 245, 415);
+
+		bgPane.setBackground(Colors.TASK);
+		Border color = BorderFactory.createLineBorder(getBackground(), 3);
 		DropShadowBorder shadow = new DropShadowBorder();
 		shadow.setShadowColor(Color.BLACK);
 		shadow.setShowLeftShadow(true);
@@ -62,20 +71,22 @@ public class TaskInfoPreviewView extends JPanel {
 		shadow.setShowBottomShadow(true);
 		shadow.setShowTopShadow(true);
 		shadow.setShadowSize(10);
-		this.setBorder(shadow);
+		Border compound = BorderFactory.createCompoundBorder(shadow, color);
+		this.setBorder(compound);
 
 		// This panel will contain all of the task information
 		JPanel info = new JPanel();
-		info.setSize(new Dimension(212, 345));
-		info.setPreferredSize(new Dimension(212, 345));
-		info.setMinimumSize(new Dimension(212, 345));
-		info.setMaximumSize(new Dimension(212, 345));
+		info.setSize(new Dimension(this.getWidth(), 345));
+		info.setPreferredSize(new Dimension(this.getWidth(), 345));
+		info.setMinimumSize(new Dimension(this.getWidth(), 345));
+		info.setMaximumSize(new Dimension(this.getWidth(), 345));
 		info.setLayout(new MigLayout("wrap 1"));
+		info.setOpaque(false);
 
 		// The task's titleBar contains the title and the 'x' button
 		JPanel titleBar = new JPanel();
-		titleBar.setLayout(new MigLayout("", "0[]:push[]"));
-		titleBar.setSize(new Dimension(245, 30));
+		titleBar.setLayout(new MigLayout("", "5[]:push[]"));
+		titleBar.setSize(new Dimension(this.getWidth(), 30));
 		JLabel title = new JLabel(this.taskM.getName());
 		title.setFont(title.getFont().deriveFont(15.0f));
 		title.setPreferredSize(new Dimension(190,
@@ -90,19 +101,26 @@ public class TaskInfoPreviewView extends JPanel {
 		closeButton.setMargin(new Insets(0, 0, 0, 0));
 		closeButton.addActionListener(this.controller);
 		titleBar.add(closeButton);
+		if (model.isArchived()) {
+			titleBar.setBackground(Colors.ARCHIVE_CLICKED);
+		} else {
+			titleBar.setBackground(Colors.TASK_CLICKED);
+		}
+
 		info.add(titleBar);
 
 		// The task's description
 		JTextArea description = new JTextArea();
 		description.setText(ellipsize(this.taskM.getDescription(), 175));
-		description.setSize(new Dimension(210, 80));
-		description.setMaximumSize(new Dimension(210, 80));
-		description.setMinimumSize(new Dimension(210, 80));
-		description.setPreferredSize(new Dimension(210, 80));
+		description.setSize(new Dimension(this.getWidth() - 45, 80));
+		description.setMaximumSize(new Dimension(this.getWidth() - 45, 80));
+		description.setMinimumSize(new Dimension(this.getWidth() - 45, 80));
+		description.setPreferredSize(new Dimension(this.getWidth() - 45, 80));
 		description.setAlignmentX(CENTER_ALIGNMENT);
 		description.setEditable(false);
 		description.setLineWrap(true);
 		description.setWrapStyleWord(true);
+		description.setBackground(Colors.TASK);
 		info.add(description);
 
 		// The task's due date
@@ -112,7 +130,7 @@ public class TaskInfoPreviewView extends JPanel {
 		JLabel date = new JLabel("  " + (calDate.get(Calendar.MONTH) + 1) + "/"
 				+ calDate.get(Calendar.DATE) + "/"
 				+ (calDate.get(Calendar.YEAR)));
-		date.setMaximumSize(new Dimension(200, 20));
+		date.setMaximumSize(new Dimension(this.getWidth(), 20));
 		info.add(due);
 		info.add(date);
 
@@ -124,35 +142,16 @@ public class TaskInfoPreviewView extends JPanel {
 		info.add(actE);
 
 		// The task's users
-		JLabel userL;
-		JPanel users = new JPanel();
-		JScrollPane usersS = new JScrollPane();
-		usersS.setSize(new Dimension(206, 60));
-		usersS.setMinimumSize(new Dimension(206, 60));
-		usersS.setMaximumSize(new Dimension(206, 60));
-		usersS.setPreferredSize(new Dimension(206, 60));
-		usersS.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		Object[] userList = this.taskM.getAssigned().toArray();
-		System.out.println(userList);
-		if (userList.length > 0) {
-			System.out.println(userList[0]);
-			userL = new JLabel("Users:");
-
-			for (int i = 0; i < userList.length; i++) {
-				JLabel temp = new JLabel(" " + userList[i]);
-				temp.setSize(new Dimension(190, 20));
-				temp.setMinimumSize(new Dimension(190, 20));
-				temp.setMaximumSize(new Dimension(190, 20));
-				temp.setPreferredSize(new Dimension(190, 20));
-				users.add(temp);
+		ScrollList users = new ScrollList("Users");
+		Set<String> userList = taskM.getAssigned();
+		if (userList.size() > 0) {
+			for (String u : userList) {
+				if (!users.contains(u)) {
+					users.addToList(u);
+				}
 			}
-			info.add(userL);
-			usersS.setViewportView(users);
-			info.add(usersS);
-		} else {
-			userL = new JLabel("Users: [None]");
-			info.add(userL);
 		}
+		info.add(users);
 
 		// The task's requirement
 		JLabel req;
@@ -163,10 +162,10 @@ public class TaskInfoPreviewView extends JPanel {
 			req = new JLabel("Requirement:");
 			info.add(req);
 			JLabel name = new JLabel("  " + this.taskM.getReq());
-			name.setSize(new Dimension(206, 20));
-			name.setMinimumSize(new Dimension(206, 20));
-			name.setMaximumSize(new Dimension(206, 20));
-			name.setPreferredSize(new Dimension(206, 20));
+			name.setSize(new Dimension(this.getWidth(), 20));
+			name.setMinimumSize(new Dimension(this.getWidth(), 20));
+			name.setMaximumSize(new Dimension(this.getWidth(), 20));
+			name.setPreferredSize(new Dimension(this.getWidth(), 20));
 			info.add(name);
 		}
 
@@ -177,9 +176,15 @@ public class TaskInfoPreviewView extends JPanel {
 		edit.setMargin(new Insets(5, 87, 5, 87));
 		edit.addActionListener(this.controller);
 		buttonPanel.add(edit, "");
+		buttonPanel.setSize(new Dimension(this.getWidth(), 80));
+		buttonPanel.setBackground(Colors.TASK);
 
-		this.add(info);
-		this.add(buttonPanel);
+		bgPane.add(info);
+		bgPane.add(buttonPanel);
+
+		this.add(bgPane);
+		bgPane.setBounds(0, 0, this.getWidth() - 10, this.getHeight() - 10);
+
 	}
 
 	/**
