@@ -248,7 +248,7 @@ public class StageController implements DropAreaSaveListener,
 					if (model == null) {
 						model = new StageModel(view.getLabelText());
 					} else {
-						model.changeStageName(view.getLabelText());
+						model.setName(view.getLabelText());
 					}
 
 					WorkflowModel.getInstance().save();

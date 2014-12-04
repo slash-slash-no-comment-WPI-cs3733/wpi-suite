@@ -80,13 +80,13 @@ public class StageModelTest {
 
 	@Test
 	public void testChangeName() {
-		stage2.changeStageName("Stage2++ ");
+		stage2.setName("Stage2++ ");
 		assertEquals("Stage2++", stage2.getName());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testInvalidChangeName() {
-		stage2.changeStageName("Stage ");
+		stage2.setName("Stage ");
 	}
 
 	@Test
