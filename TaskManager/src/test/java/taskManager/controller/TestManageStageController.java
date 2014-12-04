@@ -55,6 +55,7 @@ public class TestManageStageController {
 
 		JFrame frame = new JFrame();
 		frame.add(msv);
+		frame.pack();
 
 		fixture = new FrameFixture(frame);
 
@@ -115,6 +116,19 @@ public class TestManageStageController {
 		String[] result2 = { "third", "first", "fourth", "second" };
 		checkStages(result2);
 		System.out.println("done with move stage");
+	}
+
+	@Test
+	public void testAddInvalidStage() {
+		// the stages we should end up with
+		final String[] result = { "first", "second", "third", "fourth" };
+
+		// add a new stage named NS
+		fixture.textBox(ManageStageView.NEW_STAGE_NAME).deleteText()
+				.enterText("first");
+		fixture.button(ManageStageView.ADD_NEW_STAGE).click();
+
+		checkStages(result);
 	}
 
 	/**

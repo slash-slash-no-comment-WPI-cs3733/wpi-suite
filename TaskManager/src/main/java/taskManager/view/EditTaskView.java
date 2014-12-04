@@ -12,14 +12,12 @@ package taskManager.view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import javax.swing.BoxLayout;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -29,6 +27,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+
+import net.miginfocom.swing.MigLayout;
 
 import org.jdesktop.swingx.JXDatePicker;
 
@@ -42,8 +42,9 @@ import taskManager.model.ActivityModel.activityModelType;
  */
 
 /**
+ * 
+ * @author Thane Hunt
  * @author Tyler Jaskoviak
- *
  */
 
 public class EditTaskView extends JPanel {
@@ -51,6 +52,7 @@ public class EditTaskView extends JPanel {
 	public static final String STAGES = "stages";
 	public static final String REQUIREMENTS = "requirements";
 	public static final String CANCEL = "cancel";
+	public static final String ARCHIVE = "archive";
 	public static final String SAVE = "save";
 	public static final String VIEW_REQ = "viewReq";
 	public static final String SUBMIT_COMMENT = "submitComment";
@@ -71,17 +73,18 @@ public class EditTaskView extends JPanel {
 	private JButton cancel;
 	private JButton addUser;
 	private JButton removeUser;
+	private JButton archive;
 	private JButton delete;
 	private JButton addReq;
 	private JButton submitComment;
 	private JButton refreshActivities;
 
+	private JTextArea commentsField;
 	private JTextField titleField;
 	private JTextArea descripArea;
 	private JXDatePicker dateField;
 	private JTextField estEffortField;
 	private JTextField actEffortField;
-	private JTextField commentsField;
 	private JPanel window;
 
 	private Mode mode;
@@ -117,66 +120,73 @@ public class EditTaskView extends JPanel {
 		// When Task added make EditTask take in a Task called currTask
 		this.mode = mode;
 
-		window = new JPanel();
+		window = new JPanel(new MigLayout());
+
 		this.setLayout(new FlowLayout());
+		Dimension panelSize = getPreferredSize();
+		panelSize.width = 1100; // TODO
+		panelSize.height = 500; // Decide size
+		window.setPreferredSize(panelSize);
+		this.setPreferredSize(panelSize);
+		this.setMinimumSize(panelSize);
 
-		Dimension nt_panelSize = getPreferredSize();
-		nt_panelSize.width = 1000; // TODO
-		nt_panelSize.height = 500; // Decide size
-		window.setPreferredSize(nt_panelSize);
-		this.setPreferredSize(nt_panelSize);
-		this.setMinimumSize(nt_panelSize);
-
-		// window.setBorder(BorderFactory.createTitledBorder(""));
+		// window.setBorder(BorderFactory.createTitledBorder("Edit Task"));
 
 		activities = new ArrayList<ActivityModel>();
 		newActivities = new ArrayList<ActivityModel>();
 
 		// JLabels
-		JLabel nt_titleLabel = new JLabel("Title ");
-		JLabel nt_descriptionLabel = new JLabel("Description ");
-		JLabel nt_dueDateLabel = new JLabel("Due Date ");
-		JLabel nt_stageLabel = new JLabel("Stage ");
-		JLabel nt_usersLabel = new JLabel("Users ");
-		JLabel nt_estimatedEffortLabel = new JLabel("Estimated Effort ");
-		JLabel nt_actualEffortLabel = new JLabel("Actual Effort ");
-		JLabel nt_commentsLabel = new JLabel("Comments ");
-		JLabel nt_requirementLabel = new JLabel("Requirement ");
+		JLabel titleLabel = new JLabel("Title ");
+		JLabel descriptionLabel = new JLabel("Description ");
+		JLabel dueDateLabel = new JLabel("Due Date ");
+		JLabel stageLabel = new JLabel("Stage ");
+		JLabel estimatedEffortLabel = new JLabel("Estimated Effort ");
+		JLabel actualEffortLabel = new JLabel("Actual Effort ");
+		JLabel requirementLabel = new JLabel("Select Requirement ");
 
-		titleError = new JLabel("This a required field");
+		titleError = new JLabel("Cannot be empty");
 		titleError.setVisible(false);
 		titleError.setForeground(Color.RED);
-		descriptionError = new JLabel("This is a required field");
+		descriptionError = new JLabel("Cannot be empty");
 		descriptionError.setVisible(false);
 		descriptionError.setForeground(Color.RED);
-		estimatedEffortError = new JLabel("This is a required field");
+		estimatedEffortError = new JLabel("*");
 		estimatedEffortError.setVisible(false);
 		estimatedEffortError.setForeground(Color.RED);
-		actualEffortError = new JLabel("");
+		actualEffortError = new JLabel("*");
 		actualEffortError.setVisible(false);
 		actualEffortError.setForeground(Color.RED);
 
 		// JTextFields
 		// sets all text fields editable and adds them to global variables
+
 		titleField = new JTextField(25);
 		titleField.setEditable(true);
-		descripArea = new JTextArea(2, 25);
+		descripArea = new JTextArea(4, 25);
 		descripArea.setEditable(true);
 		descripArea.setLineWrap(true);
-		JScrollPane nt_descriptionScrollPane = new JScrollPane(descripArea);
-		nt_descriptionScrollPane
+		descripArea.setWrapStyleWord(true);
+		JScrollPane descriptionScrollPane = new JScrollPane(descripArea);
+		descriptionScrollPane
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		nt_descriptionScrollPane
+		descriptionScrollPane
 				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
-		estEffortField = new JTextField(10);
+		commentsField = new JTextArea(2, 22);
+		JScrollPane commentScrollPane = new JScrollPane(commentsField);
+		commentScrollPane
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		commentScrollPane
+				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+		estEffortField = new JTextField(4);
 		estEffortField.setEditable(true);
 		estEffortField.setName(EST_EFFORT);
-		actEffortField = new JTextField(10);
+		actEffortField = new JTextField(4);
 		actEffortField.setEditable(true);
 		actEffortField.setName(ACT_EFFORT);
-		commentsField = new JTextField(25);
 		commentsField.setEditable(true);
+		commentsField.setLineWrap(true);
 		commentsField.setName(COMMENTS);
 
 		// adds calendar
@@ -197,11 +207,12 @@ public class EditTaskView extends JPanel {
 		// TODO
 		// Get to add users
 		usersList = new ScrollList("Assigned Users");
+		usersList.setBackground(this.getBackground());
 		projectUsersList = new ScrollList("Project Users");
+		projectUsersList.setBackground(this.getBackground());
 
 		// Comment Pane
 		activityPane = new ActivityView();
-
 		// Requirement Pane
 		requirements = new JComboBox<String>();
 		requirements.setName(REQUIREMENTS);
@@ -210,13 +221,16 @@ public class EditTaskView extends JPanel {
 		// Delete Task and close the window
 		delete = new JButton("Delete");
 		delete.setName(DELETE);
+		// Archive
+		archive = new JButton("Archive");
+		archive.setName(ARCHIVE);
 		// Add user to list
-		addUser = new JButton("Add User");
+		addUser = new JButton("<<");
 		addUser.setName(ADD_USER);
 		this.setAddUserEnabled(false);
 		// remove user from list
 
-		removeUser = new JButton("Remove User");
+		removeUser = new JButton(">>");
 		removeUser.setName(REMOVE_USER);
 		this.setRemoveUserEnabled(false);
 
@@ -233,151 +247,102 @@ public class EditTaskView extends JPanel {
 		// closes the window without saving
 		cancel = new JButton("Cancel");
 		cancel.setName(CANCEL);
-		JButton nt_refreshBtn = new JButton("Refresh");
-		refreshActivities = nt_refreshBtn;
+		archive = new JButton("Archive");
+		archive.setName(ARCHIVE);
+		JButton refreshBtn = new JButton("Refresh");
+		refreshActivities = refreshBtn;
 		refreshActivities.setName(REFRESH);
 
 		// Combo Box for Stage
 		stages = new JComboBox<String>();
 		stages.setName(STAGES);
 
-		window.setLayout(new GridBagLayout());
+		window.setLayout(new MigLayout());
 
-		GridBagConstraints newTaskGridBag = new GridBagConstraints();
+		window.add(titleLabel);
 
-		// First Column ////
+		// This is where the 6 primary panels are defined
+		JPanel Spacer = new JPanel(new MigLayout());
+		JPanel BasicInfo = new JPanel(new MigLayout());
+		JPanel Users = new JPanel(new MigLayout());
+		JPanel Activities = new JPanel(new MigLayout());
+		JPanel Effort = new JPanel(new MigLayout("fill"));
+		JPanel Requirements = new JPanel(new MigLayout());
+		JPanel EditSaveCancel = new JPanel(new MigLayout());
 
-		newTaskGridBag.anchor = GridBagConstraints.LINE_START;
+		// ready to go
+		// BasicInfo Panel internal content
+		BasicInfo.setBorder(BorderFactory.createTitledBorder("Basic Info"));
+		BasicInfo.add(titleLabel, "wrap");
+		BasicInfo.add(titleField);
+		BasicInfo.add(titleError, "wrap");
+		BasicInfo.add(descriptionLabel, "wrap");
+		BasicInfo.add(descriptionScrollPane, "gapbottom 20px");
+		BasicInfo.add(descriptionError, "wrap");
+		BasicInfo.add(dueDateLabel);
+		BasicInfo.add(stageLabel, "wrap");
+		BasicInfo.add(dateField);
+		BasicInfo.add(stages);
 
-		newTaskGridBag.weightx = 0.6;
-		newTaskGridBag.weighty = 0.077;
-		newTaskGridBag.gridx = 0;
+		// Users Panel internal content
+		Users.setBorder(BorderFactory.createTitledBorder("Users"));
+		JPanel usersListPanel = new JPanel(new MigLayout());
+		JPanel projectUsersListPanel = new JPanel(new MigLayout());
+		JPanel addRemoveButtons = new JPanel(new MigLayout());
+		usersListPanel.add(usersList);
+		projectUsersListPanel.add(projectUsersList);
 
-		newTaskGridBag.gridy = 0;
-		window.add(nt_titleLabel, newTaskGridBag);
+		addRemoveButtons.add(addUser, "wrap");
+		addRemoveButtons.add(removeUser);
 
-		newTaskGridBag.gridy = 1;
-		window.add(nt_descriptionLabel, newTaskGridBag);
+		Users.add(usersListPanel, "w 100!, gapleft 15px");
+		Users.add(addRemoveButtons);
+		Users.add(projectUsersListPanel, "w 100!, gapright 15px");
 
-		newTaskGridBag.gridy = 2;
-		window.add(nt_dueDateLabel, newTaskGridBag);
+		// Activities Panel internal content
+		Activities.setBorder(BorderFactory.createTitledBorder("Activities"));
+		Activities.add(activityPane, "wrap, gapbottom 20px");
+		Activities.add(commentScrollPane, "center, wrap, gapbottom 10px");
+		Activities
+				.add(submitComment, "dock south, gapleft 30px, gapright 30px");
 
-		newTaskGridBag.gridy = 3;
-		window.add(nt_stageLabel, newTaskGridBag);
+		// Effort Panel internal content
 
-		newTaskGridBag.weighty = 0.077;
-		newTaskGridBag.gridy = 4;
-		window.add(nt_usersLabel, newTaskGridBag);
+		Effort.setBorder(BorderFactory.createTitledBorder("Effort"));
+		Effort.add(estimatedEffortLabel);
+		Effort.add(actualEffortLabel, "wrap");
+		Effort.add(estEffortField);
+		Effort.add(actEffortField, "wrap");
+		JPanel Errors = new JPanel(new MigLayout());
+		Errors.add(estimatedEffortError, "wrap");
+		Errors.add(actualEffortError);
 
-		newTaskGridBag.weighty = 0.077;
-		newTaskGridBag.gridy = 5;
-		window.add(nt_estimatedEffortLabel, newTaskGridBag);
+		// Requirements Panel internal content
+		Requirements
+				.setBorder(BorderFactory.createTitledBorder("Requirements"));
+		Requirements.add(requirementLabel, "wrap");
+		Requirements.add(requirements);
+		Requirements.add(addReq);
 
-		newTaskGridBag.gridy = 6;
-		window.add(nt_actualEffortLabel, newTaskGridBag);
+		// EditSaveCancel Panel internal content
 
-		newTaskGridBag.weighty = 0.10;
-		newTaskGridBag.gridy = 7;
-		window.add(nt_commentsLabel, newTaskGridBag);
-
-		newTaskGridBag.weighty = 0.077;
-		newTaskGridBag.gridy = 9;
-		window.add(nt_requirementLabel, newTaskGridBag);
-
-		// Second Column ////
-
-		newTaskGridBag.anchor = GridBagConstraints.LINE_START;
-		newTaskGridBag.weightx = 0.4;
-		newTaskGridBag.weighty = 0.077;
-		newTaskGridBag.gridx = 1;
-
-		newTaskGridBag.gridy = 0;
-		window.add(titleField, newTaskGridBag);
-
-		newTaskGridBag.gridy = 1;
-		window.add(nt_descriptionScrollPane, newTaskGridBag);
-
-		newTaskGridBag.gridy = 2;
-		window.add(dateField, newTaskGridBag);
-
-		newTaskGridBag.gridy = 3;
-		window.add(stages, newTaskGridBag);
-
-		newTaskGridBag.weighty = 0.077;
-		newTaskGridBag.gridy = 4;
-		window.add(usersList, newTaskGridBag);
-
-		newTaskGridBag.weighty = 0.077;
-		newTaskGridBag.gridy = 5;
-		window.add(estEffortField, newTaskGridBag);
-
-		newTaskGridBag.gridy = 6;
-		window.add(actEffortField, newTaskGridBag);
-
-		newTaskGridBag.gridy = 7;
-		window.add(commentsField, newTaskGridBag);
-
-		newTaskGridBag.gridy = 8;
-		window.add(activityPane, newTaskGridBag);
-
-		// List of Requirements
-		newTaskGridBag.gridy = 9;
-		window.add(requirements, newTaskGridBag);
-
-		// Third Column ////
-
-		newTaskGridBag.anchor = GridBagConstraints.LINE_START;
-		newTaskGridBag.weightx = .5;
-		newTaskGridBag.weighty = 0.077;
-		newTaskGridBag.gridx = 2;
-
-		newTaskGridBag.gridy = 0;
-		window.add(titleError, newTaskGridBag);
-
-		newTaskGridBag.gridy = 1;
-		window.add(descriptionError, newTaskGridBag);
-
-		JPanel userButtons = new JPanel();
-		userButtons.setLayout(new BoxLayout(userButtons, BoxLayout.Y_AXIS));
-		userButtons.add(addUser);
-		userButtons.add(removeUser);
-		newTaskGridBag.gridy = 4;
-		window.add(userButtons, newTaskGridBag);
-
-		newTaskGridBag.gridy = 5;
-		window.add(estimatedEffortError, newTaskGridBag);
-
-		newTaskGridBag.gridy = 6;
-		window.add(actualEffortError, newTaskGridBag);
-
-		newTaskGridBag.gridy = 7;
-		window.add(submitComment, newTaskGridBag);
-
-		newTaskGridBag.gridy = 8;
-		window.add(nt_refreshBtn, newTaskGridBag);
-
-		newTaskGridBag.gridy = 9;
-		window.add(addReq, newTaskGridBag);
-
-		JPanel bottomBtns = new JPanel();
-		bottomBtns.add(save);
-		bottomBtns.add(cancel);
+		EditSaveCancel.add(save);
+		EditSaveCancel.add(cancel);
 		if (this.mode == Mode.EDIT) {
-			bottomBtns.add(delete);
+			EditSaveCancel.add(archive);
+			EditSaveCancel.add(delete);
 		}
-		newTaskGridBag.gridy = 11;
-		window.add(bottomBtns, newTaskGridBag);
+		EditSaveCancel.add(Errors);
 
-		// Fourth Column ////
+		// The finished panels are added to the main window panel
 
-		newTaskGridBag.anchor = GridBagConstraints.LINE_START;
-		newTaskGridBag.weightx = .5;
-		newTaskGridBag.weighty = 0.077;
-		newTaskGridBag.gridx = 3;
-
-		newTaskGridBag.gridy = 4;
-		window.add(projectUsersList, newTaskGridBag);
-
+		window.add(Spacer, "dock north");
+		window.add(BasicInfo, "w 30%, h 50%, gapbottom 20px");
+		window.add(Users, "w 30%, h 50%, gapbottom 20px, wrap");
+		window.add(Effort, "w 30%, h 20%");
+		window.add(Requirements, "w 30%, h 20%");
+		window.add(EditSaveCancel, "dock south, h 10%");
+		window.add(Activities, "w 25%, dock east, gapleft 5px");
 		this.add(window);
 	}
 
@@ -390,6 +355,7 @@ public class EditTaskView extends JPanel {
 	public void setController(EditTaskController controller) {
 		this.controller = controller;
 		cancel.addActionListener(controller);
+		archive.addActionListener(controller);
 		save.addActionListener(controller);
 		addUser.addActionListener(controller);
 		removeUser.addActionListener(controller);
@@ -425,12 +391,12 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * gets the delete button object
+	 * gets the archive button object
 	 * 
-	 * @return the delete button object
+	 * @return the archive button object
 	 */
-	public JButton getDeleteButton() {
-		return this.delete;
+	public JButton getArchiveButton() {
+		return this.archive;
 	}
 
 	/**
@@ -650,17 +616,17 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * disables the delete button
+	 * disables the archive button
 	 */
-	public void disableDelete() {
-		this.delete.setEnabled(false);
+	public void disableArchive() {
+		this.archive.setEnabled(false);
 	}
 
 	/**
-	 * enables the delete button
+	 * enables the archive button
 	 */
-	public void enableDelete() {
-		this.delete.setEnabled(true);
+	public void enableArchive() {
+		this.archive.setEnabled(true);
 	}
 
 	/**
@@ -687,7 +653,7 @@ public class EditTaskView extends JPanel {
 	 *
 	 * @param boolean for whether or not to enable.
 	 */
-	public void setRefreshEnabled(Boolean b) {
+	public void setRefreshEnabled(boolean b) {
 		refreshActivities.setEnabled(b);
 	}
 
@@ -817,6 +783,17 @@ public class EditTaskView extends JPanel {
 	 */
 	public void addActivity(ActivityModel act) {
 		activities.add(act);
+	}
+
+	/**
+	 * 
+	 * Set the delete button to enabled/disabled.
+	 *
+	 * @param bool
+	 *            boolean to set the button to.
+	 */
+	public void setDeleteEnabled(boolean bool) {
+		delete.setEnabled(bool);
 	}
 
 	/*

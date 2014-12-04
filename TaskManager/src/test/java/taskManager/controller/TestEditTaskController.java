@@ -12,7 +12,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -30,6 +29,7 @@ import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
+import taskManager.view.TaskView;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
@@ -71,13 +71,8 @@ public class TestEditTaskController {
 		etv.setVisible(true);
 
 		frame = new JFrame();
+		// frame.setLayout(new FlowLayout());
 		frame.add(JanewayModule.tabPaneC.getTabView());
-		// Need all of these to get the test frame to be the correct size
-		frame.setMinimumSize(new Dimension(800, 800));
-		frame.setSize(new Dimension(800, 800));
-		frame.setPreferredSize(new Dimension(800, 800));
-		frame.setMaximumSize(new Dimension(800, 800));
-
 		fixture = new FrameFixture(frame);
 
 		fixture.show();
@@ -88,6 +83,7 @@ public class TestEditTaskController {
 
 		// create a new edit task tab
 		JanewayModule.tabPaneC.addEditTaskTab(etv);
+		frame.pack();
 
 		// enter information for a new task
 		getTitleBoxFixture().enterText("name");
@@ -108,6 +104,7 @@ public class TestEditTaskController {
 
 		// create a new edit task tab
 		JanewayModule.tabPaneC.addEditTaskTab(etv);
+		frame.pack();
 
 		getTitleBoxFixture().enterText("name");
 		getDescriptionBoxFixture().enterText("desc");
@@ -224,8 +221,9 @@ public class TestEditTaskController {
 		task.setReq(req);
 
 		// load the edit view
-		TaskController tc = new TaskController(null, task);
-		tc.mouseClicked(null);
+		TaskController tc = new TaskController(new TaskView("Task", new Date(),
+				0), task);
+		tc.editTask();
 
 		// make sure the requirement displays properly
 		fixture.comboBox(EditTaskView.REQUIREMENTS).requireSelection(
@@ -309,8 +307,9 @@ public class TestEditTaskController {
 		task.addAssigned(testUser);
 
 		// load the edit view
-		TaskController tc = new TaskController(null, task);
-		tc.mouseClicked(null);
+		TaskController tc = new TaskController(new TaskView("Task", new Date(),
+				0), task);
+		tc.editTask();
 		Component c = JanewayModule.tabPaneC.getTabView()
 				.getSelectedComponent();
 		if (c instanceof EditTaskView) {
@@ -318,7 +317,7 @@ public class TestEditTaskController {
 		} else {
 			fail("oh god what's going on");
 		}
-
+		frame.pack();
 		return task;
 	}
 
