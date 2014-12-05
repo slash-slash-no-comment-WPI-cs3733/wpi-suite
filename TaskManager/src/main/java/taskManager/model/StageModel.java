@@ -326,7 +326,6 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 *            The stage to copy
 	 */
 	public void makeIdenticalTo(StageModel incomingStage) {
-		System.out.println("Blah!");
 		setID(incomingStage.getID());
 		final List<TaskModel> localTasks = taskList;
 		final List<TaskModel> incomingTasks = incomingStage.getTasks();
@@ -348,7 +347,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 				try {
 					localTasks.get(i).delete();
 				} catch (NullPointerException e) {
-					// This gets thrown during tests fairly often.
+					// TODO: This gets thrown during tests fairly often.
 					if (!e.getMessage().equals(
 							"The networkConfiguration must not be null.")) {
 						throw new NullPointerException(e.getMessage());

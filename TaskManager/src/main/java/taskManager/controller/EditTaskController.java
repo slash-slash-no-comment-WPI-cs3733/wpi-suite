@@ -123,7 +123,7 @@ public class EditTaskController implements ActionListener {
 					this.returnToWorkflowView();
 					// makes all the fields blank again
 					etv.resetFields();
-					// Save entire workflow whenever a task is saved
+					// Save the task when it is changed.
 					task.save();
 				} else {
 					etv.setSaveEnabled(false);
@@ -143,7 +143,7 @@ public class EditTaskController implements ActionListener {
 				task.setArchived(!isArchived);
 				etv.setDeleteEnabled(!isArchived);
 
-				// Save the task and reload the workflow.
+				// Save the task and reloads the workflow.
 				JanewayModule.tabPaneC.getTabView().reloadWorkflow();
 				task.save();
 

@@ -242,7 +242,6 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	public void makeIdenticalTo(WorkflowModel incomingWorkflow) {
 		System.out
 				.println("!!A request was made to save a workflow. Was WorkflowModel.save() called?!!");
-		System.out.println("Stages found locally:");
 		setID(incomingWorkflow.getID());
 
 		final List<StageModel> localStages = stageList;
@@ -261,14 +260,12 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		}
 		stageList = toSaveStages; // This does not change localStages
 		for (int i = localStages.size() - 1; i >= 0; i--) {
-			System.out.println(localStages.get(i).getName() + " : "
-					+ stageWasUsed[i]);
 			if (!stageWasUsed[i]) {
 				// Delete any stages that are no longer in the stage list.
 				try {
 					localStages.get(i).delete();
 				} catch (NullPointerException e) {
-					// This gets thrown during tests fairly often.
+					// TODO: This gets thrown during tests fairly often.
 					if (!e.getMessage().equals(
 							"The networkConfiguration must not be null.")) {
 						throw new NullPointerException(e.getMessage());

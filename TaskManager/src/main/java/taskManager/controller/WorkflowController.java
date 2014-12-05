@@ -49,7 +49,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 * Constructor for the WorkflowController, gets all the stages from the
 	 * WorkflowView, creates the corresponding StageView and StageControllers,
 	 * and adds the StageViews to the UI.
-	 * 
+	 *
 	 * @param view
 	 *            the corresponding WorkflowView object
 	 */
@@ -143,7 +143,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	}
 
 	/**
-	 * 
+	 *
 	 * Returns the workflow model.
 	 *
 	 * @return the WorkflowModel
@@ -162,13 +162,14 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		boolean changed = tc.moveStageToIndex(index);
 
 		if (changed) {
+  		// Stage was dragged/dropped.
 			WorkflowModel.getInstance().save();
 			DDTransferHandler.dragSaved = true;
 		}
 	}
 
 	/**
-	 * 
+	 *
 	 * Adds the taskInfo bubble to the workflow.
 	 *
 	 * @param ti
@@ -181,7 +182,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	}
 
 	/**
-	 * 
+	 *
 	 * Removes all instances of TaskInfoPreviewView from the workflow. The
 	 * repaint boolean is necessary because clicking from one task and then
 	 * another to switch the taskInfo bubbles, does not call reload data to
@@ -206,7 +207,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	}
 
 	/**
-	 * 
+	 *
 	 * Remove all instances of stage titles being changable.
 	 *
 	 */
@@ -220,7 +221,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	}
 
 	/**
-	 * 
+	 *
 	 * repaints the WorkflowView.
 	 *
 	 */

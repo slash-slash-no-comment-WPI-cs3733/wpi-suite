@@ -105,7 +105,7 @@ public class StageController implements DropAreaSaveListener,
 		boolean changed = tc.moveToStage(model, index);
 
 		if (changed) {
-  		// Save the current save.
+  		// Save the current model.
 			model.save();
 			DDTransferHandler.dragSaved = true;
 		}
