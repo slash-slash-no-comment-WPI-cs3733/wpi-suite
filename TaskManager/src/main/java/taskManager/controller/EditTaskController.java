@@ -38,7 +38,7 @@ import edu.wpi.cs.wpisuitetng.modules.requirementmanager.view.ViewEventControlle
 
 /**
  * The controller for editing and creating a new task
- * 
+ *
  * @author Beth Martino
  *
  */
@@ -49,10 +49,11 @@ public class EditTaskController implements ActionListener {
 	private final User[] projectUsers = JanewayModule.users;
 	private String taskID;
 	private ArrayList<String> toRemove = new ArrayList<String>();
+	private TaskInputController fieldController;
 
 	/**
 	 * Constructor, attaches the edit task view to this controller
-	 * 
+	 *
 	 * @param wfm
 	 *            The workflowModel that belongs to this controller.
 	 */
@@ -96,33 +97,37 @@ public class EditTaskController implements ActionListener {
 
 			case EditTaskView.SAVE:
 				TaskModel task;
-				// if editing
-				if (exists) {
-					// set the task to be edited
-					task = currentStage.findTaskByID(taskID);
-					this.setTaskData(task, desiredStage, requirement);
 
-					this.setTaskID("000000");
-				}
-				// if creating a new task
-				else {
-					// creates a new task model
-					task = new TaskModel(etv.getTitle().getText(), desiredStage);
-					this.setTaskData(task, desiredStage, requirement);
-				}
+				if (etv.getFieldController().checkFields()) {
+					// if editing
+					if (exists) {
+						// set the task to be edited
+						task = currentStage.findTaskByID(taskID);
+						this.setTaskData(task, desiredStage, requirement);
+						this.setTaskID(task.getID());
+					}
+					// if creating a new task
+					else {
+						// creates a new task model
+						task = new TaskModel(etv.getTitle().getText(),
+								desiredStage);
+						this.setTaskData(task, desiredStage, requirement);
+					}
 
-				// Add the newly added activities.
-				List<ActivityModel> newActivities = etv.getNewActivities();
-				for (ActivityModel act : newActivities) {
-					task.addActivity(act);
+					// Add the newly added activities.
+					List<ActivityModel> newActivities = etv.getNewActivities();
+					for (ActivityModel act : newActivities) {
+						task.addActivity(act);
+					}
+					// exit the edit view, this refreshes the workflow
+					this.returnToWorkflowView();
+					// makes all the fields blank again
+					etv.resetFields();
+					// Save entire workflow whenever a task is saved
+					wfm.save();
+				} else {
+					etv.setSaveEnabled(false);
 				}
-
-				// exit the edit view, this refreshes the workflow
-				this.returnToWorkflowView();
-				// makes all the fields blank again
-				etv.resetFields();
-				// Save only the task when it is saved
-				task.save();
 				break;
 
 			case EditTaskView.ARCHIVE:
@@ -256,7 +261,7 @@ public class EditTaskController implements ActionListener {
 
 	/**
 	 * Enter the task id that will be edited
-	 * 
+	 *
 	 * @param id
 	 *            the id that new task info will be saved to
 	 */
@@ -267,7 +272,7 @@ public class EditTaskController implements ActionListener {
 	/**
 	 * sets the fields of the given task object to the values on the fields of
 	 * the edit task view and saves the task data
-	 * 
+	 *
 	 * @param t
 	 *            the task to be edited
 	 */
@@ -388,7 +393,7 @@ public class EditTaskController implements ActionListener {
 	}
 
 	/**
-	 * 
+	 *
 	 * Returns the task ID.
 	 *
 	 * @return the task ID
@@ -479,7 +484,7 @@ public class EditTaskController implements ActionListener {
 	}
 
 	/**
-	 * 
+	 *
 	 * Checks whether the users in the view and the users stored in the task are
 	 * the same.
 	 *
@@ -503,7 +508,7 @@ public class EditTaskController implements ActionListener {
 	}
 
 	/**
-	 * 
+	 *
 	 * Checks whether the estimated effort value in the task and on the view are
 	 * equivalent.
 	 *
@@ -535,7 +540,7 @@ public class EditTaskController implements ActionListener {
 	}
 
 	/**
-	 * 
+	 *
 	 * Checks whether the actual effort value in the task and on the view are
 	 * equivalent.
 	 *
@@ -567,7 +572,7 @@ public class EditTaskController implements ActionListener {
 	}
 
 	/**
-	 * 
+	 *
 	 * Checks whether the requirement in the task and on the view are
 	 * equivalent.
 	 *
