@@ -17,7 +17,6 @@ import org.junit.Test;
 
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
-import taskManager.view.WorkflowView;
 
 /**
  * Tests for the workflow controller
@@ -28,24 +27,20 @@ public class TestWorkflowController {
 
 	private final String[] stageNames = { "first", "second", "not-a-duplicate",
 			"last" };
-	private WorkflowView wfv;
-	private final WorkflowModel wfm = WorkflowModel.getInstance();
 	private FrameFixture fixture;
 
 	@Before
 	public void setup() {
-		// creates a workflow view
-		wfv = WorkflowController.getInstance().getView();
-
 		// create a new workflow model
-		wfm.makeIdenticalTo(new WorkflowModel());
+		WorkflowModel.getInstance().makeIdenticalTo(new WorkflowModel());
 		// give it the stages
 		for (String name : stageNames) {
 			new StageModel(name, false);
 		}
+		WorkflowController.getInstance().reloadData();
 
 		JFrame frame = new JFrame();
-		frame.add(wfv);
+		frame.add(WorkflowController.getInstance().getView());
 
 		fixture = new FrameFixture(frame);
 
