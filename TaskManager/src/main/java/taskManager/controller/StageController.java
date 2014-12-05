@@ -105,8 +105,8 @@ public class StageController implements DropAreaSaveListener,
 		boolean changed = tc.moveToStage(model, index);
 
 		if (changed) {
-  		// TODO: Do not save the entire workflow!
-			WorkflowModel.getInstance().save();
+  		// Save the current save.
+			model.save();
 			DDTransferHandler.dragSaved = true;
 		}
 
@@ -147,6 +147,7 @@ public class StageController implements DropAreaSaveListener,
 	 *            visible
 	 */
 	public void switchTitle(Boolean editable) {
+  	// TODO: Why does this method have two identical parts?
 		if (editable) {
 			for (Component c : view.getComponents()) {
 				if (c.getName() == StageView.TITLE) {
