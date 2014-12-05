@@ -397,37 +397,24 @@ public class EditTaskController implements ActionListener {
 	}
 
 	/**
-	 * 
+	 *
 	 * Returns a boolean of whether or not the task is edited.
-	 * 
+	 *
 	 * @return boolean stating whether the task is edited.
 	 */
 	public boolean isEdited() {
 		boolean edited = false;
 
 		// Get the stage of the task.
-		boolean exists = false;
-
+		TaskModel task = wfm.findTaskByID(getTaskID());
 		StageModel currentStage = wfm.getStages().get(0);
-		for (StageModel stage : wfm.getStages()) {
-			if (stage.containsTaskByID(getTaskID())) {
-				exists = true;
-				currentStage = stage;
-				break;
-			} else {
-				exists = false;
-			}
-		}
 
-		TaskModel task = null;
-		if (!exists) {
-			// make a task with the default values to compare to
-			task = new TaskModel();
-			task.setName("");
+		if (task != null) {
+			currentStage = task.getStage();
+		} else {
+			task = new TaskModel("", currentStage);
 			task.setDescription("");
 			task.setStage(currentStage);
-		} else {
-			task = currentStage.findTaskByID(getTaskID());
 		}
 
 		// Compare the task info with the filled in info.
