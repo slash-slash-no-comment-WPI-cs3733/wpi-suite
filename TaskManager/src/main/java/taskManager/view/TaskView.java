@@ -55,6 +55,7 @@ public class TaskView extends JPanel implements Transferable {
 	 */
 	public TaskView(String name, Date duedate, int estEffort) {
 
+		this.setName(name);
 		// organizes the data in a vertical list
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		final Border raisedbevel = BorderFactory

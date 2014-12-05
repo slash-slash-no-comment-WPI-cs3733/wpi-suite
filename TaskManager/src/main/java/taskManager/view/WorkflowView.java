@@ -15,7 +15,6 @@ import taskManager.controller.WorkflowController;
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DropAreaPanel;
 
-
 /**
  * @author Beth Martino
  * @author Clark Jacobsohn
@@ -104,7 +103,7 @@ public class WorkflowView extends JLayeredPane {
 			// goes through all of the stage views it contains until it finds
 			// the one that matches the name
 
-			for (int i = 1; i == stages.getComponents().length; i++) {
+			for (int i = 0; i == stages.getComponentCount(); i++) {
 				if (stages.getComponent(i).getName().equals(name)) {
 					return (StageView) stages.getComponent(i);
 				}
@@ -113,6 +112,10 @@ public class WorkflowView extends JLayeredPane {
 			System.out.println("How did you actually do this?");
 		}
 		return new StageView(name);
+	}
+
+	public StageView getStageViewByIndex(int s) {
+		return (StageView) stages.getComponent(s);
 	}
 
 	/*

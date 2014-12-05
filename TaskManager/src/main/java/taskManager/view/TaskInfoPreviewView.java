@@ -48,6 +48,7 @@ public class TaskInfoPreviewView extends JPanel {
 	public static final String EDIT = "edit";
 	public static final String X = "x";
 	public final int WIDTH = 220;
+	private JButton edit;
 
 	public TaskInfoPreviewView(TaskModel model, TaskController controller,
 			Point loc) {
@@ -171,7 +172,7 @@ public class TaskInfoPreviewView extends JPanel {
 
 		// This panel contains the edit button
 		JPanel buttonPanel = new JPanel(new MigLayout("", "[center]"));
-		JButton edit = new JButton("edit");
+		edit = new JButton(EDIT);
 		edit.setName(EDIT);
 		edit.setMargin(new Insets(5, 87, 5, 87));
 		edit.addActionListener(this.controller);
@@ -220,6 +221,15 @@ public class TaskInfoPreviewView extends JPanel {
 	}
 
 	/**
+	 * return the edit button
+	 * 
+	 * @return the edit button
+	 */
+	public JButton getEditButton() {
+		return this.edit;
+	}
+
+	/**
 	 * 
 	 * Takes a String and if its length is greater than max, it truncates and
 	 * adds '...'. This example is modified from:
@@ -242,4 +252,5 @@ public class TaskInfoPreviewView extends JPanel {
 		int end = text.lastIndexOf(' ', max - 3);
 		return text.substring(0, end) + "...";
 	}
+
 }

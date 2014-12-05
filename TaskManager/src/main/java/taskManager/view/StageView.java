@@ -13,6 +13,7 @@ package taskManager.view;
  */
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Insets;
@@ -21,7 +22,8 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.MouseAdapter;
 import java.io.IOException;
-import java.util.Date;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -255,20 +257,16 @@ public class StageView extends JPanel implements Transferable {
 		return labelText;
 	}
 
-	public TaskView getTaskViewByName(String name) {
-		try {
-			// goes through all of the stage views it contains until it finds
-			// the one that matches the name
-
-			for (int i = 1; i == tasks.getComponents().length; i++) {
-				if (tasks.getComponent(i).getName().equals(name)) {
-					return (TaskView) tasks.getComponent(i);
-				}
-			}
-		} catch (NullPointerException e) {
-			System.out.println("How did you actually do this?");
-		}
-		return new TaskView(name, new Date(), 0);
+	/**
+	 * returns a task view in the stage at the given index
+	 * 
+	 * @param taskIndex
+	 *            the index of the task view you want
+	 * @return the taskview at the given index
+	 */
+	public JPanel getTaskViewByIndex(int taskIndex) {
+		List<Component> t = Arrays.asList(getComponents());
+		return (JPanel) t.get(taskIndex);
 	}
 
 	// ----------------------------
