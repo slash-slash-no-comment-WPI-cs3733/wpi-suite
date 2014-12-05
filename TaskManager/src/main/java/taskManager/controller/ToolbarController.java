@@ -162,6 +162,7 @@ public class ToolbarController extends DropTargetAdapter implements
 					}
 					stageC.deleteStage();
 					DDTransferHandler.dragSaved = true;
+					// Stage was deleted, save the workflow.
 					model.save();
 					tabPaneC.getTabView().reloadWorkflow();
 				}
