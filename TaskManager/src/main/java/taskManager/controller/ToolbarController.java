@@ -162,7 +162,10 @@ public class ToolbarController extends DropTargetAdapter implements
 						model.save();
 						tabPaneC.getTabView().reloadWorkflow();
 					} else {
-						// TODO: Warning upon trying to delete last stage.
+						JOptionPane.showConfirmDialog(tabPaneC.getTabView(),
+								"You cannot delete the last stage.",
+								"Warning - Invalid stage deletion",
+								JOptionPane.CLOSED_OPTION);
 					}
 				}
 			} // End switch
