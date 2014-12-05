@@ -44,7 +44,7 @@ public class ToolbarController extends DropTargetAdapter implements
 	private final TabPaneController tabPaneC;
 
 	/**
-	 * 
+	 *
 	 * @param tabV
 	 *            tabView used to add tabs to the tab-bar
 	 */
@@ -157,16 +157,16 @@ public class ToolbarController extends DropTargetAdapter implements
 								return;
 							}
 						}
+						stageC.deleteStage();
+						DDTransferHandler.dragSaved = true;
+						model.save();
+						tabPaneC.getTabView().reloadWorkflow();
+					} else {
+						// TODO: Warning upon trying to delete last stage.
 					}
-					stageC.deleteStage();
-					DDTransferHandler.dragSaved = true;
-					model.save();
-					tabPaneC.getTabView().reloadWorkflow();
 				}
-
-			}
-
-		}
+			} // End switch
+		} // End instanceof
 	}
 
 	@Override
