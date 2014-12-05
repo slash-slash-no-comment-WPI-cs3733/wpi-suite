@@ -54,8 +54,8 @@ public class TaskView extends JPanel implements Transferable {
 	 *            the estimated effort of the task
 	 */
 	public TaskView(String name, Date duedate, int estEffort) {
-
 		// organizes the data in a vertical list
+		this.setName(name);
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		final Border raisedbevel = BorderFactory
 				.createEtchedBorder(EtchedBorder.LOWERED);
