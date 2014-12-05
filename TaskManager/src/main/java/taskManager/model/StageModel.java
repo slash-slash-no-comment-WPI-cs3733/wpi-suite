@@ -132,11 +132,11 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	}
 
 	/**
-	 * Required to create dummy instance Necessary for passing TaskModel type
-	 * into DataStore *
-	 *
+	 * Required to create dummy instance; necessary for passing TaskModel type
+	 * into DataStore Should not be called manually
 	 *
 	 */
+	@Deprecated
 	public StageModel() {
 	};
 
