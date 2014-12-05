@@ -200,7 +200,7 @@ public class TaskInfoPreviewView extends JPanel {
 	 */
 	private void setBoundsWithoutClipping(Point loc, int width, int height) {
 		int x, y;
-		Rectangle paneBounds = JanewayModule.getTabPaneView().getBounds();
+		Rectangle paneBounds = JanewayModule.tabPaneV.getBounds();
 		x = (loc.x + StageView.STAGE_WIDTH + width > (paneBounds.getWidth())) ? loc.x
 				- width
 				: loc.x + StageView.STAGE_WIDTH;

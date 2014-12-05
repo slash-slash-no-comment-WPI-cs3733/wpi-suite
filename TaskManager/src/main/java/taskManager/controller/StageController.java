@@ -69,7 +69,12 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 		// Get all the tasks associated with this Stage.
 
 		// Get state of archive shown check box.
-		boolean showArchive = JanewayModule.toolC.isArchiveShown();
+		boolean showArchive;
+		try {
+			showArchive = JanewayModule.toolC.isArchiveShown();
+		} catch (ExceptionInInitializerError | NoClassDefFoundError e) {
+			showArchive = false; // If JanewayModule not initialized
+		}
 
 		// Add the tasks.
 		if (model != null) {

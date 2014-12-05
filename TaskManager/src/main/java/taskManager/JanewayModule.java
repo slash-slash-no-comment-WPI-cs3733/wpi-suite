@@ -31,15 +31,24 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.User;
  */
 public class JanewayModule implements IJanewayModule {
 
-	// The tabs used by this module
+	public static final TabPaneView tabPaneV;
+	public static final ToolbarController toolC;
+	public static final TabPaneController tabPaneC;
 
+	private static final ToolbarView toolV;
+
+	// The tabs used by this module
 	private final ArrayList<JanewayTabModel> tabs;
-	private static final ToolbarView toolV = new ToolbarView();
-	private static final TabPaneView tabPaneV = new TabPaneView();
-	public static final ToolbarController toolC = new ToolbarController(toolV,
-			tabPaneV);
-	public static final TabPaneController tabPaneC = new TabPaneController(
-			tabPaneV);
+
+	static {
+		toolV = new ToolbarView();
+		tabPaneV = new TabPaneView();
+		toolC = new ToolbarController(toolV, tabPaneV);
+		tabPaneC = new TabPaneController(tabPaneV);
+
+		toolV.setController(toolC);
+	}
+
 	public static User[] users = {};
 	public static String currentUser = null; // the username of the current user
 
@@ -47,8 +56,6 @@ public class JanewayModule implements IJanewayModule {
 	 * Construct a blank tab
 	 */
 	public JanewayModule() {
-		toolV.setController(toolC);
-
 		tabs = new ArrayList<JanewayTabModel>();
 		JanewayTabModel tab = new JanewayTabModel("Task Manager",
 
@@ -70,15 +77,5 @@ public class JanewayModule implements IJanewayModule {
 	@Override
 	public List<JanewayTabModel> getTabs() {
 		return tabs;
-	}
-
-	/**
-	 * 
-	 * Returns the tabPaneView
-	 *
-	 * @return tabPaneV
-	 */
-	public static TabPaneView getTabPaneView() {
-		return tabPaneV;
 	}
 }
