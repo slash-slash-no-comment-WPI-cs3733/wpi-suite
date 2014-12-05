@@ -15,6 +15,7 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Test;
 
 /**
@@ -118,5 +119,10 @@ public class WorkflowModelTest {
 		smt.addTask(t4);
 
 		assertTrue(smt.getTasks().size() == 4);
+	}
+
+	@After
+	public void cleanup() {
+		WorkflowModel.getInstance().makeIdenticalTo(new WorkflowModel());
 	}
 }

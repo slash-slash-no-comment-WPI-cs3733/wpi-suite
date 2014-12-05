@@ -285,9 +285,8 @@ public class TestEditTaskController {
 		fixture.cleanUp();
 		etv = null;
 		// remove all tabs
-		for (Component c : JanewayModule.tabPaneC.getTabView().getComponents()) {
-			JanewayModule.tabPaneC.removeTabByComponent(c);
-		}
+		JanewayModule.tabPaneC.getTabView().remove(1);
+
 	}
 
 	/**

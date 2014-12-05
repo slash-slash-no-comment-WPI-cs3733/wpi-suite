@@ -152,6 +152,15 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		return model;
 	}
 
+	/**
+	 * returns the workflow view
+	 * 
+	 * @return the workflow view
+	 */
+	public WorkflowView getView() {
+		return this.view;
+	}
+
 	@Override
 	public void saveDrop(JPanel panel, int index) {
 		// Make sure we cast safely
