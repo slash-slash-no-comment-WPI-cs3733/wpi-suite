@@ -24,7 +24,6 @@ import org.jdesktop.swingx.prompt.PromptSupport;
 
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DropAreaSaveListener;
-import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
@@ -44,6 +43,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	private final WorkflowView view;
 	private final WorkflowModel model;
 	private boolean hasNewStageView;
+	public static boolean reloadInformation = true;
 
 	/**
 	 * Constructor for the WorkflowController, gets all the stages from the
@@ -92,24 +92,26 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 *
 	 */
 	public synchronized void reloadData() {
-		// clear the stages previously on the view
-		this.removeTaskInfos(false);
-		this.removeChangeTitles();
-		hasNewStageView = false;
-		view.removeAll();
 
-		// get all the stages in this workflow
-		final List<StageModel> stages = model.getStages();
-		// and add them all to the view
-		for (StageModel stage : stages) {
-			// create stage view and controller.
-			StageView stv = new StageView(stage.getName());
-			stv.setController(new StageController(stv, stage));
+		if (WorkflowController.reloadInformation) {
+			// clear the stages previously on the view
+			this.clearWorkflow(false);
+			hasNewStageView = false;
+			view.removeAll();
 
-			// add stage view to workflow
-			view.addStageView(stv);
+			// get all the stages in this workflow
+			final List<StageModel> stages = model.getStages();
+			// and add them all to the view
+			for (StageModel stage : stages) {
+				// create stage view and controller.
+				StageView stv = new StageView(stage.getName());
+				stv.setController(new StageController(stv, stage, false));
+
+				// add stage view to workflow
+				view.addStageView(stv);
+			}
+			view.revalidate();
 		}
-		view.revalidate();
 	}
 
 	/**
@@ -130,9 +132,12 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 */
 	public void addStageToView() {
 		if (!hasNewStageView) {
+			this.clearWorkflow(true);
+			WorkflowController.reloadInformation = false;
+
 			hasNewStageView = true;
 			StageView newStageV = new StageView("");
-			newStageV.setController(new StageController(newStageV, null));
+			newStageV.setController(new StageController(newStageV, null, true));
 			newStageV.enableTitleEditing(true);
 			PromptSupport
 					.setPrompt("New Stage Name", newStageV.getLabelField());
@@ -175,8 +180,10 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 *            The TaskInfoPreviewView that should be displayed
 	 */
 	public void setTaskInfo(TaskInfoPreviewView ti) {
+		this.clearWorkflow(true);
 		if (ti != null) {
 			view.addTaskInfo(ti);
+			WorkflowController.reloadInformation = false;
 		}
 	}
 
@@ -190,14 +197,12 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 * @param repaint
 	 *            whether or not to repaint the Workflow View
 	 */
-	public void removeTaskInfos(Boolean repaint) {
+	private void removeTaskInfos(Boolean repaint) {
 		for (Component c : view.getComponents()) {
 			if (c instanceof TaskInfoPreviewView) {
 				view.remove(c);
-				((TaskInfoPreviewView) c).getTaskController().thisTaskInfoOut = false;
-				((TaskInfoPreviewView) c).getTaskController().resetBackground();
+				((TaskInfoPreviewView) c).getTaskController().taskInfoRemoved();
 			}
-			TaskController.anyTaskInfoOut = false;
 		}
 		if (repaint) {
 			// display without reloading
@@ -207,16 +212,25 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 
 	/**
 	 * 
-	 * Remove all instances of stage titles being changable.
+	 * Remove all instances of stage titles as textboxes.
 	 *
 	 */
-	public void removeChangeTitles() {
-		for (Component c : view.getComponents()) {
-			if (c instanceof StageView) {
-				((StageView) c).getController().thisChangeTitleOut = false;
-			}
-		}
-		StageController.anyChangeTitleOut = false;
+	private void removeChangeTitles() {
+		view.removeChangeTitles();
+	}
+
+	/**
+	 * 
+	 * This removes any taskInfo bubbles and makes all stage titles, labels.
+	 *
+	 * @param repaint
+	 *            Determines whether or not to repaint the view. Should be false
+	 *            if you are immediately calling reloadData
+	 */
+	public void clearWorkflow(boolean repaint) {
+		this.removeChangeTitles();
+		this.removeTaskInfos(repaint);
+		WorkflowController.reloadInformation = true;
 	}
 
 	/**
@@ -230,12 +244,8 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if (!StageController.anyChangeTitleOut) {
-			// Removes the task info bubble from the screen
-			FetchWorkflowObserver.ignoreAllResponses = false;
-			this.reloadData();
-			this.repaintView();
-		}
+		// Removes the task info bubble from the screen
+		this.clearWorkflow(true);
 	}
 
 	@Override

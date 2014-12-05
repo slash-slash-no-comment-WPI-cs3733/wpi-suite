@@ -8,7 +8,6 @@
  *******************************************************************************/
 package taskManager.controller;
 
-import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -21,7 +20,6 @@ import javax.swing.JComboBox;
 
 import taskManager.JanewayModule;
 import taskManager.model.ActivityModel;
-import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.view.Colors;
@@ -49,9 +47,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	private Requirement req;
 	private final User[] projectUsers = JanewayModule.users;
 	private Set<String> assignedUsers;
-	private Color background;
 
-	public static Boolean anyTaskInfoOut = false;
 	public Boolean thisTaskInfoOut = false;
 
 	/**
@@ -83,8 +79,6 @@ public class TaskController implements MouseListener, MouseMotionListener {
 		} else {
 			view.setBackground(Colors.TASK);
 		}
-
-		this.background = view.getBackground();
 	}
 
 	/**
@@ -225,8 +219,11 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	 *
 	 */
 	public void setToHoverColor() {
-
-		view.setBackground(Colors.TASK_HOVER);
+		if (isArchived() && !thisTaskInfoOut) {
+			view.setBackground(Colors.ARCHIVE_HOVER);
+		} else if (!thisTaskInfoOut) {
+			view.setBackground(Colors.TASK_HOVER);
+		}
 	}
 
 	/**
@@ -235,41 +232,36 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	 *
 	 */
 	public void resetBackground() {
-		if (background != null) {
-			view.setBackground(background);
+		if (isArchived() && thisTaskInfoOut) {
+			view.setBackground(Colors.ARCHIVE_CLICKED);
+		} else if (isArchived()) {
+			view.setBackground(Colors.ARCHIVE);
+		} else if (thisTaskInfoOut) {
+			view.setBackground(Colors.TASK_CLICKED);
+		} else {
+			view.setBackground(Colors.TASK);
 		}
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// Show task bubble only if there are no stage title textboxes out AND
-		// the ignoreAllResponses flag has not been set OR
-		// another taskinfo bubble is already out
-		if ((!FetchWorkflowObserver.ignoreAllResponses || TaskController.anyTaskInfoOut)
-				&& !StageController.anyChangeTitleOut) {
-			// Don't reload (so the correct task can be highlighted while the
-			// bubble is up
-			FetchWorkflowObserver.ignoreAllResponses = true;
+		// Create the taskinfo bubble
+		Point stageLoc = view.getParent().getParent().getParent().getParent()
+				.getLocation();
+		Point stagesPanelLoc = view.getParent().getParent().getParent()
+				.getParent().getParent().getLocation();
+		Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
+				view.getLocation().y);
+		JanewayModule.tabPaneC.getTabView().getWorkflowController()
+				.setTaskInfo(new TaskInfoPreviewView(model, this, infoLoc));
 
-			// Create the taskinfo bubble
-			Point stageLoc = view.getParent().getParent().getParent()
-					.getParent().getLocation();
-			Point stagesPanelLoc = view.getParent().getParent().getParent()
-					.getParent().getParent().getLocation();
-			Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
-					view.getLocation().y);
-			JanewayModule.tabPaneC.getTabView().getWorkflowController()
-					.setTaskInfo(new TaskInfoPreviewView(model, this, infoLoc));
+		thisTaskInfoOut = true;
 
-			// Set the correct flags
-			thisTaskInfoOut = true;
-			TaskController.anyTaskInfoOut = true;
-			// make the associated task a darker color while the bubble is out
-			if (isArchived()) {
-				view.setBackground(Colors.ARCHIVE_CLICKED);
-			} else {
-				view.setBackground(Colors.TASK_CLICKED);
-			}
+		// make the associated task a darker color while the bubble is out
+		if (isArchived()) {
+			view.setBackground(Colors.ARCHIVE_CLICKED);
+		} else {
+			view.setBackground(Colors.TASK_CLICKED);
 		}
 	}
 
@@ -292,11 +284,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// only reset the background if there is no taskInfo bubble out for this
-		// task
-		if (!thisTaskInfoOut) {
-			resetBackground();
-		}
+		resetBackground();
 	}
 
 	@Override
@@ -314,8 +302,16 @@ public class TaskController implements MouseListener, MouseMotionListener {
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
-
+		// Do nothing
 	}
 
+	/**
+	 * 
+	 * If the taskInfo bubble for this task was removed from view.
+	 *
+	 */
+	public void taskInfoRemoved() {
+		thisTaskInfoOut = false;
+		resetBackground();
+	}
 }

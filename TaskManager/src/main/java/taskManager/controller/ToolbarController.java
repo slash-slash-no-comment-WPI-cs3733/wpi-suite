@@ -172,6 +172,8 @@ public class ToolbarController extends DropTargetAdapter implements
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		// Reload the workflow view.
+		JanewayModule.tabPaneC.getTabView().getWorkflowController()
+				.clearWorkflow(false);
 		JanewayModule.tabPaneC.getTabView().reloadWorkflow();
 	}
 }

@@ -202,17 +202,17 @@ public class StageView extends JPanel implements Transferable {
 	public void setController(StageController controller) {
 		this.controller = controller;
 
-		tasks.setSaveListener(controller);
+		tasks.setSaveListener(this.controller);
 
 		// listen for clicks on the stage to remove stuff from view
-		stage.addMouseListener(controller);
+		stage.addMouseListener(this.controller);
 		// listen for double click on the stage title to change it
-		labelName.addMouseListener(controller);
+		labelName.addMouseListener(this.controller);
 		// listen for drag to enable icon
-		labelName.addMouseMotionListener(controller);
+		labelName.addMouseMotionListener(this.controller);
 		// listen for clicks on the 'change title' buttons
-		done.addActionListener(controller);
-		cancel.addActionListener(controller);
+		done.addActionListener(this.controller);
+		cancel.addActionListener(this.controller);
 	}
 
 	/**
@@ -240,9 +240,9 @@ public class StageView extends JPanel implements Transferable {
 	 */
 	public void enableTitleEditing(boolean q) {
 
-		changeLabel.setVisible(q);
-		label.setVisible(!q);
-
+		if (controller != null) {
+			controller.switchTitle(q);
+		}
 	}
 
 	/**
