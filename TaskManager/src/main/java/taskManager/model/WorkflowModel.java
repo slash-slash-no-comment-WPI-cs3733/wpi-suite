@@ -239,29 +239,44 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 * @param workflow
 	 *            The workflow to copy
 	 */
-	public void makeIdenticalTo(WorkflowModel toCopyWorkflow) {
-		setID(toCopyWorkflow.getID());
+	public void makeIdenticalTo(WorkflowModel incomingWorkflow) {
+		System.out
+				.println("!!A request was made to save a workflow. Was WorkflowModel.save() called?!!");
+		System.out.println("Stages found locally:");
+		setID(incomingWorkflow.getID());
+
 		final List<StageModel> localStages = stageList;
-		final List<StageModel> toCopyStages = toCopyWorkflow.getStages();
+		final List<StageModel> incomingStages = incomingWorkflow.getStages();
 		boolean stageWasUsed[] = new boolean[localStages.size()];
 		List<StageModel> toSaveStages = new ArrayList<StageModel>();
-		for (StageModel toCopyStage : toCopyStages) {
-			StageModel toSaveStage = this
-					.findStageByName(toCopyStage.getName());
+		for (StageModel incomingStage : incomingStages) {
+			StageModel toSaveStage = this.findStageByName(incomingStage
+					.getName());
 			if (toSaveStage != null) {
 				toSaveStages.add(toSaveStage);
 				stageWasUsed[localStages.indexOf(toSaveStage)] = true;
 			} else {
-				toSaveStages.add(toCopyStage);
+				toSaveStages.add(incomingStage);
 			}
 		}
 		stageList = toSaveStages; // This does not change localStages
-		for (int i = 0; i < localStages.size(); i++) {
+		for (int i = localStages.size() - 1; i >= 0; i--) {
+			System.out.println(localStages.get(i).getName() + " : "
+					+ stageWasUsed[i]);
 			if (!stageWasUsed[i]) {
 				// Delete any stages that are no longer in the stage list.
-				localStages.get(i).delete();
+				try {
+					localStages.get(i).delete();
+				} catch (NullPointerException e) {
+					// This gets thrown during tests fairly often.
+					if (!e.getMessage().equals(
+							"The networkConfiguration must not be null.")) {
+						throw new NullPointerException(e.getMessage());
+					}
+				}
 			}
 		}
+		System.out.println(stageList.size());
 	}
 
 	/**
