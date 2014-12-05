@@ -20,11 +20,9 @@ import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.TaskInfoPreviewView;
-import taskManager.view.WorkflowView;
 
 public class TestTabPaneController {
 
-	private static WorkflowView wfv = null;
 	private static final WorkflowModel wfm = WorkflowModel.getInstance();
 	private static final WorkflowController wfc = JanewayModule
 			.getTabPaneView().getWorkflowController();
@@ -78,7 +76,6 @@ public class TestTabPaneController {
 		// click the task
 		JPanelFixture taskFixture = fixture.panel("Task 1");
 		taskFixture.click();
-
 		// click the edit button
 		fixture.button(TaskInfoPreviewView.EDIT).click();
 
