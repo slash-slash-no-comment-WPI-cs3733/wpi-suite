@@ -148,6 +148,9 @@ public class DDTransferHandler extends TransferHandler {
 		// Resume updating from the server
 		FetchWorkflowObserver.ignoreAllResponses = false;
 
+		// Show the component
+		comp.setVisible(true);
+
 		if (DDTransferHandler.dragSaved == false) {
 			// update now in case we missed anything while dragging
 			// (if the drag saved, our changes overwrite anything we may have
@@ -155,9 +158,6 @@ public class DDTransferHandler extends TransferHandler {
 			WorkflowModel.getInstance().updateNow();
 		}
 		DDTransferHandler.dragSaved = false;
-
-		// Show the component
-		comp.setVisible(true);
 
 		// Set icons disabled.
 		JanewayModule.toolV.setArchiveEnabled(false);
