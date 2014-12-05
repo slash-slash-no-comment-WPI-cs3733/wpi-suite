@@ -42,7 +42,7 @@ import taskManager.model.ActivityModel.activityModelType;
  */
 
 /**
- * 
+ *
  * @author Thane Hunt
  * @author Tyler Jaskoviak
  */
@@ -66,7 +66,7 @@ public class EditTaskView extends JPanel {
 	public static final String NO_REQ = "[None]";
 	public static final String REFRESH = "refresh";
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 	private JButton save;
@@ -350,7 +350,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Adds the action listener (controller) to this view
-	 * 
+	 *
 	 * @param controller
 	 *            the controller to be attached to this view
 	 */
@@ -369,7 +369,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Adds the action listener (controller) to this view
-	 * 
+	 *
 	 * @param controller
 	 *            the controller to be attached to this view
 	 */
@@ -386,7 +386,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * returns the task input controller
-	 * 
+	 *
 	 * @return the task input controller
 	 */
 	public TaskInputController getFieldController() {
@@ -395,7 +395,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * gets the save button object
-	 * 
+	 *
 	 * @return the save button object
 	 */
 	public JButton getSaveButton() {
@@ -404,7 +404,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * gets the archive button object
-	 * 
+	 *
 	 * @return the archive button object
 	 */
 	public JButton getArchiveButton() {
@@ -413,7 +413,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Gets the text in the title field
-	 * 
+	 *
 	 * @return the title field
 	 */
 	public JTextField getTitle() {
@@ -422,7 +422,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Gets the description field
-	 * 
+	 *
 	 * @return the description field
 	 */
 	public JTextArea getDescription() {
@@ -431,7 +431,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Gets the date field
-	 * 
+	 *
 	 * @return the date field
 	 */
 	public JXDatePicker getDateField() {
@@ -440,7 +440,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Gets the estimated effort field
-	 * 
+	 *
 	 * @return the estimated effort field
 	 */
 	public JTextField getEstEffort() {
@@ -449,7 +449,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Gets the actual effort field
-	 * 
+	 *
 	 * @return the actual effort field
 	 */
 	public JTextField getActEffort() {
@@ -458,7 +458,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * gets the dropdown box in the view that contains all the stage names
-	 * 
+	 *
 	 * @return the stages dropdown box
 	 */
 	public JComboBox<String> getStages() {
@@ -471,7 +471,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * return the JList containing the assigned user names
-	 * 
+	 *
 	 * @return the JList of assigned usernames
 	 */
 	public ScrollList getUsersList() {
@@ -480,7 +480,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * return the JList containing the project user names
-	 * 
+	 *
 	 * @return the JLst of project user names
 	 */
 	public ScrollList getProjectUsersList() {
@@ -489,7 +489,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * sets the text in the title field
-	 * 
+	 *
 	 * @param d
 	 *            the text in the title field
 	 */
@@ -499,7 +499,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * sets the text in the description field
-	 * 
+	 *
 	 * @param d
 	 *            the text in the description field
 	 */
@@ -509,7 +509,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Sets the text in the date field
-	 * 
+	 *
 	 * @param d
 	 *            the text in the date field
 	 */
@@ -519,7 +519,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Sets the estimated effort to the value i
-	 * 
+	 *
 	 * @param i
 	 *            the value to set the estimated effort field to
 	 */
@@ -529,7 +529,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Set the the actual effort field to the value of i
-	 * 
+	 *
 	 * @param i
 	 *            the value to set the actual effort field to
 	 */
@@ -539,7 +539,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * set stage dropdown box to the stage associated with the task
-	 * 
+	 *
 	 * @param n
 	 *            the index of the stage in the workflow
 	 */
@@ -549,7 +549,7 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * 
+	 *
 	 * Returns the selected stage name. If the selected item cannot be retrieved
 	 * returns an empty string.
 	 *
@@ -563,9 +563,9 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * 
+	 *
 	 * Sets the title error visible or invisible
-	 * 
+	 *
 	 * @param v
 	 *            true will make the title error visible, false will make the
 	 *            title error invisible
@@ -576,7 +576,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Sets the description error visible or invisible
-	 * 
+	 *
 	 * @param v
 	 *            true will make the description error visible, false will make
 	 *            the description error invisible
@@ -587,7 +587,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Sets the estimated effort error visible or invisible
-	 * 
+	 *
 	 * @param v
 	 *            true will make the estimated effort error visible, false will
 	 *            make the estimated effort error invisible
@@ -598,7 +598,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Sets the estimated effort error text
-	 * 
+	 *
 	 * @param text
 	 *            the text to set the error
 	 */
@@ -608,7 +608,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Sets the actual effort error visible or invisible
-	 * 
+	 *
 	 * @param v
 	 *            true will make the actual effort error visible, false will
 	 *            make the actual effort error invisible
@@ -619,7 +619,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Sets the actual effort error text
-	 * 
+	 *
 	 * @param text
 	 *            the text to set the error
 	 */
@@ -643,7 +643,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * set the add user button enabled or disabled
-	 * 
+	 *
 	 * @param e
 	 */
 	public void setAddUserEnabled(boolean e) {
@@ -652,7 +652,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * sets the remove user button enabled or disabled
-	 * 
+	 *
 	 * @param e
 	 */
 	public void setRemoveUserEnabled(boolean e) {
@@ -660,7 +660,7 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * 
+	 *
 	 * Sets the refreshActivities to enabled/disabled.
 	 *
 	 * @param boolean for whether or not to enable.
@@ -686,7 +686,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * enables or disables the save button
-	 * 
+	 *
 	 * @param e
 	 *            true is enabled, false is disabled
 	 */
@@ -695,7 +695,7 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * 
+	 *
 	 * Adds comment to the activities list and refreshes the activities panel.
 	 *
 	 */
@@ -709,7 +709,7 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * 
+	 *
 	 * Sets the activies panel according to the activities list.
 	 *
 	 * @param activities
@@ -722,22 +722,22 @@ public class EditTaskView extends JPanel {
 			String current = activityPane.getMessage().getText();
 			switch (act.getType()) {
 			case CREATION:
-				activityPane.setMessage(current + act.getDescription() + "\n");
+				activityPane.setMessage(current + act.getDateCreated() + act.getDescription() + "\n");
 				break;
 			case MOVE:
-				activityPane.setMessage(current + act.getDescription() + "\n");
+				activityPane.setMessage(current + act.getDateCreated() + act.getDescription() + "\n");
 				break;
 			case COMPLETION:
-				activityPane.setMessage(current + act.getDescription() + "\n");
+				activityPane.setMessage(current + act.getDateCreated() + act.getDescription() + "\n");
 				break;
 			case USER_ADD:
-				activityPane.setMessage(current + act.getDescription() + "\n");
+				activityPane.setMessage(current + act.getDateCreated() + act.getDescription() + "\n");
 				break;
 			case USER_REMOVE:
-				activityPane.setMessage(current + act.getDescription() + "\n");
+				activityPane.setMessage(current + act.getDateCreated() + act.getDescription() + "\n");
 				break;
 			case COMMENT:
-				activityPane.setMessage(current + "User: "
+				activityPane.setMessage(current + act.getDateCreated() + "User "+act.getActor()+": "
 						+ act.getDescription() + "\n");
 				break;
 			}
@@ -745,7 +745,7 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * 
+	 *
 	 * Reloads the activities panel.
 	 *
 	 */
@@ -754,7 +754,7 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * 
+	 *
 	 * Sets activities.
 	 *
 	 * @param act
@@ -767,7 +767,7 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * 
+	 *
 	 * Returns the new activities.
 	 *
 	 * @return
@@ -777,7 +777,7 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * 
+	 *
 	 * Clears the activities.
 	 *
 	 */
@@ -787,7 +787,7 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * 
+	 *
 	 * Adds an activity.
 	 *
 	 * @param the
@@ -798,7 +798,7 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * 
+	 *
 	 * Set the delete button to enabled/disabled.
 	 *
 	 * @param bool
@@ -831,7 +831,7 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * 
+	 *
 	 * Returns the EditTaskController.
 	 *
 	 * @return the controller.

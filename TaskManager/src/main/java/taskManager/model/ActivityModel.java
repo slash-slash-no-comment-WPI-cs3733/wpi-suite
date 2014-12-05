@@ -8,6 +8,8 @@
  *******************************************************************************/
 package taskManager.model;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
@@ -17,6 +19,7 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.User;
  * written about a Task.
  *
  * @author Sam Khalandovsky
+ * @author Josph Blackman
  * @version Nov 6, 2014
  */
 public class ActivityModel {
@@ -33,6 +36,8 @@ public class ActivityModel {
 
 	// Date of creation
 	private Date dateCreated;
+
+	private DateFormat dateFormat;
 
 	// Contents of activity
 	private String description;
@@ -70,8 +75,11 @@ public class ActivityModel {
 		} else {
 			this.actor = null;
 		}
-		dateCreated = new Date(); // set date to time ActivityModel was
-									// instantiated
+		dateCreated = new Date();
+		// This formatter uses the following style:
+		// Fri 11:05:30 PM
+		// Thu 2:52:08 AM
+		dateFormat = new SimpleDateFormat("EEE h:mm:ss aa");
 	}
 
 	/**
@@ -86,8 +94,8 @@ public class ActivityModel {
 	/**
 	 * @return the dateCreated
 	 */
-	public Date getDateCreated() {
-		return dateCreated;
+	public String getDateCreated() {
+		return dateFormat.format(dateCreated);
 	}
 
 	/**
