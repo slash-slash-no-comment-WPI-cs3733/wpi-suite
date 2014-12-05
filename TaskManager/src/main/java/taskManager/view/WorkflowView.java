@@ -8,13 +8,14 @@
  *******************************************************************************/
 package taskManager.view;
 
+import java.awt.Component;
+
 import javax.swing.BoxLayout;
 import javax.swing.JLayeredPane;
 
 import taskManager.controller.WorkflowController;
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DropAreaPanel;
-
 
 /**
  * @author Beth Martino
@@ -70,7 +71,6 @@ public class WorkflowView extends JLayeredPane {
 	 * @param ti
 	 */
 	public void addTaskInfo(TaskInfoPreviewView ti) {
-		controller.removeTaskInfos(true);
 		add(ti, new Integer(1));
 	}
 
@@ -124,5 +124,24 @@ public class WorkflowView extends JLayeredPane {
 			controller.reloadData();
 		}
 		super.setVisible(visible);
+	}
+
+	/**
+	 * 
+	 * Remove all instances of stage titles as textboxes.
+	 *
+	 */
+	public void removeChangeTitles() {
+		for (Component c : stages.getComponents()) {
+			if (c instanceof StageView) {
+				if (((StageView) c).getController().isNewStage()) {
+					stages.remove((StageView) c);
+					controller.reloadData();
+				}
+				if (((StageView) c).getController() != null) {
+					((StageView) c).getController().switchTitle(false);
+				}
+			}
+		}
 	}
 }

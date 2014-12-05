@@ -19,7 +19,7 @@ import javax.swing.JComponent;
 import javax.swing.TransferHandler;
 
 import taskManager.JanewayModule;
-import taskManager.model.FetchWorkflowObserver;
+import taskManager.controller.WorkflowController;
 import taskManager.model.WorkflowModel;
 import taskManager.view.ToolbarView;
 
@@ -118,23 +118,22 @@ public class DDTransferHandler extends TransferHandler {
 		// dragging
 		// Ignore all responses from server while drag is active
 		// TODO fix comment to make more clear ^
-		if (!FetchWorkflowObserver.ignoreAllResponses) {
-			FetchWorkflowObserver.ignoreAllResponses = true;
-			// Create drag image
-			Image image = new BufferedImage(comp.getWidth(), comp.getHeight(),
-					BufferedImage.TYPE_INT_ARGB);
-			Graphics g = image.getGraphics();
-			g = g.create();
-			comp.paint(g);
-			setDragImage(image);
+		JanewayModule.tabPaneC.getTabView().getWorkflowController()
+				.clearWorkflow(true);
+		WorkflowController.reloadInformation = false;
+		// Create drag image
+		Image image = new BufferedImage(comp.getWidth(), comp.getHeight(),
+				BufferedImage.TYPE_INT_ARGB);
+		Graphics g = image.getGraphics();
+		g = g.create();
+		comp.paint(g);
+		setDragImage(image);
 
-			// Create placeholder
-			DropAreaPanel.generatePlaceholder(comp.getSize());
+		// Create placeholder
+		DropAreaPanel.generatePlaceholder(comp.getSize());
 
-			// Initiate the drag
-			super.exportAsDrag(comp, e, action);
-		}
-
+		// Initiate the drag
+		super.exportAsDrag(comp, e, action);
 	}
 
 	/**
@@ -146,7 +145,7 @@ public class DDTransferHandler extends TransferHandler {
 	@Override
 	protected void exportDone(JComponent comp, Transferable data, int action) {
 		// Resume updating from the server
-		FetchWorkflowObserver.ignoreAllResponses = false;
+		WorkflowController.reloadInformation = true;
 
 		if (DDTransferHandler.dragSaved == false) {
 			// update now in case we missed anything while dragging
