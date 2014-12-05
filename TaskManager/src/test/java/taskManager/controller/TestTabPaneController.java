@@ -8,7 +8,9 @@ import java.util.Date;
 
 import javax.swing.JFrame;
 
+import org.fest.swing.core.MouseButton;
 import org.fest.swing.fixture.FrameFixture;
+import org.fest.swing.fixture.JPanelFixture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,13 +76,23 @@ public class TestTabPaneController {
 	@Test
 	public void testDeleteTaskWithOpenTab() {
 		// click the task
-		fixture.panel("Task 1").click();
+		JPanelFixture taskFixture = fixture.panel("Task 1");
+		taskFixture.click();
 
 		// click the edit button
 		fixture.button(TaskInfoPreviewView.EDIT).click();
 
 		// go back to the workflow
 		JanewayModule.tabPaneC.getTabView().setSelectedIndex(0);
+
+		taskFixture.robot.pressMouse(MouseButton.LEFT_BUTTON);
+		taskFixture.robot.moveMouse(JanewayModule.toolV.getComponent(4)
+				.getLocation());
+		taskFixture.robot.releaseMouse(MouseButton.LEFT_BUTTON);
+
+		assertEquals(JanewayModule.tabPaneC.getTabView().getComponentCount(), 1);
+		assertEquals(JanewayModule.getTabPaneView().getTitleAt(0), "Workflow");
+
 	}
 
 	@After
