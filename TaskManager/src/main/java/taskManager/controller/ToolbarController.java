@@ -44,7 +44,7 @@ public class ToolbarController extends DropTargetAdapter implements
 	private final TabPaneController tabPaneC;
 
 	/**
-	 * 
+	 *
 	 * @param tabV
 	 *            tabView used to add tabs to the tab-bar
 	 */
@@ -109,6 +109,7 @@ public class ToolbarController extends DropTargetAdapter implements
 						JanewayModule.tabPaneC.getTabView().reloadWorkflow();
 						JanewayModule.tabPaneC.getTabView()
 								.getWorkflowController().repaintView();
+						// TODO: Try to avoid saving the entire workflow.
 						WorkflowModel.getInstance().save();
 						DDTransferHandler.dragSaved = true;
 					}
@@ -120,6 +121,7 @@ public class ToolbarController extends DropTargetAdapter implements
 					JanewayModule.tabPaneC.getTabView().reloadWorkflow();
 					JanewayModule.tabPaneC.getTabView().getWorkflowController()
 							.repaintView();
+					// TODO: Try to avoid saving the entire workflow.
 					WorkflowModel.getInstance().save();
 					DDTransferHandler.dragSaved = true;
 					break;

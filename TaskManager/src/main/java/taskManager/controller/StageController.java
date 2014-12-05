@@ -57,7 +57,7 @@ public class StageController implements DropAreaSaveListener,
 	 * Constructor for the StageController gets all the tasks from the
 	 * StageModel, creates the corresponding TaskView and TaskControllers for
 	 * each, and final adds all of the TaskViews to the UI.
-	 * 
+	 *
 	 * @param view
 	 *            the corresponding StageView object
 	 * @param model
@@ -105,6 +105,7 @@ public class StageController implements DropAreaSaveListener,
 		boolean changed = tc.moveToStage(model, index);
 
 		if (changed) {
+  		// TODO: Do not save the entire workflow!
 			WorkflowModel.getInstance().save();
 			DDTransferHandler.dragSaved = true;
 		}
@@ -137,7 +138,7 @@ public class StageController implements DropAreaSaveListener,
 	}
 
 	/**
-	 * 
+	 *
 	 * Changes which title is visible, the label or the textbox. If editable is
 	 * true, the textbox is visible.
 	 *
@@ -247,6 +248,7 @@ public class StageController implements DropAreaSaveListener,
 				} else {
 					if (model == null) {
 						model = new StageModel(view.getLabelText());
+						WorkflowModel.getInstance().save();
 					} else {
 						model.changeStageName(view.getLabelText());
 					}

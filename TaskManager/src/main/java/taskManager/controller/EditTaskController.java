@@ -121,8 +121,8 @@ public class EditTaskController implements ActionListener {
 				this.returnToWorkflowView();
 				// makes all the fields blank again
 				etv.resetFields();
-				// Save entire workflow whenever a task is saved
-				wfm.save();
+				// Save only the task when it is saved
+				task.save();
 				break;
 
 			case EditTaskView.ARCHIVE:
@@ -154,8 +154,8 @@ public class EditTaskController implements ActionListener {
 					currentStage.getTasks().remove(task);
 					etv.resetFields();
 
-					// Save entire workflow whenever a task is deleted
-					wfm.save();
+					// Save the current stage whenever a task is deleted
+					currentStage.save();
 					returnToWorkflowView();
 				}
 				break;
@@ -293,8 +293,9 @@ public class EditTaskController implements ActionListener {
 		// sets the due date from the calendar
 		t.setDueDate(etv.getDateField().getDate());
 
-		// move the stage
+		// move the task
 		s.addTask(t);
+		s.save();
 
 		// adds or removes users
 		for (String name : etv.getUsersList().getAllValues()) {
@@ -308,13 +309,13 @@ public class EditTaskController implements ActionListener {
 			}
 		}
 		t.setReq(r);
-		wfm.save();
+		t.save();
 	}
 
 	/**
 	 * returns the user object with the given name from the list of project
 	 * users
-	 * 
+	 *
 	 * @param name
 	 *            the name of the user to find
 	 * @return the user with the given name
