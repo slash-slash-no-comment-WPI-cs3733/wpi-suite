@@ -256,6 +256,9 @@ public class StageController implements DropAreaSaveListener,
 							.reloadData();
 					JanewayModule.tabPaneC.getTabView().getWorkflowController()
 							.repaintView();
+
+					// save to the server
+					WorkflowModel.getInstance().save();
 				}
 				break;
 			// fall through
