@@ -61,7 +61,6 @@ public class TestTabPaneController {
 
 	@Test
 	public void testOpenEditTaskTab() {
-		fixture.requireVisible();
 		// click the task
 		fixture.panel("Task 1").click();
 
@@ -70,6 +69,18 @@ public class TestTabPaneController {
 
 		// check that the tab is open
 		assertEquals(JanewayModule.getTabPaneView().getTitleAt(1), "Task 1");
+	}
+
+	@Test
+	public void testDeleteTaskWithOpenTab() {
+		// click the task
+		fixture.panel("Task 1").click();
+
+		// click the edit button
+		fixture.button(TaskInfoPreviewView.EDIT).click();
+
+		// go back to the workflow
+		JanewayModule.tabPaneC.getTabView().setSelectedIndex(0);
 	}
 
 	@After
