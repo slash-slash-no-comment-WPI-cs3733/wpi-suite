@@ -19,6 +19,7 @@ import java.awt.Insets;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DropTarget;
 import java.awt.event.MouseAdapter;
 import java.io.IOException;
 
@@ -38,6 +39,7 @@ import taskManager.controller.StageTitleController;
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DraggablePanelListener;
 import taskManager.draganddrop.DropAreaPanel;
+import taskManager.draganddrop.DropTargetRedispatcher;
 
 /**
  * @author Beth Martino
@@ -169,6 +171,11 @@ public class StageView extends JPanel implements Transferable {
 		// setTransferHandler creates DropTarget by default; we don't want
 		// stages to respond to stage drops
 		setDropTarget(null);
+
+		// Make scrollpane redispatch drag events down to DropAreaPanel to avoid
+		// scrollbar flicker
+		stage.setDropTarget(new DropTarget(stage, new DropTargetRedispatcher(
+				tasks)));
 	}
 
 	/**
