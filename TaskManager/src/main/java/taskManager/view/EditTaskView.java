@@ -830,4 +830,14 @@ public class EditTaskView extends JPanel {
 	public EditTaskController getController() {
 		return controller;
 	}
+
+	/**
+	 * 
+	 * Whether this editTaskView is creating a new task, or editing one.
+	 *
+	 * @return Mode.CREATE or Mode.EDIT
+	 */
+	public Mode getMode() {
+		return mode;
+	}
 }

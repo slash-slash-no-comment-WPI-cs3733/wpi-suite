@@ -147,8 +147,8 @@ public class TestEditTaskController {
 
 		StageModel stage = wfm.findStageByName(task.getStage().getName());
 
-		assertEquals(stage.findTaskByName("New Task").size(), 0);
-		assertEquals(stage.findTaskByName("newT").size(), 1);
+		assertEquals(0, stage.findTaskByName("New Task").size());
+		assertEquals(1, stage.findTaskByName("newT").size());
 
 		// verify the fields of the task got saved correctly
 		TaskModel newTask = stage.findTaskByName("newT").get(0);
@@ -178,7 +178,7 @@ public class TestEditTaskController {
 		fixture.textBox(EditTaskView.ACT_EFFORT).deleteText().enterText("4");
 		fixture.button(EditTaskView.SAVE).click();
 
-		assertEquals(task.getActualEffort(), 4);
+		assertEquals(4, task.getActualEffort());
 
 	}
 
@@ -277,7 +277,7 @@ public class TestEditTaskController {
 			users.add(user);
 		}
 		ArrayList<String> result = new ArrayList<String>();
-		assertEquals(users, result);
+		assertEquals(result, users);
 	}
 
 	@After
