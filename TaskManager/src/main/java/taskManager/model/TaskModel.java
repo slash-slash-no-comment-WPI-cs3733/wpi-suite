@@ -398,6 +398,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	public void makeIdenticalTo(TaskModel task) {
 		setID(task.getID());
 		name = task.getName();
+		isArchived = task.isArchived();
 		description = task.getDescription();
 		stage = task.getStage();
 		assigned = task.getAssigned();
@@ -426,13 +427,5 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		System.out.println("Deleting " + getClass() + ": " + toJson());
 		request.addObserver(getObserver());
 		request.send();
-	}
-
-	@Override
-	public Boolean identify(Object o) {
-		if (o instanceof TaskModel) {
-			return ((TaskModel) o).getID().equals(this.getID());
-		}
-		return false;
 	}
 }
