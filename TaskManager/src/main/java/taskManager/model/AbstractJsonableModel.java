@@ -105,10 +105,10 @@ public abstract class AbstractJsonableModel<T> extends AbstractModel {
 	public Boolean identify(Object o) {
 		Boolean identical = false;
 		if (o.getClass().equals(this.getClass())) {
-			identical = id == ((AbstractJsonableModel) o).getID();
+			identical = id.equals(((AbstractJsonableModel) o).getID());
 		}
 		if (o instanceof String) {
-			identical = id == (String) o;
+			identical = id.equals((String) o);
 		}
 		return identical;
 	}
