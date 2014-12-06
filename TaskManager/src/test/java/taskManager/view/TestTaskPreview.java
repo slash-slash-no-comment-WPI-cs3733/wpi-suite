@@ -13,7 +13,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.awt.Dimension;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
@@ -21,7 +20,6 @@ import javax.swing.JPanel;
 
 import org.fest.swing.exception.ComponentLookupException;
 import org.fest.swing.fixture.FrameFixture;
-import org.fest.swing.timing.Pause;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -74,9 +72,7 @@ public class TestTaskPreview {
 	@Test
 	public void testPreviewDisappear() {
 		assertFalse(panelShown(TaskInfoPreviewView.NAME));
-		Pause.pause(5, TimeUnit.SECONDS);
-		fixture.label("Task1").click();
-		Pause.pause(5, TimeUnit.SECONDS);
+		fixture.panel("Task1").click();
 		assertTrue(panelShown(TaskInfoPreviewView.NAME));
 		fixture.button(ToolbarView.CREATE_STAGE).click();
 		assertFalse(panelShown(TaskInfoPreviewView.NAME));
