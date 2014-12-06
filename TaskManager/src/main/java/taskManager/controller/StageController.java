@@ -57,7 +57,7 @@ public class StageController implements DropAreaSaveListener,
 	 * Constructor for the StageController gets all the tasks from the
 	 * StageModel, creates the corresponding TaskView and TaskControllers for
 	 * each, and final adds all of the TaskViews to the UI.
-	 * 
+	 *
 	 * @param view
 	 *            the corresponding StageView object
 	 * @param model
@@ -78,7 +78,7 @@ public class StageController implements DropAreaSaveListener,
 			for (TaskModel task : tasks) {
 				// Add only if task is not archived or when task is archived and
 				// archive shown is set to true.
-				if (!task.isArchived() || (task.isArchived() && showArchive)) {
+  			if (!task.isArchived() || showArchive) {
 					// create stage view and controller.
 					TaskView tkv = new TaskView(task.getName(),
 							task.getDueDate(), task.getEstimatedEffort());
@@ -137,7 +137,7 @@ public class StageController implements DropAreaSaveListener,
 	}
 
 	/**
-	 * 
+	 *
 	 * Changes which title is visible, the label or the textbox. If editable is
 	 * true, the textbox is visible.
 	 *
