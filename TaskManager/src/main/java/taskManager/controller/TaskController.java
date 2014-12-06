@@ -302,6 +302,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		// Enable/disable the archive and delete icons when dragged.
+
 		boolean isArchived = model.isArchived();
 		if (isArchived) {
 			JanewayModule.toolV.setArchiveIcon(ToolbarView.UNARCHIVE);
@@ -309,7 +310,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 			JanewayModule.toolV.setArchiveIcon(ToolbarView.ARCHIVE);
 		}
 		JanewayModule.toolV.setArchiveEnabled(true);
-		JanewayModule.toolV.setDeleteEnabled(isArchived);
+			JanewayModule.toolV.setDeleteEnabled(isArchived);
 	}
 
 	@Override
