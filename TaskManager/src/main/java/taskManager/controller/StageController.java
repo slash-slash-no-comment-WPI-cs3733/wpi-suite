@@ -70,10 +70,12 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 
 		// Get state of archive shown check box.
 		boolean showArchive;
-		try {
+
+		// Set to false if toolC not initialized yet
+		if (JanewayModule.toolC == null) {
+			showArchive = false;
+		} else {
 			showArchive = JanewayModule.toolC.isArchiveShown();
-		} catch (ExceptionInInitializerError | NoClassDefFoundError e) {
-			showArchive = false; // If JanewayModule not initialized
 		}
 
 		// Add the tasks.
