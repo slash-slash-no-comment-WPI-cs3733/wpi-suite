@@ -49,7 +49,7 @@ public class TestDragonDropArchiveDelete {
 		wfv = new WorkflowView();
 
 		// create a task model
-		TaskModel task = new TaskModel("Test task", wfm.findStageByName("New"));
+		task = new TaskModel("Test task", wfm.findStageByName("New"));
 		task.setName("Test task");
 		task.setDueDate(new Date());
 
@@ -71,19 +71,20 @@ public class TestDragonDropArchiveDelete {
 	}
 
 	@Test
-	public void testArchiveEnabled() throws InterruptedException {
-
+	public void testArchiveEnabled() {
 		// make sure it is visible
 		fixture.requireVisible();
 
 		// make sure stage is visible
 		fixture.panel("New").requireVisible();
 
+		// The fixture of the task.
 		JPanelFixture taskFixture = fixture.panel("Test task");
 
 		// make sure task is visible
 		taskFixture.requireVisible();
 
+		// set the timing.
 		taskFixture.robot.settings().delayBetweenEvents(100);
 		taskFixture.robot.settings().idleTimeout(100);
 
@@ -91,19 +92,28 @@ public class TestDragonDropArchiveDelete {
 		Component task = fixture.panel("Test task").target;
 		Component archive = fixture.label(ToolbarView.ARCHIVE).target;
 
+		// need to set to true to avoid network errors
+		DDTransferHandler.dragSaved = true;
+
+		// archive icon should be disabled at first.
 		fixture.label(ToolbarView.ARCHIVE).requireDisabled();
+
 		// move mouse to task and click
 		fixture.robot.moveMouse(task);
 		fixture.robot.pressMouse(MouseButton.LEFT_BUTTON);
+
 		// move mouse to archive and release
 		fixture.robot.moveMouse(archive);
-		fixture.label(ToolbarView.ARCHIVE).requireEnabled();
-		fixture.robot.releaseMouse(MouseButton.LEFT_BUTTON);
-		fixture.robot.moveMouse(task);
-		fixture.robot.waitForIdle();
-		// Thread.sleep(1000);
-		// fixture.label(ToolbarView.ARCHIVE).requireDisabled();
 
+		// archive icon should be enabled when dragging
+		fixture.label(ToolbarView.ARCHIVE).requireEnabled();
+
+		// release mouse
+		fixture.robot.releaseMouse(MouseButton.LEFT_BUTTON);
+
+		// archive icon should go back to disabled
+		fixture.label(ToolbarView.ARCHIVE).requireDisabled();
+		fixture.robot.waitForIdle();
 	}
 
 	@After
