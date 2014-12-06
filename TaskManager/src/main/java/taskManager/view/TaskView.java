@@ -53,7 +53,12 @@ public class TaskView extends JPanel implements Transferable {
 	 * @param estEffort
 	 *            the estimated effort of the task
 	 */
-	public TaskView(String name, Date duedate, int estEffort) {
+	public TaskView(String name, Date duedate, TaskController controller) {
+
+		// Set controllers
+		this.controller = controller;
+		this.addMouseListener(this.controller);
+		this.addMouseMotionListener(this.controller);
 
 		// organizes the data in a vertical list
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -75,7 +80,6 @@ public class TaskView extends JPanel implements Transferable {
 		// adds the data to the view
 		// note: the Calendar.MONTH value ranges between 0-11 so here we add 1
 		// to the month.
-
 		JLabel nameLabel = new JLabel();
 		JLabel dueLabel = new JLabel("Due: " + (date.get(Calendar.MONTH) + 1)
 				+ "/" + date.get(Calendar.DATE) + "/"
@@ -83,7 +87,6 @@ public class TaskView extends JPanel implements Transferable {
 
 		// This creates a maximum text-string length before the name gets
 		// truncated in the view
-
 		nameLabel.setText("Average Name Length plu");
 		final Dimension size = nameLabel.getPreferredSize();
 
@@ -112,18 +115,6 @@ public class TaskView extends JPanel implements Transferable {
 	@Override
 	public String getName() {
 		return super.getName();
-	}
-
-	/**
-	 * Attaches the task controller to this view and associates listeners
-	 * 
-	 * @param controller
-	 *            the controller to be attached to this view
-	 */
-	public void setController(TaskController controller) {
-		this.controller = controller;
-		this.addMouseListener(controller);
-		this.addMouseMotionListener(controller);
 	}
 
 	@Override

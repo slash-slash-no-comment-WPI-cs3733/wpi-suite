@@ -10,6 +10,7 @@ package taskManager.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -20,6 +21,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
 
@@ -111,17 +113,19 @@ public class TaskInfoPreviewView extends JPanel {
 
 		// The task's description
 		JTextArea description = new JTextArea();
-		description.setText(ellipsize(this.taskM.getDescription(), 175));
-		description.setSize(new Dimension(this.getWidth() - 45, 80));
-		description.setMaximumSize(new Dimension(this.getWidth() - 45, 80));
-		description.setMinimumSize(new Dimension(this.getWidth() - 45, 80));
-		description.setPreferredSize(new Dimension(this.getWidth() - 45, 80));
-		description.setAlignmentX(CENTER_ALIGNMENT);
+		description.setText(this.taskM.getDescription());
 		description.setEditable(false);
 		description.setLineWrap(true);
 		description.setWrapStyleWord(true);
 		description.setBackground(Colors.TASK);
-		info.add(description);
+		description.setFont(new Font("Monospaced", Font.PLAIN, 12));
+		description.setCaretPosition(0);
+		JScrollPane descScroll = new JScrollPane(description);
+		descScroll.setSize(new Dimension(this.getWidth() - 45, 80));
+		descScroll.setMaximumSize(new Dimension(this.getWidth() - 45, 80));
+		descScroll.setMinimumSize(new Dimension(this.getWidth() - 45, 80));
+		descScroll.setPreferredSize(new Dimension(this.getWidth() - 45, 80));
+		info.add(descScroll);
 
 		// The task's due date
 		JLabel due = new JLabel("Due:");
@@ -240,6 +244,10 @@ public class TaskInfoPreviewView extends JPanel {
 		// Start by chopping off at the word before max
 		// the 3 is to account for '...'
 		int end = text.lastIndexOf(' ', max - 3);
+		// No spaces in text
+		if (end == -1) {
+			return text.substring(0, max - 3) + "...";
+		}
 		return text.substring(0, end) + "...";
 	}
 }

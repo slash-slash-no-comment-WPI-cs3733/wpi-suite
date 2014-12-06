@@ -129,14 +129,13 @@ public class EditTaskController implements ActionListener {
 
 				// archive this task
 				task = currentStage.findTaskByID(taskID);
-				boolean isArchived = task.isArchived();
-				if (isArchived) {
+				if (task.isArchived()) {
 					etv.getArchiveButton().setText("Archive");
 				} else {
 					etv.getArchiveButton().setText("Unarchive");
 				}
-				task.setArchived(!isArchived);
-				etv.setDeleteEnabled(!isArchived);
+				task.switchArchived();
+				etv.setDeleteEnabled(task.isArchived());
 
 				// Save and reload the workflow.
 				JanewayModule.tabPaneC.getTabView().reloadWorkflow();

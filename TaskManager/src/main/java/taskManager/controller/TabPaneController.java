@@ -52,7 +52,7 @@ public class TabPaneController {
 		// Each press of create a new tab should launch a new createTaskTab
 		EditTaskView etv = new EditTaskView(Mode.CREATE);
 		etv.setController(new EditTaskController(etv));
-		etv.setFieldController(new TaskInputController(etv));
+		etv.setFieldController(new TaskInputValidator(etv));
 		// Set the dropdown menu to first stage and disable the menu.
 		etv.setStageDropdown(0);
 

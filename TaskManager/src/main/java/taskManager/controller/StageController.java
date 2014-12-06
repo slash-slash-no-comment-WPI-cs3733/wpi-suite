@@ -85,10 +85,7 @@ public class StageController implements DropAreaSaveListener,
 				// archive shown is set to true.
 				if (!task.isArchived() || (task.isArchived() && showArchive)) {
 					// create stage view and controller.
-					TaskView tkv = new TaskView(task.getName(),
-							task.getDueDate(), task.getEstimatedEffort());
-					tkv.setController(new TaskController(tkv, task));
-					this.view.addTaskView(tkv);
+					this.view.addTaskView(new TaskController(task).getView());
 				}
 			}
 		}
@@ -255,7 +252,7 @@ public class StageController implements DropAreaSaveListener,
 					} else {
 						model.changeStageName(view.getLabelText());
 					}
-					newStage = false;
+					this.newStage = false;
 					// refresh the workflow with the new stage
 					this.switchTitle(false);
 					JanewayModule.tabPaneC.getTabView().getWorkflowController()

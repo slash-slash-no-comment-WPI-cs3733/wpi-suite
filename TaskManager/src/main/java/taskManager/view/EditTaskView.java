@@ -33,7 +33,7 @@ import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.JXDatePicker;
 
 import taskManager.controller.EditTaskController;
-import taskManager.controller.TaskInputController;
+import taskManager.controller.TaskInputValidator;
 import taskManager.model.ActivityModel;
 import taskManager.model.ActivityModel.activityModelType;
 
@@ -371,7 +371,7 @@ public class EditTaskView extends JPanel {
 	 * @param controller
 	 *            the controller to be attached to this view
 	 */
-	public void setFieldController(TaskInputController controller) {
+	public void setFieldController(TaskInputValidator controller) {
 		titleField.addKeyListener(controller);
 		descripArea.addKeyListener(controller);
 		estEffortField.addKeyListener(controller);
@@ -802,7 +802,7 @@ public class EditTaskView extends JPanel {
 	@Override
 	public void setVisible(boolean visible) {
 		if (visible && titleField.getKeyListeners().length > 0) {
-			TaskInputController tic = (TaskInputController) titleField
+			TaskInputValidator tic = (TaskInputValidator) titleField
 					.getKeyListeners()[0];
 			tic.checkFields();
 			reloadActivitiesPanel();

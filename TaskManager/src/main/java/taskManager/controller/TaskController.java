@@ -48,7 +48,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	private final User[] projectUsers = JanewayModule.users;
 	private Set<String> assignedUsers;
 
-	public Boolean thisTaskInfoOut = false;
+	private boolean thisTaskInfoOut = false;
 
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
@@ -59,22 +59,28 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	 * @param model
 	 *            the corresponding TaskModel object
 	 */
-	public TaskController(TaskView view, TaskModel model) {
+	public TaskController(TaskModel model) throws IllegalArgumentException {
+		if (model == null) {
+			throw new IllegalArgumentException(
+					"You must pass a valid TaskModel.");
+		}
+
 		this.tabPaneC = JanewayModule.tabPaneC;
-		this.view = view;
 		this.model = model;
+		this.view = new TaskView(this.model.getName(), this.model.getDueDate(),
+				this);
 		sm = model.getStage();
 
 		etv = new EditTaskView(Mode.EDIT);
 		etv.setController(new EditTaskController(etv));
-		etv.setFieldController(new TaskInputController(etv));
+		etv.setFieldController(new TaskInputValidator(etv));
 
-		assignedUsers = model.getAssigned();
+		assignedUsers = this.model.getAssigned();
 
-		req = model.getReq();
+		req = this.model.getReq();
 
 		// Set the background to orange if the task is archived.
-		if (model.isArchived()) {
+		if (this.model.isArchived()) {
 			view.setBackground(Colors.ARCHIVE);
 		} else {
 			view.setBackground(Colors.TASK);
@@ -117,8 +123,8 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	 * @param bool
 	 *            The boolean to set the task's isArchived field.
 	 */
-	public void setArchived(boolean bool) {
-		model.setArchived(bool);
+	public void switchArchived() {
+		model.switchArchived();
 	}
 
 	/**
@@ -214,8 +220,8 @@ public class TaskController implements MouseListener, MouseMotionListener {
 
 	/**
 	 * 
-	 * Make the task a darker color. Used for when the mouse is over a task or
-	 * when a bubble is out for this task
+	 * Make the task a darker color. Used for when the mouse is over a task.
+	 * Does not change the color of a task that has a taskInfo bubble out.
 	 *
 	 */
 	public void setToHoverColor() {
@@ -228,7 +234,9 @@ public class TaskController implements MouseListener, MouseMotionListener {
 
 	/**
 	 * 
-	 * Resets the task background to its original color
+	 * Resets the task background to its original color. This is orange/yellow
+	 * for Archived tasks, Green for a task which has a taskInfo bubble out, and
+	 * beige for a normal task.
 	 *
 	 */
 	public void resetBackground() {
@@ -241,6 +249,26 @@ public class TaskController implements MouseListener, MouseMotionListener {
 		} else {
 			view.setBackground(Colors.TASK);
 		}
+	}
+
+	/**
+	 * 
+	 * If the taskInfo bubble for this task was removed from view. Resets the
+	 * flag to correctly color the task.
+	 *
+	 */
+	public void taskInfoRemoved() {
+		thisTaskInfoOut = false;
+		resetBackground();
+	}
+
+	/**
+	 *
+	 * 
+	 * @return The TaskView associated with this controller
+	 */
+	public TaskView getView() {
+		return view;
 	}
 
 	@Override
@@ -257,7 +285,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 
 		thisTaskInfoOut = true;
 
-		// make the associated task a darker color while the bubble is out
+		// make the associated task a different color while the bubble is out
 		if (isArchived()) {
 			view.setBackground(Colors.ARCHIVE_CLICKED);
 		} else {
@@ -268,13 +296,11 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// do nothing
-
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// do nothing
-
 	}
 
 	@Override
@@ -303,15 +329,5 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		// Do nothing
-	}
-
-	/**
-	 * 
-	 * If the taskInfo bubble for this task was removed from view.
-	 *
-	 */
-	public void taskInfoRemoved() {
-		thisTaskInfoOut = false;
-		resetBackground();
 	}
 }
