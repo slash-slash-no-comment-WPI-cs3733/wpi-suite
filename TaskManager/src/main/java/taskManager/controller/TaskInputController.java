@@ -52,7 +52,6 @@ public class TaskInputController implements KeyListener, FocusListener,
 		boolean descriptionValid = true;
 		boolean estEffortValid = true;
 		boolean actEffortValid = true;
-		boolean commentValid = true;
 		// checks each required field and determines if it meets the
 		// requirements for that field
 
@@ -96,7 +95,6 @@ public class TaskInputController implements KeyListener, FocusListener,
 			}
 		}
 
-
 		// display the errors
 		etv.setTitleErrorVisible(!titleValid);
 		etv.setDescriptionErrorVisible(!descriptionValid);
@@ -106,17 +104,19 @@ public class TaskInputController implements KeyListener, FocusListener,
 		return titleValid && descriptionValid && estEffortValid
 				&& actEffortValid;
 	}
+
 	/**
 	 * checks if comments are valid
+	 * 
 	 * @param commentValid
-	 * 					true if comment is valid
+	 *            true if comment is valid
 	 * @return commentValid
 	 *
 	 */
-	public boolean checkSaveComment(){
+	public boolean checkSaveComment() {
 		boolean commentValid = true;
-		if (etv.getCommentsField().getText().isEmpty()){
-			//Comments Pane
+		if (etv.getCommentsFieldText().isEmpty()) {
+			// Comments Pane
 			commentValid = false;
 		}
 		return commentValid;
@@ -126,8 +126,7 @@ public class TaskInputController implements KeyListener, FocusListener,
 	 * validate the inputs
 	 */
 	public void validate() {
-		boolean checked = this.checkFields();
-		etv.setSaveEnabled(checked);
+		etv.setSaveEnabled(this.checkFields());
 		etv.setAddUserEnabled(addUsersSelected);
 		etv.setRemoveUserEnabled(removeUsersSelected);
 		etv.setCommentSubmitEnabled(this.checkSaveComment());

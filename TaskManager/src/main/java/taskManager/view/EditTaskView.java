@@ -695,16 +695,17 @@ public class EditTaskView extends JPanel {
 	public void setSaveEnabled(boolean e) {
 		this.save.setEnabled(e);
 	}
-	
+
 	/**
 	 * enables or disables the comment submit button
 	 * 
 	 * @param e
-	 * 			  true is enabled false is disabled
+	 *            true is enabled false is disabled
 	 */
-	public void setCommentSubmitEnabled(boolean e){
+	public void setCommentSubmitEnabled(boolean e) {
 		this.submitComment.setEnabled(e);
 	}
+
 	/**
 	 * 
 	 * Adds comment to the activities list and refreshes the activities panel.
@@ -717,6 +718,7 @@ public class EditTaskView extends JPanel {
 		newActivities.add(act);
 		commentsField.setText("");
 		reloadActivitiesPanel();
+		fieldC.validate();
 	}
 
 	/**
@@ -850,13 +852,14 @@ public class EditTaskView extends JPanel {
 	public EditTaskController getController() {
 		return controller;
 	}
+
 	/**
 	 * 
-	 * Returns the comments field
+	 * Returns the comments field's text
 	 * 
-	 * @return commentsField
+	 * @return The text the user wants to say
 	 */
-	public JTextArea getCommentsField(){
-		return commentsField;
+	public String getCommentsFieldText() {
+		return commentsField.getText();
 	}
 }
