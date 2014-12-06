@@ -39,7 +39,7 @@ public class TabPaneController {
 	 */
 	public void addCreateTaskTab() {
 		// Each press of create a new tab should launch a new createTaskTab
-		new EditTaskController(this);
+		new EditTaskController();
 
 		// Focuses on the new tab
 		int index = tabPaneV.getTabCount() - 1;

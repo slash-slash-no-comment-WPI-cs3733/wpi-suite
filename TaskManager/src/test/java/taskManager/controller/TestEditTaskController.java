@@ -57,18 +57,13 @@ public class TestEditTaskController {
 		// create a new workflow model
 		wfm.makeIdenticalTo(new WorkflowModel());
 
-		// create the edit task controller
-		etv = new EditTaskView(EditTaskView.Mode.CREATE);
-		etv.setController(new EditTaskController(etv));
-		etv.setFieldController(new TaskInputController(etv));
-
 		// give it some stages
 		for (String name : stageNames) {
 			new StageModel(name, true);
 		}
 
-		etv.resetFields();
-		etv.setVisible(true);
+		EditTaskController etc = new EditTaskController();
+		etv = etc.getView();
 
 		frame = new JFrame();
 		// frame.setLayout(new FlowLayout());
@@ -96,7 +91,7 @@ public class TestEditTaskController {
 
 		// verify the task got saved
 		StageModel stage = wfm.findStageByName("New");
-		assertEquals(stage.findTaskByName("name").size(), 1);
+		assertEquals(1, stage.findTaskByName("name").size());
 	}
 
 	@Test
@@ -298,6 +293,7 @@ public class TestEditTaskController {
 	private TaskModel createAndLoadTask() {
 
 		// add a task
+		System.out.println(wfm.getStages());
 		StageModel stage = wfm.getStages().get(3);
 		TaskModel task = new TaskModel("New Task", stage);
 		task.setDescription("test description");

@@ -813,6 +813,7 @@ public class EditTaskView extends JPanel {
 		if (visible && controller != null) {
 			controller.reloadData();
 		}
+
 		super.setVisible(visible);
 	}
 

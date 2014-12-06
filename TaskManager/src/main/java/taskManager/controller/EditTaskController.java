@@ -52,24 +52,10 @@ public class EditTaskController implements ActionListener {
 	private TaskModel model;
 
 	/**
-	 * Constructor, attaches the edit task view to this controller
-	 * 
-	 * @param wfm
-	 *            The workflowModel that belongs to this controller.
-	 */
-	public EditTaskController(EditTaskView etv) {
-		this.etv = etv;
-
-		model = null;
-
-		this.reloadData();
-	}
-
-	/**
 	 * Creates an EditTaskController and EditTaskView form for a *new* Task.
 	 *
 	 */
-	public EditTaskController(TabPaneController tabPaneC) {
+	public EditTaskController() {
 		etv = new EditTaskView(Mode.CREATE);
 
 		etv.setController(this);
@@ -95,9 +81,9 @@ public class EditTaskController implements ActionListener {
 		}
 		etv.getProjectUsersList().addAllToList(projectUserNames);
 
-		tabPaneC.addTab("Create Task", etv, true);
+		JanewayModule.tabPaneC.addTab("Create Task", etv, true);
 
-		this.reloadData();
+		reloadData();
 	}
 
 	/**
@@ -226,12 +212,7 @@ public class EditTaskController implements ActionListener {
 
 				if (etv.getFieldController().checkFields()) {
 					// if editing
-					if (etv.getMode() == Mode.EDIT) {
-
-						if (model == null) { // TODO check if this is necessary.
-							model = WorkflowModel.getInstance().findTaskByID(
-									taskID);
-						}
+					if (isEditingTask()) {
 
 						save();
 					}
@@ -257,7 +238,6 @@ public class EditTaskController implements ActionListener {
 			case EditTaskView.ARCHIVE:
 
 				// archive this task
-				model = currentStage.findTaskByID(taskID);
 				boolean isArchived = model.isArchived();
 				if (isArchived) {
 					etv.getArchiveButton().setText("Archive");
@@ -345,7 +325,8 @@ public class EditTaskController implements ActionListener {
 				break;
 
 			case EditTaskView.REFRESH:
-				if (currentStage != null) { // if the task already exists
+				// TODO change to isEditingTask()
+				if (model != null) { // if the task already exists
 					// Clear the activities list.
 					etv.clearActivities();
 
@@ -364,20 +345,36 @@ public class EditTaskController implements ActionListener {
 	 * refreshes the data on the view
 	 */
 	public void reloadData() {
+
 		JComboBox<String> stages = etv.getStages();
+
+		String selectedStage = (String) stages.getSelectedItem();
+
 		stages.removeAllItems();
 		for (StageModel stage : WorkflowModel.getInstance().getStages()) {
 			stages.addItem(stage.getName());
+		}
+		// Select the 1st item if the old selected item doesn't exist
+		stages.setSelectedItem(0);
+		if (!(selectedStage == null)) {
+			stages.setSelectedItem(selectedStage);
 		}
 
 		List<Requirement> reqs = RequirementModel.getInstance()
 				.getRequirements();
 		JComboBox<String> requirements = etv.getRequirements();
+		String selectedRequirement = (String) requirements.getSelectedItem();
 		requirements.removeAllItems();
 		requirements.addItem(EditTaskView.NO_REQ);
 		for (Requirement req : reqs) {
 			requirements.addItem(req.getName());
 		}
+		// Select the 1st item if the old selected item doesn't exist
+		requirements.setSelectedItem(0);
+		if (!(selectedRequirement == null)) {
+			requirements.setSelectedItem(selectedRequirement);
+		}
+
 	}
 
 	/**
@@ -720,5 +717,26 @@ public class EditTaskController implements ActionListener {
 			edited = true;
 		}
 		return edited;
+	}
+
+	/**
+	 * 
+	 * Returns whether this controller is editing a task.
+	 *
+	 * @return Whether we are creating (false) or editing (true) a task
+	 */
+	private boolean isEditingTask() {
+		// Sadly isn't equivalent to model == null;
+		return Mode.EDIT.equals(etv.getMode());
+	}
+
+	/**
+	 * 
+	 * Returns this controller's view.
+	 *
+	 * @return The Form to edit a task
+	 */
+	public EditTaskView getView() {
+		return etv;
 	}
 }
