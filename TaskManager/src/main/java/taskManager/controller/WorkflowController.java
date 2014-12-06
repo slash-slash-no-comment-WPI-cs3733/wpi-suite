@@ -164,7 +164,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		boolean changed = tc.moveStageToIndex(index);
 
 		if (changed) {
-			WorkflowModel.getInstance().save();
+			model.save();
 			DDTransferHandler.dragSaved = true;
 		}
 	}
@@ -272,9 +272,9 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	public WorkflowView getView() {
 		return view;
 	}
-	
-	public static WorkflowController getInstance(){
-		if(instance == null){
+
+	public static WorkflowController getInstance() {
+		if (instance == null) {
 			instance = new WorkflowController();
 		}
 		return instance;
