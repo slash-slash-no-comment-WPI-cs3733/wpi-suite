@@ -49,7 +49,6 @@ public class EditTaskController implements ActionListener {
 	private final EditTaskView etv;
 	private String taskID;
 	private ArrayList<String> toRemove = new ArrayList<String>();
-	private TaskInputController fieldController;
 	private TaskModel model;
 
 	/**
@@ -66,9 +65,138 @@ public class EditTaskController implements ActionListener {
 		this.reloadData();
 	}
 
-	public EditTaskController(Mode viewMode, TaskModel model) {
-		etv = new EditTaskView(viewMode);
+	/**
+	 * Creates an EditTaskController and EditTaskView form for a *new* Task.
+	 *
+	 */
+	public EditTaskController(TabPaneController tabPaneC) {
+		etv = new EditTaskView(Mode.CREATE);
+
+		etv.setController(this);
+		etv.setFieldController(new TaskInputController(etv));
+		// Set the dropdown menu to first stage and disable the menu.
+		etv.setStageDropdown(0);
+
+		etv.setRefreshEnabled(false);
+		// Disable save button when creating a task.
+		etv.setSaveEnabled(false);
+
+		// Clear all activities, reset fields.
+		etv.clearActivities();
+		etv.resetFields();
+
+		// fills the user lists
+		ArrayList<String> projectUserNames = new ArrayList<String>();
+		for (User u : JanewayModule.users) {
+			String name = u.getUsername();
+			if (!projectUserNames.contains(name)) {
+				projectUserNames.add(name);
+			}
+		}
+		etv.getProjectUsersList().addAllToList(projectUserNames);
+
+		tabPaneC.addTab("Create Task", etv, true);
+
+		this.reloadData();
+	}
+
+	/**
+	 * 
+	 * Creates an EditTaskController and EditTaskView form for an *already
+	 * existing* Task.
+	 *
+	 * @param model
+	 */
+	public EditTaskController(TaskModel model) {
+		etv = new EditTaskView(Mode.EDIT);
 		this.model = model;
+
+		etv.setController(this);
+		etv.setFieldController(new TaskInputController(etv));
+
+		// uses the title field to hold the unique id
+		etv.getTitle().setName(this.model.getID());
+
+		// uses description field to hold the name of the stage
+		etv.getDescription().setName(this.model.getStage().getName());
+
+		// populate editable fields with this tasks info
+		etv.setTitle(model.getName());
+		etv.setDescription(model.getDescription());
+		etv.setDate(model.getDueDate());
+
+		// Sets the effort values only if user specified them.
+		if (model.isEstimatedEffortSet()) {
+			etv.setEstEffort(model.getEstimatedEffort());
+		}
+		if (model.isActualEffortSet()) {
+			etv.setActEffort(model.getActualEffort());
+		}
+
+		JanewayModule.tabPaneC.addEditTaskTab(etv);
+
+		// figures out the index of the stage, then sets the drop down to the
+		// stage at that index
+		JComboBox<String> stages = etv.getStages();
+		for (int i = 0; i < stages.getItemCount(); i++) {
+			if (etv.getStages().getItemAt(i) == model.getStage().getName()) {
+				etv.setStageDropdown(i);
+				break;
+			}
+		}
+
+		etv.getStages().setSelectedItem(model.getStage().getName());
+
+		// populates the project users list
+		ArrayList<String> projectUserNames = new ArrayList<String>();
+		for (User u : JanewayModule.users) {
+			String name = u.getUsername();
+			if (!projectUserNames.contains(name)
+					&& !model.getAssigned().contains(name)) {
+				projectUserNames.add(name);
+			}
+		}
+		etv.getProjectUsersList().addAllToList(projectUserNames);
+
+		// populates the assigned users panel
+		ArrayList<String> assignedUserNames = new ArrayList<String>();
+		for (String u : model.getAssigned()) {
+			if (!assignedUserNames.contains(u)) {
+				assignedUserNames.add(u);
+			}
+		}
+		etv.getUsersList().addAllToList(assignedUserNames);
+
+		// Enable save button when editing a task.
+		etv.setSaveEnabled(true);
+
+		// Clear the activities list.
+		etv.clearActivities();
+
+		// set activities pane
+		List<ActivityModel> tskActivities = model.getActivities();
+		etv.setActivities(tskActivities);
+		etv.setActivitiesPanel(tskActivities);
+
+		etv.setRefreshEnabled(true);
+
+		// set the requirement dropdown
+		if (model.getReq() != null) {
+			etv.getRequirements().setSelectedItem(model.getReq().getName());
+		} else {
+			etv.getRequirements().setSelectedItem(EditTaskView.NO_REQ);
+		}
+
+		// makes the archive button clickable
+		etv.enableArchive();
+
+		// Set text for archive button.
+		if (model.isArchived()) {
+			etv.getArchiveButton().setText("Unarchive");
+		} else {
+			etv.getArchiveButton().setText("Archive");
+		}
+		etv.setDeleteEnabled(model.isArchived());
 
 		this.reloadData();
 

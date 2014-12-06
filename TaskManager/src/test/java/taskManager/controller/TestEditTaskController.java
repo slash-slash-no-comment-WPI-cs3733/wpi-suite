@@ -166,7 +166,7 @@ public class TestEditTaskController {
 		fixture.button(EditTaskView.SAVE).click();
 
 		// make sure the task got moved
-		assertEquals(task.getStage().getName(), stageNames[0]);
+		assertEquals(stageNames[0], task.getStage().getName());
 
 	}
 
