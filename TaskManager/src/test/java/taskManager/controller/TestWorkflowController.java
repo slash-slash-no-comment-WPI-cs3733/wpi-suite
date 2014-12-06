@@ -15,6 +15,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import taskManager.ScreenshotOnFail;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
@@ -25,7 +26,7 @@ import taskManager.view.WorkflowView;
  *
  * @author Jon Sorrells
  */
-public class TestWorkflowController {
+public class TestWorkflowController extends ScreenshotOnFail {
 
 	private final String[] stageNames = { "first", "second", "not-a-duplicate",
 			"last" };

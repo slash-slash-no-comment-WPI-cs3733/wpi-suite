@@ -20,6 +20,7 @@ import javax.swing.TransferHandler;
 
 import taskManager.JanewayModule;
 import taskManager.controller.WorkflowController;
+import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.WorkflowModel;
 import taskManager.view.ToolbarView;
 
