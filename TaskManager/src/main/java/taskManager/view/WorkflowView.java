@@ -65,7 +65,7 @@ public class WorkflowView extends JLayeredPane {
 
 			// Redispatch drag events down to DropAreaPanel
 			this.setDropTarget(new DropTarget(this, new DropTargetRedispatcher(
-					stages)));
+					stages, DDTransferHandler.getStageFlavor())));
 		}
 		stages.add(stv);
 	}

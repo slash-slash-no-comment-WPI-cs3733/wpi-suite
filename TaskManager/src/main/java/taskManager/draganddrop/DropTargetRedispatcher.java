@@ -10,6 +10,7 @@ package taskManager.draganddrop;
 
 import java.awt.Component;
 import java.awt.Point;
+import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.dnd.DropTargetEvent;
@@ -28,19 +29,23 @@ import javax.swing.SwingUtilities;
 public class DropTargetRedispatcher implements DropTargetListener {
 
 	private final Component target;
+	private final DataFlavor flavor;
 
 	/**
 	 * Constructor with target
 	 *
 	 * @param target
 	 *            Component to which events will be dispatched
+	 * @param flavor
+	 *            Accepted flavor to redispatch
 	 */
-	public DropTargetRedispatcher(Component target) {
+	public DropTargetRedispatcher(Component target, DataFlavor flavor) {
 		if (target.getDropTarget() == null) {
 			throw new IllegalArgumentException(
 					"Component passed to DropTargetRedispatcher does not have a DropTarget");
 		}
 		this.target = target;
+		this.flavor = flavor;
 	}
 
 	/*
@@ -50,7 +55,9 @@ public class DropTargetRedispatcher implements DropTargetListener {
 	 */
 	@Override
 	public void dragEnter(DropTargetDragEvent dtde) {
-		target.getDropTarget().dragEnter(convertCoords(dtde, target));
+		if (dtde.getTransferable().isDataFlavorSupported(flavor)) {
+			target.getDropTarget().dragEnter(convertCoords(dtde, target));
+		}
 	}
 
 	/*
@@ -60,7 +67,9 @@ public class DropTargetRedispatcher implements DropTargetListener {
 	 */
 	@Override
 	public void dragOver(DropTargetDragEvent dtde) {
-		target.getDropTarget().dragOver(convertCoords(dtde, target));
+		if (dtde.getTransferable().isDataFlavorSupported(flavor)) {
+			target.getDropTarget().dragOver(convertCoords(dtde, target));
+		}
 	}
 
 	/*
@@ -69,7 +78,10 @@ public class DropTargetRedispatcher implements DropTargetListener {
 	 */
 	@Override
 	public void dropActionChanged(DropTargetDragEvent dtde) {
-		target.getDropTarget().dropActionChanged(convertCoords(dtde, target));
+		if (dtde.getTransferable().isDataFlavorSupported(flavor)) {
+			target.getDropTarget().dropActionChanged(
+					convertCoords(dtde, target));
+		}
 	}
 
 	/*
@@ -87,7 +99,9 @@ public class DropTargetRedispatcher implements DropTargetListener {
 	 */
 	@Override
 	public void drop(DropTargetDropEvent dtde) {
-		target.getDropTarget().drop(convertCoords(dtde, target));
+		if (dtde.getTransferable().isDataFlavorSupported(flavor)) {
+			target.getDropTarget().drop(convertCoords(dtde, target));
+		}
 	}
 
 	/**
