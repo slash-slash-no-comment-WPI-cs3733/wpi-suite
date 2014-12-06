@@ -56,7 +56,7 @@ public class StageController implements DropAreaSaveListener,
 	 * Constructor for the StageController gets all the tasks from the
 	 * StageModel, creates the corresponding TaskView and TaskControllers for
 	 * each, and final adds all of the TaskViews to the UI.
-	 * 
+	 *
 	 * @param view
 	 *            the corresponding StageView object
 	 * @param model
@@ -253,9 +253,11 @@ public class StageController implements DropAreaSaveListener,
 					if (model == null) {
 						model = new StageModel(view.getLabelText());
 					} else {
-						model.changeStageName(view.getLabelText());
+						model.setName(view.getLabelText());
 					}
 					newStage = false;
+					WorkflowModel.getInstance().save();
+
 					// refresh the workflow with the new stage
 					this.switchTitle(false);
 					JanewayModule.tabPaneC.getTabView().getWorkflowController()
