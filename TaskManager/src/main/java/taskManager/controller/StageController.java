@@ -35,15 +35,10 @@ import taskManager.view.TaskView;
  * Controller for stages.
  *
  * @author Stefan Alexander
+ * @author Sam Khalandovsky
  * @version November 9, 2014
  */
 
-/**
- * Description
- *
- * @author Sam Khalandovsky
- * @version Dec 3, 2014
- */
 public class StageController implements DropAreaSaveListener,
 		MouseMotionListener, MouseListener, ActionListener {
 
