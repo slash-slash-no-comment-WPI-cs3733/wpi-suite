@@ -41,6 +41,8 @@ import taskManager.model.TaskModel;
  */
 public class TaskInfoPreviewView extends JPanel {
 
+	public static final String NAME = "TaskInfoPreviewView";
+
 	private static final long serialVersionUID = -3486346306247702460L;
 	private TaskModel taskM;
 	private TaskController taskC;
@@ -57,6 +59,7 @@ public class TaskInfoPreviewView extends JPanel {
 
 		this.setLayout(null);
 		this.setOpaque(false);
+		this.setName(NAME);
 
 		JPanel bgPane = new JPanel();
 		bgPane.setLayout(new MigLayout("wrap 1", "5[]5", "0[]:push[]"));
