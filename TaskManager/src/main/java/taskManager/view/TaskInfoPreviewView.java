@@ -111,7 +111,7 @@ public class TaskInfoPreviewView extends JPanel {
 
 		// The task's description
 		JTextArea description = new JTextArea();
-		description.setText(ellipsize(this.taskM.getDescription(), 175));
+		description.setText(this.taskM.getDescription());
 		description.setSize(new Dimension(this.getWidth() - 45, 80));
 		description.setMaximumSize(new Dimension(this.getWidth() - 45, 80));
 		description.setMinimumSize(new Dimension(this.getWidth() - 45, 80));
@@ -217,29 +217,5 @@ public class TaskInfoPreviewView extends JPanel {
 	 */
 	public TaskController getTaskController() {
 		return taskC;
-	}
-
-	/**
-	 * 
-	 * Takes a String and if its length is greater than max, it truncates and
-	 * adds '...'. This example is modified from:
-	 * http://stackoverflow.com/questions
-	 * /3597550/ideal-method-to-truncate-a-string-with-ellipsis
-	 *
-	 * @param text
-	 *            The string to add '...' to
-	 * @param max
-	 *            The max number of characters allowed
-	 * @return
-	 */
-	private static String ellipsize(String text, int max) {
-
-		if (text.length() <= max)
-			return text;
-
-		// Start by chopping off at the word before max
-		// the 3 is to account for '...'
-		int end = text.lastIndexOf(' ', max - 3);
-		return text.substring(0, end) + "...";
 	}
 }

@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
+import taskManager.view.StageView;
 import taskManager.view.WorkflowView;
 
 /**
@@ -42,6 +43,7 @@ public class TestWorkflowController {
 		// give it the stages
 		for (String name : stageNames) {
 			new StageModel(name, false);
+			wfv.addStageView(new StageView(name));
 		}
 
 		// create controller for view
