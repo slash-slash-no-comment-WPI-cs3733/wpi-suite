@@ -105,9 +105,10 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	}
 
 	/**
-	 * Required to create dummy instance Necessary for passing TaskModel type
-	 * into DataStore *
+	 * Required to create dummy instance; necessary for passing TaskModel type
+	 * into DataStore. Should not be called manually
 	 */
+	@Deprecated
 	public TaskModel() {
 	};
 
@@ -150,11 +151,12 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	}
 
 	/**
+	 * Change the current task stage. This should be normally done through the
+	 * stage's methods
+	 * 
 	 * @param stage
-	 *            Change the current task stage. The stage should be updated as
-	 *            well.
 	 */
-	public void setStage(StageModel stage) {
+	protected void setStage(StageModel stage) {
 		this.stage = stage;
 	}
 
@@ -390,6 +392,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	public void makeIdenticalTo(TaskModel task) {
 		setID(task.getID());
 		name = task.getName();
+		isArchived = task.isArchived();
 		description = task.getDescription();
 		stage = task.getStage();
 		assigned = task.getAssigned();
@@ -418,13 +421,5 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		System.out.println("Deleting " + getClass() + ": " + toJson());
 		request.addObserver(getObserver());
 		request.send();
-	}
-
-	@Override
-	public Boolean identify(Object o) {
-		if (o instanceof TaskModel) {
-			return ((TaskModel) o).getID().equals(this.getID());
-		}
-		return false;
 	}
 }
