@@ -49,6 +49,7 @@ public class EditTaskController implements ActionListener {
 	private final User[] projectUsers = JanewayModule.users;
 	private String taskID;
 	private ArrayList<String> toRemove = new ArrayList<String>();
+	private TaskInputController fieldController;
 
 	/**
 	 * Constructor, attaches the edit task view to this controller
@@ -96,33 +97,38 @@ public class EditTaskController implements ActionListener {
 
 			case EditTaskView.SAVE:
 				TaskModel task;
-				// if editing
-				if (exists) {
-					// set the task to be edited
-					task = currentStage.findTaskByID(taskID);
-					this.setTaskData(task, desiredStage, requirement);
 
-					this.setTaskID("000000");
-				}
-				// if creating a new task
-				else {
-					// creates a new task model
-					task = new TaskModel(etv.getTitle().getText(), desiredStage);
-					this.setTaskData(task, desiredStage, requirement);
-				}
+				if (etv.getFieldController().checkFields()) {
+					// if editing
+					if (exists) {
+						// set the task to be edited
+						task = currentStage.findTaskByID(taskID);
+						this.setTaskData(task, desiredStage, requirement);
+						this.setTaskID(task.getID());
+					}
+					// if creating a new task
+					else {
+						// creates a new task model
+						task = new TaskModel(etv.getTitle().getText(),
+								desiredStage);
+						this.setTaskData(task, desiredStage, requirement);
+					}
 
-				// Add the newly added activities.
-				List<ActivityModel> newActivities = etv.getNewActivities();
-				for (ActivityModel act : newActivities) {
-					task.addActivity(act);
-				}
+					// Add the newly added activities.
+					List<ActivityModel> newActivities = etv.getNewActivities();
+					for (ActivityModel act : newActivities) {
+						task.addActivity(act);
+					}
 
-				// exit the edit view, this refreshes the workflow
-				this.returnToWorkflowView();
-				// makes all the fields blank again
-				etv.resetFields();
-				// Save entire workflow whenever a task is saved
-				wfm.save();
+					// exit the edit view, this refreshes the workflow
+					this.returnToWorkflowView();
+					// makes all the fields blank again
+					etv.resetFields();
+					// Save entire workflow whenever a task is saved
+					wfm.save();
+				} else {
+					etv.setSaveEnabled(false);
+				}
 				break;
 
 			case EditTaskView.ARCHIVE:
@@ -422,10 +428,8 @@ public class EditTaskController implements ActionListener {
 		TaskModel task = null;
 		if (!exists) {
 			// make a task with the default values to compare to
-			task = new TaskModel();
-			task.setName("");
+			task = new TaskModel("", currentStage);
 			task.setDescription("");
-			task.setStage(currentStage);
 		} else {
 			task = currentStage.findTaskByID(getTaskID());
 		}

@@ -29,6 +29,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
+
+import org.jdesktop.swingx.border.DropShadowBorder;
 
 import taskManager.controller.StageController;
 import taskManager.controller.StageTitleController;
@@ -53,6 +56,7 @@ public class StageView extends JPanel implements Transferable {
 
 	private JLabel labelName;
 	private JTextField labelText;
+	private JPanel changeLabel;
 	private JPanel label;
 	private JButton done;
 	private JButton cancel;
@@ -69,6 +73,8 @@ public class StageView extends JPanel implements Transferable {
 	 */
 	public StageView(String name) {
 
+		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+
 		// The tasks panel accepts task drops
 		tasks = new DropAreaPanel(DDTransferHandler.getTaskFlavor());
 
@@ -76,7 +82,6 @@ public class StageView extends JPanel implements Transferable {
 		// w/tasks
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setPreferredSize(new Dimension(STAGE_WIDTH, 450));
-		this.setName(name);
 
 		// organizes the tasks in a vertical list
 		tasks.setLayout(new BoxLayout(tasks, BoxLayout.Y_AXIS));
@@ -95,13 +100,14 @@ public class StageView extends JPanel implements Transferable {
 		label.add(labelName);
 
 		// The text field to change the stage's title
-		JPanel changeLabel = new JPanel();
+		changeLabel = new JPanel();
 		changeLabel.setMaximumSize(new Dimension(185, 25));
 		changeLabel.setLayout(new FlowLayout(FlowLayout.LEADING));
 		changeLabel.setName(CHANGE_TITLE);
 		labelText = new JTextField();
 		labelText.setText(name);
 		labelText.setName(TEXT_LABEL);
+
 		labelText.addKeyListener(new StageTitleController(this));
 		labelText.setSize(new Dimension(135, 25));
 		labelText.setMinimumSize(new Dimension(135, 25));
@@ -124,6 +130,7 @@ public class StageView extends JPanel implements Transferable {
 		changeLabel.add(cancel);
 
 		changeLabel.setVisible(false);
+
 		label.setVisible(true);
 
 		this.add(label);
@@ -133,9 +140,18 @@ public class StageView extends JPanel implements Transferable {
 		stage = new JScrollPane(tasks,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		stage.setBorder(BorderFactory.createCompoundBorder(
-				BorderFactory.createEmptyBorder(0, 3, 0, 3),
-				BorderFactory.createLineBorder(Color.black)));
+
+		label.setBackground(Colors.STAGE);
+		Border color = BorderFactory.createLineBorder(label.getBackground(), 3);
+		DropShadowBorder shadow = new DropShadowBorder();
+		shadow.setShadowColor(Color.BLACK);
+		shadow.setShowLeftShadow(true);
+		shadow.setShowRightShadow(true);
+		shadow.setShowBottomShadow(true);
+		shadow.setShowTopShadow(true);
+		Border compound = BorderFactory.createCompoundBorder(shadow, color);
+		this.setBorder(compound);
+
 		stage.setMinimumSize(new Dimension(STAGE_WIDTH, 300));
 		stage.setSize(new Dimension(STAGE_WIDTH, 405));
 
@@ -214,6 +230,28 @@ public class StageView extends JPanel implements Transferable {
 
 	public String getLabelText() {
 		return labelText.getText();
+	}
+
+	/**
+	 * makes the editable label field visible/not visible
+	 * 
+	 * @param q
+	 *            true is visible, false is not visible
+	 */
+	public void enableTitleEditing(boolean q) {
+
+		changeLabel.setVisible(q);
+		label.setVisible(!q);
+
+	}
+
+	/**
+	 * returns the editable label text field
+	 * 
+	 * @return the label text field
+	 */
+	public JTextField getLabelField() {
+		return labelText;
 	}
 
 	// ----------------------------

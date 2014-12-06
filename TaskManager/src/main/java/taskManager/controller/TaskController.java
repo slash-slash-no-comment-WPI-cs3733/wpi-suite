@@ -24,6 +24,7 @@ import taskManager.model.ActivityModel;
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
+import taskManager.view.Colors;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
 import taskManager.view.TaskInfoPreviewView;
@@ -67,7 +68,6 @@ public class TaskController implements MouseListener, MouseMotionListener {
 		this.view = view;
 		this.model = model;
 		sm = model.getStage();
-		this.background = view.getBackground();
 
 		etv = new EditTaskView(Mode.EDIT);
 		etv.setController(new EditTaskController(etv));
@@ -79,8 +79,12 @@ public class TaskController implements MouseListener, MouseMotionListener {
 
 		// Set the background to orange if the task is archived.
 		if (model.isArchived()) {
-			view.setBackground(Color.decode("#FFBC00"));
+			view.setBackground(Colors.ARCHIVE);
+		} else {
+			view.setBackground(Colors.TASK);
 		}
+
+		this.background = view.getBackground();
 	}
 
 	/**
@@ -221,7 +225,8 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	 *
 	 */
 	public void setToHoverColor() {
-		view.setBackground(Color.lightGray);
+
+		view.setBackground(Colors.TASK_HOVER);
 	}
 
 	/**
@@ -260,7 +265,11 @@ public class TaskController implements MouseListener, MouseMotionListener {
 			thisTaskInfoOut = true;
 			TaskController.anyTaskInfoOut = true;
 			// make the associated task a darker color while the bubble is out
-			this.setToHoverColor();
+			if (isArchived()) {
+				view.setBackground(Colors.ARCHIVE_CLICKED);
+			} else {
+				view.setBackground(Colors.TASK_CLICKED);
+			}
 		}
 	}
 
