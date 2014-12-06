@@ -93,24 +93,23 @@ public class WorkflowView extends JLayeredPane {
 	}
 
 	/**
-	 * returns the requested StageView
+	 * returns the requested StageView, or creates one if it does not exist
 	 * 
 	 * @param name
 	 *            the name of the stageview to be returned
 	 * @return the requested stageview
 	 */
 	public StageView getStageViewByName(String name) {
-		try {
-			// goes through all of the stage views it contains until it finds
-			// the one that matches the name
+		if (name == null) {
+			throw new NullPointerException("name must not be null");
+		}
+		// goes through all of the stage views it contains until it finds
+		// the one that matches the name
 
-			for (int i = 1; i == stages.getComponents().length; i++) {
-				if (stages.getComponent(i).getName().equals(name)) {
-					return (StageView) stages.getComponent(i);
-				}
+		for (Component c : stages.getComponents()) {
+			if (name.equals(c.getName())) {
+				return (StageView) c;
 			}
-		} catch (NullPointerException e) {
-			System.out.println("How did you actually do this?");
 		}
 		return new StageView(name);
 	}

@@ -110,6 +110,8 @@ public class EditTaskView extends JPanel {
 	private List<ActivityModel> activities;
 	private List<ActivityModel> newActivities;
 
+	private TaskInputController fieldC;
+
 	/**
 	 * Creates a Edit Task Panel so that you can change all of the values of a
 	 * task: Title Description Due Date Estimated Effort Actual Effort Adding
@@ -297,7 +299,7 @@ public class EditTaskView extends JPanel {
 
 		Users.add(usersListPanel, "w 100!, gapleft 15px");
 		Users.add(addRemoveButtons);
-		Users.add(projectUsersListPanel, "w 100!, gapright 15px");
+		Users.add(projectUsersListPanel, "w 100!");
 
 		// Activities Panel internal content
 		Activities.setBorder(BorderFactory.createTitledBorder("Activities"));
@@ -372,13 +374,23 @@ public class EditTaskView extends JPanel {
 	 *            the controller to be attached to this view
 	 */
 	public void setFieldController(TaskInputController controller) {
-		titleField.addKeyListener(controller);
-		descripArea.addKeyListener(controller);
-		estEffortField.addKeyListener(controller);
-		actEffortField.addKeyListener(controller);
-		stages.addPopupMenuListener(controller);
-		usersList.setController(controller);
-		projectUsersList.setController(controller);
+		this.fieldC = controller;
+		titleField.addKeyListener(fieldC);
+		descripArea.addKeyListener(fieldC);
+		estEffortField.addKeyListener(fieldC);
+		actEffortField.addKeyListener(fieldC);
+		stages.addPopupMenuListener(fieldC);
+		usersList.setController(fieldC);
+		projectUsersList.setController(fieldC);
+	}
+
+	/**
+	 * returns the task input controller
+	 * 
+	 * @return the task input controller
+	 */
+	public TaskInputController getFieldController() {
+		return this.fieldC;
 	}
 
 	/**
