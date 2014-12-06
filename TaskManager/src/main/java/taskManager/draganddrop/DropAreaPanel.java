@@ -40,7 +40,6 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 /**
@@ -412,7 +411,8 @@ class DropAreaListener implements DropTargetListener {
 			}
 			// Redispatch to ancestor drop target
 			if (ancestor != null) {
-				ancestor.getDropTarget().drop(convertCoords(ancestor, e));
+				ancestor.getDropTarget().drop(
+						DropTargetRedispatcher.convertCoords(e, ancestor));
 			}
 		}
 
@@ -464,7 +464,8 @@ class DropAreaListener implements DropTargetListener {
 			}
 			// Redispatch to ancestor drop target
 			if (ancestor != null) {
-				ancestor.getDropTarget().dragOver(convertCoords(ancestor, e));
+				ancestor.getDropTarget().dragOver(
+						DropTargetRedispatcher.convertCoords(e, ancestor));
 			}
 		}
 
@@ -479,45 +480,4 @@ class DropAreaListener implements DropTargetListener {
 
 	}
 
-	/**
-	 * Convert DropTargetDropEvent to the coordinate system of a different
-	 * component
-	 *
-	 * @param comp
-	 *            target component to convert coordinates to
-	 * @param e
-	 *            event to convert
-	 * @return converted event
-	 */
-	public DropTargetDropEvent convertCoords(Component comp,
-			DropTargetDropEvent e) {
-
-		Point newPoint = SwingUtilities.convertPoint(e.getDropTargetContext()
-				.getComponent(), e.getLocation(), comp);
-		DropTargetDropEvent newE = new DropTargetDropEvent(
-				e.getDropTargetContext(), newPoint, e.getDropAction(),
-				e.getSourceActions());
-		return newE;
-	}
-
-	/**
-	 * Convert DropTargetDragEvent to the coordinate system of a different
-	 * component
-	 *
-	 * @param comp
-	 *            target component to convert coordinates to
-	 * @param e
-	 *            event to convert
-	 * @return converted event
-	 */
-	public DropTargetDragEvent convertCoords(Component comp,
-			DropTargetDragEvent e) {
-
-		Point newPoint = SwingUtilities.convertPoint(e.getDropTargetContext()
-				.getComponent(), e.getLocation(), comp);
-		DropTargetDragEvent newE = new DropTargetDragEvent(
-				e.getDropTargetContext(), newPoint, e.getDropAction(),
-				e.getSourceActions());
-		return newE;
-	}
 }
