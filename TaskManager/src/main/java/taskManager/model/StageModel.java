@@ -265,6 +265,8 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 * @return whether the stage changed as a result
 	 */
 	public boolean addTask(TaskModel task, int index) {
+		System.out.println("adding task " + task.getName() + " to stage "
+				+ getName());
 		if (index == -1 || index > taskList.size()) {// add to end of list
 			index = taskList.size();
 		}
