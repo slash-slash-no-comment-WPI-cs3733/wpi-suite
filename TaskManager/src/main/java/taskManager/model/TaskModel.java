@@ -353,6 +353,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		activities.add(activity);
 	}
 
+	
 	public void addComment(String comment, User user) {
 		final ActivityModel commentActivity = new ActivityModel(comment,
 				ActivityModel.activityModelType.COMMENT, user);
@@ -363,6 +364,8 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		final ActivityModel toEdit = activities.get(index);
 		toEdit.setDescription(newText);
 	}
+
+
 
 	/**
 	 * 
