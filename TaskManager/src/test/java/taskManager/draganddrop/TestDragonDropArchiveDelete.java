@@ -41,6 +41,7 @@ public class TestDragonDropArchiveDelete {
 	private final WorkflowModel wfm = WorkflowModel.getInstance();
 	private FrameFixture fixture;
 	private TaskModel task;
+	private TaskModel archivedTask;
 
 	@Before
 	public void setup() {
@@ -48,10 +49,16 @@ public class TestDragonDropArchiveDelete {
 		// creates a workflow view
 		wfv = new WorkflowView();
 
-		// create a task model
+		// create task models
 		task = new TaskModel("Test task", wfm.findStageByName("New"));
 		task.setName("Test task");
 		task.setDueDate(new Date());
+
+		archivedTask = new TaskModel("Archived task",
+				wfm.findStageByName("New"));
+		archivedTask.setName("Archived task");
+		archivedTask.setDueDate(new Date());
+		archivedTask.setArchived(true);
 
 		// create controller for view
 		wfv.setController(new WorkflowController(wfv));
@@ -113,6 +120,53 @@ public class TestDragonDropArchiveDelete {
 
 		// archive icon should go back to disabled
 		fixture.label(ToolbarView.ARCHIVE).requireDisabled();
+		fixture.robot.waitForIdle();
+	}
+
+	@Test
+	public void testUnarchiveEnabled() {
+		// make sure it is visible
+		fixture.requireVisible();
+
+		// make sure stage is visible
+		fixture.panel("New").requireVisible();
+
+		// check the checkbox
+		fixture.checkBox("Show Archived").check();
+
+		// The fixture of the archived task.
+		JPanelFixture archivedTaskFixture = fixture.panel("Archived task");
+		archivedTaskFixture.requireVisible();
+
+		// set the timing.
+		archivedTaskFixture.robot.settings().delayBetweenEvents(100);
+		archivedTaskFixture.robot.settings().idleTimeout(100);
+
+		// get the dragon drop targets
+		Component task = fixture.panel("Archived task").target;
+		Component archive = fixture.label(ToolbarView.ARCHIVE).target;
+
+		// need to set to true to avoid network errors
+		DDTransferHandler.dragSaved = true;
+
+		// unarchive icon should not be displayed.
+		fixture.label(ToolbarView.UNARCHIVE).requireNotVisible();
+
+		// move mouse to task and click
+		fixture.robot.moveMouse(task);
+		fixture.robot.pressMouse(MouseButton.LEFT_BUTTON);
+
+		// move mouse to archive and release
+		fixture.robot.moveMouse(archive);
+
+		// archive icon should be enabled when dragging
+		fixture.label(ToolbarView.UNARCHIVE).requireEnabled();
+
+		// release mouse
+		fixture.robot.releaseMouse(MouseButton.LEFT_BUTTON);
+
+		// archive icon should go back to hidden
+		fixture.label(ToolbarView.UNARCHIVE).requireNotVisible();
 		fixture.robot.waitForIdle();
 	}
 

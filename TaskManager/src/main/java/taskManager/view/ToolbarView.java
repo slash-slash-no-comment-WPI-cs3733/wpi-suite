@@ -131,6 +131,7 @@ public class ToolbarView extends JToolBar {
 
 		// Checkbox for toggling showing archived tasks.
 		archiveCheckBox = new JCheckBox("Show archived tasks");
+		archiveCheckBox.setName("Show Archived");
 
 		archive.setName(ARCHIVE);
 		delete.setToolTipText("Drag here to delete task");
