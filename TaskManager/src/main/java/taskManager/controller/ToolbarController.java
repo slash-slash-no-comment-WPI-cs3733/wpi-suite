@@ -67,6 +67,7 @@ public class ToolbarController extends DropTargetAdapter implements
 				break;
 			case ToolbarView.CREATE_STAGE:
 				// add a new stage from workflow controller
+				tabPaneV.setSelectedIndex(0);
 				tabPaneV.getWorkflowController().addStageToView();
 
 				break;
