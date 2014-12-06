@@ -78,7 +78,7 @@ public class StageController implements DropAreaSaveListener,
 			for (TaskModel task : tasks) {
 				// Add only if task is not archived or when task is archived and
 				// archive shown is set to true.
-				if (!task.isArchived() || (task.isArchived() && showArchive)) {
+				if (!task.isArchived() || showArchive) {
 					// create stage view and controller.
 					TaskView tkv = new TaskView(task.getName(),
 							task.getDueDate(), task.getEstimatedEffort());
@@ -102,11 +102,15 @@ public class StageController implements DropAreaSaveListener,
 			return;
 		}
 		TaskController tc = ((TaskView) panel).getController();
+		// StageModel previousStage = tc.getStage();
 		boolean changed = tc.moveToStage(model, index);
 
 		if (changed) {
-  		// Save the current model.
-			model.save();
+  		// Save the current and previous stage.
+  		// Useful, definitely
+  		System.out.println("!!!!"+model.getName());
+      model.save();
+  		// previousStage.save();
 			DDTransferHandler.dragSaved = true;
 		}
 
@@ -147,22 +151,11 @@ public class StageController implements DropAreaSaveListener,
 	 *            visible
 	 */
 	public void switchTitle(Boolean editable) {
-  	// TODO: Why does this method have two identical parts?
-		if (editable) {
-			for (Component c : view.getComponents()) {
-				if (c.getName() == StageView.TITLE) {
-					c.setVisible(false);
-				} else if (c.getName() == StageView.CHANGE_TITLE) {
-					c.setVisible(true);
-				}
-			}
-		} else {
-			for (Component c : view.getComponents()) {
-				if (c.getName() == StageView.TITLE) {
-					c.setVisible(true);
-				} else if (c.getName() == StageView.CHANGE_TITLE) {
-					c.setVisible(false);
-				}
+  	for (Component c : view.getComponents()) {
+			if (c.getName() == StageView.TITLE) {
+				c.setVisible(!editable);
+			} else if (c.getName() == StageView.CHANGE_TITLE) {
+				c.setVisible(editable);
 			}
 		}
 	}
@@ -252,6 +245,7 @@ public class StageController implements DropAreaSaveListener,
 						WorkflowModel.getInstance().save();
 					} else {
 						model.changeStageName(view.getLabelText());
+						model.save();
 					}
 
 					// refresh the workflow with the new stage

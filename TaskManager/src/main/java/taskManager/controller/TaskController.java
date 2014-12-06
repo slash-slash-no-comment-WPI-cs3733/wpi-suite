@@ -117,7 +117,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	}
 
 	/**
-	 * 
+	 *
 	 * Sets task's archived property to given boolean.
 	 *
 	 * @param bool
@@ -128,7 +128,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	}
 
 	/**
-	 * 
+	 *
 	 * Populates the EditTaskView with the information from this task.
 	 *
 	 */
@@ -219,7 +219,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	}
 
 	/**
-	 * 
+	 *
 	 * Make the task a darker color. Used for when the mouse is over a task or
 	 * when a bubble is out for this task
 	 *
@@ -230,7 +230,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	}
 
 	/**
-	 * 
+	 *
 	 * Resets the task background to its original color
 	 *
 	 */
@@ -316,6 +316,14 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	public void mouseMoved(MouseEvent e) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public StageModel getStage() {
+		return sm;
+	}
+
+	public TaskModel getModel() {
+		return model;
 	}
 
 }

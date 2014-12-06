@@ -109,8 +109,8 @@ public class ToolbarController extends DropTargetAdapter implements
 						JanewayModule.tabPaneC.getTabView().reloadWorkflow();
 						JanewayModule.tabPaneC.getTabView()
 								.getWorkflowController().repaintView();
-						// TODO: Try to avoid saving the entire workflow.
-						WorkflowModel.getInstance().save();
+						// Delete the task, so save the stage.
+						taskV.getController().getStage().save();
 						DDTransferHandler.dragSaved = true;
 					}
 					break;
@@ -121,8 +121,8 @@ public class ToolbarController extends DropTargetAdapter implements
 					JanewayModule.tabPaneC.getTabView().reloadWorkflow();
 					JanewayModule.tabPaneC.getTabView().getWorkflowController()
 							.repaintView();
-					// TODO: Try to avoid saving the entire workflow.
-					WorkflowModel.getInstance().save();
+					// Archive the task, so save the task.
+					taskV.getController().getModel().save();
 					DDTransferHandler.dragSaved = true;
 					break;
 				}

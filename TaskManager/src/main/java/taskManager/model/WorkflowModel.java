@@ -240,10 +240,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 *            The workflow to copy
 	 */
 	public void makeIdenticalTo(WorkflowModel incomingWorkflow) {
-		System.out
-				.println("!!A request was made to save a workflow. Was WorkflowModel.save() called?!!");
 		setID(incomingWorkflow.getID());
-
 		final List<StageModel> localStages = stageList;
 		final List<StageModel> incomingStages = incomingWorkflow.getStages();
 		boolean stageWasUsed[] = new boolean[localStages.size()];
