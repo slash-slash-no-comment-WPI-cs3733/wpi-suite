@@ -373,4 +373,19 @@ public class ManagerLayer {
 		return s;
 	}
 
+	public boolean sameSession(Cookie[] c1, Cookie[] c2) {
+		String ssid1;
+		String ssid2;
+		try {
+			ssid1 = getSessionFromCookies(c1).getSessionId();
+			ssid2 = getSessionFromCookies(c2).getSessionId();
+		} catch (AuthenticationException e) {
+			return false;
+		} catch (UnauthorizedException e) {
+			return false;
+		}
+
+		return ssid1.equals(ssid2);
+	}
+
 }
