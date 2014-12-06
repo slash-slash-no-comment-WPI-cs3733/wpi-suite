@@ -97,7 +97,6 @@ public class EditTaskController implements ActionListener {
 
 			case EditTaskView.SAVE:
 				TaskModel task;
-
 				if (etv.getFieldController().checkFields()) {
 					// if editing
 					if (exists) {
@@ -252,6 +251,9 @@ public class EditTaskController implements ActionListener {
 				requirements.addItem(req.getName());
 			}
 		}
+
+		// TODO set archive button text if task is archived
+
 	}
 
 	/**

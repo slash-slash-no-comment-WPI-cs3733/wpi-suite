@@ -19,6 +19,7 @@ import taskManager.JanewayModule;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
+import taskManager.view.EditTaskView;
 import taskManager.view.TaskInfoPreviewView;
 
 public class TestTabPaneController {
@@ -72,6 +73,31 @@ public class TestTabPaneController {
 	}
 
 	@Test
+	public void testArchiveTaskWithOpenTab() {
+		// click the task
+		JPanelFixture taskFixture = fixture.panel("Task 1");
+		taskFixture.click();
+		// click the edit button
+		fixture.button(TaskInfoPreviewView.EDIT).click();
+
+		// go back to the workflow
+		JanewayModule.tabPaneC.getTabView().setSelectedIndex(0);
+
+		// archive the task
+		taskFixture.robot.pressMouse(MouseButton.LEFT_BUTTON);
+		taskFixture.robot.moveMouse(JanewayModule.toolV.getComponent(4)
+				.getLocation());
+		taskFixture.robot.releaseMouse(MouseButton.LEFT_BUTTON);
+
+		// switch to edit task tab
+		JanewayModule.getTabPaneView().setSelectedIndex(1);
+
+		String result = fixture.button(EditTaskView.ARCHIVE).text();
+
+		assertEquals(result, "Unarchive");
+	}
+
+	@Test
 	public void testDeleteTaskWithOpenTab() {
 		// click the task
 		JPanelFixture taskFixture = fixture.panel("Task 1");
@@ -82,12 +108,22 @@ public class TestTabPaneController {
 		// go back to the workflow
 		JanewayModule.tabPaneC.getTabView().setSelectedIndex(0);
 
+		// archive the task
 		taskFixture.robot.pressMouse(MouseButton.LEFT_BUTTON);
 		taskFixture.robot.moveMouse(JanewayModule.toolV.getComponent(4)
 				.getLocation());
 		taskFixture.robot.releaseMouse(MouseButton.LEFT_BUTTON);
 
-		assertEquals(JanewayModule.tabPaneC.getTabView().getComponentCount(), 1);
+		// show archived tasks
+		fixture.robot.click(JanewayModule.toolV.getComponent(3));
+
+		// archive the task
+		taskFixture.robot.pressMouse(MouseButton.LEFT_BUTTON);
+		taskFixture.robot.moveMouse(JanewayModule.toolV.getComponent(5)
+				.getLocation());
+		taskFixture.robot.releaseMouse(MouseButton.LEFT_BUTTON);
+
+		assertEquals(JanewayModule.getTabPaneView().getTabCount(), 1);
 		assertEquals(JanewayModule.getTabPaneView().getTitleAt(0), "Workflow");
 
 	}
@@ -96,10 +132,7 @@ public class TestTabPaneController {
 	public void cleanup() {
 		fixture.cleanUp();
 		// remove all tabs
-		// for (Component c :
-		// JanewayModule.tabPaneC.getTabView().getComponents()) {
-		// JanewayModule.tabPaneC.removeTabByComponent(c);
-		// }
+		JanewayModule.tabPaneC.getTabView().remove(1);
 
 	}
 

@@ -109,6 +109,7 @@ public class ToolbarController extends DropTargetAdapter implements
 						JanewayModule.tabPaneC.getTabView().reloadWorkflow();
 						JanewayModule.tabPaneC.getTabView()
 								.getWorkflowController().repaintView();
+						// TODO remove edit task tab if task is deleted
 						WorkflowModel.getInstance().save();
 						DDTransferHandler.dragSaved = true;
 					}

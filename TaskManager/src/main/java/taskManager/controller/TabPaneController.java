@@ -12,6 +12,9 @@ package taskManager.controller;
 import java.awt.Component;
 import java.util.ArrayList;
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import taskManager.JanewayModule;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
@@ -27,13 +30,14 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.User;
  * @author Clark Jacobsohn
  * @version Nov 17, 2014
  */
-public class TabPaneController {
+public class TabPaneController implements ChangeListener {
 
 	// singleton TabPaneView
 	private TabPaneView tabPaneV;
 
 	public TabPaneController(TabPaneView tabPaneV) {
 		this.tabPaneV = tabPaneV;
+		tabPaneV.setController(this);
 	}
 
 	/**
@@ -136,25 +140,31 @@ public class TabPaneController {
 	}
 
 	/**
-	 * Changes the selected tab to the tab with the given index
+	 * get the tabPaneView
 	 * 
-	 * @param tabIndex
-	 *            the index of the tab to select
+	 * @return the TabPaneView
 	 */
-	private void switchToTab(int tabIndex) {
-		try {
-			tabPaneV.setSelectedIndex(tabIndex);
-		} catch (IndexOutOfBoundsException e) {
-			// an invalid tab was requested, do nothing
-		}
-	}
-
 	public TabPaneView getTabView() {
 		return tabPaneV;
 	}
 
+	/**
+	 * reloads the workflow data
+	 */
 	public void reloadWorkflow() {
 		tabPaneV.reloadWorkflow();
+	}
+
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		// TODO once refactoring is finished. this will include setting dropdown
+		// states and the archive button text
+		if (this.getTabView().getSelectedComponent() instanceof EditTaskView) {
+			EditTaskView etv = (EditTaskView) this.getTabView()
+					.getSelectedComponent();
+			etv.getController().reloadData();
+		}
+
 	}
 
 }

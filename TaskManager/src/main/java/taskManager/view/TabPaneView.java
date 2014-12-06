@@ -17,6 +17,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
+import taskManager.controller.TabPaneController;
 import taskManager.controller.WorkflowController;
 import taskManager.model.WorkflowModel;
 
@@ -55,14 +56,25 @@ public class TabPaneView extends JTabbedPane {
 		this.addTab("Workflow", new ImageIcon(), scroll, "Workflow");
 	}
 
+	/**
+	 * pulls workflow data from the server
+	 */
 	public void refreshWorkflow() {
 		wfc.fetch();
 	}
 
+	/**
+	 * returns the attached workflow model
+	 * 
+	 * @return the workflow model
+	 */
 	public WorkflowModel getWorkflowModel() {
 		return wfm;
 	}
 
+	/**
+	 * reloads workflow data
+	 */
 	public void reloadWorkflow() {
 		wfc.reloadData();
 	}
@@ -74,5 +86,15 @@ public class TabPaneView extends JTabbedPane {
 	 */
 	public WorkflowController getWorkflowController() {
 		return wfc;
+	}
+
+	/**
+	 * Adds a TabPaneController as a change listener
+	 * 
+	 * @param c
+	 *            the tabPaneController to be added as a change listener
+	 */
+	public void setController(TabPaneController c) {
+		this.addChangeListener(c);
 	}
 }
