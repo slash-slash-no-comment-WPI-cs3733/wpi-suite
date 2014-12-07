@@ -75,16 +75,13 @@ public class EditTaskController implements ActionListener {
 	private StageModel getCurrentStage() {
 		// check to see if the task exists in the workflow and grabs the
 		// stage that the task is in
-		StageModel currentStage = wfm.getStages().get(0);
+		taskID = etv.getTitle().getName();
 		for (StageModel stage : wfm.getStages()) {
 			if (stage.containsTaskByID(taskID)) {
-				currentStage = stage;
-				break;
-			} else {
-				return null;
+				return stage;
 			}
 		}
-		return currentStage;
+		return null;
 	}
 
 	@Override
@@ -105,19 +102,6 @@ public class EditTaskController implements ActionListener {
 				break;
 
 			case EditTaskView.DELETE:
-				// Integer choice = JOptionPane.showConfirmDialog(etv,
-				// "Are you sure you want to delete this task?",
-				// "Warning - Deleting a task", JOptionPane.YES_NO_OPTION);
-				// if (choice.equals(JOptionPane.YES_OPTION)) {
-				// // delete this task
-				// task = currentStage.findTaskByID(taskID);
-				// currentStage.getTasks().remove(task);
-				// etv.resetFields();
-				//
-				// // Save entire workflow whenever a task is deleted
-				// wfm.save();
-				// returnToWorkflowView();
-				// }
 				deleteTask();
 				break;
 
@@ -175,6 +159,7 @@ public class EditTaskController implements ActionListener {
 				break;
 
 			case EditTaskView.REFRESH:
+				taskID = etv.getTitle().getName();
 				boolean exists = (null != currentStage);
 				if (exists) {
 					// Clear the activities list.
@@ -589,6 +574,9 @@ public class EditTaskController implements ActionListener {
 			case EditTaskView.DELETE:
 				deleteTask();
 				return;
+			case EditTaskView.SUBMIT_COMMENT:
+				etv.addComment();
+				return;
 			default:
 				saveTask();
 				return;
@@ -607,6 +595,7 @@ public class EditTaskController implements ActionListener {
 	private void archiveTask() {
 		// archive this task
 		StageModel currentStage = getCurrentStage();
+		System.out.println("Stage: " + currentStage + " ID: " + taskID);
 		TaskModel task = currentStage.findTaskByID(taskID);
 		boolean isArchived = task.isArchived();
 		if (isArchived) {

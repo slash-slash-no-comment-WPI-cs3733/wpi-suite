@@ -185,6 +185,7 @@ public class EditTaskView extends JPanel {
 				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
 		commentsField = new JTextArea(2, 22);
+		commentsField.setName(EditTaskView.COMMENTS);
 		commentsField.setFocusTraversalKeys(
 				KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, null);
 		commentsField.setFocusTraversalKeys(
@@ -403,6 +404,7 @@ public class EditTaskView extends JPanel {
 		cancel.addKeyListener(fieldC);
 		archive.addKeyListener(fieldC);
 		delete.addKeyListener(fieldC);
+		submitComment.addKeyListener(fieldC);
 	}
 
 	/**
