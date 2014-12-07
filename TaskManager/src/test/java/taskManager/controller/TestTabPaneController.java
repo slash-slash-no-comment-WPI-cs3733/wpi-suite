@@ -90,10 +90,12 @@ public class TestTabPaneController {
 		Point location = taskFixture.component().getLocation();
 		location.x += 5;
 		location.y += 5;
-		taskFixture.robot.pressMouse(taskFixture.component().getParent(),
-				location);
-		fixture.robot.moveMouse(toolV.getArchive());
-		fixture.robot.releaseMouse(MouseButton.LEFT_BUTTON);
+		taskFixture.robot.pressMouse(taskFixture.component().getParent()
+				.getParent(), location);
+		fixture.robot.moveMouse(
+				taskFixture.component().getParent().getParent(), toolV
+						.getArchive().getLocation());
+		fixture.robot.releaseMouseButtons();
 
 		// switch to edit task tab
 		JanewayModule.getTabPaneView().setSelectedIndex(1);
