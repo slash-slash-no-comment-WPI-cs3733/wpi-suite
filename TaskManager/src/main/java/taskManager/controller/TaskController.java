@@ -135,6 +135,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	public void editTask() {
 		// uses the title field to hold the unique id
 		etv.getTitle().setName(this.model.getID());
+		etv.setName(this.model.getName());
 
 		// uses description field to hold the name of the stage
 		etv.getDescription().setName(this.model.getStage().getName());
@@ -310,7 +311,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 			JanewayModule.toolV.setArchiveIcon(ToolbarView.ARCHIVE);
 		}
 		JanewayModule.toolV.setArchiveEnabled(true);
-			JanewayModule.toolV.setDeleteEnabled(isArchived);
+		JanewayModule.toolV.setDeleteEnabled(isArchived);
 	}
 
 	@Override

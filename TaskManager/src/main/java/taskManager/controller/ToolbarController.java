@@ -26,6 +26,7 @@ import taskManager.JanewayModule;
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
+import taskManager.view.EditTaskView;
 import taskManager.view.StageView;
 import taskManager.view.TabPaneView;
 import taskManager.view.TaskView;
@@ -106,6 +107,16 @@ public class ToolbarController extends DropTargetAdapter implements
 						taskV.getController().deleteTask(); // remove from model
 						taskV.getParent().remove(taskV); // remove from view
 						// Reload and save workflow.
+						for (Component t : JanewayModule.tabPaneC.getTabView()
+								.getComponents()) {
+							if (t instanceof EditTaskView) {
+								EditTaskView tab = (EditTaskView) t;
+								if (tab.getName().equals(taskV.getName())) {
+									JanewayModule.tabPaneC.getTabView().remove(
+											t);
+								}
+							}
+						}
 						JanewayModule.tabPaneC.getTabView().reloadWorkflow();
 						JanewayModule.tabPaneC.getTabView()
 								.getWorkflowController().repaintView();
