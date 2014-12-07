@@ -54,7 +54,7 @@ public class JanewayModule implements IJanewayModule {
 		new ImageIcon(), toolV, tabPaneV);
 		tabs.add(tab);
 
-		// Since by default, pressing Enter for JOptionPane dialogs always
+		// Since by default, pressing Enter for UI elements always
 		// selects the default button, instead make it so that it selects the
 		// button that has focus.
 		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
