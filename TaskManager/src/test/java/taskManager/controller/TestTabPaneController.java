@@ -3,12 +3,14 @@ package taskManager.controller;
 import static org.junit.Assert.assertEquals;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.Date;
 
 import javax.swing.JFrame;
 
+import org.fest.swing.core.ComponentDragAndDrop;
 import org.fest.swing.core.MouseButton;
 import org.fest.swing.fixture.FrameFixture;
 import org.fest.swing.fixture.JPanelFixture;
@@ -18,6 +20,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import taskManager.JanewayModule;
+import taskManager.draganddrop.DDTransferHandler;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
@@ -81,7 +84,7 @@ public class TestTabPaneController {
 	@Ignore
 	public void testArchiveTaskWithOpenTab() {
 		// click the task
-		JPanelFixture taskFixture = fixture.panel("test");
+		JPanelFixture taskFixture = fixture.panel("Task 1");
 		taskFixture.click();
 		// click the edit button
 		fixture.button(TaskInfoPreviewView.EDIT).click();
@@ -90,22 +93,54 @@ public class TestTabPaneController {
 		JanewayModule.tabPaneC.getTabView().setSelectedIndex(0);
 
 		// archive the task
-		// get the fixture for the task panel
+		// make sure it is visible
+		fixture.requireVisible();
 
-		// try dragging really fast
-		taskFixture.robot.settings().delayBetweenEvents(0);
-		taskFixture.robot.settings().idleTimeout(0);
+		// make sure stage is visible
+		fixture.panel("New").requireVisible();
 
-		// actually drag now
-		Point location = taskFixture.target.getLocation();
-		location.x += 5;
-		location.y += 5;
-		taskFixture.robot.pressMouse(taskFixture.target.getParent(), location);
-		taskFixture.robot.moveMouse(taskFixture.target.getParent(), toolV
-				.getArchive().getLocation());
-		taskFixture.robot.releaseMouseButtons();
+		// make sure task is visible
+		taskFixture.requireVisible();
 
-		// let it process things
+		// set the timing.
+
+		// get the dragon drop targets
+		Component task = fixture.panel("Task 1").target;
+		Component archive = fixture.label(ToolbarView.ARCHIVE).target;
+
+		// need to set to true to avoid network errors
+		DDTransferHandler.dragSaved = true;
+
+		// archive icon should be disabled at first.
+		fixture.label(ToolbarView.ARCHIVE).requireDisabled();
+		fixture.robot.settings().dropDelay(0);
+		fixture.robot.settings().dragDelay(0);
+		fixture.robot.settings().delayBetweenEvents(0);
+
+		ComponentDragAndDrop q = new ComponentDragAndDrop(taskFixture.robot);
+
+		Point loc = task.getLocation();
+		loc.x += 5;
+		loc.y += 5;
+
+		fixture.robot.pressMouse(task, loc, MouseButton.LEFT_BUTTON);
+
+		mouseMove(
+				task,
+				new Point(task.getLocation().x + 10 / 2,
+						task.getLocation().y + 10 / 2),
+				new Point(task.getLocation().x + 10, task.getLocation().y + 10),
+				new Point(task.getLocation().x + 10 / 2,
+						task.getLocation().y + 10 / 2),
+				new Point(task.getLocation().x, task.getLocation().y));
+		fixture.robot.waitForIdle();
+
+		fixture.robot.moveMouse(task, toolV.getArchive().getLocation().x - 4,
+				toolV.getArchive().getLocation().y);
+		fixture.robot.moveMouse(task, toolV.getArchive().getLocation().x, toolV
+				.getArchive().getLocation().y);
+
+		fixture.robot.releaseMouseButtons();
 		fixture.robot.waitForIdle();
 
 		// switch to edit task tab
@@ -113,7 +148,7 @@ public class TestTabPaneController {
 
 		String result = fixture.button(EditTaskView.ARCHIVE).text();
 
-		assertEquals(result, "Unarchive");
+		assertEquals("Unarchive", result);
 	}
 
 	@Ignore
@@ -171,6 +206,11 @@ public class TestTabPaneController {
 
 		wfc.reloadData();
 
+	}
+
+	private void mouseMove(Component target, Point... points) {
+		for (Point p : points)
+			fixture.robot.moveMouse(target, p.x, p.y);
 	}
 
 }
