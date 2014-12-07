@@ -73,7 +73,7 @@ public class StageController implements DropAreaSaveListener,
 			for (TaskModel task : tasks) {
 				// Add only if task is not archived or when task is archived and
 				// archive shown is set to true.
-  			if (!task.isArchived() || showArchive) {
+				if (!task.isArchived() || showArchive) {
 					// create stage view and controller.
 					TaskView tkv = new TaskView(task.getName(),
 							task.getDueDate(), task.getEstimatedEffort());
@@ -181,10 +181,8 @@ public class StageController implements DropAreaSaveListener,
 			FetchWorkflowObserver.ignoreAllResponses = false;
 			// this will remove any changeTitle textboxes or taskInfo bubbles
 			// from the workflow
-			JanewayModule.tabPaneC.getTabView().getWorkflowController()
-					.reloadData();
-			JanewayModule.tabPaneC.getTabView().getWorkflowController()
-					.repaintView();
+			WorkflowController.getInstance().reloadData();
+			WorkflowController.getInstance().repaintView();
 		}
 	}
 
@@ -249,10 +247,8 @@ public class StageController implements DropAreaSaveListener,
 					WorkflowModel.getInstance().save();
 
 					// refresh the workflow with the new stage
-					JanewayModule.tabPaneC.getTabView().getWorkflowController()
-							.reloadData();
-					JanewayModule.tabPaneC.getTabView().getWorkflowController()
-							.repaintView();
+					WorkflowController.getInstance().reloadData();
+					WorkflowController.getInstance().repaintView();
 
 					// save to the server
 					WorkflowModel.getInstance().save();
@@ -271,10 +267,8 @@ public class StageController implements DropAreaSaveListener,
 					if (opt == JOptionPane.YES_OPTION) {
 
 						// refresh the workflow with no new stage view
-						JanewayModule.tabPaneC.getTabView()
-								.getWorkflowController().reloadData();
-						JanewayModule.tabPaneC.getTabView()
-								.getWorkflowController().repaintView();
+						WorkflowController.getInstance().reloadData();
+						WorkflowController.getInstance().repaintView();
 					}
 
 				} else {
@@ -282,8 +276,7 @@ public class StageController implements DropAreaSaveListener,
 					thisChangeTitleOut = false;
 					FetchWorkflowObserver.ignoreAllResponses = false;
 					// reload which will remove the textbox
-					JanewayModule.tabPaneC.getTabView().getWorkflowController()
-							.reloadData();
+					WorkflowController.getInstance().reloadData();
 
 				}
 

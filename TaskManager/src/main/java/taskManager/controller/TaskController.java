@@ -258,8 +258,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 					.getParent().getParent().getLocation();
 			Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
 					view.getLocation().y);
-			JanewayModule.tabPaneC.getTabView().getWorkflowController()
-					.setTaskInfo(new TaskInfoPreviewView(model, this, infoLoc));
+			WorkflowController.getInstance().setTaskInfo(new TaskInfoPreviewView(model, this, infoLoc));
 
 			// Set the correct flags
 			thisTaskInfoOut = true;
