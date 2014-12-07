@@ -13,12 +13,15 @@ import edu.wpi.cs.wpisuitetng.database.Data;
 import edu.wpi.cs.wpisuitetng.exceptions.WPISuiteException;
 import edu.wpi.cs.wpisuitetng.modules.EntityManager;
 import edu.wpi.cs.wpisuitetng.modules.Model;
+import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementEntityManager;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.iterations.IterationEntityManager;
 import edu.wpi.cs.wpisuitetng.network.Request;
+import edu.wpi.cs.wpisuitetng.network.Response;
 import edu.wpi.cs.wpisuitetng.network.configuration.NetworkConfiguration;
 import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
+import edu.wpi.cs.wpisuitetng.network.models.ResponseModel;
 
 public class MockRequest extends Request {
 
@@ -43,13 +46,19 @@ public class MockRequest extends Request {
 		String[] pathPieces = path.split(delims);
 		this.mgr = getEntityManager(pathPieces[0] + pathPieces[1]);
 		if (pathPieces.length > 2) {
-			this.id = pathPieces[3];
+			this.id = pathPieces[2];
 		}
 	}
 
+	/**
+	 * This method is blocking, unlike in it's parent. The MockDatabase is
+	 * accessed immediately.
+	 * 
+	 * @see edu.wpi.cs.wpisuitetng.network.Request#send()
+	 */
 	@Override
 	public void send() throws IllegalStateException {
-		String response;
+		String response = null;
 		Model[] m;
 		try {
 			switch (getHttpMethod()) {
@@ -86,6 +95,16 @@ public class MockRequest extends Request {
 		} catch (WPISuiteException e) {
 			e.printStackTrace();
 		}
+
+		if (response != null) {
+			ResponseModel resp = new Response(418, "TestResponse",
+					getHeaders(), response);
+
+			// set the Request's response
+			setResponse(resp);
+
+			notifyObserversResponseSuccess();
+		}
 	}
 
 	/**
@@ -118,7 +137,8 @@ public class MockRequest extends Request {
 	public static Session getSession() {
 		if (session == null) {
 			User user = new User("MockUser", "mockuser", "MockPassword", 99);
-			session = new Session(user, "MockSSID");
+			Project project = new Project("MockProject", "MockProjectID");
+			session = new Session(user, project, "MockSSID");
 		}
 		return session;
 	}

@@ -1,31 +1,35 @@
 /*******************************************************************************
- * Copyright (c) 2013 WPI-Suite
+ * Copyright (c) 2012-2014 -- WPI Suite
+ *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
- * 
- * Contributors: Team Rolling Thunder
- ******************************************************************************/
+ *******************************************************************************/
 package taskManager;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import taskManager.model.StageModel;
+import taskManager.model.TaskModel;
+import taskManager.model.WorkflowModel;
 import edu.wpi.cs.wpisuitetng.database.Data;
 import edu.wpi.cs.wpisuitetng.exceptions.WPISuiteException;
 import edu.wpi.cs.wpisuitetng.modules.Model;
 import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
 
 /**
- * A mock data implementation for server-side testing. Copied from
- * RequirementsManager for use in TaskManager by Team //nocomment
+ * A mock data implementation. Adapted from RequirementsManager for use in
+ * TaskManager by Team //nocomment
  * 
  * @author justinhess
- * @version $Revision: 1.0 $
+ * @author Sam Khalandovsky
  */
 public class MockData implements Data {
 
@@ -41,6 +45,47 @@ public class MockData implements Data {
 		this.objects = objects;
 	}
 
+	private Collection<?> findCollection(Object o) {
+		if (objects.contains(o)) {
+			return objects;
+		} else if (o instanceof StageModel) {
+			return findList((StageModel) o);
+		} else if (o instanceof TaskModel) {
+			return findList((TaskModel) o);
+		}
+		return null;
+	}
+
+	private <T> List<T> findList(T o) {
+		for (WorkflowModel wm : retrieveAll(new WorkflowModel())) {
+			if (o instanceof StageModel && wm.getStages().contains(o)) {
+				return (List<T>) wm.getStages();
+			} else if (o instanceof TaskModel) {
+				for (StageModel sm : wm.getStages()) {
+					if (sm.getTasks().contains(o)) {
+						return (List<T>) sm.getTasks();
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	private Set<Object> getAll() {
+		Set<Object> all = new HashSet<Object>();
+		for (Object o : objects) {
+			all.add(o);
+			if (o instanceof WorkflowModel) {
+				WorkflowModel wm = (WorkflowModel) o;
+				all.addAll(wm.getStages());
+				for (StageModel sm : wm.getStages()) {
+					all.addAll(sm.getTasks());
+				}
+			}
+		}
+		return all;
+	}
+
 	/**
 	 * Method delete.
 	 * 
@@ -50,12 +95,13 @@ public class MockData implements Data {
 	 *            edu.wpi.cs.wpisuitetng.database.Data#delete(T)
 	 */
 	@Override
-	public <T> T delete(T arg0) {
-		if (objects.contains(arg0)) {
-			objects.remove(arg0);
-			return arg0;
+	public <T> T delete(T o) {
+		Collection<?> c = findCollection(o);
+		if (c == null) {
+			c = objects;
 		}
-		return null;
+		c.remove(o);
+		return o;
 	}
 
 	/**
@@ -68,15 +114,29 @@ public class MockData implements Data {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> List<T> deleteAll(T arg0) {
+	public <T> List<T> deleteAll(T o) {
+		// Remove from objects
 		List<T> deleted = new ArrayList<T>();
 		for (Object obj : objects) {
-			if (arg0.getClass().isInstance(obj)) {
+			if (o.getClass().isInstance(obj)) {
 				deleted.add((T) obj);
 			}
 		}
-		// can't remove in the loop, otherwise you get an exception
 		objects.removeAll(deleted);
+
+		if (o instanceof StageModel) {
+			for (WorkflowModel wm : retrieveAll(new WorkflowModel())) {
+				deleted.addAll((List<T>) wm.getStages());
+				wm.getStages().clear();
+			}
+		} else if (o instanceof TaskModel) {
+			for (WorkflowModel wm : retrieveAll(new WorkflowModel())) {
+				for (StageModel sm : wm.getStages()) {
+					deleted.addAll((List<T>) sm.getTasks());
+					sm.getTasks().clear();
+				}
+			}
+		}
 		return deleted;
 	}
 
@@ -97,7 +157,7 @@ public class MockData implements Data {
 	@Override
 	public List<Model> retrieve(Class<?> type, String fieldName, Object value) {
 		List<Model> rv = new ArrayList<Model>();
-		for (Object obj : objects) {
+		for (Object obj : getAll()) {
 			if (!type.isInstance(obj)) {
 				continue;
 			}
@@ -136,7 +196,7 @@ public class MockData implements Data {
 	@Override
 	public <T> List<T> retrieveAll(T arg0) {
 		List<T> all = new ArrayList<T>();
-		for (Object obj : objects) {
+		for (Object obj : getAll()) {
 			if (arg0.getClass().isInstance(obj)) {
 				all.add((T) obj);
 			}
@@ -153,8 +213,11 @@ public class MockData implements Data {
 	 *            edu.wpi.cs.wpisuitetng.database.Data#save(T)
 	 */
 	@Override
-	public <T> boolean save(T arg0) {
-		objects.add(arg0);
+	public <T> boolean save(T o) {
+		// if it exists, don't need to do anything
+		if (!getAll().contains(o)) {
+			objects.add(o);
+		}
 		return true;
 	}
 
@@ -256,7 +319,9 @@ public class MockData implements Data {
 	@Override
 	public <T> List<Model> deleteAll(T arg0, Project arg1) {
 		List<Model> toDelete = retrieveAll(arg0, arg1);
-		objects.removeAll(toDelete);
+		for (Model m : toDelete) {
+			delete(m);
+		}
 		return toDelete;
 	}
 
