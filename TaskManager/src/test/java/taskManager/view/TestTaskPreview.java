@@ -28,11 +28,13 @@ import taskManager.JanewayModule;
 import taskManager.controller.ToolbarController;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
+import taskManager.model.WorkflowModel;
 
 /**
- * Tests for the stage controller
+ * Tests for the task preview
  *
- * @author Jon Sorrells
+ * @author Sam Khalandovsky
+ * @version Dec 7, 2014
  */
 public class TestTaskPreview {
 
@@ -43,6 +45,9 @@ public class TestTaskPreview {
 	public void setup() {
 		JanewayModule.toolV.setController(new ToolbarController(
 				JanewayModule.tabPaneC.getTabView()));
+
+		WorkflowModel wfm = WorkflowModel.getInstance();
+		wfm.makeIdenticalTo(new WorkflowModel());
 
 		frame = new JFrame();
 		JPanel panel = new JPanel();
