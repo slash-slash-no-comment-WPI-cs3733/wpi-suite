@@ -87,15 +87,23 @@ public class TestTabPaneController {
 		JanewayModule.tabPaneC.getTabView().setSelectedIndex(0);
 
 		// archive the task
-		Point location = taskFixture.component().getLocation();
+		// get the fixture for the task panel
+
+		// try dragging really fast
+		taskFixture.robot.settings().delayBetweenEvents(0);
+		taskFixture.robot.settings().idleTimeout(0);
+
+		// actually drag now
+		Point location = taskFixture.target.getLocation();
 		location.x += 5;
 		location.y += 5;
-		taskFixture.robot.pressMouse(taskFixture.component().getParent()
-				.getParent(), location);
-		fixture.robot.moveMouse(
-				taskFixture.component().getParent().getParent(), toolV
-						.getArchive().getLocation());
-		fixture.robot.releaseMouseButtons();
+		taskFixture.robot.pressMouse(taskFixture.target.getParent(), location);
+		taskFixture.robot.moveMouse(taskFixture.target.getParent(), toolV
+				.getArchive().getLocation());
+		taskFixture.robot.releaseMouseButtons();
+
+		// let it process things
+		fixture.robot.waitForIdle();
 
 		// switch to edit task tab
 		JanewayModule.getTabPaneView().setSelectedIndex(1);
