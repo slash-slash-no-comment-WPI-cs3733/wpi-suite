@@ -67,14 +67,10 @@ public class ToolbarController extends DropTargetAdapter implements
 				break;
 			case ToolbarView.CREATE_STAGE:
 				// add a new stage from workflow controller
-				tabPaneV.getWorkflowController().addStageToView();
+				WorkflowController.getInstance().addStageToView();
 
 				break;
 			case ToolbarView.REPORT:
-				break;
-
-			case ToolbarView.REFRESH:
-				tabPaneV.refreshWorkflow();
 				break;
 			}
 		}
@@ -106,9 +102,8 @@ public class ToolbarController extends DropTargetAdapter implements
 						taskV.getController().deleteTask(); // remove from model
 						taskV.getParent().remove(taskV); // remove from view
 						// Reload and save workflow.
-						JanewayModule.tabPaneC.getTabView().reloadWorkflow();
-						JanewayModule.tabPaneC.getTabView()
-								.getWorkflowController().repaintView();
+						WorkflowController.getInstance().reloadData();
+						WorkflowController.getInstance().repaintView();
 						WorkflowModel.getInstance().save();
 						DDTransferHandler.dragSaved = true;
 					}
@@ -117,9 +112,8 @@ public class ToolbarController extends DropTargetAdapter implements
 					taskV.getController().setArchived(
 							!taskV.getController().isArchived());
 					// Reload and save workflow.
-					JanewayModule.tabPaneC.getTabView().reloadWorkflow();
-					JanewayModule.tabPaneC.getTabView().getWorkflowController()
-							.repaintView();
+					WorkflowController.getInstance().reloadData();
+					WorkflowController.getInstance().repaintView();
 					WorkflowModel.getInstance().save();
 					DDTransferHandler.dragSaved = true;
 					break;
@@ -160,7 +154,7 @@ public class ToolbarController extends DropTargetAdapter implements
 						stageC.deleteStage();
 						DDTransferHandler.dragSaved = true;
 						model.save();
-						tabPaneC.getTabView().reloadWorkflow();
+						WorkflowController.getInstance().reloadData();
 					} else {
 						JOptionPane.showConfirmDialog(tabPaneC.getTabView(),
 								"You cannot delete the last stage.",
@@ -175,6 +169,6 @@ public class ToolbarController extends DropTargetAdapter implements
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		// Reload the workflow view.
-		JanewayModule.tabPaneC.getTabView().reloadWorkflow();
+		WorkflowController.getInstance().reloadData();
 	}
 }
