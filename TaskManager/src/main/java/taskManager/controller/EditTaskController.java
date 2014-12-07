@@ -64,77 +64,43 @@ public class EditTaskController implements ActionListener {
 		this.reloadData();
 	}
 
+	/**
+	 * 
+	 * Gets the current stage of the task.
+	 *
+	 * @return the current stage model, if it does not exist returns null.
+	 */
+	private StageModel getCurrentStage() {
+		// check to see if the task exists in the workflow and grabs the
+		// stage that the task is in
+		StageModel currentStage = wfm.getStages().get(0);
+		for (StageModel stage : wfm.getStages()) {
+			if (stage.containsTaskByID(taskID)) {
+				currentStage = stage;
+				break;
+			} else {
+				return null;
+			}
+		}
+		return currentStage;
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object button = e.getSource();
 		if (button instanceof JButton) {
 			String name = ((JButton) button).getName();
-
-			taskID = etv.getTitle().getName();
-
-			// check to see if the task exists in the workflow and grabs the
-			// stage that the task is in
-			boolean exists = false;
-			StageModel currentStage = wfm.getStages().get(0);
-			for (StageModel stage : wfm.getStages()) {
-				if (stage.containsTaskByID(taskID)) {
-					exists = true;
-					currentStage = stage;
-					break;
-				} else {
-					exists = false;
-				}
-			}
-
-			// grabs the stage from the dropdown box
-			StageModel desiredStage = wfm.findStageByName((String) etv
-					.getStages().getSelectedItem());
-			Requirement requirement = RequirementModel.getInstance()
-					.getRequirementByName(
-							(String) etv.getRequirements().getSelectedItem());
+			StageModel currentStage = getCurrentStage();
 
 			switch (name) {
 
 			case EditTaskView.SAVE:
-				TaskModel task;
-
-				if (etv.getFieldController().checkFields()) {
-					// if editing
-					if (exists) {
-						// set the task to be edited
-						task = currentStage.findTaskByID(taskID);
-						this.setTaskData(task, desiredStage, requirement);
-						this.setTaskID(task.getID());
-					}
-					// if creating a new task
-					else {
-						// creates a new task model
-						task = new TaskModel(etv.getTitle().getText(),
-								desiredStage);
-						this.setTaskData(task, desiredStage, requirement);
-					}
-
-					// Add the newly added activities.
-					List<ActivityModel> newActivities = etv.getNewActivities();
-					for (ActivityModel act : newActivities) {
-						task.addActivity(act);
-					}
-
-					// exit the edit view, this refreshes the workflow
-					this.returnToWorkflowView();
-					// makes all the fields blank again
-					etv.resetFields();
-					// Save entire workflow whenever a task is saved
-					wfm.save();
-				} else {
-					etv.setSaveEnabled(false);
-				}
+				saveTask();
 				break;
 
 			case EditTaskView.ARCHIVE:
-
 				// archive this task
-				task = currentStage.findTaskByID(taskID);
+				TaskModel task = currentStage.findTaskByID(taskID);
 				boolean isArchived = task.isArchived();
 				if (isArchived) {
 					etv.getArchiveButton().setText("Archive");
@@ -180,6 +146,10 @@ public class EditTaskController implements ActionListener {
 
 				// TODO: this button should be disabled when [None] selected so
 				// requirement would never be null.
+				Requirement requirement = RequirementModel.getInstance()
+						.getRequirementByName(
+								(String) etv.getRequirements()
+										.getSelectedItem());
 				if (requirement == null) {
 					return;
 				}
@@ -217,6 +187,7 @@ public class EditTaskController implements ActionListener {
 				break;
 
 			case EditTaskView.REFRESH:
+				boolean exists = (null != currentStage);
 				if (exists) {
 					// Clear the activities list.
 					etv.clearActivities();
@@ -470,6 +441,14 @@ public class EditTaskController implements ActionListener {
 		return edited;
 	}
 
+	/**
+	 * 
+	 * Checks if the due date field is edited.
+	 *
+	 * @param task
+	 *            the TaskModel to check the date field with.
+	 * @return a boolean for whether or not the date is edited.
+	 */
 	public Boolean checkDate(TaskModel task) {
 		Date dueDate = task.getDueDate();
 
@@ -606,4 +585,55 @@ public class EditTaskController implements ActionListener {
 		}
 		return edited;
 	}
+
+	/**
+	 * 
+	 * Saves the task.
+	 *
+	 */
+	public void saveTask() {
+		taskID = etv.getTitle().getName();
+
+		StageModel currentStage = getCurrentStage();
+		boolean exists = (null != currentStage);
+
+		// grabs the stage from the dropdown box
+		StageModel desiredStage = wfm.findStageByName((String) etv.getStages()
+				.getSelectedItem());
+		Requirement requirement = RequirementModel.getInstance()
+				.getRequirementByName(
+						(String) etv.getRequirements().getSelectedItem());
+		TaskModel task;
+		if (etv.getFieldController().checkFields()) {
+			// if editing
+			if (exists) {
+				// set the task to be edited
+				task = currentStage.findTaskByID(taskID);
+				this.setTaskData(task, desiredStage, requirement);
+				this.setTaskID(task.getID());
+			}
+			// if creating a new task
+			else {
+				// creates a new task model
+				task = new TaskModel(etv.getTitle().getText(), desiredStage);
+				this.setTaskData(task, desiredStage, requirement);
+			}
+
+			// Add the newly added activities.
+			List<ActivityModel> newActivities = etv.getNewActivities();
+			for (ActivityModel act : newActivities) {
+				task.addActivity(act);
+			}
+
+			// exit the edit view, this refreshes the workflow
+			this.returnToWorkflowView();
+			// makes all the fields blank again
+			etv.resetFields();
+			// Save entire workflow whenever a task is saved
+			wfm.save();
+		} else {
+			etv.setSaveEnabled(false);
+		}
+	}
+
 }
