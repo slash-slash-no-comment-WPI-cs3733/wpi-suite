@@ -145,7 +145,7 @@ public class EditTaskController implements ActionListener {
 				etv.setDeleteEnabled(!isArchived);
 
 				// Save and reload the workflow.
-				JanewayModule.tabPaneC.getTabView().reloadWorkflow();
+				WorkflowController.getInstance().reloadData();
 				wfm.save();
 
 				break;
@@ -257,7 +257,7 @@ public class EditTaskController implements ActionListener {
 	 */
 	private void returnToWorkflowView() {
 		JanewayModule.tabPaneC.removeTabByComponent(etv);
-		JanewayModule.tabPaneC.getTabView().reloadWorkflow();
+		WorkflowController.getInstance().reloadData();
 	}
 
 	/**
@@ -428,10 +428,8 @@ public class EditTaskController implements ActionListener {
 		TaskModel task = null;
 		if (!exists) {
 			// make a task with the default values to compare to
-			task = new TaskModel();
-			task.setName("");
+			task = new TaskModel("", currentStage);
 			task.setDescription("");
-			task.setStage(currentStage);
 		} else {
 			task = currentStage.findTaskByID(getTaskID());
 		}
