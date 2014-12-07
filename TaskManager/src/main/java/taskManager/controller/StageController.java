@@ -11,6 +11,8 @@ package taskManager.controller;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -45,7 +47,7 @@ import taskManager.view.TaskView;
  * @version Dec 3, 2014
  */
 public class StageController implements DropAreaSaveListener,
-		MouseMotionListener, MouseListener, ActionListener {
+		MouseMotionListener, MouseListener, ActionListener, KeyListener {
 
 	private final StageView view;
 	private StageModel model;
@@ -233,31 +235,7 @@ public class StageController implements DropAreaSaveListener,
 
 			switch (((JButton) button).getName()) {
 			case StageView.CHECK:
-				if (WorkflowModel.getInstance().findStageByName(
-						view.getLabelText()) != null) {
-					JOptionPane.showConfirmDialog(
-							view,
-							"Another stage already has the name "
-									+ view.getLabelText()
-									+ ". Please choose another name.",
-							"Warning - Duplicate stage names",
-							JOptionPane.CLOSED_OPTION);
-				} else {
-					if (model == null) {
-						model = new StageModel(view.getLabelText());
-					} else {
-						model.setName(view.getLabelText());
-					}
-
-					WorkflowModel.getInstance().save();
-
-					// refresh the workflow with the new stage
-					WorkflowController.getInstance().reloadData();
-					WorkflowController.getInstance().repaintView();
-
-					// save to the server
-					WorkflowModel.getInstance().save();
-				}
+				addStage();
 				break;
 			// fall through
 			case StageView.X:
@@ -289,6 +267,53 @@ public class StageController implements DropAreaSaveListener,
 			}
 		}
 
+	}
+
+	/**
+	 * 
+	 * Adds a new stage with the entered title unless it already exists.
+	 *
+	 */
+	private void addStage() {
+		if (WorkflowModel.getInstance().findStageByName(view.getLabelText()) != null) {
+			JOptionPane.showConfirmDialog(view,
+					"Another stage already has the name " + view.getLabelText()
+							+ ". Please choose another name.",
+					"Warning - Duplicate stage names",
+					JOptionPane.CLOSED_OPTION);
+		} else {
+			if (model == null) {
+				model = new StageModel(view.getLabelText());
+			} else {
+				model.setName(view.getLabelText());
+			}
+
+			WorkflowModel.getInstance().save();
+
+			// refresh the workflow with the new stage
+			WorkflowController.getInstance().reloadData();
+			WorkflowController.getInstance().repaintView();
+
+			// save to the server
+			WorkflowModel.getInstance().save();
+		}
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// Do nothing.
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if (e.getKeyChar() == KeyEvent.VK_ENTER) {
+			addStage();
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// Do nothing.
 	}
 
 }
