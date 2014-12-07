@@ -95,7 +95,7 @@ public class ToolbarView extends JToolBar {
 		createStage = new JButton("Create Stage");
 		createStage.setName(CREATE_STAGE);
 
-		statistics = new JButton("Statistics");
+		statistics = new JButton("Reports");
 		statistics.setName(REPORT);
 
 		// Add icons

@@ -27,14 +27,14 @@ import taskManager.view.EditTaskView;
  * @author Stefan Alexander
  *
  */
-public class TaskInputController implements KeyListener, FocusListener,
+public class TaskInputValidator implements KeyListener, FocusListener,
 		PopupMenuListener, ListSelectionListener {
 
 	private final EditTaskView etv;
 	private boolean addUsersSelected = false;
 	private boolean removeUsersSelected = false;
 
-	public TaskInputController(EditTaskView etv) {
+	public TaskInputValidator(EditTaskView etv) {
 		this.etv = etv;
 		checkFields();
 	}

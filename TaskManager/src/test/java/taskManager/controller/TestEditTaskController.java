@@ -31,7 +31,6 @@ import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
-import taskManager.view.TaskView;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
@@ -62,7 +61,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		// create the edit task controller
 		etv = new EditTaskView(EditTaskView.Mode.CREATE);
 		etv.setController(new EditTaskController(etv));
-		etv.setFieldController(new TaskInputController(etv));
+		etv.setFieldController(new TaskInputValidator(etv));
 
 		// give it some stages
 		for (String name : stageNames) {
@@ -223,8 +222,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		task.setReq(req);
 
 		// load the edit view
-		TaskController tc = new TaskController(new TaskView("Task", new Date(),
-				0), task);
+		TaskController tc = new TaskController(task);
 		tc.editTask();
 
 		// make sure the requirement displays properly
@@ -309,8 +307,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		task.addAssigned(testUser);
 
 		// load the edit view
-		TaskController tc = new TaskController(new TaskView("Task", new Date(),
-				0), task);
+		TaskController tc = new TaskController(task);
 		tc.editTask();
 		Component c = JanewayModule.tabPaneC.getTabView()
 				.getSelectedComponent();

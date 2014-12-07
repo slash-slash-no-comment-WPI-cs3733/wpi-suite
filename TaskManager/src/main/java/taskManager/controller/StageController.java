@@ -24,7 +24,6 @@ import javax.swing.JPanel;
 import taskManager.JanewayModule;
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DropAreaSaveListener;
-import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
@@ -50,8 +49,8 @@ public class StageController implements DropAreaSaveListener,
 	private final StageView view;
 	private StageModel model;
 
-	public static Boolean anyChangeTitleOut = false;
 	public Boolean thisChangeTitleOut = false;
+	public Boolean newStage;
 
 	/**
 	 * Constructor for the StageController gets all the tasks from the
@@ -62,10 +61,16 @@ public class StageController implements DropAreaSaveListener,
 	 *            the corresponding StageView object
 	 * @param model
 	 *            the corresponding StageModel object
+	 * @param newStage
+	 *            true if this is a new stage without an official name and not
+	 *            stored in the database. false if this was loaded from the
+	 *            database
+	 * 
 	 */
-	public StageController(StageView view, StageModel model) {
+	public StageController(StageView view, StageModel model, boolean newStage) {
 		this.view = view;
 		this.model = model;
+		this.newStage = newStage;
 
 		// Get all the tasks associated with this Stage.
 
@@ -80,10 +85,7 @@ public class StageController implements DropAreaSaveListener,
 				// archive shown is set to true.
   			if (!task.isArchived() || showArchive) {
 					// create stage view and controller.
-					TaskView tkv = new TaskView(task.getName(),
-							task.getDueDate(), task.getEstimatedEffort());
-					tkv.setController(new TaskController(tkv, task));
-					this.view.addTaskView(tkv);
+					this.view.addTaskView(new TaskController(task).getView());
 				}
 			}
 		}
@@ -137,7 +139,18 @@ public class StageController implements DropAreaSaveListener,
 	}
 
 	/**
+	 * 
+	 * Returns true if this is a new stage, meaning it does not officially have
+	 * a name and is not saved to the database.
 	 *
+	 * @return true if this is a new stage
+	 */
+	public boolean isNewStage() {
+		return newStage;
+	}
+
+	/**
+	 * 
 	 * Changes which title is visible, the label or the textbox. If editable is
 	 * true, the textbox is visible.
 	 *
@@ -154,6 +167,7 @@ public class StageController implements DropAreaSaveListener,
 					c.setVisible(true);
 				}
 			}
+			WorkflowController.reloadInformation = false;
 		} else {
 			for (Component c : view.getComponents()) {
 				if (c.getName() == StageView.TITLE) {
@@ -162,34 +176,22 @@ public class StageController implements DropAreaSaveListener,
 					c.setVisible(false);
 				}
 			}
+			WorkflowController.reloadInformation = true;
 		}
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// only bring up the title textbox if nothing else has set
-		// ignoreAllResponses
-		if (!FetchWorkflowObserver.ignoreAllResponses && !anyChangeTitleOut) {
-			// double clicked on the title
-			if (e.getClickCount() == 2 && e.getSource() instanceof JLabel) {
-				// Don't reload while changing a stage name is open.
-				FetchWorkflowObserver.ignoreAllResponses = true;
-				anyChangeTitleOut = true;
-				thisChangeTitleOut = true;
-				// bring up the title textbox
-				switchTitle(true);
-			}
-		}
-		// If there are no changeTitle textboxes out, clear the workflow
-		else if (!StageController.anyChangeTitleOut) {
-			// reset the flag
-			FetchWorkflowObserver.ignoreAllResponses = false;
+
+		// double clicked on the title
+		if (e.getClickCount() == 2 && e.getSource() instanceof JLabel) {
+			// bring up the title textbox
+			switchTitle(true);
+		} else if (!newStage) {
 			// this will remove any changeTitle textboxes or taskInfo bubbles
 			// from the workflow
 			JanewayModule.tabPaneC.getTabView().getWorkflowController()
-					.reloadData();
-			JanewayModule.tabPaneC.getTabView().getWorkflowController()
-					.repaintView();
+					.clearWorkflow(true);
 		}
 	}
 
@@ -224,7 +226,7 @@ public class StageController implements DropAreaSaveListener,
 
 	@Override
 	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
+		// Do nothing
 
 	}
 
@@ -253,17 +255,13 @@ public class StageController implements DropAreaSaveListener,
 
 					WorkflowModel.getInstance().save();
 
+					this.newStage = false;
 					// refresh the workflow with the new stage
+					this.switchTitle(false);
 					JanewayModule.tabPaneC.getTabView().getWorkflowController()
 							.reloadData();
-					JanewayModule.tabPaneC.getTabView().getWorkflowController()
-							.repaintView();
-
-					// save to the server
-					WorkflowModel.getInstance().save();
 				}
 				break;
-			// fall through
 			case StageView.X:
 				if (model == null) {
 					// ask the user if they want to cancel the new stage
@@ -274,28 +272,16 @@ public class StageController implements DropAreaSaveListener,
 									"Cancel Stage Creation",
 									JOptionPane.YES_NO_OPTION);
 					if (opt == JOptionPane.YES_OPTION) {
-
-						// refresh the workflow with no new stage view
-						JanewayModule.tabPaneC.getTabView()
-								.getWorkflowController().reloadData();
-						JanewayModule.tabPaneC.getTabView()
-								.getWorkflowController().repaintView();
+						this.switchTitle(false);
 					}
 
 				} else {
-					// reset the flags
-					thisChangeTitleOut = false;
-					FetchWorkflowObserver.ignoreAllResponses = false;
-					// reload which will remove the textbox
-					JanewayModule.tabPaneC.getTabView().getWorkflowController()
-							.reloadData();
-
+					this.switchTitle(false);
 				}
 
 				break;
 			}
 		}
-
 	}
 
 }

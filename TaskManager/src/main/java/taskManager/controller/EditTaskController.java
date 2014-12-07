@@ -49,7 +49,7 @@ public class EditTaskController implements ActionListener {
 	private final User[] projectUsers = JanewayModule.users;
 	private String taskID;
 	private ArrayList<String> toRemove = new ArrayList<String>();
-	private TaskInputController fieldController;
+	private TaskInputValidator fieldController;
 
 	/**
 	 * Constructor, attaches the edit task view to this controller
@@ -135,14 +135,13 @@ public class EditTaskController implements ActionListener {
 
 				// archive this task
 				task = currentStage.findTaskByID(taskID);
-				boolean isArchived = task.isArchived();
-				if (isArchived) {
+				if (task.isArchived()) {
 					etv.getArchiveButton().setText("Archive");
 				} else {
 					etv.getArchiveButton().setText("Unarchive");
 				}
-				task.setArchived(!isArchived);
-				etv.setDeleteEnabled(!isArchived);
+				task.setArchived(!task.isArchived());
+				etv.setDeleteEnabled(task.isArchived());
 
 				// Save and reload the workflow.
 				JanewayModule.tabPaneC.getTabView().reloadWorkflow();
@@ -257,6 +256,8 @@ public class EditTaskController implements ActionListener {
 	 */
 	private void returnToWorkflowView() {
 		JanewayModule.tabPaneC.removeTabByComponent(etv);
+		JanewayModule.tabPaneC.getTabView().getWorkflowController()
+				.clearWorkflow(false);
 		JanewayModule.tabPaneC.getTabView().reloadWorkflow();
 	}
 

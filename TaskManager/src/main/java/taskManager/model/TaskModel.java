@@ -381,8 +381,8 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 * @param bool
 	 *            The boolean to set the task's isArchived field.
 	 */
-	public void setArchived(boolean bool) {
-		isArchived = bool;
+	public void setArchived(boolean a) {
+		isArchived = a;
 	}
 
 	/**

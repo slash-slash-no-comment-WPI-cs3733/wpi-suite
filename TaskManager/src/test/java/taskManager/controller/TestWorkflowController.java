@@ -18,6 +18,7 @@ import org.junit.Test;
 import taskManager.ScreenshotOnFail;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
+import taskManager.view.StageView;
 import taskManager.view.WorkflowView;
 
 /**
@@ -37,16 +38,16 @@ public class TestWorkflowController extends ScreenshotOnFail {
 	public void setup() {
 		// creates a workflow view
 		wfv = new WorkflowView();
+		// create controller for view
+		wfv.setController(new WorkflowController(wfv));
 
 		// create a new workflow model
 		wfm.makeIdenticalTo(new WorkflowModel());
 		// give it the stages
 		for (String name : stageNames) {
 			new StageModel(name, false);
+			wfv.addStageView(new StageView(name));
 		}
-
-		// create controller for view
-		wfv.setController(new WorkflowController(wfv));
 
 		JFrame frame = new JFrame();
 		frame.add(wfv);
