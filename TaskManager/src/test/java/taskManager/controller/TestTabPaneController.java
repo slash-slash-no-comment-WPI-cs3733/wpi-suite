@@ -39,6 +39,7 @@ public class TestTabPaneController {
 	private TaskModel t1;
 	private TaskModel t2;
 	private TaskModel t3;
+	private TaskModel task;
 
 	private Dimension size = new Dimension(1000, 500);
 
@@ -52,6 +53,7 @@ public class TestTabPaneController {
 			new StageModel(name, true);
 		}
 		createDummyTasks();
+
 		frame = new JFrame();
 		frame.setSize(size);
 		frame.setPreferredSize(size);
@@ -66,19 +68,19 @@ public class TestTabPaneController {
 	@Test
 	public void testOpenEditTaskTab() {
 		// click the task
-		fixture.panel("Task 1").click();
+		fixture.panel("test").click();
 
 		// click the edit button
 		fixture.button(TaskInfoPreviewView.EDIT).click();
 
 		// check that the tab is open
-		assertEquals(JanewayModule.getTabPaneView().getTitleAt(1), "Task 1");
+		assertEquals(JanewayModule.getTabPaneView().getTitleAt(1), "test");
 	}
 
 	@Test
 	public void testArchiveTaskWithOpenTab() {
 		// click the task
-		JPanelFixture taskFixture = fixture.panel("Task 1");
+		JPanelFixture taskFixture = fixture.panel("test");
 		taskFixture.click();
 		// click the edit button
 		fixture.button(TaskInfoPreviewView.EDIT).click();
@@ -116,7 +118,7 @@ public class TestTabPaneController {
 	@Test
 	public void testDeleteTaskWithOpenTab() {
 		// click the task
-		JPanelFixture taskFixture = fixture.panel("Task 1");
+		JPanelFixture taskFixture = fixture.panel("test");
 		taskFixture.click();
 		// click the edit button
 		fixture.button(TaskInfoPreviewView.EDIT).click();
