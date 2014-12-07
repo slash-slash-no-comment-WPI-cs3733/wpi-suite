@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
+import javax.swing.UIManager;
 
 import taskManager.controller.TabPaneController;
 import taskManager.controller.ToolbarController;
@@ -52,6 +53,11 @@ public class JanewayModule implements IJanewayModule {
 
 		new ImageIcon(), toolV, tabPaneV);
 		tabs.add(tab);
+
+		// Since by default, pressing Enter for JOptionPane dialogs always
+		// selects the default button, instead make it so that it selects the
+		// button that has focus.
+		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 	}
 
 	/**
