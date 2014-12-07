@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import taskManager.JanewayModule;
+import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
 import taskManager.view.ToolbarView;
@@ -40,11 +41,17 @@ public class TestStageController {
 
 	private FrameFixture fixture;
 	private JFrame frame;
+	private WorkflowModel wfm = WorkflowModel.getInstance();
 
 	@Before
 	public void setup() {
 		JanewayModule.toolV.setController(new ToolbarController(
 				JanewayModule.tabPaneC.getTabView()));
+
+		// create a new workflow model
+		wfm.makeIdenticalTo(new WorkflowModel());
+		// give it a stage
+		new StageModel("blah", false);
 
 		frame = new JFrame();
 		JPanel panel = new JPanel();
@@ -52,10 +59,11 @@ public class TestStageController {
 		panel.add(JanewayModule.toolV);
 		panel.add(JanewayModule.tabPaneC.getTabView());
 		frame.add(panel);
-
 		Dimension size = new Dimension(1500, 500);
 		frame.setSize(size);
 		frame.setPreferredSize(size);
+		JanewayModule.tabPaneC.getTabView().getWorkflowController()
+				.reloadData();
 
 		fixture = new FrameFixture(frame);
 
