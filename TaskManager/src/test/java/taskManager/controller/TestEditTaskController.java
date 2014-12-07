@@ -17,6 +17,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 
 import org.fest.swing.fixture.FrameFixture;
 import org.fest.swing.fixture.JTextComponentFixture;
@@ -313,8 +314,9 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		tc.editTask();
 		Component c = JanewayModule.tabPaneC.getTabView()
 				.getSelectedComponent();
-		if (c instanceof EditTaskView) {
-			etv = (EditTaskView) c;
+		if (c instanceof JScrollPane
+				&& ((JScrollPane) c).getViewport().getView() instanceof EditTaskView) {
+			etv = (EditTaskView) ((JScrollPane) c).getViewport().getView();
 		} else {
 			fail("oh god what's going on");
 		}
