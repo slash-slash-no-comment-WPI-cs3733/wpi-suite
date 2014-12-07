@@ -58,6 +58,8 @@ public class ToolbarView extends JToolBar {
 
 	private JLabel projectName;
 
+	private JPanel targets;
+
 	private ToolbarController controller;
 
 	/**
@@ -71,7 +73,7 @@ public class ToolbarView extends JToolBar {
 		// Construct and set up the buttons and title panels
 		JPanel buttons = new JPanel();
 		JPanel title = new JPanel();
-		JPanel targets = new JPanel();
+		targets = new JPanel();
 		FlowLayout flowLayout = new FlowLayout();
 		BoxLayout toolbarLayout = new BoxLayout(this, BoxLayout.LINE_AXIS);
 		BoxLayout targetsLayout = new BoxLayout(targets, BoxLayout.LINE_AXIS);
@@ -223,5 +225,14 @@ public class ToolbarView extends JToolBar {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Returns the location of the archive icon
+	 * 
+	 * @return the location of the archive icon
+	 */
+	public JLabel getArchive() {
+		return archive;
 	}
 }

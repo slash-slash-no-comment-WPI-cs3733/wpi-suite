@@ -21,12 +21,14 @@ import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.TaskInfoPreviewView;
+import taskManager.view.ToolbarView;
 
 public class TestTabPaneController {
 
 	private static final WorkflowModel wfm = WorkflowModel.getInstance();
 	private static final WorkflowController wfc = JanewayModule
 			.getTabPaneView().getWorkflowController();
+	private static final ToolbarView toolV = JanewayModule.toolV;
 
 	private final String[] stageNames = { "New", "Scheduled", "In Progress",
 			"Complete" };
@@ -84,10 +86,10 @@ public class TestTabPaneController {
 		JanewayModule.tabPaneC.getTabView().setSelectedIndex(0);
 
 		// archive the task
-		taskFixture.robot.pressMouse(MouseButton.LEFT_BUTTON);
-		taskFixture.robot.moveMouse(JanewayModule.toolV.getComponent(4)
-				.getLocation());
-		taskFixture.robot.releaseMouse(MouseButton.LEFT_BUTTON);
+
+		fixture.robot.pressMouse(frame, taskFixture.component().getLocation());
+		fixture.robot.moveMouse(toolV.getArchive());
+		fixture.robot.releaseMouse(MouseButton.LEFT_BUTTON);
 
 		// switch to edit task tab
 		JanewayModule.getTabPaneView().setSelectedIndex(1);

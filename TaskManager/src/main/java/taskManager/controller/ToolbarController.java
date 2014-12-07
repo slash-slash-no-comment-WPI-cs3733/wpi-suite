@@ -117,6 +117,8 @@ public class ToolbarController extends DropTargetAdapter implements
 				case ToolbarView.ARCHIVE:
 					taskV.getController().setArchived(
 							!taskV.getController().isArchived());
+					System.out.println("Archive is set to: "
+							+ taskV.getController().isArchived());
 					// Reload and save workflow.
 					JanewayModule.tabPaneC.getTabView().reloadWorkflow();
 					JanewayModule.tabPaneC.getTabView().getWorkflowController()

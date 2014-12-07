@@ -235,10 +235,18 @@ public class EditTaskController implements ActionListener {
 	 * refreshes the data on the view
 	 */
 	public void reloadData() {
+
+		TaskModel task = wfm.findTaskByID(this.getTaskID());
+
 		JComboBox<String> stages = etv.getStages();
 		stages.removeAllItems();
+		int stageIndex = 0;
 		for (StageModel stage : wfm.getStages()) {
 			stages.addItem(stage.getName());
+			if (task != null && task.getStage() == stage) {
+				stages.setSelectedIndex(stageIndex);
+			}
+			stageIndex++;
 		}
 
 		List<Requirement> reqs = RequirementModel.getInstance()
@@ -252,7 +260,13 @@ public class EditTaskController implements ActionListener {
 			}
 		}
 
-		// TODO set archive button text if task is archived
+		if (task != null) {
+			if (task.isArchived()) {
+				etv.getArchiveButton().setText("Unarchive");
+			} else {
+				etv.getArchiveButton().setText("Archive");
+			}
+		}
 
 	}
 
