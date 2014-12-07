@@ -9,7 +9,9 @@
 
 package taskManager.controller;
 
+import java.awt.Component;
 import java.awt.Container;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -99,37 +101,24 @@ public class EditTaskController implements ActionListener {
 				break;
 
 			case EditTaskView.ARCHIVE:
-				// archive this task
-				TaskModel task = currentStage.findTaskByID(taskID);
-				boolean isArchived = task.isArchived();
-				if (isArchived) {
-					etv.getArchiveButton().setText("Archive");
-				} else {
-					etv.getArchiveButton().setText("Unarchive");
-				}
-				task.setArchived(!isArchived);
-				etv.setDeleteEnabled(!isArchived);
-
-				// Save and reload the workflow.
-				WorkflowController.getInstance().reloadData();
-				wfm.save();
-
+				archiveTask();
 				break;
 
 			case EditTaskView.DELETE:
-				Integer choice = JOptionPane.showConfirmDialog(etv,
-						"Are you sure you want to delete this task?",
-						"Warning - Deleting a task", JOptionPane.YES_NO_OPTION);
-				if (choice.equals(JOptionPane.YES_OPTION)) {
-					// delete this task
-					task = currentStage.findTaskByID(taskID);
-					currentStage.getTasks().remove(task);
-					etv.resetFields();
-
-					// Save entire workflow whenever a task is deleted
-					wfm.save();
-					returnToWorkflowView();
-				}
+				// Integer choice = JOptionPane.showConfirmDialog(etv,
+				// "Are you sure you want to delete this task?",
+				// "Warning - Deleting a task", JOptionPane.YES_NO_OPTION);
+				// if (choice.equals(JOptionPane.YES_OPTION)) {
+				// // delete this task
+				// task = currentStage.findTaskByID(taskID);
+				// currentStage.getTasks().remove(task);
+				// etv.resetFields();
+				//
+				// // Save entire workflow whenever a task is deleted
+				// wfm.save();
+				// returnToWorkflowView();
+				// }
+				deleteTask();
 				break;
 
 			case EditTaskView.ADD_USER:
@@ -177,8 +166,7 @@ public class EditTaskController implements ActionListener {
 
 			case EditTaskView.CANCEL:
 				// go back to workflow view
-				etv.resetFields();
-				returnToWorkflowView();
+				cancelTask();
 				break;
 
 			case EditTaskView.SUBMIT_COMMENT:
@@ -193,7 +181,7 @@ public class EditTaskController implements ActionListener {
 					etv.clearActivities();
 
 					// set activities pane
-					task = currentStage.findTaskByID(taskID);
+					TaskModel task = currentStage.findTaskByID(taskID);
 					List<ActivityModel> tskActivities = task.getActivities();
 					etv.setActivities(tskActivities);
 					etv.setActivitiesPanel(tskActivities);
@@ -586,12 +574,77 @@ public class EditTaskController implements ActionListener {
 		return edited;
 	}
 
+	public void handleEnterKey() {
+		Component focusOwner = KeyboardFocusManager
+				.getCurrentKeyboardFocusManager().getFocusOwner();
+		if (focusOwner instanceof JButton) {
+			String name = focusOwner.getName();
+			switch (name) {
+			case EditTaskView.CANCEL:
+				cancelTask();
+				return;
+			case EditTaskView.ARCHIVE:
+				archiveTask();
+				return;
+			case EditTaskView.DELETE:
+				deleteTask();
+				return;
+			default:
+				saveTask();
+				return;
+			}
+		} else {
+			// Default behavior, save task.
+			saveTask();
+		}
+	}
+
+	private void cancelTask() {
+		etv.resetFields();
+		returnToWorkflowView();
+	}
+
+	private void archiveTask() {
+		// archive this task
+		StageModel currentStage = getCurrentStage();
+		TaskModel task = currentStage.findTaskByID(taskID);
+		boolean isArchived = task.isArchived();
+		if (isArchived) {
+			etv.getArchiveButton().setText("Archive");
+		} else {
+			etv.getArchiveButton().setText("Unarchive");
+		}
+		task.setArchived(!isArchived);
+		etv.setDeleteEnabled(!isArchived);
+
+		// Save and reload the workflow.
+		WorkflowController.getInstance().reloadData();
+		wfm.save();
+	}
+
+	private void deleteTask() {
+		StageModel currentStage = getCurrentStage();
+		Integer choice = JOptionPane.showConfirmDialog(etv,
+				"Are you sure you want to delete this task?",
+				"Warning - Deleting a task", JOptionPane.YES_NO_OPTION);
+		if (choice.equals(JOptionPane.YES_OPTION)) {
+			// delete this task
+			TaskModel task = currentStage.findTaskByID(taskID);
+			currentStage.getTasks().remove(task);
+			etv.resetFields();
+
+			// Save entire workflow whenever a task is deleted
+			wfm.save();
+			returnToWorkflowView();
+		}
+	}
+
 	/**
 	 * 
 	 * Saves the task.
 	 *
 	 */
-	public void saveTask() {
+	private void saveTask() {
 		taskID = etv.getTitle().getName();
 
 		StageModel currentStage = getCurrentStage();
