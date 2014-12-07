@@ -44,7 +44,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	private final WorkflowView view;
 	private final WorkflowModel model;
 	private boolean hasNewStageView;
-	
+
 	private static WorkflowController instance = null;
 
 	/**
@@ -273,6 +273,12 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		return view;
 	}
 
+	/**
+	 * Returns the singleton instance of WorkflowController. Creates one if
+	 * needed.
+	 * 
+	 * @return the WorkflowController singleton
+	 */
 	public static WorkflowController getInstance() {
 		if (instance == null) {
 			instance = new WorkflowController();
