@@ -18,6 +18,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import taskManager.ScreenshotOnFail;
 import taskManager.controller.WorkflowController;
 
 /**
@@ -25,7 +26,7 @@ import taskManager.controller.WorkflowController;
  *
  * @author Jon Sorrells
  */
-public class TestWorkflowView {
+public class TestWorkflowView extends ScreenshotOnFail {
 
 	private FrameFixture fixture;
 	private WorkflowView wfv;
