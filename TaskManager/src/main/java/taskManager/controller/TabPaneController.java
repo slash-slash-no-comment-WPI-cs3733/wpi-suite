@@ -12,6 +12,8 @@ package taskManager.controller;
 import java.awt.Component;
 import java.util.ArrayList;
 
+import javax.swing.JScrollPane;
+
 import taskManager.JanewayModule;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
@@ -54,11 +56,6 @@ public class TabPaneController {
 		// Disable save button when creating a task.
 		etv.setSaveEnabled(false);
 
-		addTab("Create Task", etv, true);
-		// Focuses on the new tab
-		int index = this.tabPaneV.getTabCount() - 1;
-		this.tabPaneV.setSelectedIndex(index);
-
 		// Clear all activities, reset fields.
 		etv.clearActivities();
 		etv.resetFields();
@@ -72,6 +69,11 @@ public class TabPaneController {
 			}
 		}
 		etv.getProjectUsersList().addAllToList(projectUserNames);
+
+		addTab("Create Task", etv, true);
+		// Focuses on the new tab
+		int index = this.tabPaneV.getTabCount() - 1;
+		this.tabPaneV.setSelectedIndex(index);
 	}
 
 	/**
@@ -85,7 +87,9 @@ public class TabPaneController {
 		boolean exists = false;
 		EditTaskView etv2 = null;
 		for (Component c : tabPaneV.getComponents()) {
-			if (c instanceof EditTaskView) {
+			if (c instanceof JScrollPane
+					&& ((JScrollPane) c).getViewport().getView() instanceof EditTaskView) {
+				c = ((JScrollPane) c).getViewport().getView();
 				etv2 = (EditTaskView) c;
 
 				if (etv2.getTitle().getName() != null
@@ -117,7 +121,7 @@ public class TabPaneController {
 	 *            the tab
 	 */
 	public void addTab(String title, Component component, boolean closeable) {
-		tabPaneV.addTab(title, component);
+		tabPaneV.addTab(title, new JScrollPane(component));
 		tabPaneV.setTabComponentAt(tabPaneV.indexOfComponent(component),
 				new TabView(title, component, closeable));
 	}
@@ -156,5 +160,4 @@ public class TabPaneController {
 	public void reloadWorkflow() {
 		tabPaneV.reloadWorkflow();
 	}
-
 }
