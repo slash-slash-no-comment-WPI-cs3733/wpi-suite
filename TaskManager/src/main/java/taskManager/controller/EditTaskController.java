@@ -569,24 +569,7 @@ public class EditTaskController implements ActionListener {
 		Component focusOwner = KeyboardFocusManager
 				.getCurrentKeyboardFocusManager().getFocusOwner();
 		if (focusOwner instanceof JButton) {
-			String name = focusOwner.getName();
-			switch (name) {
-			case EditTaskView.CANCEL:
-				cancelTask();
-				return;
-			case EditTaskView.ARCHIVE:
-				archiveTask();
-				return;
-			case EditTaskView.DELETE:
-				deleteTask();
-				return;
-			case EditTaskView.SUBMIT_COMMENT:
-				etv.addComment();
-				return;
-			default:
-				saveTask();
-				return;
-			}
+			return;
 		} else {
 			// Default behavior, save task.
 			saveTask();

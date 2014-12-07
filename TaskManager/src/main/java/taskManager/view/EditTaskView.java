@@ -397,14 +397,6 @@ public class EditTaskView extends JPanel {
 		stages.addPopupMenuListener(fieldC);
 		usersList.setController(fieldC);
 		projectUsersList.setController(fieldC);
-
-		// buttons should react to enter button when they have focus (for people
-		// who TAB over to the buttons).
-		save.addKeyListener(fieldC);
-		cancel.addKeyListener(fieldC);
-		archive.addKeyListener(fieldC);
-		delete.addKeyListener(fieldC);
-		submitComment.addKeyListener(fieldC);
 	}
 
 	/**
