@@ -559,6 +559,12 @@ public class EditTaskController implements ActionListener {
 		return edited;
 	}
 
+	/**
+	 * 
+	 * Handles what to do when the enter key is pressed for a certain component
+	 * currently focused on.
+	 *
+	 */
 	public void handleEnterKey() {
 		Component focusOwner = KeyboardFocusManager
 				.getCurrentKeyboardFocusManager().getFocusOwner();
@@ -587,15 +593,24 @@ public class EditTaskController implements ActionListener {
 		}
 	}
 
+	/**
+	 * 
+	 * Goes back to the workflow view, when cancel is selected.
+	 *
+	 */
 	private void cancelTask() {
 		etv.resetFields();
 		returnToWorkflowView();
 	}
 
+	/**
+	 * 
+	 * Archive the task.
+	 *
+	 */
 	private void archiveTask() {
 		// archive this task
 		StageModel currentStage = getCurrentStage();
-		System.out.println("Stage: " + currentStage + " ID: " + taskID);
 		TaskModel task = currentStage.findTaskByID(taskID);
 		boolean isArchived = task.isArchived();
 		if (isArchived) {
@@ -611,6 +626,11 @@ public class EditTaskController implements ActionListener {
 		wfm.save();
 	}
 
+	/**
+	 * 
+	 * Delete the task.
+	 *
+	 */
 	private void deleteTask() {
 		StageModel currentStage = getCurrentStage();
 		Integer choice = JOptionPane.showConfirmDialog(etv,

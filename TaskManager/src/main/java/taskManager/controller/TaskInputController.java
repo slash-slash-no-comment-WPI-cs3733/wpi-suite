@@ -121,7 +121,7 @@ public class TaskInputController implements KeyListener, FocusListener,
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// If the enter key is pressed, save the task.
+		// Handle the enter key.
 		if (e.getKeyChar() == KeyEvent.VK_ENTER) {
 			etv.getController().handleEnterKey();
 		}
