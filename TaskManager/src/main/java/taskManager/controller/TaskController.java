@@ -44,7 +44,6 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	private final TaskView view;
 	private final TaskModel model;
 	private StageModel sm;
-	private TabPaneController tabPaneC;
 	private EditTaskView etv;
 	private Requirement req;
 	private final User[] projectUsers = JanewayModule.users;
@@ -64,7 +63,6 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	 *            the corresponding TaskModel object
 	 */
 	public TaskController(TaskView view, TaskModel model) {
-		this.tabPaneC = JanewayModule.tabPaneC;
 		this.view = view;
 		this.model = model;
 		sm = model.getStage();
@@ -152,7 +150,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 			etv.setActEffort(model.getActualEffort());
 		}
 
-		tabPaneC.addEditTaskTab(etv);
+		TabPaneController.getInstance().addEditTaskTab(etv);
 
 		// figures out the index of the stage, then sets the drop down to the
 		// stage at that index
@@ -258,7 +256,8 @@ public class TaskController implements MouseListener, MouseMotionListener {
 					.getParent().getParent().getLocation();
 			Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
 					view.getLocation().y);
-			WorkflowController.getInstance().setTaskInfo(new TaskInfoPreviewView(model, this, infoLoc));
+			WorkflowController.getInstance().setTaskInfo(
+					new TaskInfoPreviewView(model, this, infoLoc));
 
 			// Set the correct flags
 			thisTaskInfoOut = true;
@@ -309,7 +308,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 			JanewayModule.toolV.setArchiveIcon(ToolbarView.ARCHIVE);
 		}
 		JanewayModule.toolV.setArchiveEnabled(true);
-			JanewayModule.toolV.setDeleteEnabled(isArchived);
+		JanewayModule.toolV.setDeleteEnabled(isArchived);
 	}
 
 	@Override

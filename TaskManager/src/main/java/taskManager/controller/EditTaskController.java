@@ -256,7 +256,7 @@ public class EditTaskController implements ActionListener {
 	 * switches back to workflow view
 	 */
 	private void returnToWorkflowView() {
-		JanewayModule.tabPaneC.removeTabByComponent(etv);
+		TabPaneController.getInstance().removeTabByComponent(etv);
 		WorkflowController.getInstance().reloadData();
 	}
 

@@ -73,7 +73,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 
 		frame = new JFrame();
 		// frame.setLayout(new FlowLayout());
-		frame.add(JanewayModule.tabPaneC.getTabView());
+		frame.add(TabPaneController.getInstance().getView());
 		fixture = new FrameFixture(frame);
 
 		fixture.show();
@@ -83,7 +83,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	public void testAddTask() {
 
 		// create a new edit task tab
-		JanewayModule.tabPaneC.addEditTaskTab(etv);
+		TabPaneController.getInstance().addEditTaskTab(etv);
 		frame.pack();
 
 		// enter information for a new task
@@ -104,7 +104,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	public void testInvalidTask() {
 
 		// create a new edit task tab
-		JanewayModule.tabPaneC.addEditTaskTab(etv);
+		TabPaneController.getInstance().addEditTaskTab(etv);
 		frame.pack();
 
 		getTitleBoxFixture().enterText("name");
@@ -286,8 +286,9 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		fixture.cleanUp();
 		etv = null;
 		// remove all tabs
-		for (Component c : JanewayModule.tabPaneC.getTabView().getComponents()) {
-			JanewayModule.tabPaneC.removeTabByComponent(c);
+		for (Component c : TabPaneController.getInstance().getView()
+				.getComponents()) {
+			TabPaneController.getInstance().removeTabByComponent(c);
 		}
 	}
 
@@ -311,7 +312,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		TaskController tc = new TaskController(new TaskView("Task", new Date(),
 				0), task);
 		tc.editTask();
-		Component c = JanewayModule.tabPaneC.getTabView()
+		Component c = TabPaneController.getInstance().getView()
 				.getSelectedComponent();
 		if (c instanceof EditTaskView) {
 			etv = (EditTaskView) c;
