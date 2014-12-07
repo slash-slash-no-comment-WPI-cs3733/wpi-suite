@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.util.Date;
 
 import javax.swing.JFrame;
@@ -86,8 +87,11 @@ public class TestTabPaneController {
 		JanewayModule.tabPaneC.getTabView().setSelectedIndex(0);
 
 		// archive the task
-
-		fixture.robot.pressMouse(frame, taskFixture.component().getLocation());
+		Point location = taskFixture.component().getLocation();
+		location.x += 5;
+		location.y += 5;
+		taskFixture.robot.pressMouse(taskFixture.component().getParent(),
+				location);
 		fixture.robot.moveMouse(toolV.getArchive());
 		fixture.robot.releaseMouse(MouseButton.LEFT_BUTTON);
 
