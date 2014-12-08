@@ -47,7 +47,7 @@ public class TaskInfoPreviewView extends JPanel {
 	private TaskInfoPreviewController controller;
 	public static final String EDIT = "edit";
 	public static final String X = "x";
-	public final int WIDTH = 220;
+	public static final int WIDTH = 220;
 
 	public TaskInfoPreviewView(TaskModel model, TaskController controller,
 			Point loc) {
@@ -135,8 +135,7 @@ public class TaskInfoPreviewView extends JPanel {
 		info.add(date);
 
 		// The task's effort
-		JLabel estE = new JLabel("Est Effort: "
-				+ taskM.getEstimatedEffort());
+		JLabel estE = new JLabel("Est Effort: " + taskM.getEstimatedEffort());
 		JLabel actE = new JLabel("Act Effort: " + taskM.getActualEffort());
 		info.add(estE);
 		info.add(actE);

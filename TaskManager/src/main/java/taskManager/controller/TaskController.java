@@ -36,7 +36,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	private Color background;
 
 	public static Boolean anyTaskInfoOut = false;
-	public Boolean thisTaskInfoOut = false;
+	private Boolean thisTaskInfoOut = false;
 
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
@@ -154,7 +154,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 					new TaskInfoPreviewView(model, this, infoLoc));
 
 			// Set the correct flags
-			thisTaskInfoOut = true;
+			setThisTaskInfoOut(true);
 			TaskController.anyTaskInfoOut = true;
 			// make the associated task a darker color while the bubble is out
 			if (isArchived()) {
@@ -186,7 +186,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	public void mouseExited(MouseEvent e) {
 		// only reset the background if there is no taskInfo bubble out for this
 		// task
-		if (!thisTaskInfoOut) {
+		if (!getThisTaskInfoOut()) {
 			resetBackground();
 		}
 	}
@@ -209,6 +209,20 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	public void mouseMoved(MouseEvent e) {
 		// TODO Auto-generated method stub
 
+	}
+
+	/**
+	 * @return the thisTaskInfoOut
+	 */
+	public Boolean getThisTaskInfoOut() {
+		return thisTaskInfoOut;
+	}
+
+	/**
+	 * @param thisTaskInfoOut the thisTaskInfoOut to set
+	 */
+	public void setThisTaskInfoOut(Boolean thisTaskInfoOut) {
+		this.thisTaskInfoOut = thisTaskInfoOut;
 	}
 
 }

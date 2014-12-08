@@ -51,7 +51,7 @@ public class StageController implements DropAreaSaveListener,
 	private StageModel model;
 
 	public static Boolean anyChangeTitleOut = false;
-	public Boolean thisChangeTitleOut = false;
+	private Boolean thisChangeTitleOut = false;
 
 	/**
 	 * Constructor for the StageController gets all the tasks from the
@@ -187,7 +187,7 @@ public class StageController implements DropAreaSaveListener,
 				// Don't reload while changing a stage name is open.
 				FetchWorkflowObserver.ignoreAllResponses = true;
 				anyChangeTitleOut = true;
-				thisChangeTitleOut = true;
+				setThisChangeTitleOut(true);
 				// bring up the title textbox
 				switchTitle(true);
 			}
@@ -288,7 +288,7 @@ public class StageController implements DropAreaSaveListener,
 
 				} else {
 					// reset the flags
-					thisChangeTitleOut = false;
+					setThisChangeTitleOut(false);
 					FetchWorkflowObserver.ignoreAllResponses = false;
 					// reload which will remove the textbox
 					WorkflowController.getInstance().reloadData();
@@ -299,6 +299,20 @@ public class StageController implements DropAreaSaveListener,
 			}
 		}
 
+	}
+
+	/**
+	 * @return the thisChangeTitleOut
+	 */
+	public Boolean getThisChangeTitleOut() {
+		return thisChangeTitleOut;
+	}
+
+	/**
+	 * @param thisChangeTitleOut the thisChangeTitleOut to set
+	 */
+	public void setThisChangeTitleOut(Boolean thisChangeTitleOut) {
+		this.thisChangeTitleOut = thisChangeTitleOut;
 	}
 
 }
