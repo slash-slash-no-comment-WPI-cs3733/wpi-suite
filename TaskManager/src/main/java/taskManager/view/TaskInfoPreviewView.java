@@ -120,7 +120,7 @@ public class TaskInfoPreviewView extends JPanel {
 		// if the task is archived, say so.
 		if (taskC.isArchived()) {
 			JLabel archived = new JLabel(
-					"<html><font size=\"2\"><i>Archived</i></font></html>",
+					"<html><font size=\"3\"><i>Archived</i></font></html>",
 					SwingConstants.CENTER);
 			archived.setFont(archived.getFont().deriveFont(Font.PLAIN));
 			Dimension archivedSize = new Dimension(this.getWidth() - 40, 5);
@@ -167,10 +167,6 @@ public class TaskInfoPreviewView extends JPanel {
 				+ DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
 						DateFormat.SHORT).format(this.taskM.getDueDate())
 				+ "</html>");
-		// new JLabel("<html><b><i>Due:</i></b> "
-		// + (calDate.get(Calendar.MONTH) + 1) + "/"
-		// + calDate.get(Calendar.DATE) + "/"
-		// + (calDate.get(Calendar.YEAR))
 
 		dueDate.setFont(dueDate.getFont().deriveFont(Font.PLAIN));
 		dueDate.setMaximumSize(new Dimension(this.getWidth(), 20));
