@@ -57,13 +57,12 @@ public class TestStageController {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.add(JanewayModule.toolV);
-		panel.add(JanewayModule.tabPaneC.getTabView());
+		panel.add(WorkflowController.getInstance().getView());
 		frame.add(panel);
 		Dimension size = new Dimension(1500, 500);
 		frame.setSize(size);
 		frame.setPreferredSize(size);
-		JanewayModule.tabPaneC.getTabView().getWorkflowController()
-				.reloadData();
+		WorkflowController.getInstance().reloadData();
 
 		fixture = new FrameFixture(frame);
 
