@@ -124,7 +124,7 @@ public class EditTaskController implements ActionListener {
 		// stage at that index
 		JComboBox<String> stages = etv.getStages();
 		for (int i = 0; i < stages.getItemCount(); i++) {
-			if (etv.getStages().getItemAt(i) == model.getStage().getName()) {
+			if (etv.getStages().getItemAt(i).equals(model.getStage().getName())) {
 				etv.setStageDropdown(i);
 				break;
 			}
