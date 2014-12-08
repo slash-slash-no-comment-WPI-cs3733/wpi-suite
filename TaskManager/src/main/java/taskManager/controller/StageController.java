@@ -261,8 +261,6 @@ public class StageController implements DropAreaSaveListener,
 						model.setName(view.getLabelText());
 					}
 
-					WorkflowModel.getInstance().save();
-
 					// refresh the workflow with the new stage
 					WorkflowController.getInstance().reloadData();
 					WorkflowController.getInstance().repaintView();
