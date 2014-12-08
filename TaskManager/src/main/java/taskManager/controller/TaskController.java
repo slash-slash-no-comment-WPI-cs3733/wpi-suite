@@ -21,7 +21,6 @@ import javax.swing.JComboBox;
 
 import taskManager.JanewayModule;
 import taskManager.model.ActivityModel;
-import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.view.Colors;
@@ -244,34 +243,24 @@ public class TaskController implements MouseListener, MouseMotionListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// Show task bubble only if there are no stage title textboxes out AND
-		// the ignoreAllResponses flag has not been set OR
-		// another taskinfo bubble is already out
-		if ((!FetchWorkflowObserver.ignoreAllResponses || TaskController.anyTaskInfoOut)
-				&& !StageController.anyChangeTitleOut) {
-			// Don't reload (so the correct task can be highlighted while the
-			// bubble is up
-			FetchWorkflowObserver.ignoreAllResponses = true;
+		// Create the taskinfo bubble
+		Point stageLoc = view.getParent().getParent().getParent().getParent()
+				.getLocation();
+		Point stagesPanelLoc = view.getParent().getParent().getParent()
+				.getParent().getParent().getLocation();
+		Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
+				view.getLocation().y);
+		WorkflowController.getInstance().setTaskInfo(
+				new TaskInfoPreviewView(model, this, infoLoc));
 
-			// Create the taskinfo bubble
-			Point stageLoc = view.getParent().getParent().getParent()
-					.getParent().getLocation();
-			Point stagesPanelLoc = view.getParent().getParent().getParent()
-					.getParent().getParent().getLocation();
-			Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
-					view.getLocation().y);
-			WorkflowController.getInstance().setTaskInfo(
-					new TaskInfoPreviewView(model, this, infoLoc));
-
-			// Set the correct flags
-			thisTaskInfoOut = true;
-			TaskController.anyTaskInfoOut = true;
-			// make the associated task a darker color while the bubble is out
-			if (isArchived()) {
-				view.setBackground(Colors.ARCHIVE_CLICKED);
-			} else {
-				view.setBackground(Colors.TASK_CLICKED);
-			}
+		// Set the correct flags
+		thisTaskInfoOut = true;
+		TaskController.anyTaskInfoOut = true;
+		// make the associated task a darker color while the bubble is out
+		if (isArchived()) {
+			view.setBackground(Colors.ARCHIVE_CLICKED);
+		} else {
+			view.setBackground(Colors.TASK_CLICKED);
 		}
 	}
 

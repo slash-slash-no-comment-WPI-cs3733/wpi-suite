@@ -20,7 +20,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
 import net.miginfocom.swing.MigLayout;
@@ -85,7 +87,7 @@ public class TaskInfoPreviewView extends JPanel {
 
 		// The task's titleBar contains the title and the 'x' button
 		JPanel titleBar = new JPanel();
-		titleBar.setLayout(new MigLayout("", "5[]:push[]"));
+		titleBar.setLayout(new MigLayout("wrap 2", "5[]:push[]", "[][center]"));
 		titleBar.setSize(new Dimension(this.getWidth(), 30));
 		JLabel title = new JLabel(this.taskM.getName());
 		title.setFont(title.getFont().deriveFont(15.0f));
@@ -107,73 +109,108 @@ public class TaskInfoPreviewView extends JPanel {
 			titleBar.setBackground(Colors.TASK_CLICKED);
 		}
 
+		// if the task is archived, say so.
+		if (taskC.isArchived()) {
+			JLabel archived = new JLabel(
+					"<html><font size=\"2\"><i>Archived</i></font></html>",
+					SwingConstants.CENTER);
+			archived.setSize(new Dimension(this.getWidth() - 40, 10));
+			archived.setPreferredSize(new Dimension(this.getWidth() - 40, 10));
+			titleBar.add(archived, "span");
+		}
 		info.add(titleBar);
 
 		// The task's description
 		JTextArea description = new JTextArea();
 		description.setText(ellipsize(this.taskM.getDescription(), 175));
-		description.setSize(new Dimension(this.getWidth() - 45, 80));
-		description.setMaximumSize(new Dimension(this.getWidth() - 45, 80));
-		description.setMinimumSize(new Dimension(this.getWidth() - 45, 80));
-		description.setPreferredSize(new Dimension(this.getWidth() - 45, 80));
 		description.setAlignmentX(CENTER_ALIGNMENT);
 		description.setEditable(false);
 		description.setLineWrap(true);
 		description.setWrapStyleWord(true);
 		description.setBackground(Colors.TASK);
-		info.add(description);
+		description.setCaretPosition(0);
+		JScrollPane descScroll = new JScrollPane(description);
+		descScroll.setSize(new Dimension(this.getWidth() - 30, 80));
+		descScroll.setMaximumSize(new Dimension(this.getWidth() - 30, 80));
+		descScroll.setMinimumSize(new Dimension(this.getWidth() - 30, 80));
+		descScroll.setPreferredSize(new Dimension(this.getWidth() - 30, 80));
+		// These remove the border around the JScrollPane. Might be wanted later
+		// Border border = BorderFactory.createEmptyBorder(0, 0, 0, 0);
+		// descScroll.setViewportBorder(border);
+		// descScroll.setBorder(border);
+		info.add(descScroll);
+
+		JPanel spacer = new JPanel();
+		spacer.setSize(new Dimension(50, 5));
+		spacer.setPreferredSize(new Dimension(50, 5));
+		spacer.setMaximumSize(new Dimension(50, 5));
+		spacer.setMinimumSize(new Dimension(50, 5));
+		spacer.setBackground(Colors.TASK);
+		info.add(spacer);
 
 		// The task's due date
-		JLabel due = new JLabel("Due:");
 		final Calendar calDate = Calendar.getInstance();
 		calDate.setTime(this.taskM.getDueDate());
-		JLabel date = new JLabel("  " + (calDate.get(Calendar.MONTH) + 1) + "/"
+		JLabel dueDate = new JLabel("<html><i>Due:</i> "
+				+ (calDate.get(Calendar.MONTH) + 1) + "/"
 				+ calDate.get(Calendar.DATE) + "/"
-				+ (calDate.get(Calendar.YEAR)));
-		date.setMaximumSize(new Dimension(this.getWidth(), 20));
-		info.add(due);
-		info.add(date);
+				+ (calDate.get(Calendar.YEAR)) + "</html>");
+		dueDate.setMaximumSize(new Dimension(this.getWidth(), 20));
+		info.add(dueDate);
 
 		// The task's effort
-		JLabel estE = new JLabel("Est Effort: "
-				+ this.taskM.getEstimatedEffort());
-		JLabel actE = new JLabel("Act Effort: " + this.taskM.getActualEffort());
+		JLabel estE = new JLabel("<html><i>Est Effort: </i>"
+				+ this.taskM.getEstimatedEffort() + "</html>");
+		JLabel actE = new JLabel("<html><i>Act Effort: </i>"
+				+ this.taskM.getActualEffort() + "</html>");
 		info.add(estE);
 		info.add(actE);
 
-		// The task's users
-		ScrollList users = new ScrollList("Users");
 		Set<String> userList = taskM.getAssigned();
-		if (userList.size() > 0) {
+		// if there are users, add a scrollList to show them. Else just print
+		// '[None]'
+		if (!userList.isEmpty()) {
+			// The task's users
+			ScrollList users = new ScrollList("<html><i>Users:</i></html>");
+			users.setSize(new Dimension(new Dimension(this.getWidth() - 30, 70)));
+			users.setPreferredSize(new Dimension(new Dimension(
+					this.getWidth() - 30, 70)));
+			users.setMaximumSize(new Dimension(new Dimension(
+					this.getWidth() - 30, 70)));
+			users.setMinimumSize(new Dimension(new Dimension(
+					this.getWidth() - 30, 70)));
+
 			for (String u : userList) {
 				if (!users.contains(u)) {
 					users.addToList(u);
 				}
 			}
+			info.add(users);
+		} else {
+			info.add(new JLabel("<html><i>Users:</i> [None]</html>"));
 		}
-		info.add(users);
 
 		// The task's requirement
 		JLabel req;
 		if (this.taskM.getReq() == null) {
-			req = new JLabel("Requirement: [None]");
+			req = new JLabel("<html><i>Requirement:</i> [None]</html>");
 			info.add(req);
 		} else {
-			req = new JLabel("Requirement:");
+			req = new JLabel("<html><i>Requirement:</i></html>");
 			info.add(req);
 			JLabel name = new JLabel("  " + this.taskM.getReq());
-			name.setSize(new Dimension(this.getWidth(), 20));
-			name.setMinimumSize(new Dimension(this.getWidth(), 20));
-			name.setMaximumSize(new Dimension(this.getWidth(), 20));
-			name.setPreferredSize(new Dimension(this.getWidth(), 20));
+			name.setSize(new Dimension(this.getWidth() - 30, 20));
+			name.setMinimumSize(new Dimension(this.getWidth() - 30, 20));
+			name.setMaximumSize(new Dimension(this.getWidth() - 30, 20));
+			name.setPreferredSize(new Dimension(this.getWidth() - 30, 20));
 			info.add(name);
 		}
 
 		// This panel contains the edit button
-		JPanel buttonPanel = new JPanel(new MigLayout("", "[center]"));
+		JPanel buttonPanel = new JPanel();
 		JButton edit = new JButton("edit");
 		edit.setName(EDIT);
-		edit.setMargin(new Insets(5, 87, 5, 87));
+		edit.setMargin(new Insets(5, 90, 5, 90));
 		edit.addActionListener(this.controller);
 		buttonPanel.add(edit, "");
 		buttonPanel.setSize(new Dimension(this.getWidth(), 80));
