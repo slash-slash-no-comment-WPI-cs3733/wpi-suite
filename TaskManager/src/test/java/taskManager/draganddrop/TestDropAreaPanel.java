@@ -42,7 +42,7 @@ public class TestDropAreaPanel {
 	public void setup() {
 
 		// creates a workflow view
-		wfc = new WorkflowController();
+		wfc = WorkflowController.getInstance();
 
 		// add a task to the workflow
 		task = new TaskModel("test", wfc.getModel().getStages().get(0));
