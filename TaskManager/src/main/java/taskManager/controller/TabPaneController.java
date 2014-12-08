@@ -87,8 +87,20 @@ public class TabPaneController {
 	 *            the reports view to add.
 	 */
 	public void addReportsTab(ReportsToolbarView rtv) {
-		addTab("Reports", rtv, true);
-		tabPaneV.setSelectedComponent(rtv);
+		boolean exists = false;
+		ReportsToolbarView rtv2 = null;
+		for (Component c : tabPaneV.getComponents()) {
+			if (c instanceof ReportsToolbarView) {
+				rtv2 = (ReportsToolbarView) c;
+				exists = true;
+			}
+		}
+		if (exists) {
+			tabPaneV.setSelectedComponent(rtv2);
+		} else {
+			addTab("Reports", rtv, true);
+			tabPaneV.setSelectedComponent(rtv);
+		}
 	}
 
 	/**
