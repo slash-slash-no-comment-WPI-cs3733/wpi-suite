@@ -44,7 +44,7 @@ public class ToolbarController extends DropTargetAdapter implements
 	private final TabPaneController tabPaneC;
 
 	/**
-	 * 
+	 *
 	 * @param tabV
 	 *            tabView used to add tabs to the tab-bar
 	 */
@@ -67,14 +67,10 @@ public class ToolbarController extends DropTargetAdapter implements
 				break;
 			case ToolbarView.CREATE_STAGE:
 				// add a new stage from workflow controller
-				tabPaneV.getWorkflowController().addStageToView();
+				WorkflowController.getInstance().addStageToView();
 
 				break;
 			case ToolbarView.REPORT:
-				break;
-
-			case ToolbarView.REFRESH:
-				tabPaneV.refreshWorkflow();
 				break;
 			}
 		}
@@ -106,9 +102,8 @@ public class ToolbarController extends DropTargetAdapter implements
 						taskV.getController().deleteTask(); // remove from model
 						taskV.getParent().remove(taskV); // remove from view
 						// Reload and save workflow.
-						JanewayModule.tabPaneC.getTabView().reloadWorkflow();
-						JanewayModule.tabPaneC.getTabView()
-								.getWorkflowController().repaintView();
+						WorkflowController.getInstance().reloadData();
+						WorkflowController.getInstance().repaintView();
 						WorkflowModel.getInstance().save();
 						DDTransferHandler.dragSaved = true;
 					}
@@ -117,9 +112,8 @@ public class ToolbarController extends DropTargetAdapter implements
 					taskV.getController().setArchived(
 							!taskV.getController().isArchived());
 					// Reload and save workflow.
-					JanewayModule.tabPaneC.getTabView().reloadWorkflow();
-					JanewayModule.tabPaneC.getTabView().getWorkflowController()
-							.repaintView();
+					WorkflowController.getInstance().reloadData();
+					WorkflowController.getInstance().repaintView();
 					WorkflowModel.getInstance().save();
 					DDTransferHandler.dragSaved = true;
 					break;
@@ -157,21 +151,24 @@ public class ToolbarController extends DropTargetAdapter implements
 								return;
 							}
 						}
+						stageC.deleteStage();
+						DDTransferHandler.dragSaved = true;
+						model.save();
+						WorkflowController.getInstance().reloadData();
+					} else {
+						JOptionPane.showConfirmDialog(tabPaneC.getTabView(),
+								"You cannot delete the last stage.",
+								"Warning - Invalid stage deletion",
+								JOptionPane.CLOSED_OPTION);
 					}
-					stageC.deleteStage();
-					DDTransferHandler.dragSaved = true;
-					model.save();
-					tabPaneC.getTabView().reloadWorkflow();
 				}
-
-			}
-
-		}
+			} // End switch
+		} // End instanceof
 	}
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		// Reload the workflow view.
-		JanewayModule.tabPaneC.getTabView().reloadWorkflow();
+		WorkflowController.getInstance().reloadData();
 	}
 }

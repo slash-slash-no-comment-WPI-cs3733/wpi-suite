@@ -18,6 +18,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import taskManager.ScreenshotOnFail;
 import taskManager.controller.WorkflowController;
 
 /**
@@ -25,7 +26,7 @@ import taskManager.controller.WorkflowController;
  *
  * @author Jon Sorrells
  */
-public class TestWorkflowView {
+public class TestWorkflowView extends ScreenshotOnFail {
 
 	private FrameFixture fixture;
 	private WorkflowView wfv;
@@ -33,8 +34,7 @@ public class TestWorkflowView {
 
 	@Before
 	public void setup() {
-		wfv = new WorkflowView();
-		wfv.setController(new WorkflowController(wfv));
+		wfv = WorkflowController.getInstance().getView();
 
 		frame = new JFrame();
 		frame.add(wfv);
