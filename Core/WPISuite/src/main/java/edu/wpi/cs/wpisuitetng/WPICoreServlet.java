@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,6 +37,7 @@ public class WPICoreServlet extends HttpServlet {
 	private static final long serialVersionUID = -7156601241025735047L;
 	private ErrorResponseFormatter reponseFormatter;
 	private Object updateNotifier = new Object();
+	private Cookie[] lastCookies = null;
 
 	/**
 	 * Empty Constructor
@@ -90,10 +92,21 @@ public class WPICoreServlet extends HttpServlet {
 		int timeout = Integer.parseInt(req.getHeader("long-polling"));
 		PrintWriter out = res.getWriter();
 		System.out.println("waiting on request: " + req.toString());
+
 		synchronized (updateNotifier) {
 			try {
 				// wait for changes
+				long start = System.currentTimeMillis();
 				updateNotifier.wait(timeout);
+
+				// keep waiting if the last changes are from us and the timeout
+				// hasn't happened yet
+				while (ManagerLayer.getInstance().sameSession(lastCookies,
+						req.getCookies())
+						&& start - System.currentTimeMillis() < timeout) {
+					updateNotifier.wait(timeout
+							- (start - System.currentTimeMillis()));
+				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -136,6 +149,7 @@ public class WPICoreServlet extends HttpServlet {
 					req.getCookies()));
 			// notify if something was written to the database
 			synchronized (updateNotifier) {
+				lastCookies = req.getCookies();
 				updateNotifier.notifyAll();
 			}
 		} catch (WPISuiteException e) {
@@ -169,6 +183,7 @@ public class WPICoreServlet extends HttpServlet {
 					req.getCookies()));
 			// notify if something was written to the database
 			synchronized (updateNotifier) {
+				lastCookies = req.getCookies();
 				updateNotifier.notifyAll();
 			}
 			System.out.println();
@@ -200,6 +215,7 @@ public class WPICoreServlet extends HttpServlet {
 					req.getCookies()));
 			// notify if something was written to the database
 			synchronized (updateNotifier) {
+				lastCookies = req.getCookies();
 				updateNotifier.notifyAll();
 			}
 		} catch (WPISuiteException e) {
