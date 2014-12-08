@@ -43,8 +43,8 @@ public class JanewayModule implements IJanewayModule {
 	static {
 		toolV = new ToolbarView();
 		tabPaneV = new TabPaneView();
-		toolC = new ToolbarController(toolV, tabPaneV);
 		tabPaneC = new TabPaneController(tabPaneV);
+		toolC = new ToolbarController(toolV, tabPaneV);
 
 		toolV.setController(toolC);
 	}
