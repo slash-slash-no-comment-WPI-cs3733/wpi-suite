@@ -1,7 +1,6 @@
 package taskManager;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 import taskManager.model.GenericEntityManager;
@@ -9,7 +8,6 @@ import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import edu.wpi.cs.wpisuitetng.Session;
-import edu.wpi.cs.wpisuitetng.database.Data;
 import edu.wpi.cs.wpisuitetng.exceptions.WPISuiteException;
 import edu.wpi.cs.wpisuitetng.modules.EntityManager;
 import edu.wpi.cs.wpisuitetng.modules.Model;
@@ -116,7 +114,7 @@ public class MockRequest extends Request {
 	public static EntityManager getEntityManager(String path) {
 		// Initialize map
 		if (map == null) {
-			Data data = new MockData(new HashSet<Object>());
+			ClientDataStore data = ClientDataStore.getDataStore();
 			map = new HashMap<String, EntityManager>();
 			map.put("taskmanager" + "task",
 					new GenericEntityManager<TaskModel>(data, TaskModel.class));

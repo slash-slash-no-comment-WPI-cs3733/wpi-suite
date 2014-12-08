@@ -20,6 +20,17 @@ import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
  * @version Dec 6, 2014
  */
 public class MockNetwork extends Network {
+
+	/**
+	 * Reset MockData when creating a new MockNetwork
+	 *
+	 */
+	public MockNetwork() {
+		super();
+		ClientDataStore.deleteDataStore();
+		ClientDataStore.getDataStore();
+	}
+
 	/**
 	 * Method makeRequest.
 	 * 
@@ -36,6 +47,7 @@ public class MockNetwork extends Network {
 			throw new NullPointerException("requestMethod may not be null");
 		}
 
+		// Use arbitrary config
 		if (defaultNetworkConfiguration == null) {
 			defaultNetworkConfiguration = new NetworkConfiguration(
 					"http://wpisuitetng");

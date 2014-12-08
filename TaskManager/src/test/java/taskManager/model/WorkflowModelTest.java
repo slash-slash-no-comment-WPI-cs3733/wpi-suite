@@ -16,10 +16,16 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import taskManager.ClientDataStore;
+import taskManager.MockNetwork;
+import edu.wpi.cs.wpisuitetng.exceptions.WPISuiteException;
 import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
+import edu.wpi.cs.wpisuitetng.network.Network;
 
 /**
  * Description
@@ -31,6 +37,11 @@ public class WorkflowModelTest {
 	private WorkflowModel wm;
 	private StageModel sm1;
 	private StageModel sm2;
+
+	@BeforeClass
+	public static void setUp() {
+		Network.setInstance(new MockNetwork());
+	}
 
 	@Before
 	public void setup() {
@@ -155,5 +166,25 @@ public class WorkflowModelTest {
 		sm2.addTask(t4);
 
 		assertTrue(sm2.getTasks().size() == 4);
+	}
+
+	@Test
+	public void testWorkflow() throws WPISuiteException {
+		WorkflowModel wm = WorkflowModel.getInstance();
+		wm.makeIdenticalTo(new WorkflowModel());
+		ClientDataStore db = ClientDataStore.getDataStore();
+
+		assertTrue(db.retrieve(WorkflowModel.class, "id", wm.getID()).isEmpty());
+		wm.save();
+		assertFalse(db.retrieve(WorkflowModel.class, "id", wm.getID())
+				.isEmpty());
+		wm.delete();
+		assertTrue(db.retrieveAll(new WorkflowModel()).isEmpty());
+
+	}
+
+	@AfterClass
+	public static void tearDown() {
+		ClientDataStore.deleteDataStore();
 	}
 }

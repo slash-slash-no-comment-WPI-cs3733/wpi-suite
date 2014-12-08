@@ -25,13 +25,18 @@ import edu.wpi.cs.wpisuitetng.modules.Model;
 import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
 
 /**
+ * Currently not being used. ClientDataStore is being used instead.
+ * 
  * A mock data implementation. Adapted from RequirementsManager for use in
  * TaskManager by Team //nocomment
  * 
  * @author justinhess
  * @author Sam Khalandovsky
  */
+@Deprecated
 public class MockData implements Data {
+
+	public static MockData instance;
 
 	private final Set<Object> objects;
 
@@ -41,8 +46,19 @@ public class MockData implements Data {
 	 * @param objects
 	 *            The set of objects this "database" starts with
 	 */
-	public MockData(Set<Object> objects) {
-		this.objects = objects;
+	public MockData() {
+		this.objects = new HashSet<Object>();
+	}
+
+	public static MockData getInstance() {
+		if (instance == null) {
+			reset();
+		}
+		return instance;
+	}
+
+	public static void reset() {
+		instance = new MockData();
 	}
 
 	private Collection<?> findCollection(Object o) {
@@ -90,9 +106,8 @@ public class MockData implements Data {
 	 * Method delete.
 	 * 
 	 * @param arg0
-	 *            T @return T * @see
-	 *            edu.wpi.cs.wpisuitetng.database.Data#delete(T) * @see
-	 *            edu.wpi.cs.wpisuitetng.database.Data#delete(T)
+	 *            T @return T
+	 * @see edu.wpi.cs.wpisuitetng.database.Data#delete(T)
 	 */
 	@Override
 	public <T> T delete(T o) {
