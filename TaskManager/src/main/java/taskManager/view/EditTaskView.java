@@ -77,7 +77,7 @@ public class EditTaskView extends JPanel {
 	private JButton removeUser;
 	private JButton archive;
 	private JButton delete;
-	private JButton addReq;
+	private JButton viewReq;
 	private JButton submitComment;
 
 	private JTextArea commentsField;
@@ -242,8 +242,8 @@ public class EditTaskView extends JPanel {
 		submitComment = new JButton("Submit Comment");
 		submitComment.setName(SUBMIT_COMMENT);
 		// add requirement
-		addReq = new JButton("View Requirement");
-		addReq.setName(VIEW_REQ);
+		viewReq = new JButton("View Requirement");
+		viewReq.setName(VIEW_REQ);
 		// saves all the data and closes the window
 		save = new JButton("Save");
 		save.setName(SAVE);
@@ -323,7 +323,7 @@ public class EditTaskView extends JPanel {
 				.setBorder(BorderFactory.createTitledBorder("Requirements"));
 		Requirements.add(requirementLabel, "wrap");
 		Requirements.add(requirements);
-		Requirements.add(addReq);
+		Requirements.add(viewReq);
 
 		// EditSaveCancel Panel internal content
 
@@ -369,7 +369,7 @@ public class EditTaskView extends JPanel {
 		save.addActionListener(controller);
 		addUser.addActionListener(controller);
 		removeUser.addActionListener(controller);
-		addReq.addActionListener(controller);
+		viewReq.addActionListener(controller);
 		submitComment.addActionListener(controller);
 		delete.addActionListener(controller);
 	}
@@ -389,6 +389,9 @@ public class EditTaskView extends JPanel {
 		stages.addPopupMenuListener(fieldC);
 		usersList.setController(fieldC);
 		projectUsersList.setController(fieldC);
+		requirements.addPopupMenuListener(fieldC);
+
+		fieldC.validate();
 	}
 
 	/**
@@ -524,6 +527,10 @@ public class EditTaskView extends JPanel {
 			requirements.setSelectedItem(NO_REQ);
 		}
 		requirements.setSelectedItem(requirementName);
+
+		if (fieldC != null) {
+			fieldC.validate();
+		}
 	}
 
 	/**
@@ -869,5 +876,16 @@ public class EditTaskView extends JPanel {
 	 */
 	public Mode getMode() {
 		return mode;
+	}
+
+	/**
+	 * Sets if the view requirement button is enabled/disabled
+	 *
+	 * @param should
+	 *            the button be enabled?
+	 */
+	public void setViewRequirementEnabled(boolean bool) {
+		viewReq.setEnabled(bool);
+
 	}
 }

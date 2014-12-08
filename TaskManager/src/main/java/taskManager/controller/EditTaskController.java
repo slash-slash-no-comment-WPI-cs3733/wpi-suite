@@ -262,8 +262,8 @@ public class EditTaskController implements ActionListener {
 				Requirement requirement = RequirementModel.getInstance()
 						.getRequirementByName(etv.getSelectedRequirement());
 
-				// TODO: this button should be disabled when [None] selected so
-				// requirement would never be null.
+				// This button should be disabled when [None] selected
+				// but that may not happen
 				if (requirement == null) {
 					return;
 				}

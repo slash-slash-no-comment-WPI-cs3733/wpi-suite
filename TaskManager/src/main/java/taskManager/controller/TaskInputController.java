@@ -112,6 +112,7 @@ public class TaskInputController implements KeyListener, FocusListener,
 		etv.setSaveEnabled(this.checkFields());
 		etv.setAddUserEnabled(addUsersSelected);
 		etv.setRemoveUserEnabled(removeUsersSelected);
+		etv.setViewRequirementEnabled(etv.getSelectedRequirement() != null);
 	}
 
 	@Override
