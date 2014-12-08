@@ -117,7 +117,7 @@ public class ToolbarController extends DropTargetAdapter implements
 					WorkflowModel.getInstance().save();
 					DDTransferHandler.dragSaved = true;
 					break;
-				}
+				} // end switch
 			} else if (trans.isDataFlavorSupported(DDTransferHandler
 					.getStageFlavor())) {
 				StageView stageV;
@@ -132,7 +132,7 @@ public class ToolbarController extends DropTargetAdapter implements
 				WorkflowModel model = WorkflowModel.getInstance();
 				List<StageModel> stages = model.getStages();
 
-				if (name == ToolbarView.DELETE) {
+				if (ToolbarView.DELETE.equals(name)) {
 					// Delete only when there are 2 or more stages.
 					if (stages.size() >= 2) {
 						// If the stage has tasks, show a confirmation dialog,
@@ -162,7 +162,7 @@ public class ToolbarController extends DropTargetAdapter implements
 								JOptionPane.CLOSED_OPTION);
 					}
 				}
-			} // End switch
+			}
 		} // End instanceof
 	}
 

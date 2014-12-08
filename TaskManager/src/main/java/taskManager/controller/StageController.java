@@ -162,21 +162,11 @@ public class StageController implements DropAreaSaveListener,
 	 *            visible
 	 */
 	public void switchTitle(Boolean editable) {
-		if (editable) {
-			for (Component c : view.getComponents()) {
-				if (c.getName() == StageView.TITLE) {
-					c.setVisible(false);
-				} else if (c.getName() == StageView.CHANGE_TITLE) {
-					c.setVisible(true);
-				}
-			}
-		} else {
-			for (Component c : view.getComponents()) {
-				if (c.getName() == StageView.TITLE) {
-					c.setVisible(true);
-				} else if (c.getName() == StageView.CHANGE_TITLE) {
-					c.setVisible(false);
-				}
+		for (Component c : view.getComponents()) {
+			if (StageView.TITLE.equals(c.getName())) {
+				c.setVisible(!editable);
+			} else if (StageView.CHANGE_TITLE.equals(c.getName())) {
+				c.setVisible(editable);
 			}
 		}
 	}
