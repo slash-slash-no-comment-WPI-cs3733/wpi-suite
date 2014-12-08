@@ -97,6 +97,18 @@ public class StageController implements DropAreaSaveListener,
 			return;
 		}
 		TaskController tc = ((TaskView) panel).getController();
+
+		// if archived tasks are hidden, change index to account for the hidden
+		// tasks
+		if (!JanewayModule.toolV.isArchiveShown()) {
+			List<TaskModel> taskList = model.getTasks();
+			for (int i = 0; i < index; i++) {
+				if (taskList.get(i).isArchived()) {
+					index++;
+				}
+			}
+		}
+
 		boolean changed = tc.moveToStage(model, index);
 
 		if (changed) {
@@ -243,8 +255,6 @@ public class StageController implements DropAreaSaveListener,
 					} else {
 						model.setName(view.getLabelText());
 					}
-
-					WorkflowModel.getInstance().save();
 
 					// refresh the workflow with the new stage
 					WorkflowController.getInstance().reloadData();

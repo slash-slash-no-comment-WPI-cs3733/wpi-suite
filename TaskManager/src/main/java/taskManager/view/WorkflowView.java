@@ -9,6 +9,7 @@
 package taskManager.view;
 
 import java.awt.Component;
+import java.awt.dnd.DropTarget;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLayeredPane;
@@ -16,6 +17,7 @@ import javax.swing.JLayeredPane;
 import taskManager.controller.WorkflowController;
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DropAreaPanel;
+import taskManager.draganddrop.DropTargetRedispatcher;
 
 /**
  * @author Beth Martino
@@ -61,6 +63,10 @@ public class WorkflowView extends JLayeredPane {
 			stages.setLayout(new BoxLayout(stages, BoxLayout.LINE_AXIS));
 			stages.setSaveListener(controller);
 			add(stages);
+
+			// Redispatch drag events down to DropAreaPanel
+			this.setDropTarget(new DropTarget(this, new DropTargetRedispatcher(
+					stages, DDTransferHandler.getStageFlavor())));
 		}
 		stages.add(stv);
 	}
