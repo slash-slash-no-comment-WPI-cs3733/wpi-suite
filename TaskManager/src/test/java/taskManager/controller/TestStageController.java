@@ -54,7 +54,7 @@ public class TestStageController {
 		new StageModel("blah", false);
 
 		frame = new JFrame();
-		Dimension size = new Dimension(1500, 500);
+		Dimension size = new Dimension(1500, 1000);
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.add(JanewayModule.toolV);
@@ -62,7 +62,7 @@ public class TestStageController {
 		panel.setSize(size);
 		panel.setPreferredSize(size);
 		frame.add(panel);
-		
+
 		frame.setSize(size);
 		frame.setPreferredSize(size);
 		WorkflowController.getInstance().reloadData();
