@@ -26,6 +26,7 @@ import org.junit.Test;
 
 import taskManager.JanewayModule;
 import taskManager.controller.ToolbarController;
+import taskManager.controller.WorkflowController;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
@@ -36,6 +37,7 @@ import taskManager.model.WorkflowModel;
  * @author Sam Khalandovsky
  * @version Dec 7, 2014
  */
+
 public class TestTaskPreview {
 
 	private FrameFixture fixture;
@@ -49,21 +51,6 @@ public class TestTaskPreview {
 		WorkflowModel wfm = WorkflowModel.getInstance();
 		wfm.makeIdenticalTo(new WorkflowModel());
 
-		frame = new JFrame();
-		JPanel panel = new JPanel();
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		panel.add(JanewayModule.toolV);
-		panel.add(JanewayModule.tabPaneC.getTabView());
-		frame.add(panel);
-
-		Dimension size = new Dimension(1500, 500);
-		frame.setSize(size);
-		frame.setPreferredSize(size);
-
-		fixture = new FrameFixture(frame);
-
-		fixture.show();
-
 		StageModel sm1 = new StageModel("Stage1");
 		StageModel sm2 = new StageModel("Stage2");
 
@@ -71,7 +58,23 @@ public class TestTaskPreview {
 		tm1.setDueDate(new Date());
 		tm1.setDescription("Description");
 
-		JanewayModule.tabPaneC.reloadWorkflow();
+		frame = new JFrame();
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.add(JanewayModule.toolV);
+		panel.add(WorkflowController.getInstance().getView());
+		frame.add(panel);
+
+		Dimension size = new Dimension(1500, 500);
+		frame.setSize(size);
+		frame.setPreferredSize(size);
+
+		WorkflowController.getInstance().reloadData();
+
+		fixture = new FrameFixture(frame);
+
+		fixture.show();
+
 	}
 
 	@Test
