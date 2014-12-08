@@ -149,7 +149,7 @@ public class DDTransferHandler extends TransferHandler {
 		// Resume updating from the server
 		FetchWorkflowObserver.ignoreAllResponses = false;
 
-		if (DDTransferHandler.dragSaved == false) {
+		if (!DDTransferHandler.dragSaved) {
 			// update now in case we missed anything while dragging
 			// (if the drag saved, our changes overwrite anything we may have
 			// missed)
