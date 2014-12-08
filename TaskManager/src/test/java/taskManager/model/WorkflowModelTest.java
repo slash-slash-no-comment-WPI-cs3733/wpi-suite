@@ -19,6 +19,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import taskManager.JanewayModule;
 import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
 
 /**
@@ -34,8 +35,8 @@ public class WorkflowModelTest {
 
 	@Before
 	public void setup() {
-		wm = WorkflowModel.getInstance();
-		wm.makeIdenticalTo(new WorkflowModel("Workflow"));
+		JanewayModule.reset();
+
 		sm1 = new StageModel("Stage1");
 		sm2 = new StageModel("Stage2");
 	}

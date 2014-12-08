@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import taskManager.JanewayModule;
 import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
 
 /**
@@ -31,8 +32,8 @@ public class StageModelTest {
 
 	@Before
 	public void initializeWorkflow() {
-		wf = WorkflowModel.getInstance();
-		wf.makeIdenticalTo(new WorkflowModel("Workflow"));
+		JanewayModule.reset();
+
 		stage = new StageModel("Stage");
 		stage2 = new StageModel("Stage2");
 	}

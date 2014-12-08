@@ -41,23 +41,37 @@ import taskManager.view.WorkflowView;
 
 public class WorkflowController implements DropAreaSaveListener, MouseListener {
 
-	private final WorkflowView view;
-	private final WorkflowModel model;
+	private WorkflowView view;
+	private WorkflowModel model;
 	private boolean hasNewStageView;
 
 	private static WorkflowController instance = null;
 
 	/**
-	 * Constructor for the WorkflowController, gets all the stages from the
+	 * Hide Singleton constructor
+	 */
+	private WorkflowController() {
+		reset();
+	}
+
+	/**
+	 * Reset for the WorkflowController, gets all the stages from the
 	 * WorkflowView, creates the corresponding StageView and StageControllers,
 	 * and adds the StageViews to the UI.
 	 * 
 	 * @param view
 	 *            the corresponding WorkflowView object
 	 */
-	public WorkflowController() {
-		this.view = new WorkflowView(this);
-		this.model = WorkflowModel.getInstance();
+	public void reset() {
+		view = new WorkflowView(this);
+		model = WorkflowModel.getInstance();
+		model.reset();
+
+		new StageModel("New");
+		new StageModel("Scheduled");
+		new StageModel("In Progress");
+		new StageModel("Complete");
+
 		hasNewStageView = false;
 
 		reloadData();

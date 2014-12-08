@@ -22,6 +22,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import taskManager.JanewayModule;
 import taskManager.controller.WorkflowController;
 import taskManager.model.TaskModel;
 import edu.wpi.cs.wpisuitetng.network.Request;
@@ -41,8 +42,7 @@ public class TestDropAreaPanel {
 	@Before
 	public void setup() {
 
-		// creates a workflow view
-		wfc = new WorkflowController();
+		JanewayModule.reset();
 
 		// add a task to the workflow
 		task = new TaskModel("test", wfc.getModel().getStages().get(0));

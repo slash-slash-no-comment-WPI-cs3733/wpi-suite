@@ -15,6 +15,7 @@ import javax.swing.ImageIcon;
 
 import taskManager.controller.TabPaneController;
 import taskManager.controller.ToolbarController;
+import taskManager.controller.WorkflowController;
 import taskManager.view.ToolbarView;
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
 import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
@@ -33,21 +34,38 @@ public class JanewayModule implements IJanewayModule {
 	// The tabs used by this module
 
 	private final ArrayList<JanewayTabModel> tabs;
-	public static final ToolbarView toolV = new ToolbarView();
+	private static ToolbarView toolV;
 	public static User[] users = {};
 	public static String currentUser = null; // the username of the current user
+
+	static {
+		reset();
+	}
 
 	/**
 	 * Construct a blank tab
 	 */
 	public JanewayModule() {
-		toolV.setController(new ToolbarController());
+		reset();
 
 		tabs = new ArrayList<JanewayTabModel>();
 		JanewayTabModel tab = new JanewayTabModel("Task Manager",
-				new ImageIcon(), toolV, TabPaneController.getInstance()
+				new ImageIcon(), getToolV(), TabPaneController.getInstance()
 						.getView());
 		tabs.add(tab);
+	}
+
+	/**
+	 * Does a full reset of the module; useful for testing
+	 *
+	 */
+	public static void reset() {
+		toolV = new ToolbarView();
+		toolV.setController(new ToolbarController());
+
+		// Reset singletons
+		TabPaneController.getInstance().reset();
+		WorkflowController.getInstance().reset();
 	}
 
 	/**
@@ -64,5 +82,15 @@ public class JanewayModule implements IJanewayModule {
 	@Override
 	public List<JanewayTabModel> getTabs() {
 		return tabs;
+	}
+
+	/**
+	 * @return the toolV
+	 */
+	public static ToolbarView getToolV() {
+		if (toolV == null) {
+			throw new IllegalStateException("JanewayModule not initialized");
+		}
+		return toolV;
 	}
 }
