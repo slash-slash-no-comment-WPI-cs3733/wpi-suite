@@ -24,8 +24,6 @@ import org.junit.Test;
 
 import taskManager.controller.WorkflowController;
 import taskManager.model.TaskModel;
-import taskManager.model.WorkflowModel;
-import taskManager.view.WorkflowView;
 import edu.wpi.cs.wpisuitetng.network.Request;
 
 /**
@@ -35,26 +33,25 @@ import edu.wpi.cs.wpisuitetng.network.Request;
  */
 public class TestDropAreaPanel {
 
-	private WorkflowView wfv;
-	private final WorkflowModel wfm = WorkflowModel.getInstance();
+	private WorkflowController wfc;
 	private FrameFixture fixture;
 	private TaskModel task;
 	private boolean shouldFail = false;
 
 	@Before
 	public void setup() {
+
 		// creates a workflow view
-		wfv = new WorkflowView();
+		wfc = new WorkflowController();
 
 		// add a task to the workflow
-		task = new TaskModel("test", wfm.getStages().get(0));
+		task = new TaskModel("test", wfc.getModel().getStages().get(0));
 		task.setDueDate(new Date(0));
 
-		// create controller for view
-		wfv.setController(new WorkflowController(wfv));
+		wfc.reloadData();
 
 		JFrame frame = new JFrame();
-		frame.add(wfv);
+		frame.add(wfc.getView());
 
 		Dimension size = new Dimension(1000, 500);
 		frame.setSize(size);
