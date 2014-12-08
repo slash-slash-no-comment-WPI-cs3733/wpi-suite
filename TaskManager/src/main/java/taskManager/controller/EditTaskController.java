@@ -701,7 +701,7 @@ public class EditTaskController implements ActionListener {
 		if (other.model == null || this.model == null) {
 			return false;
 		} else {
-			return model.getID().equals(model.getID());
+			return model.getID().equals(other.model.getID());
 		}
 	}
 }
