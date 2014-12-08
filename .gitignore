@@ -16,6 +16,9 @@ dist
 *.jar
 *.eml
 
+#Test Screenshots
+*.png
+
 # Module jar files #
 Janeway/modules/*.jar
 !Janeway/modules/DummyModule.jar
