@@ -26,6 +26,6 @@ public interface DropAreaSaveListener {
 	 * @param index
 	 *            insertion index
 	 */
-	public void saveDrop(JPanel panel, int index);
+	void saveDrop(JPanel panel, int index);
 
 }
