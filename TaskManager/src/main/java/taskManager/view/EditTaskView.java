@@ -623,13 +623,6 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * disables the archive button
-	 */
-	public void disableArchive() {
-		this.archive.setEnabled(false);
-	}
-
-	/**
 	 * enables the archive button
 	 */
 	public void enableArchive() {
@@ -773,17 +766,6 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * 
-	 * Adds an activity.
-	 *
-	 * @param the
-	 *            activity.
-	 */
-	public void addActivity(ActivityModel act) {
-		activities.add(act);
-	}
-
-	/**
-	 * 
 	 * Set the delete button to enabled/disabled.
 	 *
 	 * @param bool
@@ -809,11 +791,6 @@ public class EditTaskView extends JPanel {
 		}
 
 		super.setVisible(visible);
-	}
-
-	// Used for tests
-	public JPanel getWindow() {
-		return this.window;
 	}
 
 	/**
