@@ -163,6 +163,11 @@ public class StageView extends JPanel implements Transferable {
 		// -----------------------
 		// Drag and drop handling:
 		MouseAdapter listener = new DraggablePanelListener(this);
+
+		this.addMouseListener(listener);
+		this.addMouseMotionListener(listener);
+		label.addMouseListener(listener);
+		label.addMouseMotionListener(listener);
 		labelName.addMouseListener(listener);
 		labelName.addMouseMotionListener(listener);
 
@@ -217,6 +222,8 @@ public class StageView extends JPanel implements Transferable {
 		labelName.addMouseListener(controller);
 		// listen for drag to enable icon
 		labelName.addMouseMotionListener(controller);
+		label.addMouseMotionListener(controller);
+		this.addMouseMotionListener(controller);
 		// listen for clicks on the 'change title' buttons
 		done.addActionListener(controller);
 		cancel.addActionListener(controller);
