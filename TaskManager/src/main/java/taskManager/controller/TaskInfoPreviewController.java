@@ -13,7 +13,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-import taskManager.JanewayModule;
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.view.TaskInfoPreviewView;
 
@@ -43,10 +42,8 @@ public class TaskInfoPreviewController implements ActionListener {
 				// reset the flag
 				FetchWorkflowObserver.ignoreAllResponses = false;
 				// remove any taskInfo bubbles from the workflow
-				JanewayModule.tabPaneC.getTabView().getWorkflowController()
-						.reloadData();
-				JanewayModule.tabPaneC.getTabView().getWorkflowController()
-						.repaintView();
+				WorkflowController.getInstance().reloadData();
+				WorkflowController.getInstance().repaintView();
 				break;
 			}
 		}

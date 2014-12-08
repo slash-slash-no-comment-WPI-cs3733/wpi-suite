@@ -39,11 +39,13 @@ public class TabPaneController {
 	 */
 	public void addCreateTaskTab() {
 		// Each press of create a new tab should launch a new createTaskTab
-		new EditTaskController();
+		EditTaskController etc = new EditTaskController();
 
 		// Focuses on the new tab
 		int index = tabPaneV.getTabCount() - 1;
 		tabPaneV.setSelectedIndex(index);
+
+		etc.getView().setTitleFieldFocus();
 	}
 
 	/**
@@ -123,10 +125,6 @@ public class TabPaneController {
 
 	public TabPaneView getTabView() {
 		return tabPaneV;
-	}
-
-	public void reloadWorkflow() {
-		tabPaneV.reloadWorkflow();
 	}
 
 }

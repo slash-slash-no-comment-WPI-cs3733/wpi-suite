@@ -107,15 +107,13 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	public StageModel(String name, int index, boolean removable) {
 
 		// Set name as ID
-		super(name);
+		super(name.trim());
+
+		// Remove whitespace
+		this.name = name.trim();
 
 		// Enforce uniqueness of Stage names
-		if (name != null) {
-			this.name = name.trim();
-		}
-
-		if (WorkflowModel.getInstance().findStageByName(name) != null) {
-			// How did you actually get here?
+		if (workflow.findStageByName(this.name) != null) {
 			throw new IllegalArgumentException("This stage already exists");
 		} else {
 			this.removable = removable;
@@ -132,11 +130,11 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	}
 
 	/**
-	 * Required to create dummy instance Necessary for passing TaskModel type
-	 * into DataStore *
-	 *
+	 * Required to create dummy instance; necessary for passing TaskModel type
+	 * into DataStore Should not be called manually
 	 *
 	 */
+	@Deprecated
 	public StageModel() {
 	};
 
@@ -307,19 +305,14 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 *
 	 * @param task
 	 *            The task to add
-	 *
-	 *
-	 *
-	 * @return The removed task, null if no task removed.
 	 */
-	public TaskModel removeTask(TaskModel task) {
+	public void removeTask(TaskModel task) {
 		if (!taskList.contains(task)) {
 			logger.log(Level.WARNING,
 					"Tried to remove a task that did not exist.");
-			throw new IndexOutOfBoundsException("No such task.");
+			throw new IllegalArgumentException("No such task.");
 		}
 		taskList.remove(task);
-		return task;
 	}
 
 	/**
@@ -354,31 +347,20 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 		request.send();
 	}
 
-	/*
-	 * @see edu.wpi.cs.wpisuitetng.modules.Model#identify(java.lang.Object)
-	 */
-	@Override
-	public Boolean identify(Object o) {
-		if (o instanceof StageModel) {
-			return ((StageModel) o).name.equals(name);
-		}
-		return false;
-	}
-
 	/**
 	 * 
-	 * Changes the stage name and saves it to the database. Throws an
-	 * IllegalArgumentException if the stage name is not unique
+	 * Sets the stage name. Throws an IllegalArgumentException if the stage name
+	 * is not unique
 	 *
 	 * @param newName
 	 *            The new name of the stage
 	 */
-	public void changeStageName(String newName) {
+	public void setName(String newName) {
+		newName = newName.trim();
 		if (workflow.findStageByName(newName) != null) {
 			throw new IllegalArgumentException("Stage name must be unique.");
 		}
 		this.name = newName;
-		workflow.save();
 	}
 
 	@Override

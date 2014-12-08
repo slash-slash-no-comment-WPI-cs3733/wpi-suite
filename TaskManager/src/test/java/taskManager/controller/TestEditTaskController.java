@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import taskManager.JanewayModule;
+import taskManager.ScreenshotOnFail;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
@@ -39,7 +40,7 @@ import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel
  *
  * @author Jon Sorrells
  */
-public class TestEditTaskController {
+public class TestEditTaskController extends ScreenshotOnFail {
 
 	private static EditTaskView etv = null;
 	private static final WorkflowModel wfm = WorkflowModel.getInstance();
@@ -279,10 +280,10 @@ public class TestEditTaskController {
 	public void cleanup() {
 		fixture.cleanUp();
 		etv = null;
-		// remove all tabs
-		for (Component c : JanewayModule.tabPaneC.getTabView().getComponents()) {
-			JanewayModule.tabPaneC.removeTabByComponent(c);
-		}
+		// remove tab
+		Component[] tabs = JanewayModule.tabPaneC.getTabView().getComponents();
+		JanewayModule.tabPaneC.removeTabByComponent(tabs[tabs.length - 1]);
+
 	}
 
 	/**
