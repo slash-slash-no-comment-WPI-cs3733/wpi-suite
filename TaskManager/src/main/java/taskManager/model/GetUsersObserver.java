@@ -25,8 +25,8 @@ public class GetUsersObserver extends GenericRequestObserver {
 	 */
 	@Override
 	public void responseSuccess(IRequest iReq) {
-		ResponseModel response = iReq.getResponse();
-		String body = response.getBody();
+		final ResponseModel response = iReq.getResponse();
+		final String body = response.getBody();
 		System.out.println("Response:" + body);
 
 		JanewayModule.users = AbstractJsonableModel

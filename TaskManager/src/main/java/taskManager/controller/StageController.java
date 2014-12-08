@@ -70,7 +70,7 @@ public class StageController implements DropAreaSaveListener,
 		// Get all the tasks associated with this Stage.
 
 		// Get state of archive shown check box.
-		boolean showArchive = JanewayModule.toolV.isArchiveShown();
+		final boolean showArchive = JanewayModule.toolV.isArchiveShown();
 
 		// Add the tasks.
 		if (model != null) {
@@ -101,12 +101,12 @@ public class StageController implements DropAreaSaveListener,
 		if (!(panel instanceof TaskView)) {
 			return;
 		}
-		TaskController tc = ((TaskView) panel).getController();
+		final TaskController tc = ((TaskView) panel).getController();
 
 		// if archived tasks are hidden, change index to account for the hidden
 		// tasks
 		if (!JanewayModule.toolV.isArchiveShown()) {
-			List<TaskModel> taskList = model.getTasks();
+			final List<TaskModel> taskList = model.getTasks();
 			for (int i = 0; i < index; i++) {
 				if (taskList.get(i).isArchived()) {
 					index++;
@@ -114,7 +114,7 @@ public class StageController implements DropAreaSaveListener,
 			}
 		}
 
-		boolean changed = tc.moveToStage(model, index);
+		final boolean changed = tc.moveToStage(model, index);
 
 		if (changed) {
 			WorkflowModel.getInstance().save();
@@ -234,7 +234,7 @@ public class StageController implements DropAreaSaveListener,
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Object button = e.getSource();
+		final Object button = e.getSource();
 		if (button instanceof JButton) {
 
 			switch (((JButton) button).getName()) {
@@ -267,7 +267,7 @@ public class StageController implements DropAreaSaveListener,
 			case StageView.X:
 				if (model == null) {
 					// ask the user if they want to cancel the new stage
-					int opt = JOptionPane
+					final int opt = JOptionPane
 							.showConfirmDialog(
 									view,
 									"Are you sure you want to cancel creating the stage?",

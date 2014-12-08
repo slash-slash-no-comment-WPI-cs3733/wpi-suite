@@ -31,9 +31,9 @@ public class ScrollList extends JPanel {
 
 	private static final long serialVersionUID = -1862712982356137942L;
 
-	private DefaultListModel<String> lm;
-	private JScrollPane listScroller;
-	private JList<String> jl;
+	private final DefaultListModel<String> lm;
+	private final JScrollPane listScroller;
+	private final JList<String> jl;
 
 	/**
 	 * Constructor for a scroll list
@@ -60,7 +60,7 @@ public class ScrollList extends JPanel {
 		listScroller
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-		JLabel title = new JLabel(t);
+		final JLabel title = new JLabel(t);
 		this.add(title, BorderLayout.NORTH);
 		this.setBackground(Colors.TASK);
 		this.add(listScroller, BorderLayout.CENTER);
@@ -173,7 +173,7 @@ public class ScrollList extends JPanel {
 	 * @return the lit of strings
 	 */
 	public List<String> getAllValues() {
-		List<String> result = new LinkedList<String>();
+		final List<String> result = new LinkedList<String>();
 		for (int i = 0; i < lm.getSize(); i++) {
 			result.add(lm.get(i));
 		}

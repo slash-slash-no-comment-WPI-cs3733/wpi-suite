@@ -21,7 +21,7 @@ import taskManager.view.StageView;
  */
 public class StageTitleController implements KeyListener {
 
-	private StageView stageV;
+	private final StageView stageV;
 
 	/**
 	 * Constructor for the controller to change a stages title
@@ -34,7 +34,7 @@ public class StageTitleController implements KeyListener {
 	}
 
 	private Boolean checkTitle() {
-		String newTitle = stageV.getLabelText();
+		final String newTitle = stageV.getLabelText();
 		if (newTitle.equals("") || newTitle.equals(stageV.getName())) {
 			return false;
 		}

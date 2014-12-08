@@ -309,7 +309,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		final ActivityModel addUser = new ActivityModel("User "
 				+ user.getName() + " added to task",
 				ActivityModel.activityModelType.USER_ADD, user);
-		String q = user.getUsername();
+		final String q = user.getUsername();
 		assigned.add(q);
 		addActivity(addUser);
 		logger.log(Level.FINER, "Added user " + user.getName() + " to task "

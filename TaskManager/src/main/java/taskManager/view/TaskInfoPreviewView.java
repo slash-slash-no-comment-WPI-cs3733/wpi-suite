@@ -42,9 +42,9 @@ import taskManager.model.TaskModel;
 public class TaskInfoPreviewView extends JPanel {
 
 	private static final long serialVersionUID = -3486346306247702460L;
-	private TaskModel taskM;
-	private TaskController taskC;
-	private TaskInfoPreviewController controller;
+	private final TaskModel taskM;
+	private final TaskController taskC;
+	private final TaskInfoPreviewController controller;
 	public static final String EDIT = "edit";
 	public static final String X = "x";
 	public static final int WIDTH = 220;
@@ -68,24 +68,25 @@ public class TaskInfoPreviewView extends JPanel {
 		this.setLayout(null);
 		this.setOpaque(false);
 
-		JPanel bgPane = new JPanel();
+		final JPanel bgPane = new JPanel();
 		bgPane.setLayout(new MigLayout("wrap 1", "5[]5", "0[]:push[]"));
 		setBoundsWithoutClipping(loc, 245, 415);
 
 		bgPane.setBackground(Colors.TASK);
-		Border color = BorderFactory.createLineBorder(getBackground(), 3);
-		DropShadowBorder shadow = new DropShadowBorder();
+		final Border color = BorderFactory.createLineBorder(getBackground(), 3);
+		final DropShadowBorder shadow = new DropShadowBorder();
 		shadow.setShadowColor(Color.BLACK);
 		shadow.setShowLeftShadow(true);
 		shadow.setShowRightShadow(true);
 		shadow.setShowBottomShadow(true);
 		shadow.setShowTopShadow(true);
 		shadow.setShadowSize(10);
-		Border compound = BorderFactory.createCompoundBorder(shadow, color);
+		final Border compound = BorderFactory.createCompoundBorder(shadow,
+				color);
 		this.setBorder(compound);
 
 		// This panel will contain all of the task information
-		JPanel info = new JPanel();
+		final JPanel info = new JPanel();
 		info.setSize(new Dimension(this.getWidth(), 345));
 		info.setPreferredSize(new Dimension(this.getWidth(), 345));
 		info.setMinimumSize(new Dimension(this.getWidth(), 345));
@@ -94,10 +95,10 @@ public class TaskInfoPreviewView extends JPanel {
 		info.setOpaque(false);
 
 		// The task's titleBar contains the title and the 'x' button
-		JPanel titleBar = new JPanel();
+		final JPanel titleBar = new JPanel();
 		titleBar.setLayout(new MigLayout("", "5[]:push[]"));
 		titleBar.setSize(new Dimension(this.getWidth(), 30));
-		JLabel title = new JLabel(taskM.getName());
+		final JLabel title = new JLabel(taskM.getName());
 		title.setFont(title.getFont().deriveFont(15.0f));
 		title.setPreferredSize(new Dimension(190,
 				title.getPreferredSize().height));
@@ -120,7 +121,7 @@ public class TaskInfoPreviewView extends JPanel {
 		info.add(titleBar);
 
 		// The task's description
-		JTextArea description = new JTextArea();
+		final JTextArea description = new JTextArea();
 		description.setText(ellipsize(taskM.getDescription(), 175));
 		description.setSize(new Dimension(this.getWidth() - 45, 80));
 		description.setMaximumSize(new Dimension(this.getWidth() - 45, 80));
@@ -134,25 +135,26 @@ public class TaskInfoPreviewView extends JPanel {
 		info.add(description);
 
 		// The task's due date
-		JLabel due = new JLabel("Due:");
+		final JLabel due = new JLabel("Due:");
 		final Calendar calDate = Calendar.getInstance();
 		calDate.setTime(taskM.getDueDate());
-		JLabel date = new JLabel("  " + (calDate.get(Calendar.MONTH) + 1) + "/"
-				+ calDate.get(Calendar.DATE) + "/"
+		final JLabel date = new JLabel("  " + (calDate.get(Calendar.MONTH) + 1)
+				+ "/" + calDate.get(Calendar.DATE) + "/"
 				+ (calDate.get(Calendar.YEAR)));
 		date.setMaximumSize(new Dimension(this.getWidth(), 20));
 		info.add(due);
 		info.add(date);
 
 		// The task's effort
-		JLabel estE = new JLabel("Est Effort: " + taskM.getEstimatedEffort());
-		JLabel actE = new JLabel("Act Effort: " + taskM.getActualEffort());
+		final JLabel estE = new JLabel("Est Effort: "
+				+ taskM.getEstimatedEffort());
+		final JLabel actE = new JLabel("Act Effort: " + taskM.getActualEffort());
 		info.add(estE);
 		info.add(actE);
 
 		// The task's users
-		ScrollList users = new ScrollList("Users");
-		Set<String> userList = taskM.getAssigned();
+		final ScrollList users = new ScrollList("Users");
+		final Set<String> userList = taskM.getAssigned();
 		if (userList.size() > 0) {
 			for (String u : userList) {
 				if (!users.contains(u)) {
@@ -170,7 +172,7 @@ public class TaskInfoPreviewView extends JPanel {
 		} else {
 			req = new JLabel("Requirement:");
 			info.add(req);
-			JLabel name = new JLabel("  " + taskM.getReq());
+			final JLabel name = new JLabel("  " + taskM.getReq());
 			name.setSize(new Dimension(this.getWidth(), 20));
 			name.setMinimumSize(new Dimension(this.getWidth(), 20));
 			name.setMaximumSize(new Dimension(this.getWidth(), 20));
@@ -179,8 +181,8 @@ public class TaskInfoPreviewView extends JPanel {
 		}
 
 		// This panel contains the edit button
-		JPanel buttonPanel = new JPanel(new MigLayout("", "[center]"));
-		JButton edit = new JButton("edit");
+		final JPanel buttonPanel = new JPanel(new MigLayout("", "[center]"));
+		final JButton edit = new JButton("edit");
 		edit.setName(EDIT);
 		edit.setMargin(new Insets(5, 87, 5, 87));
 		edit.addActionListener(this.controller);
@@ -209,7 +211,7 @@ public class TaskInfoPreviewView extends JPanel {
 	 */
 	private void setBoundsWithoutClipping(Point loc, int width, int height) {
 		int x, y;
-		Rectangle paneBounds = JanewayModule.getTabPaneView().getBounds();
+		final Rectangle paneBounds = JanewayModule.getTabPaneView().getBounds();
 		x = (loc.x + StageView.STAGE_WIDTH + width > (paneBounds.getWidth())) ? loc.x
 				- width
 				: loc.x + StageView.STAGE_WIDTH;
@@ -249,7 +251,7 @@ public class TaskInfoPreviewView extends JPanel {
 
 		// Start by chopping off at the word before max
 		// the 3 is to account for '...'
-		int end = text.lastIndexOf(' ', max - 3);
+		final int end = text.lastIndexOf(' ', max - 3);
 		return text.substring(0, end) + "...";
 	}
 }

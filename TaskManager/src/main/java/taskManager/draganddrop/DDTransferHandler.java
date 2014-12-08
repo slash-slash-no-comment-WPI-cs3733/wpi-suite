@@ -123,7 +123,7 @@ public class DDTransferHandler extends TransferHandler {
 		if (!FetchWorkflowObserver.ignoreAllResponses) {
 			FetchWorkflowObserver.ignoreAllResponses = true;
 			// Create drag image
-			Image image = new BufferedImage(comp.getWidth(), comp.getHeight(),
+			final Image image = new BufferedImage(comp.getWidth(), comp.getHeight(),
 					BufferedImage.TYPE_INT_ARGB);
 			Graphics g = image.getGraphics();
 			g = g.create();

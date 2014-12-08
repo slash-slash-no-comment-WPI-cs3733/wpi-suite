@@ -113,7 +113,7 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 		if (existingModels.size() < 1 || existingModels.get(0) == null) {
 			save(s, newModel); // if it doesn't exist, save it
 		} else {
-			T existingModel = (T) existingModels.get(0);
+			final T existingModel = (T) existingModels.get(0);
 			existingModel.makeIdenticalTo(newModel);
 			save(s, existingModel);
 		}

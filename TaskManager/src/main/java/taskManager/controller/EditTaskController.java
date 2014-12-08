@@ -48,7 +48,7 @@ public class EditTaskController implements ActionListener {
 
 	private final EditTaskView etv;
 	private String taskID;
-	private List<String> toRemove = new ArrayList<String>();
+	private final List<String> toRemove = new ArrayList<String>();
 	private TaskModel model;
 
 	/**
@@ -71,7 +71,7 @@ public class EditTaskController implements ActionListener {
 		etv.resetFields();
 
 		// fills the user lists
-		List<String> projectUserNames = new ArrayList<String>();
+		final List<String> projectUserNames = new ArrayList<String>();
 		for (User u : JanewayModule.users) {
 			String name = u.getUsername();
 			if (!projectUserNames.contains(name)) {
@@ -187,14 +187,14 @@ public class EditTaskController implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Object button = e.getSource();
+		final Object button = e.getSource();
 		if (button instanceof JButton) {
-			String name = ((JButton) button).getName();
+			final String name = ((JButton) button).getName();
 
 			// check to see if the task exists in the workflow and grabs the
 			// stage that the task is in
 
-			WorkflowModel wfm = WorkflowModel.getInstance();
+			final WorkflowModel wfm = WorkflowModel.getInstance();
 			StageModel currentStage = null;
 			for (StageModel stage : wfm.getStages()) {
 				if (stage.containsTaskByID(taskID)) {
@@ -216,8 +216,8 @@ public class EditTaskController implements ActionListener {
 					// if creating a new task
 					else {
 						// grabs the stage from the dropdown box
-						StageModel desiredStage = WorkflowModel.getInstance()
-								.findStageByName(
+						final StageModel desiredStage = WorkflowModel
+								.getInstance().findStageByName(
 										(String) etv.getStages()
 												.getSelectedItem());
 
@@ -251,7 +251,7 @@ public class EditTaskController implements ActionListener {
 				break;
 
 			case EditTaskView.DELETE:
-				Integer choice = JOptionPane.showConfirmDialog(etv,
+				final Integer choice = JOptionPane.showConfirmDialog(etv,
 						"Are you sure you want to delete this task?",
 						"Warning - Deleting a task", JOptionPane.YES_NO_OPTION);
 				if (choice.equals(JOptionPane.YES_OPTION)) {
@@ -278,7 +278,7 @@ public class EditTaskController implements ActionListener {
 			case EditTaskView.VIEW_REQ:
 				// view requirement in requirement manager
 
-				Requirement requirement = RequirementModel.getInstance()
+				final Requirement requirement = RequirementModel.getInstance()
 						.getRequirementByName(
 								(String) etv.getRequirements()
 										.getSelectedItem());
@@ -297,7 +297,7 @@ public class EditTaskController implements ActionListener {
 					}
 					c = c.getParent();
 				}
-				JTabbedPane tabPane = (JTabbedPane) c;
+				final JTabbedPane tabPane = (JTabbedPane) c;
 
 				// switch to the requirement manager tab
 				tabPane.setSelectedIndex(tabPane.indexOfTab(RequirementManager
@@ -329,9 +329,9 @@ public class EditTaskController implements ActionListener {
 	 */
 	public void reloadData() {
 
-		JComboBox<String> stages = etv.getStages();
+		final JComboBox<String> stages = etv.getStages();
 
-		String selectedStage = (String) stages.getSelectedItem();
+		final String selectedStage = (String) stages.getSelectedItem();
 
 		stages.removeAllItems();
 		for (StageModel stage : WorkflowModel.getInstance().getStages()) {
@@ -343,10 +343,11 @@ public class EditTaskController implements ActionListener {
 			stages.setSelectedItem(selectedStage);
 		}
 
-		List<Requirement> reqs = RequirementModel.getInstance()
+		final List<Requirement> reqs = RequirementModel.getInstance()
 				.getRequirements();
-		JComboBox<String> requirements = etv.getRequirements();
-		String selectedRequirement = (String) requirements.getSelectedItem();
+		final JComboBox<String> requirements = etv.getRequirements();
+		final String selectedRequirement = (String) requirements
+				.getSelectedItem();
 		requirements.removeAllItems();
 		requirements.addItem(EditTaskView.NO_REQ);
 		for (Requirement req : reqs) {
@@ -384,10 +385,11 @@ public class EditTaskController implements ActionListener {
 		model.setDescription(etv.getDescription().getText());
 
 		// grabs the stage from the dropdown box
-		StageModel s = WorkflowModel.getInstance().findStageByName(
+		final StageModel s = WorkflowModel.getInstance().findStageByName(
 				(String) etv.getStages().getSelectedItem());
-		Requirement r = RequirementModel.getInstance().getRequirementByName(
-				(String) etv.getRequirements().getSelectedItem());
+		final Requirement r = RequirementModel.getInstance()
+				.getRequirementByName(
+						(String) etv.getRequirements().getSelectedItem());
 
 		// Try to set the effort values.
 		try {
@@ -427,7 +429,7 @@ public class EditTaskController implements ActionListener {
 											// appropriate save method.
 
 		// Add the newly added activities.
-		List<ActivityModel> newActivities = etv.getNewActivities();
+		final List<ActivityModel> newActivities = etv.getNewActivities();
 		for (ActivityModel act : newActivities) {
 			model.addActivity(act);
 		}
@@ -465,8 +467,8 @@ public class EditTaskController implements ActionListener {
 	 * the project user list.
 	 */
 	public void addUsersToList() {
-		int[] toAdd = etv.getProjectUsersList().getSelectedIndices();
-		List<String> namesToAdd = new ArrayList<String>();
+		final int[] toAdd = etv.getProjectUsersList().getSelectedIndices();
+		final List<String> namesToAdd = new ArrayList<String>();
 
 		for (int ind : toAdd) {
 			namesToAdd.add(etv.getProjectUsersList().getValueAtIndex(ind));
@@ -496,8 +498,8 @@ public class EditTaskController implements ActionListener {
 	public void removeUsersFromList() {
 		// grab all of the indices of the usernames selected in
 		// assigned users and grab the associated strings
-		int[] usersToRemove = etv.getUsersList().getSelectedIndices();
-		List<String> namesToRemove = new ArrayList<String>();
+		final int[] usersToRemove = etv.getUsersList().getSelectedIndices();
+		final List<String> namesToRemove = new ArrayList<String>();
 		for (int ind : usersToRemove) {
 			namesToRemove.add(etv.getUsersList().getValueAtIndex(ind));
 		}
@@ -573,15 +575,15 @@ public class EditTaskController implements ActionListener {
 	 * @return true if there are edits
 	 */
 	public Boolean checkDate(TaskModel task) {
-		Date dueDate = task.getDueDate();
+		final Date dueDate = task.getDueDate();
 
 		// if the task had a due date, check if it changed
 		if (dueDate != null && dueDate.equals(etv.getDateField().getDate())) {
 			return false;
 		} else {
 			// check if it has the default date (today)
-			Calendar cal1 = Calendar.getInstance();
-			Calendar cal2 = Calendar.getInstance();
+			final Calendar cal1 = Calendar.getInstance();
+			final Calendar cal2 = Calendar.getInstance();
 			cal1.setTime(etv.getDateField().getDate());
 			cal2.setTime(Calendar.getInstance().getTime());
 
@@ -605,7 +607,7 @@ public class EditTaskController implements ActionListener {
 		boolean edited = false;
 		Set<String> taskAssigned = new HashSet<String>();
 		taskAssigned = task.getAssigned();
-		Set<String> usersAssigned = new HashSet<String>();
+		final Set<String> usersAssigned = new HashSet<String>();
 		usersAssigned.addAll(etv.getUsersList().getAllValues());
 		if (!usersAssigned.equals(taskAssigned)) {
 			edited = true;
@@ -634,8 +636,8 @@ public class EditTaskController implements ActionListener {
 				edited = true;
 			}
 		} else {
-			Integer taskEffort = task.getEstimatedEffort();
-			Integer etvEffort;
+			final Integer taskEffort = task.getEstimatedEffort();
+			final Integer etvEffort;
 			try {
 				etvEffort = Integer.parseInt(etv.getEstEffort().getText());
 				if (!taskEffort.equals(etvEffort)) {
@@ -666,8 +668,8 @@ public class EditTaskController implements ActionListener {
 				edited = true;
 			}
 		} else {
-			Integer taskEffort = task.getActualEffort();
-			Integer etvEffort;
+			final Integer taskEffort = task.getActualEffort();
+			final Integer etvEffort;
 			try {
 				etvEffort = Integer.parseInt(etv.getActEffort().getText());
 				if (!taskEffort.equals(etvEffort)) {

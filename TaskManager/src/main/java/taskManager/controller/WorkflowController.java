@@ -137,7 +137,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	public void addStageToView() {
 		if (!hasNewStageView) {
 			hasNewStageView = true;
-			StageView newStageV = new StageView("");
+			final StageView newStageV = new StageView("");
 			newStageV.setController(new StageController(newStageV, null));
 			newStageV.enableTitleEditing(true);
 			PromptSupport
@@ -164,8 +164,8 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		if (!(panel instanceof StageView)) {
 			return;
 		}
-		StageController tc = ((StageView) panel).getController();
-		boolean changed = tc.moveStageToIndex(index);
+		final StageController tc = ((StageView) panel).getController();
+		final boolean changed = tc.moveStageToIndex(index);
 
 		if (changed) {
 			model.save();

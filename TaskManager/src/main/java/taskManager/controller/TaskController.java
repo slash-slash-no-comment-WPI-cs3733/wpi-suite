@@ -33,7 +33,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 
 	private final TaskView view;
 	private final TaskModel model;
-	private Color background;
+	private final Color background;
 
 	public static Boolean anyTaskInfoOut = false;
 	private Boolean thisTaskInfoOut = false;
@@ -144,11 +144,11 @@ public class TaskController implements MouseListener, MouseMotionListener {
 			FetchWorkflowObserver.ignoreAllResponses = true;
 
 			// Create the taskinfo bubble
-			Point stageLoc = view.getParent().getParent().getParent()
+			final Point stageLoc = view.getParent().getParent().getParent()
 					.getParent().getLocation();
-			Point stagesPanelLoc = view.getParent().getParent().getParent()
-					.getParent().getParent().getLocation();
-			Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
+			final Point stagesPanelLoc = view.getParent().getParent()
+					.getParent().getParent().getParent().getLocation();
+			final Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
 					view.getLocation().y);
 			WorkflowController.getInstance().setTaskInfo(
 					new TaskInfoPreviewView(model, this, infoLoc));
@@ -195,7 +195,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	public void mouseDragged(MouseEvent e) {
 		// Enable/disable the archive and delete icons when dragged.
 
-		boolean isArchived = model.isArchived();
+		final boolean isArchived = model.isArchived();
 		if (isArchived) {
 			JanewayModule.toolV.setArchiveIcon(ToolbarView.UNARCHIVE);
 		} else {
@@ -219,7 +219,8 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	}
 
 	/**
-	 * @param thisTaskInfoOut the thisTaskInfoOut to set
+	 * @param thisTaskInfoOut
+	 *            the thisTaskInfoOut to set
 	 */
 	public void setThisTaskInfoOut(Boolean thisTaskInfoOut) {
 		this.thisTaskInfoOut = thisTaskInfoOut;

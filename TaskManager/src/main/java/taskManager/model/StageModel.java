@@ -268,7 +268,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 			return false;
 		}
 
-		StageModel oldStage = task.getStage();
+		final StageModel oldStage = task.getStage();
 		if (oldStage != null) {
 			if (oldStage.containsTask(task)) {
 				oldStage.removeTask(task); // remove from old parent, or this

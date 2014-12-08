@@ -69,12 +69,13 @@ public class ToolbarView extends JToolBar {
 	public ToolbarView() {
 
 		// Construct and set up the buttons and title panels
-		JPanel buttons = new JPanel();
-		JPanel title = new JPanel();
-		JPanel targets = new JPanel();
-		FlowLayout flowLayout = new FlowLayout();
-		BoxLayout toolbarLayout = new BoxLayout(this, BoxLayout.LINE_AXIS);
-		BoxLayout targetsLayout = new BoxLayout(targets, BoxLayout.LINE_AXIS);
+		final JPanel buttons = new JPanel();
+		final JPanel title = new JPanel();
+		final JPanel targets = new JPanel();
+		final FlowLayout flowLayout = new FlowLayout();
+		final BoxLayout toolbarLayout = new BoxLayout(this, BoxLayout.LINE_AXIS);
+		final BoxLayout targetsLayout = new BoxLayout(targets,
+				BoxLayout.LINE_AXIS);
 		buttons.setLayout(flowLayout);
 		buttons.setOpaque(false);
 		title.setLayout(flowLayout);
@@ -83,7 +84,7 @@ public class ToolbarView extends JToolBar {
 		targets.setOpaque(false);
 		this.setLayout(toolbarLayout);
 
-		Insets margins = new Insets(15, 5, 0, 5);
+		final Insets margins = new Insets(15, 5, 0, 5);
 		this.setMargin(margins);
 
 		this.setFloatable(false);

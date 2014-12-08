@@ -28,7 +28,7 @@ import taskManager.view.WorkflowView;
 public class TabPaneController {
 
 	// singleton TabPaneView
-	private TabPaneView tabPaneV;
+	private final TabPaneView tabPaneV;
 	private static final Logger logger = Logger
 			.getLogger(TabPaneController.class.getName());
 
@@ -49,10 +49,10 @@ public class TabPaneController {
 	 */
 	public void addCreateTaskTab() {
 		// Each press of create a new tab should launch a new createTaskTab
-		EditTaskController etc = new EditTaskController();
+		final EditTaskController etc = new EditTaskController();
 
 		// Focuses on the new tab
-		int index = tabPaneV.getTabCount() - 1;
+		final int index = tabPaneV.getTabCount() - 1;
 		tabPaneV.setSelectedIndex(index);
 
 		etc.getView().focusOnTitleField();

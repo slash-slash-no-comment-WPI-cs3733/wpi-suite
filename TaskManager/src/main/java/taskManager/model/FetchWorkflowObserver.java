@@ -60,11 +60,11 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 			return;
 		}
 
-		ResponseModel response = iReq.getResponse();
-		String body = response.getBody();
+		final ResponseModel response = iReq.getResponse();
+		final String body = response.getBody();
 		System.out.println("Response:" + body);
 
-		WorkflowModel[] workflows = AbstractJsonableModel.fromJson(body,
+		final WorkflowModel[] workflows = AbstractJsonableModel.fromJson(body,
 				WorkflowModel[].class);
 		if (workflows == null) {
 			System.out.println("Workflow not found on server");
@@ -73,7 +73,7 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 			return;
 		}
 
-		WorkflowModel workflow = workflows[0];
+		final WorkflowModel workflow = workflows[0];
 		model.makeIdenticalTo(workflow);
 		model.rebuildAllRefs();
 

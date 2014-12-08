@@ -21,7 +21,7 @@ import javax.swing.TransferHandler;
  * @version Dec 1, 2014
  */
 public class DraggablePanelListener extends MouseAdapter {
-	private JComponent exportedComponent;
+	private final JComponent exportedComponent;
 
 	/**
 	 * @param exportedComponent

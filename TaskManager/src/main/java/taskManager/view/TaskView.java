@@ -77,8 +77,8 @@ public class TaskView extends JPanel implements Transferable {
 		// note: the Calendar.MONTH value ranges between 0-11 so here we add 1
 		// to the month.
 
-		JLabel nameLabel = new JLabel();
-		JLabel dueLabel = new JLabel("Due: " + (date.get(Calendar.MONTH) + 1)
+		final JLabel nameLabel = new JLabel();
+		final JLabel dueLabel = new JLabel("Due: " + (date.get(Calendar.MONTH) + 1)
 				+ "/" + date.get(Calendar.DATE) + "/"
 				+ (date.get(Calendar.YEAR)));
 
@@ -98,7 +98,7 @@ public class TaskView extends JPanel implements Transferable {
 
 		// -----------------------
 		// Drag and drop handling:
-		MouseAdapter listener = new DraggablePanelListener(this);
+		final MouseAdapter listener = new DraggablePanelListener(this);
 		addMouseListener(listener);
 		addMouseMotionListener(listener);
 
@@ -166,7 +166,7 @@ public class TaskView extends JPanel implements Transferable {
 	 */
 	@Override
 	public DataFlavor[] getTransferDataFlavors() {
-		DataFlavor[] flavors = { DDTransferHandler.getTaskFlavor() };
+		final DataFlavor[] flavors = { DDTransferHandler.getTaskFlavor() };
 		return flavors;
 	}
 
