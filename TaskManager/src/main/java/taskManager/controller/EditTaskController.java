@@ -63,7 +63,6 @@ public class EditTaskController implements ActionListener {
 		// Set the dropdown menu to first stage and disable the menu.
 		etv.setStageDropdown(0);
 
-		etv.setRefreshEnabled(false);
 		// Disable save button when creating a task.
 		etv.setSaveEnabled(false);
 
@@ -164,8 +163,6 @@ public class EditTaskController implements ActionListener {
 		etv.setActivities(tskActivities);
 		etv.setActivitiesPanel(tskActivities);
 
-		etv.setRefreshEnabled(true);
-
 		// set the requirement dropdown
 		if (model.getReq() != null) {
 			etv.getRequirements().setSelectedItem(model.getReq().getName());
@@ -178,9 +175,9 @@ public class EditTaskController implements ActionListener {
 
 		// Set text for archive button.
 		if (model.isArchived()) {
-			etv.getArchiveButton().setText("Unarchive");
+			etv.setArchiveButtonText("Unarchive");
 		} else {
-			etv.getArchiveButton().setText("Archive");
+			etv.setArchiveButtonText("Archive");
 		}
 		etv.setDeleteEnabled(model.isArchived());
 
@@ -240,9 +237,9 @@ public class EditTaskController implements ActionListener {
 				// archive this task
 				boolean isArchived = model.isArchived();
 				if (isArchived) {
-					etv.getArchiveButton().setText("Archive");
+					etv.setArchiveButtonText("Archive");
 				} else {
-					etv.getArchiveButton().setText("Unarchive");
+					etv.setArchiveButtonText("Unarchive");
 				}
 				model.setArchived(!isArchived);
 				etv.setDeleteEnabled(!isArchived);
@@ -322,20 +319,6 @@ public class EditTaskController implements ActionListener {
 			case EditTaskView.SUBMIT_COMMENT:
 				// adds a comment activity
 				etv.addComment();
-				break;
-
-			case EditTaskView.REFRESH:
-				// TODO change to isEditingTask()
-				if (model != null) { // if the task already exists
-					// Clear the activities list.
-					etv.clearActivities();
-
-					// set activities pane
-					model = currentStage.findTaskByID(taskID);
-					List<ActivityModel> tskActivities = model.getActivities();
-					etv.setActivities(tskActivities);
-					etv.setActivitiesPanel(tskActivities);
-				}
 				break;
 			}
 		}
