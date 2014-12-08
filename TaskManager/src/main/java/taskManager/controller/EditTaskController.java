@@ -398,7 +398,7 @@ public class EditTaskController implements ActionListener {
 		}
 
 		// sets the due date from the calendar
-		model.setDueDate(etv.getDateField().getDate());
+		model.setDueDate(etv.getDate());
 
 		// move the stage
 		s.addTask(model);
@@ -561,13 +561,13 @@ public class EditTaskController implements ActionListener {
 		Date dueDate = task.getDueDate();
 
 		// if the task had a due date, check if it changed
-		if (dueDate != null && dueDate.equals(etv.getDateField().getDate())) {
+		if (dueDate != null && dueDate.equals(etv.getDate())) {
 			return false;
 		} else {
 			// check if it has the default date (today)
 			Calendar cal1 = Calendar.getInstance();
 			Calendar cal2 = Calendar.getInstance();
-			cal1.setTime(etv.getDateField().getDate());
+			cal1.setTime(etv.getDate());
 			cal2.setTime(Calendar.getInstance().getTime());
 
 			// check if the two dates are the same day

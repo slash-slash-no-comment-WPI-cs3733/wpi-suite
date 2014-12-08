@@ -430,12 +430,12 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * Gets the date field
+	 * Gets the date field's value
 	 * 
-	 * @return the date field
+	 * @return the date entered.
 	 */
-	public JXDatePicker getDateField() {
-		return dateField;
+	public Date getDate() {
+		return dateField.getDate();
 	}
 
 	/**

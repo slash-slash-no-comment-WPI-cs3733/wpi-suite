@@ -12,14 +12,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import javax.swing.JFrame;
 
 import org.fest.swing.fixture.FrameFixture;
 import org.fest.swing.fixture.JTextComponentFixture;
+import org.jdesktop.swingx.JXDatePicker;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -85,7 +90,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		// enter information for a new task
 		getTitleBoxFixture().enterText("name");
 		getDescriptionBoxFixture().enterText("Desc");
-		etv.getDateField().setDate(Calendar.getInstance().getTime());
+		getDateField().setDate(Calendar.getInstance().getTime());
 		fixture.textBox(EditTaskView.EST_EFFORT).enterText("3");
 
 		// save the task
@@ -105,7 +110,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 
 		getTitleBoxFixture().enterText("name");
 		getDescriptionBoxFixture().enterText("desc");
-		etv.getDateField().setDate(Calendar.getInstance().getTime());
+		getDateField().setDate(Calendar.getInstance().getTime());
 		fixture.button(EditTaskView.SAVE).requireEnabled();
 
 		getTitleBoxFixture().deleteText();
@@ -358,4 +363,45 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		return fixture.textBox(EditTaskView.TITLE);
 	}
 
+	/**
+	 * Finds the dateField
+	 *
+	 * @return The due date date-picker
+	 * @throws NotFoundException
+	 *             if the field cannot be found.
+	 */
+	private JXDatePicker getDateField() throws NotFoundException {
+		// Fest doesn't understand JXDatePickers, so I have to use this method
+		return (JXDatePicker) findByName(EditTaskView.DUE_DATE);
+	}
+
+	/**
+	 * 
+	 * Searches the fixture for a component by name. Useful because Fest doesn't
+	 * know how to search for odd types of components.
+	 *
+	 * @param name
+	 *            The Component's name
+	 * @return The first component found with that name.
+	 * @throws NotFoundException
+	 *             If no component has that name in the fixture.
+	 */
+	private Component findByName(String name) throws NotFoundException {
+		// Does a breadth first search
+		Queue<Component> searchList = new LinkedList<Component>();
+		searchList.add(fixture.component());
+		while (!searchList.isEmpty()) {
+			Component c = searchList.remove();
+			if (c instanceof Container) {
+				searchList
+						.addAll(Arrays.asList(((Container) c).getComponents()));
+			}
+
+			if (name.equals(c.getName())) {
+				return c;
+			}
+		}
+
+		throw new NotFoundException("Component " + name + " field not found");
+	}
 }
