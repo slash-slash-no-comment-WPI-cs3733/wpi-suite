@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import taskManager.JanewayModule;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
+import taskManager.view.ReportsToolbarView;
 import taskManager.view.TabPaneView;
 import taskManager.view.TabView;
 import taskManager.view.WorkflowView;
@@ -103,6 +104,18 @@ public class TabPaneController {
 			addTab(etv.getTitle().getText(), etv, true);
 			tabPaneV.setSelectedComponent(etv);
 		}
+	}
+
+	/**
+	 * 
+	 * Adds the reports view tab.
+	 *
+	 * @param rtv
+	 *            the reports view to add.
+	 */
+	public void addReportsTab(ReportsToolbarView rtv) {
+		addTab("Reports", rtv, true);
+		tabPaneV.setSelectedComponent(rtv);
 	}
 
 	/**

@@ -145,7 +145,7 @@ public class ToolbarView extends JToolBar {
 		title.add(projectName);
 		buttons.add(createTask);
 		buttons.add(createStage);
-		// buttons.add(statistics);
+		buttons.add(statistics);
 		buttons.add(archiveCheckBox);
 		targets.add(archive);
 		targets.add(new Box.Filler(new Dimension(5, 0), new Dimension(40, 0),
@@ -178,7 +178,6 @@ public class ToolbarView extends JToolBar {
 		archive.setTransferHandler(new DDTransferHandler());
 		archive.setDropTarget(new DropTarget(delete, controller));
 
-		
 	}
 
 	@Override
@@ -196,8 +195,8 @@ public class ToolbarView extends JToolBar {
 
 	public void setDeleteEnabled(boolean bool) {
 		delete.setEnabled(bool);
-		
-		if(bool){
+
+		if (bool) {
 			delete.setTransferHandler(new DDTransferHandler());
 			delete.setDropTarget(new DropTarget(delete, controller));
 			return;
