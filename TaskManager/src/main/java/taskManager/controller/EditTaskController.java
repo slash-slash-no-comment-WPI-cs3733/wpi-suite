@@ -206,30 +206,7 @@ public class EditTaskController implements ActionListener {
 			switch (name) {
 
 			case EditTaskView.SAVE:
-
-				if (etv.getFieldController().checkFields()) {
-					// if editing
-					if (isEditingTask()) {
-
-						save();
-					}
-					// if creating a new task
-					else {
-						// grabs the stage from the dropdown box
-						StageModel desiredStage = WorkflowModel.getInstance()
-								.findStageByName(
-										(String) etv.getStages()
-												.getSelectedItem());
-
-						// creates a new task model
-						model = new TaskModel(etv.getTitle().getText(),
-								desiredStage);
-						save();
-					}
-
-				} else {
-					etv.setSaveEnabled(false);
-				}
+				saveTask();
 				break;
 
 			case EditTaskView.ARCHIVE:
@@ -711,6 +688,34 @@ public class EditTaskController implements ActionListener {
 	private boolean isEditingTask() {
 		// Sadly isn't equivalent to model == null;
 		return Mode.EDIT.equals(etv.getMode());
+	}
+
+	/**
+	 * 
+	 * Saves the task, called when user clicks the save button or presses Enter.
+	 *
+	 */
+	public void saveTask() {
+		if (etv.getFieldController().checkFields()) {
+			// if editing
+			if (isEditingTask()) {
+				save();
+			}
+			// if creating a new task
+			else {
+				// grabs the stage from the dropdown box
+				StageModel desiredStage = WorkflowModel.getInstance()
+						.findStageByName(
+								(String) etv.getStages().getSelectedItem());
+
+				// creates a new task model
+				model = new TaskModel(etv.getTitle().getText(), desiredStage);
+				save();
+			}
+
+		} else {
+			etv.setSaveEnabled(false);
+		}
 	}
 
 	/**

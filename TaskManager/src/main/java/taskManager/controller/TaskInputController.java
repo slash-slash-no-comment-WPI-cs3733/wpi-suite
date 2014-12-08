@@ -9,11 +9,13 @@
 package taskManager.controller;
 
 import java.awt.Component;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.JButton;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
@@ -123,7 +125,16 @@ public class TaskInputController implements KeyListener, FocusListener,
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
+		// If Enter key pressed on a non-button, save the task.
+		if (e.getKeyChar() == KeyEvent.VK_ENTER) {
+			Component focusOwner = KeyboardFocusManager
+					.getCurrentKeyboardFocusManager().getFocusOwner();
+			if (focusOwner instanceof JButton) {
+				return;
+			} else {
+				etv.getController().saveTask();
+			}
+		}
 	}
 
 	@Override
