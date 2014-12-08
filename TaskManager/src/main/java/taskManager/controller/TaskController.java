@@ -217,7 +217,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 		}
 		etv.setDeleteEnabled(model.isArchived());
 
-		etv.setTitleFieldFocus();
+		etv.setFocusToTitleField();
 	}
 
 	/**

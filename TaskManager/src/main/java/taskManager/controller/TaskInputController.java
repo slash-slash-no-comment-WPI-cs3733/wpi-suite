@@ -8,6 +8,7 @@
  *******************************************************************************/
 package taskManager.controller;
 
+import java.awt.Component;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
@@ -18,6 +19,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
+import taskManager.view.ActivityView;
 import taskManager.view.EditTaskView;
 
 /**
@@ -140,6 +142,27 @@ public class TaskInputController implements KeyListener, FocusListener,
 	@Override
 	public void focusLost(FocusEvent e) {
 		validate();
+
+		// The component name.
+		String compName = e.getComponent().getName();
+
+		// When losing focus from stages dropdown, if the next component is null
+		// go directly to the comments field.
+		if (compName.equals(EditTaskView.STAGES)) {
+			Component comp = e.getOppositeComponent();
+			if (comp.getName() == null) {
+				etv.setFocusToComments();
+			}
+		}
+
+		// When losing focus from comments field, if the next component is the
+		// ActivityView, go directly to the stages dropdown.
+		else if (compName.equals(EditTaskView.COMMENTS)) {
+			Component comp = e.getOppositeComponent();
+			if (comp.getName().equals(ActivityView.MESSAGE_BODY)) {
+				etv.setFocusToStages();
+			}
+		}
 	}
 
 	@Override

@@ -185,7 +185,6 @@ public class EditTaskView extends JPanel {
 				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
 		commentsField = new JTextArea(2, 22);
-		commentsField.setName(EditTaskView.COMMENTS);
 		commentsField.setFocusTraversalKeys(
 				KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, null);
 		commentsField.setFocusTraversalKeys(
@@ -208,7 +207,7 @@ public class EditTaskView extends JPanel {
 
 		// adds calendar
 		dateField = new JXDatePicker();
-		dateField.setName("due_date");
+		dateField.setName(DUE_DATE);
 		dateField.setDate(Calendar.getInstance().getTime());
 
 		// Icon is from:
@@ -368,8 +367,26 @@ public class EditTaskView extends JPanel {
 	 * Sets the focus to the title field.
 	 *
 	 */
-	public void setTitleFieldFocus() {
+	public void setFocusToTitleField() {
 		titleField.requestFocus();
+	}
+
+	/**
+	 * 
+	 * Sets the focus to the comments field.
+	 *
+	 */
+	public void setFocusToComments() {
+		commentsField.requestFocus();
+	}
+
+	/**
+	 * 
+	 * Sets the focus to the stages dropdown
+	 *
+	 */
+	public void setFocusToStages() {
+		stages.requestFocus();
 	}
 
 	/**
@@ -406,6 +423,11 @@ public class EditTaskView extends JPanel {
 		stages.addPopupMenuListener(fieldC);
 		usersList.setController(fieldC);
 		projectUsersList.setController(fieldC);
+
+		// Currently used only for making sure Tabbing skips over unnecessary
+		// fields.
+		stages.addFocusListener(fieldC);
+		commentsField.addFocusListener(fieldC);
 	}
 
 	/**
