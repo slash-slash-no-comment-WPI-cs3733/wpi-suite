@@ -51,9 +51,9 @@ public class TaskInfoPreviewView extends JPanel {
 
 	public TaskInfoPreviewView(TaskModel model, TaskController controller,
 			Point loc) {
-		this.taskM = model;
-		this.taskC = controller;
-		this.controller = new TaskInfoPreviewController(this.taskC);
+		taskM = model;
+		taskC = controller;
+		this.controller = new TaskInfoPreviewController(taskC);
 
 		this.setLayout(null);
 		this.setOpaque(false);
@@ -87,7 +87,7 @@ public class TaskInfoPreviewView extends JPanel {
 		JPanel titleBar = new JPanel();
 		titleBar.setLayout(new MigLayout("", "5[]:push[]"));
 		titleBar.setSize(new Dimension(this.getWidth(), 30));
-		JLabel title = new JLabel(this.taskM.getName());
+		JLabel title = new JLabel(taskM.getName());
 		title.setFont(title.getFont().deriveFont(15.0f));
 		title.setPreferredSize(new Dimension(190,
 				title.getPreferredSize().height));
@@ -111,7 +111,7 @@ public class TaskInfoPreviewView extends JPanel {
 
 		// The task's description
 		JTextArea description = new JTextArea();
-		description.setText(ellipsize(this.taskM.getDescription(), 175));
+		description.setText(ellipsize(taskM.getDescription(), 175));
 		description.setSize(new Dimension(this.getWidth() - 45, 80));
 		description.setMaximumSize(new Dimension(this.getWidth() - 45, 80));
 		description.setMinimumSize(new Dimension(this.getWidth() - 45, 80));
@@ -126,7 +126,7 @@ public class TaskInfoPreviewView extends JPanel {
 		// The task's due date
 		JLabel due = new JLabel("Due:");
 		final Calendar calDate = Calendar.getInstance();
-		calDate.setTime(this.taskM.getDueDate());
+		calDate.setTime(taskM.getDueDate());
 		JLabel date = new JLabel("  " + (calDate.get(Calendar.MONTH) + 1) + "/"
 				+ calDate.get(Calendar.DATE) + "/"
 				+ (calDate.get(Calendar.YEAR)));
@@ -136,8 +136,8 @@ public class TaskInfoPreviewView extends JPanel {
 
 		// The task's effort
 		JLabel estE = new JLabel("Est Effort: "
-				+ this.taskM.getEstimatedEffort());
-		JLabel actE = new JLabel("Act Effort: " + this.taskM.getActualEffort());
+				+ taskM.getEstimatedEffort());
+		JLabel actE = new JLabel("Act Effort: " + taskM.getActualEffort());
 		info.add(estE);
 		info.add(actE);
 
@@ -155,13 +155,13 @@ public class TaskInfoPreviewView extends JPanel {
 
 		// The task's requirement
 		JLabel req;
-		if (this.taskM.getReq() == null) {
+		if (taskM.getReq() == null) {
 			req = new JLabel("Requirement: [None]");
 			info.add(req);
 		} else {
 			req = new JLabel("Requirement:");
 			info.add(req);
-			JLabel name = new JLabel("  " + this.taskM.getReq());
+			JLabel name = new JLabel("  " + taskM.getReq());
 			name.setSize(new Dimension(this.getWidth(), 20));
 			name.setMinimumSize(new Dimension(this.getWidth(), 20));
 			name.setMaximumSize(new Dimension(this.getWidth(), 20));

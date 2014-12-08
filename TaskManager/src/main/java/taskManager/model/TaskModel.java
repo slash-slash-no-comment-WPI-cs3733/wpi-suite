@@ -286,9 +286,9 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 */
 	public void setReq(Requirement req) {
 		if (req != null) {
-			this.reqID = req.getId();
+			reqID = req.getId();
 		} else {
-			this.reqID = null;
+			reqID = null;
 		}
 	}
 

@@ -360,7 +360,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 		if (workflow.findStageByName(newName) != null) {
 			throw new IllegalArgumentException("Stage name must be unique.");
 		}
-		this.name = newName;
+		name = newName;
 	}
 
 	@Override

@@ -41,7 +41,7 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 	 *            If the connection should be kept
 	 */
 	public FetchWorkflowObserver(boolean keepOpen) {
-		this.model = WorkflowModel.getInstance();
+		model = WorkflowModel.getInstance();
 		this.keepOpen = keepOpen;
 	}
 

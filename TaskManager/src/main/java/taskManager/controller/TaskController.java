@@ -58,7 +58,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 			view.setBackground(Colors.TASK);
 		}
 
-		this.background = view.getBackground();
+		background = view.getBackground();
 	}
 
 	/**

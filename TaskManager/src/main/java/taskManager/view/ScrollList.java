@@ -161,8 +161,8 @@ public class ScrollList extends JPanel {
 	 */
 	public List<String> getAllValues() {
 		List<String> result = new LinkedList<String>();
-		for (int i = 0; i < this.lm.getSize(); i++) {
-			result.add(this.lm.get(i));
+		for (int i = 0; i < lm.getSize(); i++) {
+			result.add(lm.get(i));
 		}
 		return result;
 	}
@@ -192,7 +192,7 @@ public class ScrollList extends JPanel {
 	 * @param index
 	 */
 	public void setSelected(int[] i) {
-		this.jl.setSelectedIndices(i);
+		jl.setSelectedIndices(i);
 	}
 
 	/**

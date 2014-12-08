@@ -24,7 +24,7 @@ public class StageTitleController implements KeyListener {
 	private StageView stageV;
 
 	public StageTitleController(StageView sv) {
-		this.stageV = sv;
+		stageV = sv;
 	}
 
 	private Boolean checkTitle() {

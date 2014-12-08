@@ -417,7 +417,7 @@ public class EditTaskController implements ActionListener {
 				model.addAssigned(findUserByName(name));
 			}
 		}
-		for (String n : this.toRemove) {
+		for (String n : toRemove) {
 			if (model.getAssigned().contains(n)) {
 				model.removeAssigned(findUserByName(n));
 			}
@@ -480,8 +480,8 @@ public class EditTaskController implements ActionListener {
 				etv.getProjectUsersList().removeFromList(n1);
 				// if this user was to be removed take it out of the
 				// list
-				if (this.toRemove.contains(n1)) {
-					this.toRemove.remove(n1);
+				if (toRemove.contains(n1)) {
+					toRemove.remove(n1);
 				}
 
 			}
@@ -509,8 +509,8 @@ public class EditTaskController implements ActionListener {
 			if (!etv.getProjectUsersList().contains(n2)) {
 				etv.getProjectUsersList().addToList(n2);
 				etv.getUsersList().removeFromList(n2);
-				if (!this.toRemove.contains(n2)) {
-					this.toRemove.add(n2);
+				if (!toRemove.contains(n2)) {
+					toRemove.add(n2);
 				}
 			}
 

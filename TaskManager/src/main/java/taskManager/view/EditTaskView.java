@@ -376,7 +376,7 @@ public class EditTaskView extends JPanel {
 	 *            the controller to be attached to this view
 	 */
 	public void setFieldController(TaskInputController controller) {
-		this.fieldC = controller;
+		fieldC = controller;
 		titleField.addKeyListener(fieldC);
 		descripArea.addKeyListener(fieldC);
 		estEffortField.addKeyListener(fieldC);
@@ -392,7 +392,7 @@ public class EditTaskView extends JPanel {
 	 * @return the task input controller
 	 */
 	public TaskInputController getFieldController() {
-		return this.fieldC;
+		return fieldC;
 	}
 
 	/**
@@ -470,7 +470,7 @@ public class EditTaskView extends JPanel {
 	 * @return the JList of assigned usernames
 	 */
 	public ScrollList getUsersList() {
-		return this.usersList;
+		return usersList;
 	}
 
 	/**
@@ -479,7 +479,7 @@ public class EditTaskView extends JPanel {
 	 * @return the JLst of project user names
 	 */
 	public ScrollList getProjectUsersList() {
-		return this.projectUsersList;
+		return projectUsersList;
 	}
 
 	/**
@@ -626,14 +626,14 @@ public class EditTaskView extends JPanel {
 	 * disables the archive button
 	 */
 	public void disableArchive() {
-		this.archive.setEnabled(false);
+		archive.setEnabled(false);
 	}
 
 	/**
 	 * enables the archive button
 	 */
 	public void enableArchive() {
-		this.archive.setEnabled(true);
+		archive.setEnabled(true);
 	}
 
 	/**
@@ -642,7 +642,7 @@ public class EditTaskView extends JPanel {
 	 * @param e
 	 */
 	public void setAddUserEnabled(boolean e) {
-		this.addUser.setEnabled(e);
+		addUser.setEnabled(e);
 	}
 
 	/**
@@ -651,7 +651,7 @@ public class EditTaskView extends JPanel {
 	 * @param e
 	 */
 	public void setRemoveUserEnabled(boolean e) {
-		this.removeUser.setEnabled(e);
+		removeUser.setEnabled(e);
 	}
 
 	/**
@@ -676,7 +676,7 @@ public class EditTaskView extends JPanel {
 	 *            true is enabled, false is disabled
 	 */
 	public void setSaveEnabled(boolean e) {
-		this.save.setEnabled(e);
+		save.setEnabled(e);
 	}
 
 	/**
@@ -813,7 +813,7 @@ public class EditTaskView extends JPanel {
 
 	// Used for tests
 	public JPanel getWindow() {
-		return this.window;
+		return window;
 	}
 
 	/**

@@ -49,8 +49,8 @@ public class ToolbarController extends DropTargetAdapter implements
 	 *            tabView used to add tabs to the tab-bar
 	 */
 	public ToolbarController(TabPaneView tabV) {
-		this.tabPaneV = tabV;
-		this.tabPaneC = JanewayModule.tabPaneC;
+		tabPaneV = tabV;
+		tabPaneC = JanewayModule.tabPaneC;
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class ToolbarController extends DropTargetAdapter implements
 			String name = ((JButton) button).getName();
 			switch (name) {
 			case ToolbarView.CREATE_TASK:
-				this.tabPaneC.addCreateTaskTab();
+				tabPaneC.addCreateTaskTab();
 				break;
 			case ToolbarView.CREATE_STAGE:
 				// add a new stage from workflow controller

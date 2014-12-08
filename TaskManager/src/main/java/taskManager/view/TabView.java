@@ -57,7 +57,7 @@ public class TabView extends JPanel implements ActionListener {
 
 		this.component = component;
 		this.closeable = closeable;
-		this.tabPaneV = JanewayModule.getTabPaneView();
+		tabPaneV = JanewayModule.getTabPaneView();
 
 		setOpaque(false);
 
