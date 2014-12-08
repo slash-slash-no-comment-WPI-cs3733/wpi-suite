@@ -37,10 +37,10 @@ public class DDTransferHandler extends TransferHandler {
 	private static final long serialVersionUID = -7859524821673270515L;
 
 	// DataFlavor representing a TaskView being dragged
-	private static DataFlavor taskFlavor;
+	private static DataFlavor taskFlavor = null;
 
 	// DataFlavor representing a StageView being dragged
-	private static DataFlavor stageFlavor;
+	private static DataFlavor stageFlavor = null;
 
 	public static boolean dragSaved = false;
 
