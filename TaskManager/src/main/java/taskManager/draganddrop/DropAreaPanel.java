@@ -68,6 +68,9 @@ public class DropAreaPanel extends JPanel {
 
 	/**
 	 * Creates a DropAreaPanel and creates its handlers
+	 * 
+	 * @param flavor
+	 *            The type of data that will be dropped in this panel
 	 */
 	public DropAreaPanel(DataFlavor flavor) {
 		this.setTransferHandler(new DDTransferHandler());
@@ -378,6 +381,14 @@ class DropAreaListener implements DropTargetListener {
 	private DropAreaPanel panel;
 	private DataFlavor flavor;
 
+	/**
+	 * Constructor for a controller for drop areas
+	 *
+	 * @param panel
+	 *            The panel where items can be dropped
+	 * @param flavor
+	 *            The flavor of data allowed to be dropped on panel
+	 */
 	DropAreaListener(DropAreaPanel panel, DataFlavor flavor) {
 		this.panel = panel;
 		this.flavor = flavor;

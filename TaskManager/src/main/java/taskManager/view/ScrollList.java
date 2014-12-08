@@ -34,6 +34,12 @@ public class ScrollList extends JPanel {
 	private JScrollPane listScroller;
 	private JList<String> jl;
 
+	/**
+	 * Constructor for a scroll list
+	 *
+	 * @param t
+	 *            The title of the scroll list
+	 */
 	public ScrollList(String t) {
 		setLayout(new BorderLayout());
 		this.setMinimumSize(new Dimension(200, 75));
@@ -119,7 +125,7 @@ public class ScrollList extends JPanel {
 	 * 
 	 * @param s
 	 *            the string to search for in the list
-	 * @return
+	 * @return if the scroll list contains the given string
 	 */
 	public boolean contains(String s) {
 		return lm.contains(s);
@@ -146,6 +152,12 @@ public class ScrollList extends JPanel {
 		return jl.isSelectionEmpty();
 	}
 
+	/**
+	 * Remove the given items from the list
+	 *
+	 * @param index
+	 *            an array of indices to be removed
+	 */
 	public void removeSelectedIndices(int[] index) {
 		int i = 0;
 		while (i < index.length) {
@@ -170,7 +182,6 @@ public class ScrollList extends JPanel {
 	/**
 	 * get the list of strings
 	 * 
-	 * @return the lit of strings
 	 */
 	public void removeAllValues() {
 		lm.removeAllElements();
@@ -189,7 +200,8 @@ public class ScrollList extends JPanel {
 	/**
 	 * Sets the selected value to the given indices
 	 * 
-	 * @param index
+	 * @param i
+	 *            array of indices to set selected
 	 */
 	public void setSelected(int[] i) {
 		jl.setSelectedIndices(i);

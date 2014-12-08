@@ -25,6 +25,12 @@ import taskManager.view.TaskInfoPreviewView;
 public class TaskInfoPreviewController implements ActionListener {
 	private TaskController taskC;
 
+	/**
+	 * Constructor for the controller for the task preview view
+	 *
+	 * @param taskC
+	 *            the controller for the task
+	 */
 	public TaskInfoPreviewController(TaskController taskC) {
 		this.taskC = taskC;
 	}

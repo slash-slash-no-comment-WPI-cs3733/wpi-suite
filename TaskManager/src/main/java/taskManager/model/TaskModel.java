@@ -353,12 +353,28 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		activities.add(activity);
 	}
 
+	/**
+	 * Adds a comment activity onto this task
+	 *
+	 * @param comment
+	 *            The comment
+	 * @param user
+	 *            The user that made the comment
+	 */
 	public void addComment(String comment, User user) {
 		final ActivityModel commentActivity = new ActivityModel(comment,
 				ActivityModel.activityModelType.COMMENT, user);
 		addActivity(commentActivity);
 	}
 
+	/**
+	 * Changes the text of an activity on this task
+	 *
+	 * @param index
+	 *            the index of the activity
+	 * @param newText
+	 *            the text to set the activity to
+	 */
 	public void editActivity(int index, String newText) {
 		final ActivityModel toEdit = activities.get(index);
 		toEdit.setDescription(newText);

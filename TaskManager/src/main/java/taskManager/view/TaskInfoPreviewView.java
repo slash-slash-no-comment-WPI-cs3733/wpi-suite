@@ -49,6 +49,16 @@ public class TaskInfoPreviewView extends JPanel {
 	public static final String X = "x";
 	public static final int WIDTH = 220;
 
+	/**
+	 * Constructor for a task preview view
+	 *
+	 * @param model
+	 *            the task that is being previewed
+	 * @param controller
+	 *            the controller for the task being previewed
+	 * @param loc
+	 *            the point on the screen to draw the preview view
+	 */
 	public TaskInfoPreviewView(TaskModel model, TaskController controller,
 			Point loc) {
 		taskM = model;

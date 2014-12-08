@@ -123,6 +123,10 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		model.update();
 	}
 
+	/**
+	 * Requests the list of users from the server
+	 *
+	 */
 	public void fetchUsers() {
 		model.updateUsers();
 	}
@@ -196,7 +200,8 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		for (Component c : view.getComponents()) {
 			if (c instanceof TaskInfoPreviewView) {
 				view.remove(c);
-				((TaskInfoPreviewView) c).getTaskController().setThisTaskInfoOut(false);
+				((TaskInfoPreviewView) c).getTaskController()
+						.setThisTaskInfoOut(false);
 				((TaskInfoPreviewView) c).getTaskController().resetBackground();
 			}
 			TaskController.anyTaskInfoOut = false;

@@ -565,6 +565,13 @@ public class EditTaskController implements ActionListener {
 		return edited;
 	}
 
+	/**
+	 * Checks if the date in the view and on the task are the same
+	 *
+	 * @param task
+	 *            The task to check against
+	 * @return true if there are edits
+	 */
 	public Boolean checkDate(TaskModel task) {
 		Date dueDate = task.getDueDate();
 
@@ -594,8 +601,8 @@ public class EditTaskController implements ActionListener {
 	 * Checks whether the users in the view and the users stored in the task are
 	 * the same.
 	 *
-	 * @param The
-	 *            task to check with.
+	 * @param task
+	 *            The task to check with.
 	 * @return true if there are edits.
 	 */
 	public boolean checkUsers(TaskModel task) {
@@ -618,8 +625,8 @@ public class EditTaskController implements ActionListener {
 	 * Checks whether the estimated effort value in the task and on the view are
 	 * equivalent.
 	 *
-	 * @param The
-	 *            task to check if.
+	 * @param task
+	 *            The task to check if.
 	 * @return true if there are edits.
 	 */
 	public boolean checkEstEffort(TaskModel task) {
@@ -650,8 +657,8 @@ public class EditTaskController implements ActionListener {
 	 * Checks whether the actual effort value in the task and on the view are
 	 * equivalent.
 	 *
-	 * @param The
-	 *            task to check if.
+	 * @param task
+	 *            The task to check if.
 	 * @return true if there are edits.
 	 */
 	public boolean checkActEffort(TaskModel task) {
@@ -682,8 +689,8 @@ public class EditTaskController implements ActionListener {
 	 * Checks whether the requirement in the task and on the view are
 	 * equivalent.
 	 *
-	 * @param The
-	 *            task to check if.
+	 * @param task
+	 *            The task to check if.
 	 * @return true if there are edits.
 	 */
 	public boolean checkReq(TaskModel task) {

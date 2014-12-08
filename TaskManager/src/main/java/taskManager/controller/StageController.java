@@ -135,6 +135,10 @@ public class StageController implements DropAreaSaveListener,
 
 	}
 
+	/**
+	 * Removes this stage from the workflow
+	 *
+	 */
 	public void deleteStage() {
 		WorkflowModel.getInstance().removeStage(model);
 	}
@@ -309,7 +313,8 @@ public class StageController implements DropAreaSaveListener,
 	}
 
 	/**
-	 * @param thisChangeTitleOut the thisChangeTitleOut to set
+	 * @param thisChangeTitleOut
+	 *            the thisChangeTitleOut to set
 	 */
 	public void setThisChangeTitleOut(Boolean thisChangeTitleOut) {
 		this.thisChangeTitleOut = thisChangeTitleOut;

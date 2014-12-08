@@ -53,6 +53,10 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		this("defaultWorkflow");
 	}
 
+	/**
+	 *
+	 * @return the instance of the workflow model
+	 */
 	public static WorkflowModel getInstance() {
 		if (instance == null) {
 			instance = new WorkflowModel();
@@ -105,7 +109,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 * Adds a stage to index items from the beginning of the WorkFlowModel Stage
 	 * is added to the end of the current list.
 	 *
-	 * @param newStage
+	 * @param stage
 	 *            Stage to be added.
 	 * @return whether the workflow changed as a result
 	 */
@@ -119,7 +123,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	/**
 	 * Adds a stage to index items from the beginning of the WorkFlowModel
 	 *
-	 * @param newStage
+	 * @param stage
 	 *            Stage to be added.
 	 * @param index
 	 *            Index in the list of stages where we are adding the new stage.
@@ -213,6 +217,13 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		return newID;
 	}
 
+	/**
+	 * Searches the workflow for a task with the given id
+	 *
+	 * @param id
+	 *            the id of the task to find
+	 * @return the TaskModel with the given id, or null if no task is found
+	 */
 	public TaskModel findTaskByID(String id) {
 		for (StageModel stage : stageList) {
 			TaskModel task = stage.findTaskByID(id);
@@ -303,6 +314,10 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		request.send();
 	}
 
+	/**
+	 * Request a list of users from the server
+	 *
+	 */
 	public void updateUsers() {
 		final Request request = Network.getInstance().makeRequest("core/user",
 				HttpMethod.GET);

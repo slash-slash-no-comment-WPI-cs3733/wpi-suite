@@ -238,6 +238,12 @@ public class StageView extends JPanel implements Transferable {
 		return controller;
 	}
 
+	/**
+	 * set if the check box is enabled
+	 *
+	 * @param enabled
+	 *            wether the box should be enabled or not
+	 */
 	public void enableChangeTitleCheckmark(Boolean enabled) {
 		done.setEnabled(enabled);
 	}

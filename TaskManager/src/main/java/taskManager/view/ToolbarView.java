@@ -178,7 +178,6 @@ public class ToolbarView extends JToolBar {
 		archive.setTransferHandler(new DDTransferHandler());
 		archive.setDropTarget(new DropTarget(delete, controller));
 
-		
 	}
 
 	@Override
@@ -186,18 +185,36 @@ public class ToolbarView extends JToolBar {
 		return super.getName();
 	}
 
+	/**
+	 * Set the displayed project name
+	 *
+	 * @param name
+	 *            the name of the project
+	 */
 	public void setProjectName(String name) {
 		projectName.setText("<html>" + name + "</html>");
 	}
 
+	/**
+	 * Sets if the archive icon is lit up
+	 *
+	 * @param bool
+	 *            if the archive should be enabled or not
+	 */
 	public void setArchiveEnabled(boolean bool) {
 		archive.setEnabled(bool);
 	}
 
+	/**
+	 * Sets if the delete icon is lit up
+	 *
+	 * @param bool
+	 *            if the delete should be enabled or not
+	 */
 	public void setDeleteEnabled(boolean bool) {
 		delete.setEnabled(bool);
-		
-		if(bool){
+
+		if (bool) {
 			delete.setTransferHandler(new DDTransferHandler());
 			delete.setDropTarget(new DropTarget(delete, controller));
 			return;

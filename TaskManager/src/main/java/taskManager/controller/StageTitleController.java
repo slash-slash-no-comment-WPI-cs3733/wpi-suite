@@ -23,6 +23,12 @@ public class StageTitleController implements KeyListener {
 
 	private StageView stageV;
 
+	/**
+	 * Constructor for the controller to change a stages title
+	 *
+	 * @param sv
+	 *            the state view whose title is being changes
+	 */
 	public StageTitleController(StageView sv) {
 		stageV = sv;
 	}

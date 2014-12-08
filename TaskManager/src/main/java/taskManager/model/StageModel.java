@@ -65,8 +65,6 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	/**
 	 * Constructor for Stage Models. Defaults to adding stage at end of list.
 	 *
-	 * @param workflow
-	 *            The workflow that the stage is a part of.
 	 * @param name
 	 *            The name of the stage.
 	 * @param removable
@@ -80,8 +78,6 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	/**
 	 * Constructor for Stage Models. Defaults to removable.
 	 *
-	 * @param workflow
-	 *            The workflow that the stage is a part of.
 	 * @param name
 	 *            The name of the stage.
 	 * @param index
@@ -94,8 +90,6 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	/**
 	 * Constructor for Stage Models. *
 	 *
-	 * @param workflow
-	 *            The workflow that the stage is a part of.
 	 * @param name
 	 *            The name of the stage.
 	 * @param index

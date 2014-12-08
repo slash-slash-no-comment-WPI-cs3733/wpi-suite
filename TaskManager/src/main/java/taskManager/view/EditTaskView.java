@@ -115,6 +115,9 @@ public class EditTaskView extends JPanel {
 	 * Creates a Edit Task Panel so that you can change all of the values of a
 	 * task: Title Description Due Date Estimated Effort Actual Effort Adding
 	 * Comments
+	 * 
+	 * @param mode
+	 *            Which mode this view should be created in
 	 */
 	public EditTaskView(Mode mode) {
 		// TODO: User Mode to switch between create and edit views
@@ -775,8 +778,8 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * Adds an activity.
 	 *
-	 * @param the
-	 *            activity.
+	 * @param act
+	 *            the activity.
 	 */
 	public void addActivity(ActivityModel act) {
 		activities.add(act);

@@ -32,6 +32,12 @@ public class TabPaneController {
 	private static final Logger logger = Logger
 			.getLogger(TabPaneController.class.getName());
 
+	/**
+	 * Constructor for a controller for the tab view
+	 *
+	 * @param tabPaneV
+	 *            the tab view to be controlled
+	 */
 	public TabPaneController(TabPaneView tabPaneV) {
 		this.tabPaneV = tabPaneV;
 	}
