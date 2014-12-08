@@ -56,7 +56,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 *            the corresponding WorkflowView object
 	 */
 	private WorkflowController() {
-		view = new WorkflowView(this);
+		view = new WorkflowView();
 		model = WorkflowModel.getInstance();
 		hasNewStageView = false;
 

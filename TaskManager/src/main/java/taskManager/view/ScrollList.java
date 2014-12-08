@@ -21,14 +21,14 @@ import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ListSelectionListener;
 
+/**
+ * A component that has a scroll pane containing a list of strings
+ * 
+ * @author Jack R
+ * @author Beth Martino
+ */
 public class ScrollList extends JPanel {
 
-	/**
-	 * A component that has a scroll pane containing a list of strings
-	 * 
-	 * @author Jack R
-	 * @author Beth Martino
-	 */
 	private static final long serialVersionUID = -1862712982356137942L;
 
 	private DefaultListModel<String> lm;
