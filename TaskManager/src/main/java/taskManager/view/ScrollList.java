@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ListSelectionListener;
 
 public class ScrollList extends JPanel {
@@ -55,9 +56,9 @@ public class ScrollList extends JPanel {
 		listScroller.setPreferredSize(new Dimension(200, 75));
 		listScroller.setSize(new Dimension(200, 75));
 		listScroller
-				.setVerticalScrollBarPolicy(listScroller.VERTICAL_SCROLLBAR_AS_NEEDED);
+				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		listScroller
-				.setHorizontalScrollBarPolicy(listScroller.HORIZONTAL_SCROLLBAR_NEVER);
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
 		JLabel title = new JLabel(t);
 		this.add(title, BorderLayout.NORTH);

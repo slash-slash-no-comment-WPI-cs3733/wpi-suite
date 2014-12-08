@@ -30,6 +30,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.border.Border;
 
 import org.jdesktop.swingx.border.DropShadowBorder;
@@ -140,8 +141,8 @@ public class StageView extends JPanel implements Transferable {
 
 		// creates the scroll containing the stage view and adds it to the block
 		stage = new JScrollPane(tasks,
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
 		label.setBackground(Colors.STAGE);
 		Border color = BorderFactory.createLineBorder(label.getBackground(), 3);
