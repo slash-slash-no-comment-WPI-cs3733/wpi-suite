@@ -243,8 +243,9 @@ public class TaskInfoPreviewView extends JPanel {
 	 */
 	private static String ellipsize(String text, int max) {
 
-		if (text.length() <= max)
+		if (text.length() <= max) {
 			return text;
+		}
 
 		// Start by chopping off at the word before max
 		// the 3 is to account for '...'
