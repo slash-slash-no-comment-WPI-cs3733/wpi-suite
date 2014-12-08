@@ -62,7 +62,7 @@ public class DropAreaPanel extends JPanel {
 	private DropAreaSaveListener listener;
 
 	private final Map<Component, Rectangle> drawnBounds; // store animated panel
-													// bounds
+	// bounds
 
 	private final Timer animTimer; // Timer for animating while dragging
 
@@ -189,7 +189,6 @@ public class DropAreaPanel extends JPanel {
 	 *            Where the placeholder is to be placed.
 	 */
 	private void setPlaceholderIndex(int index) {
-		// index = Math.min(index, this.getComponentCount() - 1);
 		System.out.println("Adding placeholder at " + index);
 		this.add(placeholder, index);
 		if (index != lastIndex) {
@@ -314,7 +313,8 @@ public class DropAreaPanel extends JPanel {
 			}
 		}
 
-		final Set<Component> drawnComps = new HashSet<Component>(drawnBounds.keySet());
+		final Set<Component> drawnComps = new HashSet<Component>(
+				drawnBounds.keySet());
 		// Update each drawn bound
 		for (Component comp : drawnComps) {
 			Rectangle drawn = drawnBounds.get(comp);
@@ -504,10 +504,10 @@ class DropAreaListener implements DropTargetListener {
 	 *            event to convert
 	 * @return converted event
 	 */
-	public DropTargetDropEvent convertCoords(Component comp,
+	public static DropTargetDropEvent convertCoords(Component comp,
 			DropTargetDropEvent e) {
-		final Point newPoint = SwingUtilities.convertPoint(e.getDropTargetContext()
-				.getComponent(), e.getLocation(), comp);
+		final Point newPoint = SwingUtilities.convertPoint(e
+				.getDropTargetContext().getComponent(), e.getLocation(), comp);
 		final DropTargetDropEvent newE = new DropTargetDropEvent(
 				e.getDropTargetContext(), newPoint, e.getDropAction(),
 				e.getSourceActions());
@@ -524,11 +524,11 @@ class DropAreaListener implements DropTargetListener {
 	 *            event to convert
 	 * @return converted event
 	 */
-	public DropTargetDragEvent convertCoords(Component comp,
+	public static DropTargetDragEvent convertCoords(Component comp,
 			DropTargetDragEvent e) {
 
-		final Point newPoint = SwingUtilities.convertPoint(e.getDropTargetContext()
-				.getComponent(), e.getLocation(), comp);
+		final Point newPoint = SwingUtilities.convertPoint(e
+				.getDropTargetContext().getComponent(), e.getLocation(), comp);
 		final DropTargetDragEvent newE = new DropTargetDragEvent(
 				e.getDropTargetContext(), newPoint, e.getDropAction(),
 				e.getSourceActions());

@@ -186,7 +186,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	public void mouseExited(MouseEvent e) {
 		// only reset the background if there is no taskInfo bubble out for this
 		// task
-		if (!getThisTaskInfoOut()) {
+		if (!thisTaskInfoOut) {
 			resetBackground();
 		}
 	}

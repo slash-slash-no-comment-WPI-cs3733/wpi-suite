@@ -13,7 +13,6 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.MouseAdapter;
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -78,9 +77,9 @@ public class TaskView extends JPanel implements Transferable {
 		// to the month.
 
 		final JLabel nameLabel = new JLabel();
-		final JLabel dueLabel = new JLabel("Due: " + (date.get(Calendar.MONTH) + 1)
-				+ "/" + date.get(Calendar.DATE) + "/"
-				+ (date.get(Calendar.YEAR)));
+		final JLabel dueLabel = new JLabel("Due: "
+				+ (date.get(Calendar.MONTH) + 1) + "/"
+				+ date.get(Calendar.DATE) + "/" + (date.get(Calendar.YEAR)));
 
 		// This creates a maximum text-string length before the name gets
 		// truncated in the view

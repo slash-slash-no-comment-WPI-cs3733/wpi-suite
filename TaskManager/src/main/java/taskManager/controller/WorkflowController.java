@@ -120,7 +120,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 *
 	 */
 	public void fetch() {
-		model.update();
+		WorkflowModel.update();
 	}
 
 	/**
@@ -128,7 +128,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 *
 	 */
 	public void fetchUsers() {
-		model.updateUsers();
+		WorkflowModel.updateUsers();
 	}
 
 	/**

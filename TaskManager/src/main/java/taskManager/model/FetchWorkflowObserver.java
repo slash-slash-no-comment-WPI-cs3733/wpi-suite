@@ -113,7 +113,7 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 	 */
 	private void restartConnection() {
 		if (WorkflowModel.alive && keepOpen) {
-			WorkflowModel.getInstance().update();
+			WorkflowModel.update();
 		}
 	}
 

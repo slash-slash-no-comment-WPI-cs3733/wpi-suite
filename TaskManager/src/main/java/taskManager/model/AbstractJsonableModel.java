@@ -53,7 +53,7 @@ public abstract class AbstractJsonableModel<T> extends AbstractModel {
 	 *
 	 * @return observer object
 	 */
-	public GenericRequestObserver getObserver() {
+	public static GenericRequestObserver getObserver() {
 		return observer;
 	}
 

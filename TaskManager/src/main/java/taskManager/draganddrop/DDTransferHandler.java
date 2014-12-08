@@ -123,8 +123,8 @@ public class DDTransferHandler extends TransferHandler {
 		if (!FetchWorkflowObserver.ignoreAllResponses) {
 			FetchWorkflowObserver.ignoreAllResponses = true;
 			// Create drag image
-			final Image image = new BufferedImage(comp.getWidth(), comp.getHeight(),
-					BufferedImage.TYPE_INT_ARGB);
+			final Image image = new BufferedImage(comp.getWidth(),
+					comp.getHeight(), BufferedImage.TYPE_INT_ARGB);
 			Graphics g = image.getGraphics();
 			g = g.create();
 			comp.paint(g);
@@ -153,7 +153,7 @@ public class DDTransferHandler extends TransferHandler {
 			// update now in case we missed anything while dragging
 			// (if the drag saved, our changes overwrite anything we may have
 			// missed)
-			WorkflowModel.getInstance().updateNow();
+			WorkflowModel.updateNow();
 		}
 		DDTransferHandler.dragSaved = false;
 

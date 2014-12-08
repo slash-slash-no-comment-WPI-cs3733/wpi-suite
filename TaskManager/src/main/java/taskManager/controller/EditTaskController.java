@@ -122,7 +122,7 @@ public class EditTaskController implements ActionListener {
 
 		// figures out the index of the stage, then sets the drop down to the
 		// stage at that index
-		JComboBox<String> stages = etv.getStages();
+		final JComboBox<String> stages = etv.getStages();
 		for (int i = 0; i < stages.getItemCount(); i++) {
 			if (etv.getStages().getItemAt(i).equals(model.getStage().getName())) {
 				etv.setStageDropdown(i);
@@ -133,7 +133,7 @@ public class EditTaskController implements ActionListener {
 		etv.getStages().setSelectedItem(model.getStage().getName());
 
 		// populates the project users list
-		List<String> projectUserNames = new ArrayList<String>();
+		final List<String> projectUserNames = new ArrayList<String>();
 		for (User u : JanewayModule.users) {
 			String name = u.getUsername();
 			if (!projectUserNames.contains(name)
@@ -144,7 +144,7 @@ public class EditTaskController implements ActionListener {
 		etv.getProjectUsersList().addAllToList(projectUserNames);
 
 		// populates the assigned users panel
-		List<String> assignedUserNames = new ArrayList<String>();
+		final List<String> assignedUserNames = new ArrayList<String>();
 		for (String u : model.getAssigned()) {
 			if (!assignedUserNames.contains(u)) {
 				assignedUserNames.add(u);
@@ -159,7 +159,7 @@ public class EditTaskController implements ActionListener {
 		etv.clearActivities();
 
 		// set activities pane
-		List<ActivityModel> tskActivities = model.getActivities();
+		final List<ActivityModel> tskActivities = model.getActivities();
 		etv.setActivities(tskActivities);
 		etv.setActivitiesPanel(tskActivities);
 
@@ -452,7 +452,7 @@ public class EditTaskController implements ActionListener {
 	 *            the name of the user to find
 	 * @return the user with the given name
 	 */
-	private User findUserByName(String name) {
+	private static User findUserByName(String name) {
 		for (User u : JanewayModule.users) {
 			if (u.getUsername().equals(name)) {
 				return u;

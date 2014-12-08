@@ -33,12 +33,6 @@ public class ActivityView extends JPanel {
 
 	private final JTextArea message;
 
-	/*
-	 * JXDatePicker nt_dueDateField = new JXDatePicker();
-	 * nt_dueDateField.setName("due_date"); this.dateField = nt_dueDateField;
-	 * dateField.setDate(Calendar.getInstance().getTime());
-	 */
-
 	/**
 	 * Creates an ActivityView panel, meant to display activity done on a task
 	 * displays the activity with name of user, date, and message

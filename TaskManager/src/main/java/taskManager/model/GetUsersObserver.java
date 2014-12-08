@@ -64,9 +64,9 @@ public class GetUsersObserver extends GenericRequestObserver {
 	 * connections, so we have to close and reopen the connection each time
 	 *
 	 */
-	private void restartConnection() {
+	private static void restartConnection() {
 		if (WorkflowModel.alive) {
-			WorkflowModel.getInstance().updateUsers();
+			WorkflowModel.updateUsers();
 		}
 	}
 
