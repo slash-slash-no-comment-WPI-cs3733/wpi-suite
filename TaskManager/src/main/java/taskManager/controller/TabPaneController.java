@@ -72,6 +72,7 @@ public class TabPaneController {
 			}
 		}
 		etv.getProjectUsersList().addAllToList(projectUserNames);
+		etv.setTitleFieldFocus();
 	}
 
 	/**
