@@ -216,6 +216,8 @@ public class TaskController implements MouseListener, MouseMotionListener {
 			etv.getArchiveButton().setText("Archive");
 		}
 		etv.setDeleteEnabled(model.isArchived());
+
+		etv.setTitleFieldFocus();
 	}
 
 	/**
@@ -258,7 +260,8 @@ public class TaskController implements MouseListener, MouseMotionListener {
 					.getParent().getParent().getLocation();
 			Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
 					view.getLocation().y);
-			WorkflowController.getInstance().setTaskInfo(new TaskInfoPreviewView(model, this, infoLoc));
+			WorkflowController.getInstance().setTaskInfo(
+					new TaskInfoPreviewView(model, this, infoLoc));
 
 			// Set the correct flags
 			thisTaskInfoOut = true;
@@ -309,7 +312,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 			JanewayModule.toolV.setArchiveIcon(ToolbarView.ARCHIVE);
 		}
 		JanewayModule.toolV.setArchiveEnabled(true);
-			JanewayModule.toolV.setDeleteEnabled(isArchived);
+		JanewayModule.toolV.setDeleteEnabled(isArchived);
 	}
 
 	@Override
