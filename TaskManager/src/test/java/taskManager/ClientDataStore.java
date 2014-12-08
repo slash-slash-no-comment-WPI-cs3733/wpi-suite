@@ -11,6 +11,7 @@
  *******************************************************************************/
 package taskManager;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -68,6 +69,13 @@ public class ClientDataStore implements Data {
 		}
 		if (server != null) {
 			server.close();
+		}
+
+		// There are issues deleting things one at a time, so delete the whole
+		// file too
+		File dbFile = new File(WPI_TNG_DB);
+		if (dbFile.delete()) {
+			logger.log(Level.INFO, "Deleted database file");
 		}
 		instance = null;
 	}
