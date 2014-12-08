@@ -153,7 +153,7 @@ public class TaskView extends JPanel implements Transferable {
 	 */
 	@Override
 	public Object getTransferData(DataFlavor flavor)
-			throws UnsupportedFlavorException, IOException {
+			throws UnsupportedFlavorException {
 		if (!flavor.equals(DDTransferHandler.getTaskFlavor())) {
 			throw new UnsupportedFlavorException(flavor);
 		}
