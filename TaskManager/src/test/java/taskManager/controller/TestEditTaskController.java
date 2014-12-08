@@ -58,18 +58,13 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		// create a new workflow model
 		wfm.makeIdenticalTo(new WorkflowModel());
 
-		// create the edit task controller
-		etv = new EditTaskView(EditTaskView.Mode.CREATE);
-		etv.setController(new EditTaskController(etv));
-		etv.setFieldController(new TaskInputController(etv));
-
 		// give it some stages
 		for (String name : stageNames) {
 			new StageModel(name, true);
 		}
 
-		etv.resetFields();
-		etv.setVisible(true);
+		EditTaskController etc = new EditTaskController();
+		etv = etc.getView();
 
 		frame = new JFrame();
 		// frame.setLayout(new FlowLayout());
@@ -97,7 +92,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 
 		// verify the task got saved
 		StageModel stage = wfm.findStageByName("New");
-		assertEquals(stage.findTaskByName("name").size(), 1);
+		assertEquals(1, stage.findTaskByName("name").size());
 	}
 
 	@Test
@@ -148,8 +143,8 @@ public class TestEditTaskController extends ScreenshotOnFail {
 
 		StageModel stage = wfm.findStageByName(task.getStage().getName());
 
-		assertEquals(stage.findTaskByName("New Task").size(), 0);
-		assertEquals(stage.findTaskByName("newT").size(), 1);
+		assertEquals(0, stage.findTaskByName("New Task").size());
+		assertEquals(1, stage.findTaskByName("newT").size());
 
 		// verify the fields of the task got saved correctly
 		TaskModel newTask = stage.findTaskByName("newT").get(0);
@@ -167,7 +162,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		fixture.button(EditTaskView.SAVE).click();
 
 		// make sure the task got moved
-		assertEquals(task.getStage().getName(), stageNames[0]);
+		assertEquals(stageNames[0], task.getStage().getName());
 
 	}
 
@@ -179,7 +174,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		fixture.textBox(EditTaskView.ACT_EFFORT).deleteText().enterText("4");
 		fixture.button(EditTaskView.SAVE).click();
 
-		assertEquals(task.getActualEffort(), 4);
+		assertEquals(4, task.getActualEffort());
 
 	}
 
@@ -278,18 +273,19 @@ public class TestEditTaskController extends ScreenshotOnFail {
 			users.add(user);
 		}
 		ArrayList<String> result = new ArrayList<String>();
-		assertEquals(users, result);
+		assertEquals(result, users);
 	}
 
 	@After
 	public void cleanup() {
 		fixture.cleanUp();
 		etv = null;
-		// remove all tabs
-		for (Component c : TabPaneController.getInstance().getView()
-				.getComponents()) {
-			TabPaneController.getInstance().removeTabByComponent(c);
-		}
+
+		// remove tab
+		Component[] tabs = TabPaneController.getInstance().getView()
+				.getComponents();
+		TabPaneController.getInstance().removeTabByComponent(
+				tabs[tabs.length - 1]);
 	}
 
 	/**
@@ -300,6 +296,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	private TaskModel createAndLoadTask() {
 
 		// add a task
+		System.out.println(wfm.getStages());
 		StageModel stage = wfm.getStages().get(3);
 		TaskModel task = new TaskModel("New Task", stage);
 		task.setDescription("test description");
