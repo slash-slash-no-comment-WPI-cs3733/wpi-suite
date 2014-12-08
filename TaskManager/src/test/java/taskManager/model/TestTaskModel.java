@@ -17,11 +17,9 @@ import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 
-import taskManager.MockNetwork;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
-import edu.wpi.cs.wpisuitetng.network.Network;
 
 /**
  * @author Sam Khalandovsky
@@ -33,8 +31,6 @@ public class TestTaskModel {
 
 	@Before
 	public void setUp() {
-		Network.setInstance(new MockNetwork());
-
 		WorkflowModel wf = WorkflowModel.getInstance();
 		wf.makeIdenticalTo(new WorkflowModel("Workflow"));
 		StageModel stage = new StageModel("Stage");

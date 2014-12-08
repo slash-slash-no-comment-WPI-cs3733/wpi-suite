@@ -28,8 +28,6 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
 import edu.wpi.cs.wpisuitetng.network.Network;
 
 /**
- * Description
- *
  * @author Joseph Blackman
  * @version Nov 12, 2014
  */
@@ -39,7 +37,7 @@ public class WorkflowModelTest {
 	private StageModel sm2;
 
 	@BeforeClass
-	public static void setUp() {
+	public static void netSetup() {
 		Network.setInstance(new MockNetwork());
 	}
 
@@ -184,7 +182,7 @@ public class WorkflowModelTest {
 	}
 
 	@AfterClass
-	public static void tearDown() {
+	public static void netTeardown() {
 		ClientDataStore.deleteDataStore();
 	}
 }

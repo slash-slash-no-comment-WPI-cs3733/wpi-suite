@@ -64,15 +64,12 @@ public class ClientDataStore implements Data {
 	 *
 	 */
 	public static void deleteDataStore() {
-		if (instance != null) {
-			instance.deleteAll(new Object());
-		}
 		if (server != null) {
 			server.close();
 		}
 
 		// There are issues deleting things one at a time, so delete the whole
-		// file too
+		// file
 		File dbFile = new File(WPI_TNG_DB);
 		if (dbFile.delete()) {
 			logger.log(Level.INFO, "Deleted database file");

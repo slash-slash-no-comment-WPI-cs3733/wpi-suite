@@ -21,6 +21,13 @@ import edu.wpi.cs.wpisuitetng.network.configuration.NetworkConfiguration;
 import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
 import edu.wpi.cs.wpisuitetng.network.models.ResponseModel;
 
+/**
+ * Mocks a Request object, and mimics the behavior of ManagerLayer and
+ * WPICoreServelet
+ *
+ * @author Sam Khalandovsky
+ * @version Dec 8, 2014
+ */
 public class MockRequest extends Request {
 
 	private static Map<String, EntityManager> map;
