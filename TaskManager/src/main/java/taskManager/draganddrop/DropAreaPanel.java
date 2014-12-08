@@ -109,7 +109,7 @@ public class DropAreaPanel extends JPanel {
 	}
 
 	/**
-	 * 
+	 *
 	 * Adds a task that's been dropped on this stage.
 	 *
 	 * @param transferredPanel
@@ -137,7 +137,7 @@ public class DropAreaPanel extends JPanel {
 	}
 
 	/**
-	 * 
+	 *
 	 * Draws a placeholder at roughly the given location with the given size.
 	 *
 	 * @param point
@@ -179,7 +179,7 @@ public class DropAreaPanel extends JPanel {
 	}
 
 	/**
-	 * 
+	 *
 	 * Places the placeholder at the appropriate location.
 	 *
 	 * @param index
@@ -201,7 +201,7 @@ public class DropAreaPanel extends JPanel {
 	}
 
 	/**
-	 * 
+	 *
 	 * Finds the center of each child panel for dealing with the placeholder. Do
 	 * this only while placeholder is not visible in this DropAreaPanel
 	 *
@@ -217,7 +217,7 @@ public class DropAreaPanel extends JPanel {
 	}
 
 	/**
-	 * 
+	 *
 	 * Figures out the nearest index for to the point given, using the
 	 * centerpoints calculated by calculateCenters(). Useful for figuring out
 	 * where the placeholder should go.
@@ -338,10 +338,10 @@ public class DropAreaPanel extends JPanel {
 
 	/**
 	 * Move the bounds to what we want, paint children, set bounds back
-	 * 
+	 *
 	 * @param g
 	 *            Graphics context
-	 * 
+	 *
 	 * @see javax.swing.JComponent#paintChildren(java.awt.Graphics)
 	 */
 	@Override
@@ -365,7 +365,7 @@ public class DropAreaPanel extends JPanel {
 }
 
 /**
- * 
+ *
  * Listens for when a panel is dropped onto a the drop area, and while the drag
  * occurs.
  *
@@ -412,7 +412,8 @@ class DropAreaListener implements DropTargetListener {
 			}
 			// Redispatch to ancestor drop target
 			if (ancestor != null) {
-				ancestor.getDropTarget().drop(convertCoords(ancestor, e));
+				ancestor.getDropTarget().drop(
+						DropTargetRedispatcher.convertCoords(e, ancestor));
 			}
 		}
 
@@ -421,7 +422,7 @@ class DropAreaListener implements DropTargetListener {
 	/**
 	 * Hides the placeholder when the panel is no longer being dragged above the
 	 * drop area.
-	 * 
+	 *
 	 * <br>
 	 * {@inheritDoc}
 	 */
@@ -464,7 +465,8 @@ class DropAreaListener implements DropTargetListener {
 			}
 			// Redispatch to ancestor drop target
 			if (ancestor != null) {
-				ancestor.getDropTarget().dragOver(convertCoords(ancestor, e));
+				ancestor.getDropTarget().dragOver(
+						DropTargetRedispatcher.convertCoords(e, ancestor));
 			}
 		}
 
@@ -472,6 +474,8 @@ class DropAreaListener implements DropTargetListener {
 
 	@Override
 	public void dragEnter(DropTargetDragEvent e) {
+		// Treat start of drag the same as the rest of the drag
+		dragOver(e);
 	}
 
 	@Override
@@ -491,7 +495,6 @@ class DropAreaListener implements DropTargetListener {
 	 */
 	public DropTargetDropEvent convertCoords(Component comp,
 			DropTargetDropEvent e) {
-
 		Point newPoint = SwingUtilities.convertPoint(e.getDropTargetContext()
 				.getComponent(), e.getLocation(), comp);
 		DropTargetDropEvent newE = new DropTargetDropEvent(

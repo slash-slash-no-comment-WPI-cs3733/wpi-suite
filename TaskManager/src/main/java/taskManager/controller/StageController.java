@@ -56,7 +56,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 	 * Constructor for the StageController gets all the tasks from the
 	 * StageModel, creates the corresponding TaskView and TaskControllers for
 	 * each, and final adds all of the TaskViews to the UI.
-	 * 
+	 *
 	 * @param view
 	 *            the corresponding StageView object
 	 * @param model
@@ -84,7 +84,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 			for (TaskModel task : tasks) {
 				// Add only if task is not archived or when task is archived and
 				// archive shown is set to true.
-				if (!task.isArchived() || (task.isArchived() && showArchive)) {
+				if (!task.isArchived() || showArchive) {
 					// create stage view and controller.
 					TaskView tkv = new TaskView(task.getName(),
 							task.getDueDate(), task.getEstimatedEffort());
@@ -143,7 +143,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 	}
 
 	/**
-	 * 
+	 *
 	 * Changes which title is visible, the label or the textbox. If editable is
 	 * true, the textbox is visible.
 	 *
@@ -192,10 +192,8 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 			FetchWorkflowObserver.ignoreAllResponses = false;
 			// this will remove any changeTitle textboxes or taskInfo bubbles
 			// from the workflow
-			JanewayModule.tabPaneC.getTabView().getWorkflowController()
-					.reloadData();
-			JanewayModule.tabPaneC.getTabView().getWorkflowController()
-					.repaintView();
+			WorkflowController.getInstance().reloadData();
+			WorkflowController.getInstance().repaintView();
 		}
 	}
 
@@ -243,14 +241,17 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 					if (model == null) {
 						model = new StageModel(view.getLabelText());
 					} else {
-						model.changeStageName(view.getLabelText());
+						model.setName(view.getLabelText());
 					}
 
+					WorkflowModel.getInstance().save();
+
 					// refresh the workflow with the new stage
-					JanewayModule.tabPaneC.getTabView().getWorkflowController()
-							.reloadData();
-					JanewayModule.tabPaneC.getTabView().getWorkflowController()
-							.repaintView();
+					WorkflowController.getInstance().reloadData();
+					WorkflowController.getInstance().repaintView();
+
+					// save to the server
+					WorkflowModel.getInstance().save();
 				}
 				break;
 			// fall through
@@ -266,10 +267,8 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 					if (opt == JOptionPane.YES_OPTION) {
 
 						// refresh the workflow with no new stage view
-						JanewayModule.tabPaneC.getTabView()
-								.getWorkflowController().reloadData();
-						JanewayModule.tabPaneC.getTabView()
-								.getWorkflowController().repaintView();
+						WorkflowController.getInstance().reloadData();
+						WorkflowController.getInstance().repaintView();
 					}
 
 				} else {
@@ -277,8 +276,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 					thisChangeTitleOut = false;
 					FetchWorkflowObserver.ignoreAllResponses = false;
 					// reload which will remove the textbox
-					JanewayModule.tabPaneC.getTabView().getWorkflowController()
-							.reloadData();
+					WorkflowController.getInstance().reloadData();
 
 				}
 

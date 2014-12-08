@@ -10,12 +10,16 @@ package taskManager.model;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
+
+import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
 
 /**
  * Description
@@ -24,6 +28,18 @@ import org.junit.Test;
  * @version Nov 12, 2014
  */
 public class WorkflowModelTest {
+	private WorkflowModel wm;
+	private StageModel sm1;
+	private StageModel sm2;
+
+	@Before
+	public void setup() {
+		wm = WorkflowModel.getInstance();
+		wm.makeIdenticalTo(new WorkflowModel("Workflow"));
+		sm1 = new StageModel("Stage1");
+		sm2 = new StageModel("Stage2");
+	}
+
 	public void verifyWorkflow(WorkflowModel a, WorkflowModel b) {
 		assertTrue("Workflows have different names", a.getID()
 				.equals(b.getID()));
@@ -68,10 +84,6 @@ public class WorkflowModelTest {
 
 	@Test
 	public void basicStageOperations() {
-		WorkflowModel wm = WorkflowModel.getInstance();
-		wm.makeIdenticalTo(new WorkflowModel("Workflow"));
-		StageModel sm1 = new StageModel("Stage1");
-		StageModel sm2 = new StageModel("Stage2");
 		StageModel sm3 = new StageModel("Stage3");
 		StageModel sm4 = new StageModel("Stage4");
 		String inorder = "";
@@ -97,26 +109,51 @@ public class WorkflowModelTest {
 	}
 
 	@Test
+	public void testRemoveStage() {
+		wm.removeStage(sm1);
+		assertFalse(wm.getStages().contains(sm1));
+		assertTrue(wm.getStages().contains(sm2));
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testRemoveInvalidStage() {
+		wm.removeStage(new StageModel());
+	}
+
+	@Test
+	public void testSetProject() {
+		Project p = new Project("Name", "ID");
+		TaskModel tm1 = new TaskModel("T1", sm1);
+		TaskModel tm2 = new TaskModel("T1", sm2);
+		TaskModel tm3 = new TaskModel("T1", sm2);
+
+		wm.setProject(p);
+
+		assertSame(p, wm.getProject());
+		assertSame(p, sm1.getProject());
+		assertSame(p, sm2.getProject());
+		assertSame(p, tm3.getProject());
+		assertSame(p, tm2.getProject());
+		assertSame(p, tm3.getProject());
+	}
+
+	@Test
 	public void basicTaskOperations() {
-		WorkflowModel wm = WorkflowModel.getInstance();
-		wm.makeIdenticalTo(new WorkflowModel("Workflow"));
-		StageModel smf = new StageModel("from");
-		StageModel smt = new StageModel("to");
-		TaskModel t1 = new TaskModel("Task1", smf);
-		TaskModel t2 = new TaskModel("Task1", smf);
-		TaskModel t3 = new TaskModel("Task1", smf);
-		TaskModel t4 = new TaskModel("Task1", smf);
+		TaskModel t1 = new TaskModel("Task1", sm1);
+		TaskModel t2 = new TaskModel("Task1", sm1);
+		TaskModel t3 = new TaskModel("Task1", sm1);
+		TaskModel t4 = new TaskModel("Task1", sm1);
 		assertFalse("Duplicate IDs 1 & 2", t1.getID().equals(t2.getID()));
 		assertFalse("Duplicate IDs 1 & 3", t1.getID().equals(t3.getID()));
 		assertFalse("Duplicate IDs 1 & 4", t1.getID().equals(t4.getID()));
 		assertFalse("Duplicate IDs 2 & 3", t2.getID().equals(t3.getID()));
 		assertFalse("Duplicate IDs 2 & 4", t2.getID().equals(t4.getID()));
 		assertFalse("Duplicate IDs 3 & 4", t3.getID().equals(t4.getID()));
-		smt.addTask(t1);
-		smt.addTask(t2);
-		smt.addTask(t3);
-		smt.addTask(t4);
+		sm2.addTask(t1);
+		sm2.addTask(t2);
+		sm2.addTask(t3);
+		sm2.addTask(t4);
 
-		assertTrue(smt.getTasks().size() == 4);
+		assertTrue(sm2.getTasks().size() == 4);
 	}
 }

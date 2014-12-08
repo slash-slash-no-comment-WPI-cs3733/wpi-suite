@@ -136,7 +136,6 @@ public class DDTransferHandler extends TransferHandler {
 			// Initiate the drag
 			super.exportAsDrag(comp, e, action);
 		}
-
 	}
 
 	/**
