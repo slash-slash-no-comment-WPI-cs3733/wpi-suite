@@ -10,6 +10,7 @@ package taskManager.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -87,7 +88,7 @@ public class TaskInfoPreviewView extends JPanel {
 
 		// The task's titleBar contains the title and the 'x' button
 		JPanel titleBar = new JPanel();
-		titleBar.setLayout(new MigLayout("wrap 2", "5[]:push[]", "[][center]"));
+		titleBar.setLayout(new MigLayout("wrap 2", "5[]:push[]", "[]0[center]"));
 		titleBar.setSize(new Dimension(this.getWidth(), 30));
 		JLabel title = new JLabel(this.taskM.getName());
 		title.setFont(title.getFont().deriveFont(15.0f));
@@ -114,15 +115,16 @@ public class TaskInfoPreviewView extends JPanel {
 			JLabel archived = new JLabel(
 					"<html><font size=\"2\"><i>Archived</i></font></html>",
 					SwingConstants.CENTER);
-			archived.setSize(new Dimension(this.getWidth() - 40, 10));
-			archived.setPreferredSize(new Dimension(this.getWidth() - 40, 10));
+			archived.setFont(archived.getFont().deriveFont(Font.PLAIN));
+			archived.setSize(new Dimension(this.getWidth() - 40, 5));
+			archived.setPreferredSize(new Dimension(this.getWidth() - 40, 5));
 			titleBar.add(archived, "span");
 		}
 		info.add(titleBar);
 
 		// The task's description
 		JTextArea description = new JTextArea();
-		description.setText(ellipsize(this.taskM.getDescription(), 175));
+		description.setText(this.taskM.getDescription());
 		description.setAlignmentX(CENTER_ALIGNMENT);
 		description.setEditable(false);
 		description.setLineWrap(true);
@@ -151,18 +153,21 @@ public class TaskInfoPreviewView extends JPanel {
 		// The task's due date
 		final Calendar calDate = Calendar.getInstance();
 		calDate.setTime(this.taskM.getDueDate());
-		JLabel dueDate = new JLabel("<html><i>Due:</i> "
+		JLabel dueDate = new JLabel("<html><b><i>Due:</i></b> "
 				+ (calDate.get(Calendar.MONTH) + 1) + "/"
 				+ calDate.get(Calendar.DATE) + "/"
 				+ (calDate.get(Calendar.YEAR)) + "</html>");
+		dueDate.setFont(dueDate.getFont().deriveFont(Font.PLAIN));
 		dueDate.setMaximumSize(new Dimension(this.getWidth(), 20));
 		info.add(dueDate);
 
 		// The task's effort
-		JLabel estE = new JLabel("<html><i>Est Effort: </i>"
+		JLabel estE = new JLabel("<html><b><i>Est Effort: </i></b>"
 				+ this.taskM.getEstimatedEffort() + "</html>");
-		JLabel actE = new JLabel("<html><i>Act Effort: </i>"
+		estE.setFont(estE.getFont().deriveFont(Font.PLAIN));
+		JLabel actE = new JLabel("<html><b><i>Act Effort: </i></b>"
 				+ this.taskM.getActualEffort() + "</html>");
+		actE.setFont(actE.getFont().deriveFont(Font.PLAIN));
 		info.add(estE);
 		info.add(actE);
 
@@ -187,18 +192,24 @@ public class TaskInfoPreviewView extends JPanel {
 			}
 			info.add(users);
 		} else {
-			info.add(new JLabel("<html><i>Users:</i> [None]</html>"));
+			JLabel users = new JLabel(
+					"<html><b><i>Users:</i></b> [None]</html>");
+			users.setFont(users.getFont().deriveFont(Font.PLAIN));
+			info.add(users);
 		}
 
 		// The task's requirement
 		JLabel req;
 		if (this.taskM.getReq() == null) {
-			req = new JLabel("<html><i>Requirement:</i> [None]</html>");
+			req = new JLabel("<html><b><i>Requirement:</i></b> [None]</html>");
+			req.setFont(req.getFont().deriveFont(Font.PLAIN));
 			info.add(req);
 		} else {
-			req = new JLabel("<html><i>Requirement:</i></html>");
+			req = new JLabel("<html><b><i>Requirement:</i></b></html>");
+			req.setFont(req.getFont().deriveFont(Font.PLAIN));
 			info.add(req);
 			JLabel name = new JLabel("  " + this.taskM.getReq());
+			name.setFont(name.getFont().deriveFont(Font.PLAIN));
 			name.setSize(new Dimension(this.getWidth() - 30, 20));
 			name.setMinimumSize(new Dimension(this.getWidth() - 30, 20));
 			name.setMaximumSize(new Dimension(this.getWidth() - 30, 20));
@@ -208,7 +219,7 @@ public class TaskInfoPreviewView extends JPanel {
 
 		// This panel contains the edit button
 		JPanel buttonPanel = new JPanel();
-		JButton edit = new JButton("edit");
+		JButton edit = new JButton("Edit");
 		edit.setName(EDIT);
 		edit.setMargin(new Insets(5, 90, 5, 90));
 		edit.addActionListener(this.controller);
@@ -254,29 +265,5 @@ public class TaskInfoPreviewView extends JPanel {
 	 */
 	public TaskController getTaskController() {
 		return taskC;
-	}
-
-	/**
-	 * 
-	 * Takes a String and if its length is greater than max, it truncates and
-	 * adds '...'. This example is modified from:
-	 * http://stackoverflow.com/questions
-	 * /3597550/ideal-method-to-truncate-a-string-with-ellipsis
-	 *
-	 * @param text
-	 *            The string to add '...' to
-	 * @param max
-	 *            The max number of characters allowed
-	 * @return
-	 */
-	private static String ellipsize(String text, int max) {
-
-		if (text.length() <= max)
-			return text;
-
-		// Start by chopping off at the word before max
-		// the 3 is to account for '...'
-		int end = text.lastIndexOf(' ', max - 3);
-		return text.substring(0, end) + "...";
 	}
 }
