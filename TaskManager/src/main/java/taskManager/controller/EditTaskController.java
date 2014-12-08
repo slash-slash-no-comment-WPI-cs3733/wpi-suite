@@ -47,7 +47,6 @@ import edu.wpi.cs.wpisuitetng.modules.requirementmanager.view.ViewEventControlle
 public class EditTaskController implements ActionListener {
 
 	private final EditTaskView etv;
-	private String taskID;
 	private ArrayList<String> toRemove = new ArrayList<String>();
 	private TaskModel model;
 
@@ -98,12 +97,6 @@ public class EditTaskController implements ActionListener {
 
 		etv.setController(this);
 		etv.setFieldController(new TaskInputController(etv));
-
-		// uses the title field to hold the unique id
-		etv.getTitle().setName(this.model.getID());
-
-		// uses description field to hold the name of the stage
-		etv.getDescription().setName(this.model.getStage().getName());
 
 		// populate editable fields with this tasks info
 		etv.setTitle(model.getName());
@@ -191,18 +184,6 @@ public class EditTaskController implements ActionListener {
 		if (button instanceof JButton) {
 			String name = ((JButton) button).getName();
 
-			// check to see if the task exists in the workflow and grabs the
-			// stage that the task is in
-
-			WorkflowModel wfm = WorkflowModel.getInstance();
-			StageModel currentStage = null;
-			for (StageModel stage : wfm.getStages()) {
-				if (stage.containsTaskByID(taskID)) {
-					currentStage = stage;
-					break;
-				}
-			}
-
 			switch (name) {
 
 			case EditTaskView.SAVE:
@@ -222,8 +203,7 @@ public class EditTaskController implements ActionListener {
 												.getSelectedItem());
 
 						// creates a new task model
-						model = new TaskModel(etv.getTitle().getText(),
-								desiredStage);
+						model = new TaskModel(etv.getTitleText(), desiredStage);
 						save();
 					}
 
@@ -246,7 +226,9 @@ public class EditTaskController implements ActionListener {
 
 				// Save and reload the workflow.
 				WorkflowController.getInstance().reloadData();
-				wfm.save();
+
+				WorkflowModel.getInstance().save(); // TODO switch to
+													// appropriate save method
 
 				break;
 
@@ -256,12 +238,24 @@ public class EditTaskController implements ActionListener {
 						"Warning - Deleting a task", JOptionPane.YES_NO_OPTION);
 				if (choice.equals(JOptionPane.YES_OPTION)) {
 					// delete this task
-					model = currentStage.findTaskByID(taskID);
-					currentStage.getTasks().remove(model);
-					etv.resetFields();
+					if (model != null) {
+						StageModel currentStage = null;
 
-					// Save entire workflow whenever a task is deleted
-					wfm.save();
+						for (StageModel stage : WorkflowModel.getInstance()
+								.getStages()) {
+							if (stage.containsTaskByID(model.getID())) {
+								currentStage = stage;
+								break;
+							}
+						}
+						currentStage.findTaskByID(model.getID());
+						currentStage.getTasks().remove(model);
+						etv.resetFields();
+
+						// Save entire workflow whenever a task is deleted
+						WorkflowModel.getInstance().save();
+						// TODO don't save entire workflow
+					}
 					returnToWorkflowView();
 				}
 				break;
@@ -380,7 +374,7 @@ public class EditTaskController implements ActionListener {
 		}
 
 		// sets the text fields
-		model.setName(etv.getTitle().getText().trim());
+		model.setName(etv.getTitleText().trim());
 		model.setDescription(etv.getDescription().getText());
 
 		// grabs the stage from the dropdown box
@@ -531,7 +525,7 @@ public class EditTaskController implements ActionListener {
 			edited = true;
 		}
 		// Title.
-		else if (!model.getName().equals(etv.getTitle().getText())) {
+		else if (!model.getName().equals(etv.getTitleText())) {
 			edited = true;
 		}
 		// Description.
@@ -565,7 +559,7 @@ public class EditTaskController implements ActionListener {
 		return edited;
 	}
 
-	public Boolean checkDate(TaskModel task) {
+	public boolean checkDate(TaskModel task) {
 		Date dueDate = task.getDueDate();
 
 		// if the task had a due date, check if it changed
@@ -721,5 +715,15 @@ public class EditTaskController implements ActionListener {
 	 */
 	public EditTaskView getView() {
 		return etv;
+	}
+
+	public boolean isDuplicate(EditTaskController other) {
+		// "Create" views are never duplicates -- note: a little different from
+		// isEditingTask();
+		if (other.model == null || this.model == null) {
+			return false;
+		} else {
+			return model.getID().equals(model.getID());
+		}
 	}
 }

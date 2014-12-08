@@ -56,7 +56,7 @@ public class TaskInputController implements KeyListener, FocusListener,
 		// requirements for that field
 
 		// Title
-		if (etv.getTitle().getText().isEmpty()) {
+		if (etv.getTitleText().trim().isEmpty()) {
 			titleValid = false;
 		}
 		// Description

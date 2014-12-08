@@ -31,6 +31,7 @@ import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.TaskView;
+import edu.wpi.cs.wpisuitetng.exceptions.NotFoundException;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
@@ -75,7 +76,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	}
 
 	@Test
-	public void testAddTask() {
+	public void testAddTask() throws NotFoundException {
 
 		// create a new edit task tab
 		JanewayModule.tabPaneC.addEditTaskTab(etv);
@@ -96,7 +97,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	}
 
 	@Test
-	public void testInvalidTask() {
+	public void testInvalidTask() throws NotFoundException {
 
 		// create a new edit task tab
 		JanewayModule.tabPaneC.addEditTaskTab(etv);
@@ -116,7 +117,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	}
 
 	@Test
-	public void testLoadTask() {
+	public void testLoadTask() throws NotFoundException {
 
 		// create a task, and load the edit view with it
 		TaskModel task = createAndLoadTask();
@@ -126,7 +127,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	}
 
 	@Test
-	public void testEditTask() {
+	public void testEditTask() throws NotFoundException {
 		// create a task and load it
 		TaskModel task = createAndLoadTask();
 
@@ -324,8 +325,9 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	 *
 	 * @param task
 	 *            The task that should be shown on the view
+	 * @throws NotFoundException
 	 */
-	private void verifyTask(TaskModel task) {
+	private void verifyTask(TaskModel task) throws NotFoundException {
 		getTitleBoxFixture().requireText(task.getName());
 		getDescriptionBoxFixture().requireText(task.getDescription());
 		fixture.textBox(EditTaskView.EST_EFFORT).requireText(
@@ -349,9 +351,11 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	 * Create a fixture for the Title text field on the EditTaskView
 	 *
 	 * @return A fixture with the title text box as the target
+	 * @throws NotFoundException
+	 *             if Title isn't found.
 	 */
-	private JTextComponentFixture getTitleBoxFixture() {
-		return new JTextComponentFixture(fixture.robot, etv.getTitle());
+	private JTextComponentFixture getTitleBoxFixture() throws NotFoundException {
+		return fixture.textBox(EditTaskView.TITLE);
 	}
 
 }

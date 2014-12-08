@@ -62,9 +62,7 @@ public class TabPaneController {
 			if (c instanceof EditTaskView) {
 				etv2 = (EditTaskView) c;
 
-				if (etv2.getTitle().getName() != null
-						&& etv2.getTitle().getName()
-								.equals(etv.getTitle().getName())) {
+				if (etv2.getController().isDuplicate(etv.getController())) {
 					exists = true;
 					break;
 				}
@@ -73,7 +71,7 @@ public class TabPaneController {
 		if (exists) {
 			tabPaneV.setSelectedComponent(etv2);
 		} else {
-			addTab(etv.getTitle().getText(), etv, true);
+			addTab(etv.getTitleText(), etv, true);
 			tabPaneV.setSelectedComponent(etv);
 		}
 	}

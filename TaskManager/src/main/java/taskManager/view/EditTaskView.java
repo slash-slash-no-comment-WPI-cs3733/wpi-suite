@@ -65,6 +65,8 @@ public class EditTaskView extends JPanel {
 	public static final String DUE_DATE = "due_date";
 	public static final String NO_REQ = "[None]";
 	public static final String REFRESH = "refresh";
+	public static final String TITLE = "title";
+	public static final String DESCRIPTION = "description";
 	/**
 	 * 
 	 */
@@ -161,10 +163,13 @@ public class EditTaskView extends JPanel {
 
 		titleField = new JTextField(25);
 		titleField.setEditable(true);
+		titleField.setName(TITLE);
+
 		descripArea = new JTextArea(4, 25);
 		descripArea.setEditable(true);
 		descripArea.setLineWrap(true);
 		descripArea.setWrapStyleWord(true);
+		descripArea.setName(DESCRIPTION);
 		JScrollPane descriptionScrollPane = new JScrollPane(descripArea);
 		descriptionScrollPane
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -190,7 +195,7 @@ public class EditTaskView extends JPanel {
 
 		// adds calendar
 		dateField = new JXDatePicker();
-		dateField.setName("due_date");
+		dateField.setName(DUE_DATE);
 		dateField.setDate(Calendar.getInstance().getTime());
 
 		// Icon is from:
@@ -409,10 +414,10 @@ public class EditTaskView extends JPanel {
 	/**
 	 * Gets the text in the title field
 	 * 
-	 * @return the title field
+	 * @return the title field's text
 	 */
-	public JTextField getTitle() {
-		return titleField;
+	public String getTitleText() {
+		return titleField.getText();
 	}
 
 	/**
