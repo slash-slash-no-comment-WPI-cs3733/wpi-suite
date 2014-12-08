@@ -347,7 +347,7 @@ public class EditTaskView extends JPanel {
 	 * Sets the focus to the title field.
 	 *
 	 */
-	public void setTitleFieldFocus() {
+	public void focusOnTitleField() {
 		titleField.requestFocus();
 	}
 

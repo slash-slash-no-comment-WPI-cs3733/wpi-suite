@@ -33,7 +33,7 @@ public class JanewayModule implements IJanewayModule {
 
 	// The tabs used by this module
 
-	private final ArrayList<JanewayTabModel> tabs;
+	private final List<JanewayTabModel> tabs;
 	public static final ToolbarView toolV = new ToolbarView();
 	private static final TabPaneView tabPaneV = new TabPaneView();
 	public static final TabPaneController tabPaneC = new TabPaneController(

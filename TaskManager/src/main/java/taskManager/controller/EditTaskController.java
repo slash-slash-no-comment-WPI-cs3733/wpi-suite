@@ -48,7 +48,7 @@ public class EditTaskController implements ActionListener {
 
 	private final EditTaskView etv;
 	private String taskID;
-	private ArrayList<String> toRemove = new ArrayList<String>();
+	private List<String> toRemove = new ArrayList<String>();
 	private TaskModel model;
 
 	/**
@@ -71,7 +71,7 @@ public class EditTaskController implements ActionListener {
 		etv.resetFields();
 
 		// fills the user lists
-		ArrayList<String> projectUserNames = new ArrayList<String>();
+		List<String> projectUserNames = new ArrayList<String>();
 		for (User u : JanewayModule.users) {
 			String name = u.getUsername();
 			if (!projectUserNames.contains(name)) {
@@ -133,7 +133,7 @@ public class EditTaskController implements ActionListener {
 		etv.getStages().setSelectedItem(model.getStage().getName());
 
 		// populates the project users list
-		ArrayList<String> projectUserNames = new ArrayList<String>();
+		List<String> projectUserNames = new ArrayList<String>();
 		for (User u : JanewayModule.users) {
 			String name = u.getUsername();
 			if (!projectUserNames.contains(name)
@@ -144,7 +144,7 @@ public class EditTaskController implements ActionListener {
 		etv.getProjectUsersList().addAllToList(projectUserNames);
 
 		// populates the assigned users panel
-		ArrayList<String> assignedUserNames = new ArrayList<String>();
+		List<String> assignedUserNames = new ArrayList<String>();
 		for (String u : model.getAssigned()) {
 			if (!assignedUserNames.contains(u)) {
 				assignedUserNames.add(u);
@@ -466,7 +466,7 @@ public class EditTaskController implements ActionListener {
 	 */
 	public void addUsersToList() {
 		int[] toAdd = etv.getProjectUsersList().getSelectedIndices();
-		ArrayList<String> namesToAdd = new ArrayList<String>();
+		List<String> namesToAdd = new ArrayList<String>();
 
 		for (int ind : toAdd) {
 			namesToAdd.add(etv.getProjectUsersList().getValueAtIndex(ind));
@@ -497,7 +497,7 @@ public class EditTaskController implements ActionListener {
 		// grab all of the indices of the usernames selected in
 		// assigned users and grab the associated strings
 		int[] usersToRemove = etv.getUsersList().getSelectedIndices();
-		ArrayList<String> namesToRemove = new ArrayList<String>();
+		List<String> namesToRemove = new ArrayList<String>();
 		for (int ind : usersToRemove) {
 			namesToRemove.add(etv.getUsersList().getValueAtIndex(ind));
 		}

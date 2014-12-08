@@ -107,7 +107,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	 *
 	 */
 	public void editTask() {
-		new EditTaskController(model).getView().setTitleFieldFocus();
+		new EditTaskController(model).getView().focusOnTitleField();
 	}
 
 	/**
@@ -116,7 +116,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	 * when a bubble is out for this task
 	 *
 	 */
-	public void setToHoverColor() {
+	public void changeToHoverColor() {
 
 		view.setBackground(Colors.TASK_HOVER);
 	}
@@ -179,7 +179,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		setToHoverColor();
+		changeToHoverColor();
 	}
 
 	@Override
