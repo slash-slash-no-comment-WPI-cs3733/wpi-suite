@@ -11,13 +11,17 @@ package taskManager.view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -190,6 +194,7 @@ public class TaskInfoPreviewView extends JPanel {
 					users.addToList(u);
 				}
 			}
+			users.setEnabled(false);
 			info.add(users);
 		} else {
 			JLabel users = new JLabel(
@@ -221,8 +226,17 @@ public class TaskInfoPreviewView extends JPanel {
 		JPanel buttonPanel = new JPanel();
 		JButton edit = new JButton("Edit");
 		edit.setName(EDIT);
-		edit.setMargin(new Insets(5, 90, 5, 90));
+		edit.setMargin(new Insets(5, 77, 5, 77));
 		edit.addActionListener(this.controller);
+		// Add the pencil image to the edit button
+		try {
+			Image img = ImageIO.read(this.getClass().getResourceAsStream(
+					"edit.png"));
+			edit.setIcon(new ImageIcon(img));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		buttonPanel.add(edit, "");
 		buttonPanel.setSize(new Dimension(this.getWidth(), 80));
 		buttonPanel.setBackground(Colors.TASK);
