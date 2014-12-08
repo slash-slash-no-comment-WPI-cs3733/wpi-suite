@@ -115,7 +115,7 @@ public class TaskInputController implements KeyListener, FocusListener,
 	 */
 	public boolean checkSaveComment() {
 		boolean commentValid = true;
-		if (etv.getCommentsFieldText().isEmpty()) {
+		if (etv.getCommentsFieldText().trim().isEmpty()) {
 			// Comments Pane
 			commentValid = false;
 		}
