@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
+import javax.swing.UIManager;
 
 import taskManager.controller.TabPaneController;
 import taskManager.controller.ToolbarController;
@@ -52,6 +53,10 @@ public class JanewayModule implements IJanewayModule {
 
 		new ImageIcon(), toolV, tabPaneV);
 		tabs.add(tab);
+
+		// By default the buttons select the default so instead set it to follow
+		// the button that has focus.
+		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 	}
 
 	/**

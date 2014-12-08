@@ -12,6 +12,7 @@ package taskManager.view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.KeyboardFocusManager;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -165,6 +166,13 @@ public class EditTaskView extends JPanel {
 		descripArea.setEditable(true);
 		descripArea.setLineWrap(true);
 		descripArea.setWrapStyleWord(true);
+		// Sets the traversal keys to null so that it inherits parent's
+		// behavior.
+		// Reference: http://stackoverflow.com/a/5043957
+		descripArea.setFocusTraversalKeys(
+				KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, null);
+		descripArea.setFocusTraversalKeys(
+				KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, null);
 		JScrollPane descriptionScrollPane = new JScrollPane(descripArea);
 		descriptionScrollPane
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -172,6 +180,10 @@ public class EditTaskView extends JPanel {
 				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
 		commentsField = new JTextArea(2, 22);
+		commentsField.setFocusTraversalKeys(
+				KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, null);
+		commentsField.setFocusTraversalKeys(
+				KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, null);
 		JScrollPane commentScrollPane = new JScrollPane(commentsField);
 		commentScrollPane
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -347,8 +359,26 @@ public class EditTaskView extends JPanel {
 	 * Sets the focus to the title field.
 	 *
 	 */
-	public void setTitleFieldFocus() {
+	public void setFocusToTitleField() {
 		titleField.requestFocus();
+	}
+
+	/**
+	 * 
+	 * Sets the focus to the comments field.
+	 *
+	 */
+	public void setFocusToComments() {
+		commentsField.requestFocus();
+	}
+
+	/**
+	 * 
+	 * Sets the focus to the stages dropdown.
+	 *
+	 */
+	public void setFocusToStages() {
+		stages.requestFocus();
 	}
 
 	/**
@@ -384,6 +414,10 @@ public class EditTaskView extends JPanel {
 		stages.addPopupMenuListener(fieldC);
 		usersList.setController(fieldC);
 		projectUsersList.setController(fieldC);
+
+		// Currently used only for skipping over unnecessary fields.
+		stages.addFocusListener(fieldC);
+		commentsField.addFocusListener(fieldC);
 	}
 
 	/**

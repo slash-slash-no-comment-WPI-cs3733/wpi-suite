@@ -45,7 +45,7 @@ public class TabPaneController {
 		int index = tabPaneV.getTabCount() - 1;
 		tabPaneV.setSelectedIndex(index);
 
-		etc.getView().setTitleFieldFocus();
+		etc.getView().setFocusToTitleField();
 	}
 
 	/**
