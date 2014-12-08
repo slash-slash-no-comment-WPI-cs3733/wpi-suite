@@ -457,15 +457,6 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * gets the dropdown box in the view that contains all the stage names
-	 * 
-	 * @return the stages dropdown box
-	 */
-	public JComboBox<String> getStages() {
-		return stages;
-	}
-
-	/**
 	 * 
 	 * Sets the stage dropdown menu's available options.
 	 *
@@ -487,8 +478,52 @@ public class EditTaskView extends JPanel {
 		}
 	}
 
-	public JComboBox<String> getRequirements() {
-		return requirements;
+	/**
+	 * 
+	 * Sets the requirements dropdown menu's available options.
+	 *
+	 * @param reqNames
+	 *            The list of requirement names to set as options.
+	 */
+	public void setRequirements(List<String> reqNames) {
+		String selectedReq = getSelectedRequirement();
+
+		requirements.removeAllItems();
+		requirements.addItem(NO_REQ);
+		for (String name : reqNames) {
+			requirements.addItem(name);
+		}
+
+		// Select NO_REQ if the old selected item doesn't exist
+		requirements.setSelectedItem(NO_REQ);
+		if (!(selectedReq == null)) {
+			requirements.setSelectedItem(selectedReq);
+		}
+	}
+
+	/**
+	 * Gets the selected requirement. If no requirement is selected, returns
+	 * null.
+	 *
+	 * @return The selected requirement's name
+	 */
+	public String getSelectedRequirement() {
+		if (NO_REQ.equals(requirements.getSelectedItem())) {
+			return null;
+		}
+		return (String) requirements.getSelectedItem();
+	}
+
+	/**
+	 * Sets the selected requirement. Use null to select no requirement.
+	 *
+	 * @return The requirement's name
+	 */
+	public void setSelectedRequirement(String requirementName) {
+		if (requirementName == null) {
+			requirements.setSelectedItem(NO_REQ);
+		}
+		requirements.setSelectedItem(requirementName);
 	}
 
 	/**

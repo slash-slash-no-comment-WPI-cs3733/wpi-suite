@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 
@@ -147,9 +146,9 @@ public class EditTaskController implements ActionListener {
 
 		// set the requirement dropdown
 		if (model.getReq() != null) {
-			etv.getRequirements().setSelectedItem(model.getReq().getName());
+			etv.setSelectedRequirement(model.getReq().getName());
 		} else {
-			etv.getRequirements().setSelectedItem(EditTaskView.NO_REQ);
+			etv.setSelectedRequirement(null);
 		}
 
 		// makes the archive button clickable
@@ -261,9 +260,7 @@ public class EditTaskController implements ActionListener {
 				// view requirement in requirement manager
 
 				Requirement requirement = RequirementModel.getInstance()
-						.getRequirementByName(
-								(String) etv.getRequirements()
-										.getSelectedItem());
+						.getRequirementByName(etv.getSelectedRequirement());
 
 				// TODO: this button should be disabled when [None] selected so
 				// requirement would never be null.
@@ -288,8 +285,7 @@ public class EditTaskController implements ActionListener {
 				// open the editor to this requirement
 				ViewEventController.getInstance().editRequirement(
 						RequirementModel.getInstance().getRequirementByName(
-								(String) etv.getRequirements()
-										.getSelectedItem()));
+								etv.getSelectedRequirement()));
 				break;
 
 			case EditTaskView.CANCEL:
@@ -319,19 +315,11 @@ public class EditTaskController implements ActionListener {
 
 		List<Requirement> reqs = RequirementModel.getInstance()
 				.getRequirements();
-		JComboBox<String> requirements = etv.getRequirements();
-		String selectedRequirement = (String) requirements.getSelectedItem();
-		requirements.removeAllItems();
-		requirements.addItem(EditTaskView.NO_REQ);
+		List<String> reqNames = new LinkedList<String>();
 		for (Requirement req : reqs) {
-			requirements.addItem(req.getName());
+			reqNames.add(req.getName());
 		}
-		// Select the 1st item if the old selected item doesn't exist
-		requirements.setSelectedItem(0);
-		if (!(selectedRequirement == null)) {
-			requirements.setSelectedItem(selectedRequirement);
-		}
-
+		etv.setRequirements(reqNames);
 	}
 
 	/**
@@ -361,7 +349,7 @@ public class EditTaskController implements ActionListener {
 		StageModel s = WorkflowModel.getInstance().findStageByName(
 				(String) etv.getSelectedStage());
 		Requirement r = RequirementModel.getInstance().getRequirementByName(
-				(String) etv.getRequirements().getSelectedItem());
+				(String) etv.getSelectedRequirement());
 
 		// Try to set the effort values.
 		try {
@@ -661,14 +649,13 @@ public class EditTaskController implements ActionListener {
 	public boolean checkReq(TaskModel task) {
 		boolean edited = false;
 		if (task.getReq() == null) {
-			if (etv.getRequirements().getSelectedItem().toString()
-					.equals(EditTaskView.NO_REQ)) {
+			if (etv.getSelectedRequirement() == null) {
 				edited = false;
 			} else {
 				edited = true;
 			}
 		} else if (!task.getReq().getName()
-				.equals(etv.getRequirements().getSelectedItem().toString())) {
+				.equals(etv.getSelectedRequirement())) {
 			edited = true;
 		}
 		return edited;
