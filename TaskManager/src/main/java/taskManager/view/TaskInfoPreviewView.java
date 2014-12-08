@@ -16,7 +16,7 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.IOException;
-import java.util.Calendar;
+import java.text.DateFormat;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
@@ -83,23 +83,26 @@ public class TaskInfoPreviewView extends JPanel {
 
 		// This panel will contain all of the task information
 		JPanel info = new JPanel();
-		info.setSize(new Dimension(this.getWidth(), 345));
-		info.setPreferredSize(new Dimension(this.getWidth(), 345));
-		info.setMinimumSize(new Dimension(this.getWidth(), 345));
-		info.setMaximumSize(new Dimension(this.getWidth(), 345));
+		Dimension infoSize = new Dimension(this.getWidth(), 345);
+		info.setSize(infoSize);
+		info.setPreferredSize(infoSize);
+		info.setMinimumSize(infoSize);
+		info.setMaximumSize(infoSize);
 		info.setLayout(new MigLayout("wrap 1"));
 		info.setOpaque(false);
 
 		// The task's titleBar contains the title and the 'x' button
 		JPanel titleBar = new JPanel();
 		titleBar.setLayout(new MigLayout("wrap 2", "5[]:push[]", "[]0[center]"));
-		titleBar.setSize(new Dimension(this.getWidth(), 30));
+		Dimension titleBarSize = new Dimension(this.getWidth(), 30);
+		titleBar.setSize(titleBarSize);
 		JLabel title = new JLabel(this.taskM.getName());
+		Dimension titleSize = new Dimension(190,
+				title.getPreferredSize().height);
 		title.setFont(title.getFont().deriveFont(15.0f));
-		title.setPreferredSize(new Dimension(190,
-				title.getPreferredSize().height));
-		title.setSize(new Dimension(190, title.getPreferredSize().height));
-		title.setMaximumSize(new Dimension(190, title.getPreferredSize().height));
+		title.setPreferredSize(titleSize);
+		title.setSize(titleSize);
+		title.setMaximumSize(titleSize);
 		titleBar.add(title);
 		// Closable 'x' button
 		final JButton closeButton = new JButton("\u2716");
@@ -120,8 +123,9 @@ public class TaskInfoPreviewView extends JPanel {
 					"<html><font size=\"2\"><i>Archived</i></font></html>",
 					SwingConstants.CENTER);
 			archived.setFont(archived.getFont().deriveFont(Font.PLAIN));
-			archived.setSize(new Dimension(this.getWidth() - 40, 5));
-			archived.setPreferredSize(new Dimension(this.getWidth() - 40, 5));
+			Dimension archivedSize = new Dimension(this.getWidth() - 40, 5);
+			archived.setSize(archivedSize);
+			archived.setPreferredSize(archivedSize);
 			titleBar.add(archived, "span");
 		}
 		info.add(titleBar);
@@ -136,10 +140,11 @@ public class TaskInfoPreviewView extends JPanel {
 		description.setBackground(Colors.TASK);
 		description.setCaretPosition(0);
 		JScrollPane descScroll = new JScrollPane(description);
-		descScroll.setSize(new Dimension(this.getWidth() - 30, 80));
-		descScroll.setMaximumSize(new Dimension(this.getWidth() - 30, 80));
-		descScroll.setMinimumSize(new Dimension(this.getWidth() - 30, 80));
-		descScroll.setPreferredSize(new Dimension(this.getWidth() - 30, 80));
+		Dimension descScrollSize = new Dimension(this.getWidth() - 30, 80);
+		descScroll.setSize(descScrollSize);
+		descScroll.setMaximumSize(descScrollSize);
+		descScroll.setMinimumSize(descScrollSize);
+		descScroll.setPreferredSize(descScrollSize);
 		// These remove the border around the JScrollPane. Might be wanted later
 		// Border border = BorderFactory.createEmptyBorder(0, 0, 0, 0);
 		// descScroll.setViewportBorder(border);
@@ -147,20 +152,26 @@ public class TaskInfoPreviewView extends JPanel {
 		info.add(descScroll);
 
 		JPanel spacer = new JPanel();
-		spacer.setSize(new Dimension(50, 5));
-		spacer.setPreferredSize(new Dimension(50, 5));
-		spacer.setMaximumSize(new Dimension(50, 5));
-		spacer.setMinimumSize(new Dimension(50, 5));
+		Dimension spacerSize = new Dimension(50, 5);
+		spacer.setSize(spacerSize);
+		spacer.setPreferredSize(spacerSize);
+		spacer.setMaximumSize(spacerSize);
+		spacer.setMinimumSize(spacerSize);
 		spacer.setBackground(Colors.TASK);
 		info.add(spacer);
 
 		// The task's due date
-		final Calendar calDate = Calendar.getInstance();
-		calDate.setTime(this.taskM.getDueDate());
+		// final Calendar calDate = Calendar.getInstance();
+		// calDate.setTime();
 		JLabel dueDate = new JLabel("<html><b><i>Due:</i></b> "
-				+ (calDate.get(Calendar.MONTH) + 1) + "/"
-				+ calDate.get(Calendar.DATE) + "/"
-				+ (calDate.get(Calendar.YEAR)) + "</html>");
+				+ DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
+						DateFormat.SHORT).format(this.taskM.getDueDate())
+				+ "</html>");
+		// new JLabel("<html><b><i>Due:</i></b> "
+		// + (calDate.get(Calendar.MONTH) + 1) + "/"
+		// + calDate.get(Calendar.DATE) + "/"
+		// + (calDate.get(Calendar.YEAR))
+
 		dueDate.setFont(dueDate.getFont().deriveFont(Font.PLAIN));
 		dueDate.setMaximumSize(new Dimension(this.getWidth(), 20));
 		info.add(dueDate);
@@ -181,13 +192,11 @@ public class TaskInfoPreviewView extends JPanel {
 		if (!userList.isEmpty()) {
 			// The task's users
 			ScrollList users = new ScrollList("<html><i>Users:</i></html>");
-			users.setSize(new Dimension(new Dimension(this.getWidth() - 30, 70)));
-			users.setPreferredSize(new Dimension(new Dimension(
-					this.getWidth() - 30, 70)));
-			users.setMaximumSize(new Dimension(new Dimension(
-					this.getWidth() - 30, 70)));
-			users.setMinimumSize(new Dimension(new Dimension(
-					this.getWidth() - 30, 70)));
+			Dimension usersSize = new Dimension(this.getWidth() - 30, 70);
+			users.setSize(usersSize);
+			users.setPreferredSize(usersSize);
+			users.setMaximumSize(usersSize);
+			users.setMinimumSize(usersSize);
 
 			for (String u : userList) {
 				if (!users.contains(u)) {
@@ -215,10 +224,11 @@ public class TaskInfoPreviewView extends JPanel {
 			info.add(req);
 			JLabel name = new JLabel("  " + this.taskM.getReq());
 			name.setFont(name.getFont().deriveFont(Font.PLAIN));
-			name.setSize(new Dimension(this.getWidth() - 30, 20));
-			name.setMinimumSize(new Dimension(this.getWidth() - 30, 20));
-			name.setMaximumSize(new Dimension(this.getWidth() - 30, 20));
-			name.setPreferredSize(new Dimension(this.getWidth() - 30, 20));
+			Dimension nameSize = new Dimension(this.getWidth() - 30, 20);
+			name.setSize(nameSize);
+			name.setMinimumSize(nameSize);
+			name.setMaximumSize(nameSize);
+			name.setPreferredSize(nameSize);
 			info.add(name);
 		}
 
