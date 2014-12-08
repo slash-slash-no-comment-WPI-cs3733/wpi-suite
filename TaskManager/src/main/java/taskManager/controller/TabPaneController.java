@@ -10,6 +10,8 @@
 package taskManager.controller;
 
 import java.awt.Component;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import taskManager.view.EditTaskView;
 import taskManager.view.TabPaneView;
@@ -27,6 +29,8 @@ public class TabPaneController {
 
 	// singleton TabPaneView
 	private TabPaneView tabPaneV;
+	private static final Logger logger = Logger
+			.getLogger(TabPaneController.class.getName());
 
 	public TabPaneController(TabPaneView tabPaneV) {
 		this.tabPaneV = tabPaneV;
@@ -119,7 +123,7 @@ public class TabPaneController {
 		try {
 			tabPaneV.setSelectedIndex(tabIndex);
 		} catch (IndexOutOfBoundsException e) {
-			// an invalid tab was requested, do nothing
+			logger.log(Level.WARNING, "tried to switch to non-existant tab");
 		}
 	}
 
