@@ -19,6 +19,7 @@ import java.awt.Insets;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DropTarget;
 import java.awt.event.MouseAdapter;
 import java.io.IOException;
 
@@ -38,6 +39,7 @@ import taskManager.controller.StageTitleController;
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DraggablePanelListener;
 import taskManager.draganddrop.DropAreaPanel;
+import taskManager.draganddrop.DropTargetRedispatcher;
 
 /**
  * @author Beth Martino
@@ -161,6 +163,11 @@ public class StageView extends JPanel implements Transferable {
 		// -----------------------
 		// Drag and drop handling:
 		MouseAdapter listener = new DraggablePanelListener(this);
+
+		this.addMouseListener(listener);
+		this.addMouseMotionListener(listener);
+		label.addMouseListener(listener);
+		label.addMouseMotionListener(listener);
 		labelName.addMouseListener(listener);
 		labelName.addMouseMotionListener(listener);
 
@@ -169,6 +176,11 @@ public class StageView extends JPanel implements Transferable {
 		// setTransferHandler creates DropTarget by default; we don't want
 		// stages to respond to stage drops
 		setDropTarget(null);
+
+		// Make scrollpane redispatch drag events down to DropAreaPanel to avoid
+		// scrollbar flicker
+		stage.setDropTarget(new DropTarget(stage, new DropTargetRedispatcher(
+				tasks, DDTransferHandler.getTaskFlavor())));
 	}
 
 	/**
@@ -209,7 +221,9 @@ public class StageView extends JPanel implements Transferable {
 		// listen for double click on the stage title to change it
 		labelName.addMouseListener(this.controller);
 		// listen for drag to enable icon
-		labelName.addMouseMotionListener(this.controller);
+		labelName.addMouseMotionListener(controller);
+		label.addMouseMotionListener(controller);
+		this.addMouseMotionListener(controller);
 		// listen for clicks on the 'change title' buttons
 		done.addActionListener(this.controller);
 		cancel.addActionListener(this.controller);

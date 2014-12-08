@@ -20,8 +20,9 @@ import javax.swing.TransferHandler;
 
 import taskManager.JanewayModule;
 import taskManager.controller.WorkflowController;
-import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.WorkflowModel;
+import taskManager.view.StageView;
+import taskManager.view.TaskView;
 import taskManager.view.ToolbarView;
 
 /**
@@ -52,8 +53,8 @@ public class DDTransferHandler extends TransferHandler {
 		if (taskFlavor == null) {
 			try {
 				taskFlavor = new DataFlavor(
-						DataFlavor.javaJVMLocalObjectMimeType
-								+ ";class=taskManager.view.TaskView");
+						DataFlavor.javaJVMLocalObjectMimeType + ";class="
+								+ TaskView.class.getName());
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -70,8 +71,8 @@ public class DDTransferHandler extends TransferHandler {
 		if (stageFlavor == null) {
 			try {
 				stageFlavor = new DataFlavor(
-						DataFlavor.javaJVMLocalObjectMimeType
-								+ ";class=taskManager.view.StageView");
+						DataFlavor.javaJVMLocalObjectMimeType + ";class="
+								+ StageView.class.getName());
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
@@ -119,8 +120,7 @@ public class DDTransferHandler extends TransferHandler {
 		// dragging
 		// Ignore all responses from server while drag is active
 		// TODO fix comment to make more clear ^
-		JanewayModule.tabPaneC.getTabView().getWorkflowController()
-				.clearWorkflow(true);
+		WorkflowController.getInstance().clearWorkflow(true);
 		WorkflowController.reloadInformation = false;
 		// Create drag image
 		Image image = new BufferedImage(comp.getWidth(), comp.getHeight(),

@@ -30,25 +30,19 @@ public class TestWorkflowController extends ScreenshotOnFail {
 
 	private final String[] stageNames = { "first", "second", "not-a-duplicate",
 			"last" };
-	private WorkflowView wfv;
-	private final WorkflowModel wfm = WorkflowModel.getInstance();
 	private FrameFixture fixture;
 
 	@Before
 	public void setup() {
-		// creates a workflow view
-		wfv = new WorkflowView();
-
 		// create a new workflow model
-		wfm.makeIdenticalTo(new WorkflowModel());
+		WorkflowModel.getInstance().makeIdenticalTo(new WorkflowModel());
+		WorkflowView wfv = WorkflowController.getInstance().getView();
+		WorkflowController.getInstance().reloadData();
 		// give it the stages
 		for (String name : stageNames) {
 			new StageModel(name, false);
 			wfv.addStageView(new StageView(name));
 		}
-
-		// create controller for view
-		wfv.setController(new WorkflowController(wfv));
 
 		JFrame frame = new JFrame();
 		frame.add(wfv);
