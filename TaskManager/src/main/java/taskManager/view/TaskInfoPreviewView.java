@@ -49,6 +49,18 @@ public class TaskInfoPreviewView extends JPanel {
 	public static final String X = "x";
 	public final int WIDTH = 220;
 
+	/**
+	 * Constructs a TaskInfoPreviewView for a task based on the given TaskModel
+	 * and TaskController. It will be located next to the TaskView, whose
+	 * location is given by the parameter loc.
+	 * 
+	 * @param model
+	 *            The TaskModel for the associated task
+	 * @param controller
+	 *            The TaskController for the associated task
+	 * @param loc
+	 *            The location of the associated TaskView
+	 */
 	public TaskInfoPreviewView(TaskModel model, TaskController controller,
 			Point loc) {
 		this.taskM = model;
