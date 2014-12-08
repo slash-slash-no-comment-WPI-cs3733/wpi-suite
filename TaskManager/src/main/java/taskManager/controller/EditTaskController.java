@@ -586,13 +586,9 @@ public class EditTaskController implements ActionListener {
 			cal2.setTime(Calendar.getInstance().getTime());
 
 			// check if the two dates are the same day
-			if (cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
-					&& cal1.get(Calendar.DAY_OF_YEAR) == cal2
-							.get(Calendar.DAY_OF_YEAR)) {
-				return false;
-			} else {
-				return true;
-			}
+			return !(cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) && cal1
+					.get(Calendar.DAY_OF_YEAR) == cal2
+					.get(Calendar.DAY_OF_YEAR));
 		}
 	}
 
