@@ -373,4 +373,28 @@ public class ManagerLayer {
 		return s;
 	}
 
+	/**
+	 * Determines if two arrays of cookies are from the same session
+	 *
+	 * @param c1
+	 *            One array of Cookies
+	 * @param c2
+	 *            Another array of Cookies
+	 * @return if the cookies are from the same session
+	 */
+	public boolean sameSession(Cookie[] c1, Cookie[] c2) {
+		String ssid1;
+		String ssid2;
+		try {
+			ssid1 = getSessionFromCookies(c1).getSessionId();
+			ssid2 = getSessionFromCookies(c2).getSessionId();
+		} catch (AuthenticationException e) {
+			return false;
+		} catch (UnauthorizedException e) {
+			return false;
+		}
+
+		return ssid1.equals(ssid2);
+	}
+
 }
