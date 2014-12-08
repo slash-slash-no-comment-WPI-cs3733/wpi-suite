@@ -29,9 +29,6 @@ public class WorkflowLayout extends FlowLayout {
 
 	private int hgap = 5, vgap = 5;
 
-	public WorkflowLayout() {
-	}
-
 	@Override
 	public void addLayoutComponent(final String name, final Component comp) {
 		// Do nothing
