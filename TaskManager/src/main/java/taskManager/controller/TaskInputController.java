@@ -60,17 +60,17 @@ public class TaskInputController implements KeyListener, FocusListener,
 			titleValid = false;
 		}
 		// Description
-		if (etv.getDescription().getText().isEmpty()) {
+		if (etv.getDescription().trim().isEmpty()) {
 			descriptionValid = false;
 		}
 		// Estimated Effort
-		if (!etv.getEstEffort().getText().isEmpty()) {
+		if (!etv.getEstEffort().isEmpty()) {
 			try {
 
-				if (Integer.parseInt(etv.getEstEffort().getText()) <= 0) {
+				if (Integer.parseInt(etv.getEstEffort()) <= 0) {
 					estEffortValid = false;
 					etv.setEstEffortErrorText("Must be a positive integer");
-				} else if (Integer.parseInt(etv.getEstEffort().getText()) > 9999) {
+				} else if (Integer.parseInt(etv.getEstEffort()) > 9999) {
 					estEffortValid = false;
 					etv.setEstEffortErrorText("Must be between 1 and 9999");
 				}
@@ -79,13 +79,13 @@ public class TaskInputController implements KeyListener, FocusListener,
 				etv.setEstEffortErrorText("Must be a positive integer");
 			}
 		}
-		if (!etv.getActEffort().getText().isEmpty()) {
+		if (!etv.getActEffort().isEmpty()) {
 			// Actual Effort
 			try {
-				if (Integer.parseInt(etv.getActEffort().getText()) < 0) {
+				if (Integer.parseInt(etv.getActEffort()) < 0) {
 					actEffortValid = false;
 					etv.setActualEffortErrorText("Can not be less than zero");
-				} else if (Integer.parseInt(etv.getActEffort().getText()) > 9999) {
+				} else if (Integer.parseInt(etv.getActEffort()) > 9999) {
 					actEffortValid = false;
 					etv.setActualEffortErrorText("Must be between 0 and 9999");
 				}

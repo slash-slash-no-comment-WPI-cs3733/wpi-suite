@@ -425,8 +425,8 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the description field
 	 */
-	public JTextArea getDescription() {
-		return descripArea;
+	public String getDescription() {
+		return descripArea.getText();
 	}
 
 	/**
@@ -439,12 +439,12 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * Gets the estimated effort field
+	 * Gets the estimated effort
 	 * 
-	 * @return the estimated effort field
+	 * @return the estimated effort text
 	 */
-	public JTextField getEstEffort() {
-		return estEffortField;
+	public String getEstEffort() {
+		return estEffortField.getText();
 	}
 
 	/**
@@ -452,8 +452,8 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the actual effort field
 	 */
-	public JTextField getActEffort() {
-		return actEffortField;
+	public String getActEffort() {
+		return actEffortField.getText();
 	}
 
 	/**

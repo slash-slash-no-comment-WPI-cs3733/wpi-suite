@@ -344,7 +344,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	 * @return A fixture with the description text box as the target
 	 */
 	private JTextComponentFixture getDescriptionBoxFixture() {
-		return new JTextComponentFixture(fixture.robot, etv.getDescription());
+		return fixture.textBox(EditTaskView.DESCRIPTION);
 	}
 
 	/**

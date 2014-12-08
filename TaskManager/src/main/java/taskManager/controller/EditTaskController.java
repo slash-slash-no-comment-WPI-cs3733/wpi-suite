@@ -375,7 +375,7 @@ public class EditTaskController implements ActionListener {
 
 		// sets the text fields
 		model.setName(etv.getTitleText().trim());
-		model.setDescription(etv.getDescription().getText());
+		model.setDescription(etv.getDescription());
 
 		// grabs the stage from the dropdown box
 		StageModel s = WorkflowModel.getInstance().findStageByName(
@@ -385,16 +385,14 @@ public class EditTaskController implements ActionListener {
 
 		// Try to set the effort values.
 		try {
-			model.setEstimatedEffort(Integer.parseInt(etv.getEstEffort()
-					.getText()));
+			model.setEstimatedEffort(Integer.parseInt(etv.getEstEffort()));
 		} catch (java.lang.NumberFormatException e2) {
 			// Set to false since this value is not set.
 			model.setHasEstimatedEffort(false);
 		}
 
 		try {
-			model.setActualEffort(Integer
-					.parseInt(etv.getActEffort().getText()));
+			model.setActualEffort(Integer.parseInt(etv.getActEffort()));
 		} catch (java.lang.NumberFormatException e2) {
 			model.setHasActualEffort(false);
 		}
@@ -529,7 +527,7 @@ public class EditTaskController implements ActionListener {
 			edited = true;
 		}
 		// Description.
-		else if (!model.getDescription().equals(etv.getDescription().getText())) {
+		else if (!model.getDescription().equals(etv.getDescription())) {
 			edited = true;
 		}
 		// Due Date.
@@ -619,7 +617,7 @@ public class EditTaskController implements ActionListener {
 	public boolean checkEstEffort(TaskModel task) {
 		boolean edited = false;
 		if (task.getEstimatedEffort() == 0) {
-			if (etv.getEstEffort().getText().isEmpty()) {
+			if (etv.getEstEffort().isEmpty()) {
 				edited = false;
 			} else {
 				edited = true;
@@ -628,7 +626,7 @@ public class EditTaskController implements ActionListener {
 			Integer taskEffort = task.getEstimatedEffort();
 			Integer etvEffort;
 			try {
-				etvEffort = Integer.parseInt(etv.getEstEffort().getText());
+				etvEffort = Integer.parseInt(etv.getEstEffort());
 				if (!taskEffort.equals(etvEffort)) {
 					edited = true;
 				}
@@ -651,7 +649,7 @@ public class EditTaskController implements ActionListener {
 	public boolean checkActEffort(TaskModel task) {
 		boolean edited = false;
 		if (task.getActualEffort() == 0) {
-			if (etv.getActEffort().getText().isEmpty()) {
+			if (etv.getActEffort().isEmpty()) {
 				edited = false;
 			} else {
 				edited = true;
@@ -660,7 +658,7 @@ public class EditTaskController implements ActionListener {
 			Integer taskEffort = task.getActualEffort();
 			Integer etvEffort;
 			try {
-				etvEffort = Integer.parseInt(etv.getActEffort().getText());
+				etvEffort = Integer.parseInt(etv.getActEffort());
 				if (!taskEffort.equals(etvEffort)) {
 					edited = true;
 				}
