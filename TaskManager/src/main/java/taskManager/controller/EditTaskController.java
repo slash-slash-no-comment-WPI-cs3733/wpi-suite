@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -59,8 +60,6 @@ public class EditTaskController implements ActionListener {
 
 		etv.setController(this);
 		etv.setFieldController(new TaskInputController(etv));
-		// Set the dropdown menu to first stage and disable the menu.
-		etv.setStageDropdown(0);
 
 		// Disable save button when creating a task.
 		etv.setSaveEnabled(false);
@@ -113,17 +112,7 @@ public class EditTaskController implements ActionListener {
 
 		JanewayModule.tabPaneC.addEditTaskTab(etv);
 
-		// figures out the index of the stage, then sets the drop down to the
-		// stage at that index
-		JComboBox<String> stages = etv.getStages();
-		for (int i = 0; i < stages.getItemCount(); i++) {
-			if (etv.getStages().getItemAt(i) == model.getStage().getName()) {
-				etv.setStageDropdown(i);
-				break;
-			}
-		}
-
-		etv.getStages().setSelectedItem(model.getStage().getName());
+		etv.setSelectedStage(model.getStage().getName());
 
 		// populates the project users list
 		ArrayList<String> projectUserNames = new ArrayList<String>();
@@ -199,8 +188,7 @@ public class EditTaskController implements ActionListener {
 						// grabs the stage from the dropdown box
 						StageModel desiredStage = WorkflowModel.getInstance()
 								.findStageByName(
-										(String) etv.getStages()
-												.getSelectedItem());
+										(String) etv.getSelectedStage());
 
 						// creates a new task model
 						model = new TaskModel(etv.getTitleText(), desiredStage);
@@ -323,19 +311,11 @@ public class EditTaskController implements ActionListener {
 	 */
 	public void reloadData() {
 
-		JComboBox<String> stages = etv.getStages();
-
-		String selectedStage = (String) stages.getSelectedItem();
-
-		stages.removeAllItems();
+		List<String> stageNames = new LinkedList<String>();
 		for (StageModel stage : WorkflowModel.getInstance().getStages()) {
-			stages.addItem(stage.getName());
+			stageNames.add(stage.getName());
 		}
-		// Select the 1st item if the old selected item doesn't exist
-		stages.setSelectedItem(0);
-		if (!(selectedStage == null)) {
-			stages.setSelectedItem(selectedStage);
-		}
+		etv.setStages(stageNames);
 
 		List<Requirement> reqs = RequirementModel.getInstance()
 				.getRequirements();
@@ -379,7 +359,7 @@ public class EditTaskController implements ActionListener {
 
 		// grabs the stage from the dropdown box
 		StageModel s = WorkflowModel.getInstance().findStageByName(
-				(String) etv.getStages().getSelectedItem());
+				(String) etv.getSelectedStage());
 		Requirement r = RequirementModel.getInstance().getRequirementByName(
 				(String) etv.getRequirements().getSelectedItem());
 

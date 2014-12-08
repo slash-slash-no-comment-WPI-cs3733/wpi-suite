@@ -465,6 +465,28 @@ public class EditTaskView extends JPanel {
 		return stages;
 	}
 
+	/**
+	 * 
+	 * Sets the stage dropdown menu's available options.
+	 *
+	 * @param stageNames
+	 *            The list of stageNames to set as options.
+	 */
+	public void setStages(List<String> stageNames) {
+		String selectedStage = (String) getSelectedStage();
+
+		stages.removeAllItems();
+		for (String stageName : stageNames) {
+			stages.addItem(stageName);
+		}
+
+		// Select the 1st item if the old selected item doesn't exist
+		stages.setSelectedItem(0);
+		if (!(selectedStage == null)) {
+			stages.setSelectedItem(selectedStage);
+		}
+	}
+
 	public JComboBox<String> getRequirements() {
 		return requirements;
 	}
@@ -538,28 +560,24 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * set stage dropdown box to the stage associated with the task
 	 * 
-	 * @param n
-	 *            the index of the stage in the workflow
+	 * Set stage dropdown box to select a stage
+	 *
+	 * @param stageName
+	 *            The name of the stage to be selected.
 	 */
-	public void setStageDropdown(int n) {
-		String p = stages.getItemAt(n);
-		stages.setSelectedItem(p);
+	public void setSelectedStage(String stageName) {
+		stages.setSelectedItem(stageName);
 	}
 
 	/**
 	 * 
-	 * Returns the selected stage name. If the selected item cannot be retrieved
-	 * returns an empty string.
+	 * Returns the selected stage name. If it cannot be found, returns null.
 	 *
 	 * @return the selected stage as a String.
 	 */
 	public String getSelectedStage() {
-		if (stages.getSelectedItem() != null) {
-			return stages.getSelectedItem().toString();
-		}
-		return "";
+		return (String) stages.getSelectedItem();
 	}
 
 	/**
