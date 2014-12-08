@@ -69,6 +69,7 @@ public class ClientDataStore implements Data {
 		if (server != null) {
 			server.close();
 		}
+		instance = null;
 	}
 
 	/**
