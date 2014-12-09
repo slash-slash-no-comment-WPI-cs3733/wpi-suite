@@ -28,7 +28,6 @@ import taskManager.draganddrop.DDTransferHandler;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
-import taskManager.view.TabPaneView;
 import taskManager.view.TaskView;
 import taskManager.view.ToolbarView;
 
@@ -41,21 +40,6 @@ import taskManager.view.ToolbarView;
 public class ToolbarController extends DropTargetAdapter implements
 		ActionListener, ItemListener {
 
-	private final TabPaneView tabPaneV;
-	private final TabPaneController tabPaneC;
-	private final ToolbarView view;
-
-	/**
-	 *
-	 * @param tabV
-	 *            tabView used to add tabs to the tab-bar
-	 */
-	public ToolbarController(ToolbarView view, TabPaneView tabV) {
-		this.view = view;
-		this.tabPaneV = tabV;
-		this.tabPaneC = JanewayModule.tabPaneC;
-	}
-
 	/**
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
@@ -66,7 +50,7 @@ public class ToolbarController extends DropTargetAdapter implements
 			String name = ((JButton) button).getName();
 			switch (name) {
 			case ToolbarView.CREATE_TASK:
-				this.tabPaneC.addCreateTaskTab();
+				TabPaneController.getInstance().addCreateTaskTab();
 				break;
 			case ToolbarView.CREATE_STAGE:
 				// add a new stage from workflow controller
@@ -144,7 +128,8 @@ public class ToolbarController extends DropTargetAdapter implements
 						if (!stageC.isEmpty()) {
 							Integer choice = JOptionPane
 									.showConfirmDialog(
-											tabPaneV,
+											TabPaneController.getInstance()
+													.getView(),
 											"The "
 													+ stageV.getName()
 													+ " stage contains tasks. Are you sure you want to delete this stage?",
@@ -159,7 +144,8 @@ public class ToolbarController extends DropTargetAdapter implements
 						model.save();
 						WorkflowController.getInstance().reloadData();
 					} else {
-						JOptionPane.showConfirmDialog(tabPaneC.getTabView(),
+						JOptionPane.showConfirmDialog(TabPaneController
+								.getInstance().getView(),
 								"You cannot delete the last stage.",
 								"Warning - Invalid stage deletion",
 								JOptionPane.CLOSED_OPTION);
@@ -175,15 +161,6 @@ public class ToolbarController extends DropTargetAdapter implements
 		WorkflowController.getInstance().reloadData();
 	}
 
-	public void setProjectName(String projectName) {
-		view.setTitle(projectName);
-
-	}
-
-	public boolean isArchiveShown() {
-		return view.isArchiveShown();
-	}
-
 	/**
 	 * Set toolbar icons during drag action
 	 *
@@ -193,6 +170,7 @@ public class ToolbarController extends DropTargetAdapter implements
 	 *            component being dragged
 	 */
 	public void setIconState(JComponent comp) {
+		ToolbarView view = JanewayModule.getToolV();
 		if (comp instanceof TaskView) {
 			boolean isArchived = ((TaskView) comp).getController().isArchived();
 			if (isArchived) {
@@ -212,6 +190,7 @@ public class ToolbarController extends DropTargetAdapter implements
 	 * Reset the state of the icons
 	 */
 	public void resetIconState() {
+		ToolbarView view = JanewayModule.getToolV();
 		view.setArchiveEnabled(false);
 		view.setDeleteEnabled(false);
 	}

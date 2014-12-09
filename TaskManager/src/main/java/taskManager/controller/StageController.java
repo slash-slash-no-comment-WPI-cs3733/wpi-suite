@@ -69,14 +69,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 		// Get all the tasks associated with this Stage.
 
 		// Get state of archive shown check box.
-		boolean showArchive;
-
-		// Set to false if toolC not initialized yet
-		if (JanewayModule.toolC == null) {
-			showArchive = false;
-		} else {
-			showArchive = JanewayModule.toolC.isArchiveShown();
-		}
+		boolean showArchive = JanewayModule.getToolV().isArchiveShown();
 
 		// Add the tasks.
 		if (model != null) {
@@ -108,6 +101,18 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 			return;
 		}
 		TaskController tc = ((TaskView) panel).getController();
+
+		// if archived tasks are hidden, change index to account for the hidden
+		// tasks
+		if (!JanewayModule.getToolV().isArchiveShown()) {
+			List<TaskModel> taskList = model.getTasks();
+			for (int i = 0; i < index; i++) {
+				if (taskList.get(i).isArchived()) {
+					index++;
+				}
+			}
+		}
+
 		boolean changed = tc.moveToStage(model, index);
 
 		if (changed) {
@@ -243,8 +248,6 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 					} else {
 						model.setName(view.getLabelText());
 					}
-
-					WorkflowModel.getInstance().save();
 
 					// refresh the workflow with the new stage
 					WorkflowController.getInstance().reloadData();
