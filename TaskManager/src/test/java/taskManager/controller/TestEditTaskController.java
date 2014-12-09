@@ -17,6 +17,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 
 import org.fest.swing.fixture.FrameFixture;
 import org.fest.swing.fixture.JTextComponentFixture;
@@ -68,7 +69,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 
 		frame = new JFrame();
 		// frame.setLayout(new FlowLayout());
-		frame.add(JanewayModule.tabPaneC.getTabView());
+		frame.add(TabPaneController.getInstance().getView());
 		fixture = new FrameFixture(frame);
 
 		fixture.show();
@@ -78,7 +79,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	public void testAddTask() {
 
 		// create a new edit task tab
-		JanewayModule.tabPaneC.addEditTaskTab(etv);
+		TabPaneController.getInstance().addEditTaskTab(etv);
 		frame.pack();
 
 		// enter information for a new task
@@ -99,7 +100,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	public void testInvalidTask() {
 
 		// create a new edit task tab
-		JanewayModule.tabPaneC.addEditTaskTab(etv);
+		TabPaneController.getInstance().addEditTaskTab(etv);
 		frame.pack();
 
 		getTitleBoxFixture().enterText("name");
@@ -280,10 +281,12 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	public void cleanup() {
 		fixture.cleanUp();
 		etv = null;
-		// remove tab
-		Component[] tabs = JanewayModule.tabPaneC.getTabView().getComponents();
-		JanewayModule.tabPaneC.removeTabByComponent(tabs[tabs.length - 1]);
 
+		// remove tab
+		Component[] tabs = TabPaneController.getInstance().getView()
+				.getComponents();
+		TabPaneController.getInstance().removeTabByComponent(
+				tabs[tabs.length - 1]);
 	}
 
 	/**
@@ -307,10 +310,11 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		TaskController tc = new TaskController(new TaskView("Task", new Date(),
 				0), task);
 		tc.editTask();
-		Component c = JanewayModule.tabPaneC.getTabView()
+		Component c = TabPaneController.getInstance().getView()
 				.getSelectedComponent();
-		if (c instanceof EditTaskView) {
-			etv = (EditTaskView) c;
+		if (c instanceof JScrollPane
+				&& ((JScrollPane) c).getViewport().getView() instanceof EditTaskView) {
+			etv = (EditTaskView) ((JScrollPane) c).getViewport().getView();
 		} else {
 			fail("oh god what's going on");
 		}
