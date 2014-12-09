@@ -207,7 +207,8 @@ public class ToolbarView extends JToolBar {
 	}
 
 	/**
-	 * Sets if the delete icon is lit up
+	 * Sets if the delete icon is lit up and whether it is currently a drop
+	 * target
 	 *
 	 * @param bool
 	 *            if the delete should be enabled or not
