@@ -71,7 +71,9 @@ public class ToolbarController extends DropTargetAdapter implements
 				WorkflowController.getInstance().addStageToView();
 				break;
 			case ToolbarView.REPORT:
-				this.tabPaneC.addReportsTab(new ReportsToolbarView());
+				ReportsToolbarView rtv = new ReportsToolbarView();
+				rtv.setController(new ReportsManager());
+				this.tabPaneC.addReportsTab(rtv);
 				break;
 			}
 		}

@@ -33,6 +33,7 @@ import javax.swing.ScrollPaneConstants;
 
 import org.jdesktop.swingx.JXDatePicker;
 
+import taskManager.controller.ReportsManager;
 import taskManager.controller.TaskInputController;
 
 //TODO import taskManager.controller.ReportsController;
@@ -96,7 +97,7 @@ public class ReportsToolbarView extends JPanel {
 	// Generate Graph Button
 	private JButton generateGraph;
 
-	// TODO private ReportsController controller;
+	private ReportsManager controller;
 
 	public ReportsToolbarView() {
 
@@ -274,6 +275,11 @@ public class ReportsToolbarView extends JPanel {
 	 * 
 	 *            //TODO help with action listeners for all users }
 	 */
+
+	public void setController(ReportsManager manager) {
+		controller = manager;
+		generateGraph.addActionListener(manager);
+	}
 
 	/**
 	 * Adds the action listener (controller) to this view

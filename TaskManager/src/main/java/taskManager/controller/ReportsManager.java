@@ -10,12 +10,15 @@
 package taskManager.controller;
 
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.Instant;
 import java.time.Period;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import org.jfree.chart.ChartFactory;
@@ -27,6 +30,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 
+import taskManager.JanewayModule;
 import taskManager.model.ActivityModel;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
@@ -38,7 +42,7 @@ import taskManager.model.WorkflowModel;
  * @author Joseph Blackman
  * @version Nov 29, 2014
  */
-public class ReportsManager {
+public class ReportsManager implements ActionListener {
 
 	/**
 	 * An internal data structure for building the bar chart. Sortable and
@@ -280,5 +284,15 @@ public class ReportsManager {
 		((BarRenderer) plot.getRenderer()).setDrawBarOutline(false);
 
 		return new ChartPanel(chart, false);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object button = e.getSource();
+		if (button instanceof JButton) {
+			JPanel chart = createChart("Test", "xlabel", "ylabel");
+			JanewayModule.tabPaneC.addTab("Graph", chart, true);
+			JanewayModule.tabPaneC.getTabView().setSelectedComponent(chart);
+		}
 	}
 }
