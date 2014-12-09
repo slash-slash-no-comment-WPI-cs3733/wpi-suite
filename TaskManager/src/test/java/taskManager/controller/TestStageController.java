@@ -45,8 +45,7 @@ public class TestStageController {
 
 	@Before
 	public void setup() {
-		JanewayModule.toolV.setController(new ToolbarController(
-				JanewayModule.tabPaneC.getTabView()));
+		JanewayModule.toolV.setController(new ToolbarController());
 
 		// create a new workflow model
 		wfm.makeIdenticalTo(new WorkflowModel());
