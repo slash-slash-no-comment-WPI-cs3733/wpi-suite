@@ -80,6 +80,7 @@ public class TaskInputController implements KeyListener, FocusListener,
 			} catch (NumberFormatException e) {
 				estEffortValid = false;
 				etv.setEstEffortErrorText("Must be a positive integer");
+				etv.setEstEffortFieldRed(true);
 			}
 		}
 		if (!etv.getActEffort().getText().isEmpty()) {
@@ -100,7 +101,9 @@ public class TaskInputController implements KeyListener, FocusListener,
 				etv.setActEffortFieldRed(true);
 			}
 		}
-
+		etv.setEstEffortFieldRed(!estEffortValid);
+		etv.setActEffortFieldRed(!actEffortValid);  //set the borders back to black
+		
 		// display the errors
 		etv.setTitleErrorVisible(!titleValid);
 		etv.setDescriptionErrorVisible(!descriptionValid);

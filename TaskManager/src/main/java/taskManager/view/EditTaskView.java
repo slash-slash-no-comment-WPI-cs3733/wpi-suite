@@ -612,6 +612,9 @@ public class EditTaskView extends JPanel {
 		if(red){
 		estEffortField.setBorder(BorderFactory.createLineBorder(Color.red));
 	}
+		else{
+			estEffortField.setBorder(BorderFactory.createLineBorder(Color.black));
+		}
 	}
 	
 	
@@ -625,6 +628,9 @@ public class EditTaskView extends JPanel {
 	public void setActEffortFieldRed(boolean red){
 		if(red){
 		actEffortField.setBorder(BorderFactory.createLineBorder(Color.red));
+	}
+		else{
+			actEffortField.setBorder(BorderFactory.createLineBorder(Color.black));
 	}
 	}
 
