@@ -24,6 +24,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
@@ -84,7 +85,9 @@ public class EditTaskView extends JPanel {
 	private JXDatePicker dateField;
 	private JTextField estEffortField;
 	private JTextField actEffortField;
-	private JPanel window;
+	private JPanel fields;
+	private JSplitPane window;
+	private JPanel activitiesView;
 
 	private Mode mode;
 
@@ -120,14 +123,13 @@ public class EditTaskView extends JPanel {
 		// TODO: User Mode to switch between create and edit views
 		// When Task added make EditTask take in a Task called currTask
 		this.mode = mode;
-
-		window = new JPanel(new MigLayout());
+		fields = new JPanel(new MigLayout());
 
 		this.setLayout(new FlowLayout());
 		Dimension panelSize = getPreferredSize();
 		panelSize.width = 1100; // TODO
 		panelSize.height = 500; // Decide size
-		window.setPreferredSize(panelSize);
+		fields.setPreferredSize(panelSize);
 		this.setPreferredSize(panelSize);
 		this.setMinimumSize(panelSize);
 
@@ -253,9 +255,9 @@ public class EditTaskView extends JPanel {
 		stages = new JComboBox<String>();
 		stages.setName(STAGES);
 
-		window.setLayout(new MigLayout());
+		fields.setLayout(new MigLayout());
 
-		window.add(titleLabel);
+		fields.add(titleLabel);
 
 		// This is where the 6 primary panels are defined
 		JPanel Spacer = new JPanel(new MigLayout());
@@ -332,13 +334,17 @@ public class EditTaskView extends JPanel {
 
 		// The finished panels are added to the main window panel
 
-		window.add(Spacer, "dock north");
-		window.add(BasicInfo, "w 30%, h 50%, gapbottom 20px");
-		window.add(Users, "w 30%, h 50%, gapbottom 20px, wrap");
-		window.add(Effort, "w 30%, h 20%");
-		window.add(Requirements, "w 30%, h 20%");
-		window.add(EditSaveCancel, "dock south, h 10%");
-		window.add(Activities, "w 25%, dock east, gapleft 5px");
+		fields.add(Spacer, "dock north");
+		fields.add(BasicInfo, "w 30%, h 50%, gapbottom 20px");
+		fields.add(Users, "w 30%, h 50%, gapbottom 20px, wrap");
+		fields.add(Effort, "w 30%, h 20%");
+		fields.add(Requirements, "w 30%, h 20%");
+		fields.add(EditSaveCancel, "dock south, h 10%");
+		fields.add(Activities, "w 25%, dock east, gapleft 5px");
+
+		window = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, fields,
+				activitiesView);
+		window.setOneTouchExpandable(true);
 		this.add(window);
 	}
 
@@ -813,7 +819,7 @@ public class EditTaskView extends JPanel {
 
 	// Used for tests
 	public JPanel getWindow() {
-		return this.window;
+		return this.fields;
 	}
 
 	/**
