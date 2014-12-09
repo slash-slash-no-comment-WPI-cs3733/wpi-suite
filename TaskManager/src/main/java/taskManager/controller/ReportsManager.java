@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.Instant;
 import java.time.Period;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -21,6 +22,7 @@ import java.util.TreeSet;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JList;
 import javax.swing.JPanel;
 
 import org.jfree.chart.ChartFactory;
@@ -327,11 +329,16 @@ public class ReportsManager implements ActionListener {
 					.getTime());
 			Instant end = Instant.ofEpochMilli(rtv.getEndDate().getDate()
 					.getTime());
-			// Set<String> users = rtv.getUsers();
+			Set<String> users = new HashSet<String>();
+			JList<JCheckBox> usersCheckbox = rtv.getUsers();
+			for (User u : JanewayModule.users) {
+				users.add(u.getName());
+			}
 			String stageStr = rtv.getSelectedStage();
 			StageModel stage = WorkflowModel.getInstance().findStageByName(
 					stageStr);
-			findVelocityData(null, start, end, false, stage);
+			findVelocityData(users, start, end, false, stage);
+			generateDataset(false, Period.ofDays(1));
 			JPanel chart = createChart("Test", "xlabel", "ylabel");
 			JanewayModule.tabPaneC.addTab("Graph", chart, true);
 			JanewayModule.tabPaneC.getTabView().setSelectedComponent(chart);
