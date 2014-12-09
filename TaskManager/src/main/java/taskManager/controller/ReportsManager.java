@@ -22,7 +22,6 @@ import java.util.TreeSet;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JList;
 import javax.swing.JPanel;
 
 import org.jfree.chart.ChartFactory;
@@ -330,9 +329,9 @@ public class ReportsManager implements ActionListener {
 			Instant end = Instant.ofEpochMilli(rtv.getEndDate().getDate()
 					.getTime());
 			Set<String> users = new HashSet<String>();
-			JList<JCheckBox> usersCheckbox = rtv.getUsers();
+			// JList<JCheckBox> usersCheckbox = rtv.getUsers();
 			for (User u : JanewayModule.users) {
-				users.add(u.getName());
+				users.add(u.getUsername());
 			}
 			String stageStr = rtv.getSelectedStage();
 			StageModel stage = WorkflowModel.getInstance().findStageByName(
