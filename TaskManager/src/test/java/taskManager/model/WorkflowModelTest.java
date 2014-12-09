@@ -37,6 +37,8 @@ public class WorkflowModelTest {
 	public void setup() {
 		JanewayModule.reset();
 
+		wm = WorkflowModel.getInstance();
+
 		sm1 = new StageModel("Stage1");
 		sm2 = new StageModel("Stage2");
 	}

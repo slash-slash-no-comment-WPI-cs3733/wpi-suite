@@ -24,6 +24,7 @@ import org.junit.Test;
 
 import taskManager.JanewayModule;
 import taskManager.controller.WorkflowController;
+import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import edu.wpi.cs.wpisuitetng.network.Request;
 
@@ -34,7 +35,6 @@ import edu.wpi.cs.wpisuitetng.network.Request;
  */
 public class TestDropAreaPanel {
 
-	private WorkflowController wfc;
 	private FrameFixture fixture;
 	private TaskModel task;
 	private boolean shouldFail = false;
@@ -44,8 +44,12 @@ public class TestDropAreaPanel {
 
 		JanewayModule.reset();
 
+		WorkflowController wfc = WorkflowController.getInstance();
+
+		StageModel sm = new StageModel("TestStage");
+
 		// add a task to the workflow
-		task = new TaskModel("test", wfc.getModel().getStages().get(0));
+		task = new TaskModel("test", sm);
 		task.setDueDate(new Date(0));
 
 		wfc.reloadData();

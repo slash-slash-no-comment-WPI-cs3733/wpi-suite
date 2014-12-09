@@ -16,6 +16,7 @@ import javax.swing.ImageIcon;
 import taskManager.controller.TabPaneController;
 import taskManager.controller.ToolbarController;
 import taskManager.controller.WorkflowController;
+import taskManager.model.StageModel;
 import taskManager.view.ToolbarView;
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
 import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
@@ -38,15 +39,20 @@ public class JanewayModule implements IJanewayModule {
 	public static User[] users = {};
 	public static String currentUser = null; // the username of the current user
 
-	static {
-		reset();
-	}
-
 	/**
 	 * Construct a blank tab
 	 */
 	public JanewayModule() {
-		reset();
+		toolV = new ToolbarView();
+		toolV.setController(new ToolbarController());
+
+		// Add default stages
+		new StageModel("New");
+		new StageModel("Scheduled");
+		new StageModel("In Progress");
+		new StageModel("Complete");
+
+		WorkflowController.getInstance().reloadData();
 
 		tabs = new ArrayList<JanewayTabModel>();
 		JanewayTabModel tab = new JanewayTabModel("Task Manager",

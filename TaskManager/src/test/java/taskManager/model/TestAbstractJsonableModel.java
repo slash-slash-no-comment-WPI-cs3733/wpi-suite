@@ -33,6 +33,8 @@ public class TestAbstractJsonableModel {
 
 		JanewayModule.reset();
 
+		wm = WorkflowModel.getInstance();
+
 		sm1 = new StageModel("T");
 		sm2 = new StageModel("T2");
 		tm1 = new TaskModel("T", sm1);

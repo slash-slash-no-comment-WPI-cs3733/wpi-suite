@@ -45,7 +45,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	private WorkflowModel model;
 	private boolean hasNewStageView;
 
-	private static WorkflowController instance = null;
+	private static WorkflowController instance;
 
 	/**
 	 * Hide Singleton constructor
@@ -66,11 +66,6 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		view = new WorkflowView(this);
 		model = WorkflowModel.getInstance();
 		model.reset();
-
-		new StageModel("New");
-		new StageModel("Scheduled");
-		new StageModel("In Progress");
-		new StageModel("Complete");
 
 		hasNewStageView = false;
 
