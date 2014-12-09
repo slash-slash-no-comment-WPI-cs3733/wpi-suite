@@ -107,7 +107,6 @@ public class EditTaskView extends JPanel {
 	private ActivityView activityPane;
 
 	private List<ActivityModel> activities;
-	private List<ActivityModel> newActivities;
 
 	private TaskInputController fieldC;
 
@@ -132,7 +131,6 @@ public class EditTaskView extends JPanel {
 		this.setMinimumSize(panelSize);
 
 		activities = new ArrayList<ActivityModel>();
-		newActivities = new ArrayList<ActivityModel>();
 
 		// JLabels
 		JLabel titleLabel = new JLabel("Title ");
@@ -695,15 +693,16 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * Adds comment to the activities list and refreshes the activities panel.
 	 *
+	 * @return the resulting ActivityModel added.
 	 */
-	public void addComment() {
+	public ActivityModel addComment() {
 		ActivityModel act = new ActivityModel(commentsField.getText(),
 				activityModelType.COMMENT);
 		activities.add(act);
-		newActivities.add(act);
 		commentsField.setText("");
 		reloadActivitiesPanel();
 		fieldC.validate();
+		return act;
 	}
 
 	/**
@@ -766,22 +765,11 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * 
-	 * Returns the new activities.
-	 *
-	 * @return
-	 */
-	public List<ActivityModel> getNewActivities() {
-		return newActivities;
-	}
-
-	/**
-	 * 
 	 * Clears the activities.
 	 *
 	 */
 	public void clearActivities() {
 		activities.clear();
-		newActivities.clear();
 	}
 
 	/**

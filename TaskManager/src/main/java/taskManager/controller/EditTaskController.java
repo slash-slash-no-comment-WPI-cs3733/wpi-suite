@@ -317,8 +317,10 @@ public class EditTaskController implements ActionListener {
 				break;
 
 			case EditTaskView.SUBMIT_COMMENT:
-				// adds a comment activity
-				etv.addComment();
+				// adds a comment.
+				ActivityModel comment = etv.addComment();
+				// add immediately to the model.
+				model.addActivity(comment);
 				break;
 			}
 		}
@@ -425,12 +427,6 @@ public class EditTaskController implements ActionListener {
 		model.setReq(r);
 		WorkflowModel.getInstance().save(); // TODO make this call an
 											// appropriate save method.
-
-		// Add the newly added activities.
-		List<ActivityModel> newActivities = etv.getNewActivities();
-		for (ActivityModel act : newActivities) {
-			model.addActivity(act);
-		}
 
 		// exit the edit view, this refreshes the workflow
 		this.returnToWorkflowView();
