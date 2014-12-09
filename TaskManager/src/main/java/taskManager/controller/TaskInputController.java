@@ -8,7 +8,7 @@
  *******************************************************************************/
 package taskManager.controller;
 
-import java.awt.Point;
+import java.awt.Component;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
@@ -20,7 +20,6 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
 import taskManager.view.EditTaskView;
-import taskManager.view.InputErrorView;
 
 /**
  * The controller for validating the inputs while editing or creating a task
@@ -35,9 +34,16 @@ public class TaskInputController implements KeyListener, FocusListener,
 	private final EditTaskView etv;
 	private boolean addUsersSelected = false;
 	private boolean removeUsersSelected = false;
+	private Component fieldWithFocus;
+
+	boolean titleValid = true;
+	boolean descriptionValid = true;
+	boolean estEffortValid = true;
+	boolean actEffortValid = true;
 
 	public TaskInputController(EditTaskView etv) {
 		this.etv = etv;
+		fieldWithFocus = null;
 		checkFields();
 	}
 
@@ -50,10 +56,10 @@ public class TaskInputController implements KeyListener, FocusListener,
 		addUsersSelected = !etv.getProjectUsersList().isSelectionEmpty();
 		removeUsersSelected = !etv.getUsersList().isSelectionEmpty();
 
-		boolean titleValid = true;
-		boolean descriptionValid = true;
-		boolean estEffortValid = true;
-		boolean actEffortValid = true;
+		titleValid = true;
+		descriptionValid = true;
+		estEffortValid = true;
+		actEffortValid = true;
 		// checks each required field and determines if it meets the
 		// requirements for that field
 
@@ -69,37 +75,26 @@ public class TaskInputController implements KeyListener, FocusListener,
 		if (!etv.getEstEffort().getText().isEmpty()) {
 			try {
 
-				if (Integer.parseInt(etv.getEstEffort().getText()) <= 0) {
+				if (Integer.parseInt(etv.getEstEffort().getText()) <= 0
+						|| Integer.parseInt(etv.getEstEffort().getText()) > 9999) {
 					estEffortValid = false;
-					etv.setEstEffortErrorText("Must be a positive integer");
 					etv.setEstEffortFieldRed(true);
-				} else if (Integer.parseInt(etv.getEstEffort().getText()) > 9999) {
-					estEffortValid = false;
-					etv.setEstEffortErrorText("Must be between 1 and 9999");
-					etv.setEstEffortFieldRed(true);
-
 				}
 			} catch (NumberFormatException e) {
 				estEffortValid = false;
-				etv.setEstEffortErrorText("Must be a positive integer");
 				etv.setEstEffortFieldRed(true);
 			}
 		}
 		if (!etv.getActEffort().getText().isEmpty()) {
 			// Actual Effort
 			try {
-				if (Integer.parseInt(etv.getActEffort().getText()) < 0) {
+				if (Integer.parseInt(etv.getActEffort().getText()) < 0
+						|| Integer.parseInt(etv.getActEffort().getText()) > 9999) {
 					actEffortValid = false;
-					etv.setActualEffortErrorText("Can not be less than zero");
-					etv.setActEffortFieldRed(true);
-				} else if (Integer.parseInt(etv.getActEffort().getText()) > 9999) {
-					actEffortValid = false;
-					etv.setActualEffortErrorText("Must be between 0 and 9999");
 					etv.setActEffortFieldRed(true);
 				}
 			} catch (NumberFormatException e) {
 				actEffortValid = false;
-				etv.setActualEffortErrorText("Must be a non negative integer");
 				etv.setActEffortFieldRed(true);
 			}
 		}
@@ -121,18 +116,42 @@ public class TaskInputController implements KeyListener, FocusListener,
 	 * validate the inputs
 	 */
 	public void validate() {
+
+		if (fieldWithFocus != null && !checkFields()) {
+			switch (fieldWithFocus.getName()) {
+			case EditTaskView.TITLE:
+				if (!titleValid) {
+					etv.showTitleError(true);
+				}
+				break;
+			case EditTaskView.DESCRIP:
+				if (!descriptionValid) {
+					etv.showDescripError(true);
+				}
+				break;
+			case EditTaskView.EST_EFFORT:
+				if (!estEffortValid) {
+					etv.showEstEffortError(true);
+				}
+				break;
+
+			case EditTaskView.ACT_EFFORT:
+				if (!actEffortValid) {
+					etv.showActEffortError(true);
+				}
+				break;
+
+			}
+		} else {
+			etv.showActEffortError(false);
+			etv.showDescripError(false);
+			etv.showEstEffortError(false);
+			etv.showTitleError(false);
+		}
+		// enable or disable the appropriate buttons
 		etv.setSaveEnabled(this.checkFields());
 		etv.setAddUserEnabled(addUsersSelected);
 		etv.setRemoveUserEnabled(removeUsersSelected);
-	}
-
-	/**
-	 * creates a new error message and adds it to the view
-	 * 
-	 * @param error
-	 */
-	public void generateError(String error, Point p) {
-		etv.addError(new InputErrorView(error), p);
 	}
 
 	@Override
@@ -152,11 +171,13 @@ public class TaskInputController implements KeyListener, FocusListener,
 
 	@Override
 	public void focusGained(FocusEvent e) {
+		fieldWithFocus = e.getComponent();
 		validate();
 	}
 
 	@Override
 	public void focusLost(FocusEvent e) {
+		fieldWithFocus = null;
 		validate();
 	}
 
