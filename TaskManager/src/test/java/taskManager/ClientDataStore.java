@@ -9,8 +9,9 @@
  * Contributors:rchamer, bgaffey, mpdelladonna
  *
  *******************************************************************************/
-package edu.wpi.cs.wpisuitetng.database;
+package taskManager;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -27,20 +28,27 @@ import com.db4o.cs.config.ServerConfiguration;
 import com.db4o.query.Predicate;
 import com.db4o.reflect.jdk.JdkReflector;
 
+import edu.wpi.cs.wpisuitetng.database.Data;
 import edu.wpi.cs.wpisuitetng.exceptions.WPISuiteException;
 import edu.wpi.cs.wpisuitetng.modules.Model;
 import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
-public class DataStore implements Data {
+/**
+ * DataStore copied and modified from WPISuite for use in testing by team
+ * //nocomment
+ * 
+ * Not a Mock; actually creates a database
+ */
+public class ClientDataStore implements Data {
 
 	/*
 	 * Change the following line to rename the database for this instance of WPI
 	 * Suite running on the server. The default line is: static String
 	 * WPI_TNG_DB ="WPISuite_TNG_local";
 	 */
-	static String WPI_TNG_DB = "Team5Iteration3.db";
-	static DataStore instance = null;
+	static String WPI_TNG_DB = "TestDatabase.db";
+	static ClientDataStore instance = null;
 	static ObjectContainer theDB;
 	static ObjectServer server;
 	static int PORT = 0;
@@ -48,18 +56,36 @@ public class DataStore implements Data {
 	static String DB4oPass = "password";
 	static String DB4oServer = "localhost";
 
-	private static final Logger logger = Logger.getLogger(DataStore.class
+	private static final Logger logger = Logger.getLogger(ClientDataStore.class
 			.getName());
+
+	/**
+	 * Allow Database reset
+	 *
+	 */
+	public static void deleteDataStore() {
+		if (server != null) {
+			server.close();
+		}
+
+		// There are issues deleting things one at a time, so delete the whole
+		// file
+		File dbFile = new File(WPI_TNG_DB);
+		if (dbFile.delete()) {
+			logger.log(Level.INFO, "Deleted database file");
+		}
+		instance = null;
+	}
 
 	/**
 	 * Get the single instance of the Database
 	 *
 	 * @return the only instance of the Database
 	 */
-	public static DataStore getDataStore() {
+	public static ClientDataStore getDataStore() {
 		if (instance == null) {
 			logger.log(Level.FINE, "Opening connection to db4o database...");
-			instance = new DataStore();
+			instance = new ClientDataStore();
 			// accessLocalServer
 			// Please see Wiki for more information on the ServerConfiguration.
 			ServerConfiguration config = Db4oClientServer

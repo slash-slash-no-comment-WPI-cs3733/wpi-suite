@@ -24,7 +24,6 @@ import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.view.Colors;
 import taskManager.view.EditTaskView;
-import taskManager.view.EditTaskView.Mode;
 import taskManager.view.TaskInfoPreviewView;
 import taskManager.view.TaskView;
 import taskManager.view.ToolbarView;
@@ -65,15 +64,13 @@ public class TaskController implements MouseListener, MouseMotionListener {
 					"You must pass a valid TaskModel.");
 		}
 
-		this.tabPaneC = JanewayModule.tabPaneC;
+		this.tabPaneC = TabPaneController.getInstance();
 		this.model = model;
 		this.view = new TaskView(this.model.getName(), this.model.getDueDate(),
 				this);
 		sm = model.getStage();
 
-		etv = new EditTaskView(Mode.EDIT);
-		etv.setController(new EditTaskController(etv));
-		etv.setFieldController(new TaskInputValidator(etv));
+		etv = new EditTaskController(model).getView();
 
 		assignedUsers = this.model.getAssigned();
 
@@ -123,8 +120,8 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	 * @param bool
 	 *            The boolean to set the task's isArchived field.
 	 */
-	public void switchArchived() {
-		model.switchArchived();
+	public void setArchived(boolean a) {
+		model.setArchived(a);
 	}
 
 	/**
@@ -197,8 +194,6 @@ public class TaskController implements MouseListener, MouseMotionListener {
 		etv.setActivities(tskActivities);
 		etv.setActivitiesPanel(tskActivities);
 
-		etv.setRefreshEnabled(true);
-
 		// set the requirement dropdown
 		if (req != null) {
 			etv.getRequirements().setSelectedItem(req.getName());
@@ -211,11 +206,13 @@ public class TaskController implements MouseListener, MouseMotionListener {
 
 		// Set text for archive button.
 		if (model.isArchived()) {
-			etv.getArchiveButton().setText("Unarchive");
+			etv.setArchiveButtonText("Unarchive");
 		} else {
-			etv.getArchiveButton().setText("Archive");
+			etv.setArchiveButtonText("Archive");
 		}
 		etv.setDeleteEnabled(model.isArchived());
+
+		TabPaneController.getInstance().addEditTaskTab(etv);
 	}
 
 	/**
@@ -280,8 +277,8 @@ public class TaskController implements MouseListener, MouseMotionListener {
 				.getParent().getParent().getLocation();
 		Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
 				view.getLocation().y);
-		JanewayModule.tabPaneC.getTabView().getWorkflowController()
-				.setTaskInfo(new TaskInfoPreviewView(model, this, infoLoc));
+		WorkflowController.getInstance().setTaskInfo(
+				new TaskInfoPreviewView(model, this, infoLoc));
 
 		thisTaskInfoOut = true;
 
@@ -316,6 +313,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		// Enable/disable the archive and delete icons when dragged.
+
 		boolean isArchived = model.isArchived();
 		if (isArchived) {
 			JanewayModule.toolV.setArchiveIcon(ToolbarView.UNARCHIVE);

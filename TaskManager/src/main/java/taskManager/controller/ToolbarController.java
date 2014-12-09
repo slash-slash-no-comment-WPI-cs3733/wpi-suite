@@ -22,12 +22,10 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-import taskManager.JanewayModule;
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
-import taskManager.view.TabPaneView;
 import taskManager.view.TaskView;
 import taskManager.view.ToolbarView;
 
@@ -40,19 +38,6 @@ import taskManager.view.ToolbarView;
 public class ToolbarController extends DropTargetAdapter implements
 		ActionListener, ItemListener {
 
-	private final TabPaneView tabPaneV;
-	private final TabPaneController tabPaneC;
-
-	/**
-	 * 
-	 * @param tabV
-	 *            tabView used to add tabs to the tab-bar
-	 */
-	public ToolbarController(TabPaneView tabV) {
-		this.tabPaneV = tabV;
-		this.tabPaneC = JanewayModule.tabPaneC;
-	}
-
 	/**
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
@@ -63,18 +48,13 @@ public class ToolbarController extends DropTargetAdapter implements
 			String name = ((JButton) button).getName();
 			switch (name) {
 			case ToolbarView.CREATE_TASK:
-				this.tabPaneC.addCreateTaskTab();
+				TabPaneController.getInstance().addCreateTaskTab();
 				break;
 			case ToolbarView.CREATE_STAGE:
 				// add a new stage from workflow controller
-				tabPaneV.getWorkflowController().addStageToView();
-
+				WorkflowController.getInstance().addStageToView();
 				break;
 			case ToolbarView.REPORT:
-				break;
-
-			case ToolbarView.REFRESH:
-				tabPaneV.refreshWorkflow();
 				break;
 			}
 		}
@@ -106,19 +86,18 @@ public class ToolbarController extends DropTargetAdapter implements
 						taskV.getController().deleteTask(); // remove from model
 						taskV.getParent().remove(taskV); // remove from view
 						// Reload and save workflow.
-						JanewayModule.tabPaneC.getTabView().reloadWorkflow();
-						JanewayModule.tabPaneC.getTabView()
-								.getWorkflowController().repaintView();
+						WorkflowController.getInstance().reloadData();
+						WorkflowController.getInstance().repaintView();
 						WorkflowModel.getInstance().save();
 						DDTransferHandler.dragSaved = true;
 					}
 					break;
 				case ToolbarView.ARCHIVE:
-					taskV.getController().switchArchived();
+					taskV.getController().setArchived(
+							taskV.getController().isArchived());
 					// Reload and save workflow.
-					JanewayModule.tabPaneC.getTabView().reloadWorkflow();
-					JanewayModule.tabPaneC.getTabView().getWorkflowController()
-							.repaintView();
+					WorkflowController.getInstance().reloadData();
+					WorkflowController.getInstance().repaintView();
 					WorkflowModel.getInstance().save();
 					DDTransferHandler.dragSaved = true;
 					break;
@@ -146,7 +125,8 @@ public class ToolbarController extends DropTargetAdapter implements
 						if (!stageC.isEmpty()) {
 							Integer choice = JOptionPane
 									.showConfirmDialog(
-											tabPaneV,
+											TabPaneController.getInstance()
+													.getView(),
 											"The "
 													+ stageV.getName()
 													+ " stage contains tasks. Are you sure you want to delete this stage?",
@@ -156,23 +136,26 @@ public class ToolbarController extends DropTargetAdapter implements
 								return;
 							}
 						}
+						stageC.deleteStage();
+						DDTransferHandler.dragSaved = true;
+						model.save();
+						WorkflowController.getInstance().reloadData();
+					} else {
+						JOptionPane.showConfirmDialog(TabPaneController
+								.getInstance().getView(),
+								"You cannot delete the last stage.",
+								"Warning - Invalid stage deletion",
+								JOptionPane.CLOSED_OPTION);
 					}
-					stageC.deleteStage();
-					DDTransferHandler.dragSaved = true;
-					model.save();
-					tabPaneC.getTabView().reloadWorkflow();
 				}
-
-			}
-
-		}
+			} // End switch
+		} // End instanceof
 	}
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		// Reload the workflow view.
-		JanewayModule.tabPaneC.getTabView().getWorkflowController()
-				.clearWorkflow(false);
-		JanewayModule.tabPaneC.getTabView().reloadWorkflow();
+		WorkflowController.getInstance().clearWorkflow(false);
+		WorkflowController.getInstance().reloadData();
 	}
 }

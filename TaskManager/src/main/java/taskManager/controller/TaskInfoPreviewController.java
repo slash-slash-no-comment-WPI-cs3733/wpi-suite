@@ -13,7 +13,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-import taskManager.JanewayModule;
 import taskManager.view.TaskInfoPreviewView;
 
 /**
@@ -40,8 +39,7 @@ public class TaskInfoPreviewController implements ActionListener {
 				// Fall through
 			case TaskInfoPreviewView.X:
 				// remove any taskInfo bubbles from the workflow
-				JanewayModule.tabPaneC.getTabView().getWorkflowController()
-						.clearWorkflow(true);
+				WorkflowController.getInstance().clearWorkflow(true);
 				break;
 			}
 		}

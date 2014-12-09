@@ -9,6 +9,7 @@
 package taskManager.view;
 
 import java.awt.Component;
+import java.awt.dnd.DropTarget;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLayeredPane;
@@ -16,6 +17,7 @@ import javax.swing.JLayeredPane;
 import taskManager.controller.WorkflowController;
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DropAreaPanel;
+import taskManager.draganddrop.DropTargetRedispatcher;
 
 /**
  * @author Beth Martino
@@ -33,18 +35,19 @@ public class WorkflowView extends JLayeredPane {
 	/**
 	 * Constructor for WorkflowView.
 	 */
-	public WorkflowView() {
+	public WorkflowView(WorkflowController controller) {
+		this.controller = controller;
+		this.addMouseListener(controller);
 
 		// The stages panel accepts stage drops
 		stages = new DropAreaPanel(DDTransferHandler.getStageFlavor());
+		stages.setSaveListener(controller);
 
 		// arranges the stages horizontally and evenly spaced
 		this.setLayout(new WorkflowLayout());
 
 		stages.setLayout(new BoxLayout(stages, BoxLayout.LINE_AXIS));
 		this.add(stages);
-
-		this.addMouseListener(controller);
 	}
 
 	/**
@@ -60,6 +63,10 @@ public class WorkflowView extends JLayeredPane {
 			stages.setLayout(new BoxLayout(stages, BoxLayout.LINE_AXIS));
 			stages.setSaveListener(controller);
 			add(stages);
+
+			// Redispatch drag events down to DropAreaPanel
+			this.setDropTarget(new DropTarget(this, new DropTargetRedispatcher(
+					stages, DDTransferHandler.getStageFlavor())));
 		}
 		stages.add(stv);
 	}
@@ -93,24 +100,23 @@ public class WorkflowView extends JLayeredPane {
 	}
 
 	/**
-	 * returns the requested StageView
+	 * returns the requested StageView, or creates one if it does not exist
 	 * 
 	 * @param name
 	 *            the name of the stageview to be returned
 	 * @return the requested stageview
 	 */
 	public StageView getStageViewByName(String name) {
-		try {
-			// goes through all of the stage views it contains until it finds
-			// the one that matches the name
+		if (name == null) {
+			throw new NullPointerException("name must not be null");
+		}
+		// goes through all of the stage views it contains until it finds
+		// the one that matches the name
 
-			for (int i = 1; i == stages.getComponents().length; i++) {
-				if (stages.getComponent(i).getName().equals(name)) {
-					return (StageView) stages.getComponent(i);
-				}
+		for (Component c : stages.getComponents()) {
+			if (name.equals(c.getName())) {
+				return (StageView) c;
 			}
-		} catch (NullPointerException e) {
-			System.out.println("How did you actually do this?");
 		}
 		return new StageView(name);
 	}

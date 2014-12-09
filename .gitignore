@@ -10,11 +10,17 @@ javadoc
 test-results
 dist
 
+# Database Files #
+*.db
+
 # Package Files #
 *.war
 *.ear
 *.jar
 *.eml
+
+#Test Screenshots
+*.png
 
 # Module jar files #
 Janeway/modules/*.jar

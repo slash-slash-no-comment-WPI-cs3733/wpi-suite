@@ -159,7 +159,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		if (!stageList.contains(stage)) {
 			logger.log(Level.WARNING,
 					"Tried to remove a stage that did not exist.");
-			throw new IndexOutOfBoundsException("No such stage.");
+			throw new IllegalArgumentException("No such stage.");
 		}
 		stageList.remove(stage);
 		return stage;
@@ -313,21 +313,6 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		// interaction)
 		request.setReadTimeout(WorkflowModel.timeout + 5 * 1000);
 		request.send();
-	}
-
-	/**
-	 * Compare a given object to the current workflow
-	 *
-	 * @param o
-	 *            The object to compare against
-	 * @return Whether the object matches the current workflow.
-	 */
-	@Override
-	public Boolean identify(Object o) {
-		if (o instanceof WorkflowModel) {
-			return ((WorkflowModel) o).getID().equals(this.getID());
-		}
-		return false;
 	}
 
 	@Override

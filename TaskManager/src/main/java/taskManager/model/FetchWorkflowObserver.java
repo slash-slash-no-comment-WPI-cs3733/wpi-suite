@@ -8,7 +8,7 @@
  *******************************************************************************/
 package taskManager.model;
 
-import taskManager.JanewayModule;
+import taskManager.controller.WorkflowController;
 import edu.wpi.cs.wpisuitetng.network.models.IRequest;
 import edu.wpi.cs.wpisuitetng.network.models.ResponseModel;
 
@@ -67,7 +67,7 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 		model.makeIdenticalTo(workflow);
 		model.rebuildAllRefs();
 
-		JanewayModule.tabPaneC.getTabView().reloadWorkflow();
+		WorkflowController.getInstance().reloadData();
 
 		// restart the connection
 		restartConnection();

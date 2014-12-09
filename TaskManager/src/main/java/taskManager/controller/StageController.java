@@ -56,7 +56,7 @@ public class StageController implements DropAreaSaveListener,
 	 * Constructor for the StageController gets all the tasks from the
 	 * StageModel, creates the corresponding TaskView and TaskControllers for
 	 * each, and final adds all of the TaskViews to the UI.
-	 * 
+	 *
 	 * @param view
 	 *            the corresponding StageView object
 	 * @param model
@@ -83,7 +83,7 @@ public class StageController implements DropAreaSaveListener,
 			for (TaskModel task : tasks) {
 				// Add only if task is not archived or when task is archived and
 				// archive shown is set to true.
-				if (!task.isArchived() || (task.isArchived() && showArchive)) {
+				if (!task.isArchived() || showArchive) {
 					// create stage view and controller.
 					this.view.addTaskView(new TaskController(task).getView());
 				}
@@ -104,6 +104,18 @@ public class StageController implements DropAreaSaveListener,
 			return;
 		}
 		TaskController tc = ((TaskView) panel).getController();
+
+		// if archived tasks are hidden, change index to account for the hidden
+		// tasks
+		if (!JanewayModule.toolV.isArchiveShown()) {
+			List<TaskModel> taskList = model.getTasks();
+			for (int i = 0; i < index; i++) {
+				if (taskList.get(i).isArchived()) {
+					index++;
+				}
+			}
+		}
+
 		boolean changed = tc.moveToStage(model, index);
 
 		if (changed) {
@@ -190,8 +202,7 @@ public class StageController implements DropAreaSaveListener,
 		} else if (!newStage) {
 			// this will remove any changeTitle textboxes or taskInfo bubbles
 			// from the workflow
-			JanewayModule.tabPaneC.getTabView().getWorkflowController()
-					.clearWorkflow(true);
+			WorkflowController.getInstance().clearWorkflow(true);
 		}
 	}
 
@@ -250,13 +261,12 @@ public class StageController implements DropAreaSaveListener,
 					if (model == null) {
 						model = new StageModel(view.getLabelText());
 					} else {
-						model.changeStageName(view.getLabelText());
+						model.setName(view.getLabelText());
 					}
 					this.newStage = false;
 					// refresh the workflow with the new stage
 					this.switchTitle(false);
-					JanewayModule.tabPaneC.getTabView().getWorkflowController()
-							.reloadData();
+					WorkflowController.getInstance().reloadData();
 				}
 				break;
 			case StageView.X:
