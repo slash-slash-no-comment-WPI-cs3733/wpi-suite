@@ -61,18 +61,28 @@ public class TaskView extends JPanel implements Transferable {
 	 *            the estimated effort of the task
 	 */
 	public TaskView(String name, Date duedate, int users, int comments) {
+		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
+		this.setAlignmentX(LEFT_ALIGNMENT);
 
-		// organizes the data in a vertical list
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		// creates an empty space around the data
+		JPanel spacer = new JPanel();
+		spacer.setLayout(new BoxLayout(spacer, BoxLayout.Y_AXIS));
+		spacer.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+		spacer.setOpaque(false);
+		spacer.setAlignmentX(LEFT_ALIGNMENT);
+
+		// sets the border
+		// TODO sort this out
 		final Border raisedbevel = BorderFactory
 				.createEtchedBorder(EtchedBorder.LOWERED);
 		final TitledBorder title = BorderFactory
 				.createTitledBorder(raisedbevel);
 		title.setTitlePosition(TitledBorder.LEFT);
 		this.setBorder(title);
-		this.setMinimumSize(new Dimension(200, 60));
-		this.setPreferredSize(new Dimension(200, 60));
-		this.setMaximumSize(new Dimension(200, 60));
+
+		this.setMinimumSize(new Dimension(200, 55));
+		this.setPreferredSize(new Dimension(200, 55));
+		this.setMaximumSize(new Dimension(200, 55));
 		this.setName(name);
 
 		// convert Date object to Calendar object to avoid using deprecated
@@ -80,24 +90,39 @@ public class TaskView extends JPanel implements Transferable {
 		final Calendar date = Calendar.getInstance();
 		date.setTime(duedate);
 
-		// adds the data to the view
-		// note: the Calendar.MONTH value ranges between 0-11 so here we add 1
-		// to the month.
-
-		JLabel nameLabel = new JLabel();
+		// formats the lower section containing date and icons
 		JPanel lower = new JPanel();
+		lower.setLayout(new BoxLayout(lower, BoxLayout.X_AXIS));
+		lower.setAlignmentX(LEFT_ALIGNMENT);
+		lower.setOpaque(false);
+
 		JLabel dueLabel = new JLabel("Due: " + (date.get(Calendar.MONTH) + 1)
 				+ "/" + date.get(Calendar.DATE) + "/"
 				+ (date.get(Calendar.YEAR)));
 		lower.add(dueLabel);
-
 		JPanel icons = new JPanel(new FlowLayout());
+		icons.setOpaque(false);
 		JLabel userIcon = new JLabel();
 		JLabel commentIcon = new JLabel();
 		Integer uNum = new Integer(users);
 		userNumber = new JLabel(uNum.toString());
 		Integer cNum = new Integer(comments);
 		commentNumber = new JLabel(cNum.toString());
+
+		// icons from:
+		// <div>Icon made by <a href="http://catalinfertu.com"
+		// title="Catalin Fertu">Catalin Fertu</a> from <a
+		// href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>
+		// is licensed under <a
+		// href="http://creativecommons.org/licenses/by/3.0/"
+		// title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+		//
+		// <div>Icon made by <a href="http://buditanrim.co"
+		// title="Budi Tanrim">Budi Tanrim</a> from <a
+		// href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>
+		// is licensed under <a
+		// href="http://creativecommons.org/licenses/by/3.0/"
+		// title="Creative Commons BY 3.0">CC BY 3.0</a></div>
 		try {
 			Image u = ImageIO.read(this.getClass().getResourceAsStream(
 					"user146.png"));
@@ -112,23 +137,21 @@ public class TaskView extends JPanel implements Transferable {
 		icons.add(commentIcon);
 		icons.add(commentNumber);
 		lower.add(icons);
-		icons.setOpaque(false);
-		lower.setOpaque(false);
-		lower.setAlignmentX(RIGHT_ALIGNMENT);
 
 		// This creates a maximum text-string length before the name gets
 		// truncated in the view
-
+		JLabel nameLabel = new JLabel();
 		nameLabel.setText("Average Name Length plu");
 		final Dimension size = nameLabel.getPreferredSize();
-
 		nameLabel.setMaximumSize(size);
 		nameLabel.setPreferredSize(size);
-		nameLabel.setAlignmentX(RIGHT_ALIGNMENT);
+		nameLabel.setAlignmentX(LEFT_ALIGNMENT);
 		nameLabel.setText(name);
 
-		this.add(nameLabel);
-		this.add(lower);
+		// adds the title, date and icons to the task view
+		spacer.add(nameLabel);
+		spacer.add(lower);
+		this.add(spacer);
 
 		// -----------------------
 		// Drag and drop handling:
