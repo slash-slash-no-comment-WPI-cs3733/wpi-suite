@@ -38,6 +38,7 @@ import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
+import taskManager.view.TabView;
 import taskManager.view.TaskView;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
@@ -316,10 +317,29 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		fixture.button(EditTaskView.DELETE).requireEnabled();
 		fixture.button(EditTaskView.DELETE).click();
 
-		// fixture.optionPane().buttonWithText("Yes");
 		new JOptionPaneFixture(fixture.robot).yesButton().click();
 
 		assertNull(wfm.findTaskByID(task.getID()));
+	}
+
+	@Test
+	public void testClose() {
+		fixture.button(TabView.X).click();
+		TaskModel task = createAndLoadTask();
+
+		fixture.button(TabView.X).click();
+		fixture.optionPane().requireNotVisible();
+
+		task = createAndLoadTask();
+		String name = task.getName();
+		getTitleBoxFixture().enterText(name + '2');
+		fixture.button(TabView.X).click();
+		new JOptionPaneFixture(fixture.robot).noButton().click();
+		assertEquals(task.getName(), name);
+		fixture.button(TabView.X).click();
+		new JOptionPaneFixture(fixture.robot).yesButton().click();
+		assertEquals(task.getName(), name + '2');
+
 	}
 
 	@After
