@@ -32,7 +32,7 @@ import net.java.balloontip.BalloonTip;
 import net.java.balloontip.BalloonTip.AttachLocation;
 import net.java.balloontip.BalloonTip.Orientation;
 import net.java.balloontip.styles.BalloonTipStyle;
-import net.java.balloontip.styles.EdgedBalloonStyle;
+import net.java.balloontip.styles.RoundedBalloonStyle;
 import net.miginfocom.swing.MigLayout;
 
 import org.jdesktop.swingx.JXDatePicker;
@@ -73,8 +73,7 @@ public class EditTaskView extends JPanel {
 	public static final String TITLE = "title";
 	public static final String DESCRIP = "description";
 
-	private static final JLabel TITLE_ERROR = new JLabel(
-			"Title cannot be empty");
+	private static final String TITLE_ERROR = "Title cannot be empty";
 	private static final String DESCRIPTION_ERROR = "Description cannot be empty";
 	private static final String EFFORT_ERROR = "Must be an integer between 0 and 9999";
 	/**
@@ -98,10 +97,10 @@ public class EditTaskView extends JPanel {
 	private JTextField actEffortField;
 	private JPanel window;
 
-	private BalloonTip titleErrorTip;
-	private BalloonTip descripErrorTip;
-	private BalloonTip actEffortErrorTip;
-	private BalloonTip estEffortErrorTip;
+	private BalloonTip titleError;
+	private BalloonTip descripError;
+	private BalloonTip actEffortError;
+	private BalloonTip estEffortError;
 
 	private Mode mode;
 
@@ -132,16 +131,16 @@ public class EditTaskView extends JPanel {
 		// TODO: User Mode to switch between create and edit views
 		// When Task added make EditTask take in a Task called currTask
 		this.mode = mode;
-
+		this.setLayout(new MigLayout());
 		window = new JPanel(new MigLayout());
 
 		this.setLayout(new FlowLayout());
 		Dimension panelSize = getPreferredSize();
-		panelSize.width = 1100; // TODO
-		panelSize.height = 500; // Decide size
+		panelSize.width = 1300; // TODO
+		panelSize.height = 650; // Decide size
 		window.setPreferredSize(panelSize);
-		this.setPreferredSize(panelSize);
-		this.setMinimumSize(panelSize);
+		// this.setPreferredSize(panelSize);
+		// this.setMinimumSize(panelSize);
 
 		activities = new ArrayList<ActivityModel>();
 		newActivities = new ArrayList<ActivityModel>();
@@ -173,7 +172,7 @@ public class EditTaskView extends JPanel {
 		descriptionScrollPane
 				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
-		commentsField = new JTextArea(2, 22);
+		commentsField = new JTextArea(6, 24);
 		JScrollPane commentScrollPane = new JScrollPane(commentsField);
 		commentScrollPane
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -273,11 +272,13 @@ public class EditTaskView extends JPanel {
 		BasicInfo.setBorder(BorderFactory.createTitledBorder("Basic Info"));
 		BasicInfo.add(titleLabel, "wrap");
 		BasicInfo.add(titleField, "wrap");
+
 		BasicInfo.add(descriptionLabel, "wrap");
-		BasicInfo.add(descriptionScrollPane, "gapbottom 20px");
+		BasicInfo.add(descriptionScrollPane, "gapbottom 20px, wrap");
+
 		BasicInfo.add(dueDateLabel);
 		BasicInfo.add(stageLabel, "wrap");
-		BasicInfo.add(dateField, "wrap");
+		BasicInfo.add(dateField);
 		BasicInfo.add(stages, "wrap");
 
 		// Users Panel internal content
@@ -308,8 +309,8 @@ public class EditTaskView extends JPanel {
 		Effort.add(estimatedEffortLabel);
 		Effort.add(actualEffortLabel, "wrap");
 		Effort.add(estEffortField);
-		Effort.add(actEffortField, "wrap");
-		JPanel Errors = new JPanel(new MigLayout());
+
+		Effort.add(actEffortField);
 
 		// Requirements Panel internal content
 		Requirements
@@ -326,7 +327,6 @@ public class EditTaskView extends JPanel {
 			EditSaveCancel.add(archive);
 			EditSaveCancel.add(delete);
 		}
-		EditSaveCancel.add(Errors);
 
 		// The finished panels are added to the main window panel
 
@@ -339,19 +339,20 @@ public class EditTaskView extends JPanel {
 		window.add(Activities, "w 25%, dock east, gapleft 5px");
 		this.add(window);
 
-		BalloonTipStyle edgedLook = new EdgedBalloonStyle(Color.WHITE,
-				Color.BLACK);
-		titleErrorTip = new BalloonTip(getTitle(), TITLE_ERROR, edgedLook,
-				Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST, 10, 10, false);
-		descripErrorTip = new BalloonTip(getDescription(), TITLE_ERROR,
-				edgedLook, Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST,
-				10, 10, false);
-		actEffortErrorTip = new BalloonTip(getActEffort(), TITLE_ERROR,
-				edgedLook, Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST,
-				10, 10, false);
-		estEffortErrorTip = new BalloonTip(getEstEffort(), TITLE_ERROR,
-				edgedLook, Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST,
-				10, 10, false);
+		BalloonTipStyle errorStyle = new RoundedBalloonStyle(5, 5,
+				Colors.INPUT_ERROR, Colors.INPUT_ERROR);
+		titleError = new BalloonTip(getTitle(), new JLabel(TITLE_ERROR),
+				errorStyle, Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST,
+				5, 15, false);
+		descripError = new BalloonTip(getDescription(), new JLabel(
+				DESCRIPTION_ERROR), errorStyle, Orientation.LEFT_ABOVE,
+				AttachLocation.NORTHEAST, 5, 15, false);
+		actEffortError = new BalloonTip(getActEffort(),
+				new JLabel(EFFORT_ERROR), errorStyle, Orientation.LEFT_ABOVE,
+				AttachLocation.NORTHEAST, 5, 15, false);
+		estEffortError = new BalloonTip(getEstEffort(),
+				new JLabel(EFFORT_ERROR), errorStyle, Orientation.LEFT_ABOVE,
+				AttachLocation.NORTHEAST, 5, 15, false);
 
 		setTitleErrorVisible(false);
 		setDescriptionErrorVisible(false);
@@ -399,10 +400,12 @@ public class EditTaskView extends JPanel {
 		estEffortField.addKeyListener(fieldC);
 		actEffortField.addKeyListener(fieldC);
 
-		titleField.addFocusListener(fieldC);
-		descripArea.addFocusListener(fieldC);
-		estEffortField.addFocusListener(fieldC);
-		actEffortField.addFocusListener(fieldC);
+		titleField.addMouseListener(fieldC);
+		descripArea.addMouseListener(fieldC);
+		estEffortField.addMouseListener(fieldC);
+		actEffortField.addMouseListener(fieldC);
+
+		this.addMouseListener(fieldC);
 
 		stages.addPopupMenuListener(fieldC);
 		usersList.setController(fieldC);
@@ -589,7 +592,7 @@ public class EditTaskView extends JPanel {
 	 *            title error invisible
 	 */
 	public void setTitleErrorVisible(boolean v) {
-		titleErrorTip.setVisible(v);
+		titleError.setVisible(v);
 	}
 
 	/**
@@ -603,10 +606,16 @@ public class EditTaskView extends JPanel {
 			this.titleField
 					.setBorder(BorderFactory.createLineBorder(Color.red));
 		} else {
-			this.titleField
-					.setBorder(BorderFactory.createLineBorder(Color.red));
+			this.titleField.setBorder(BorderFactory
+					.createLineBorder(Color.black));
 		}
 	}
+
+	/**
+	 * Sets the title field border red
+	 * 
+	 * @param boolean turns the red border on and off
+	 */
 
 	/**
 	 * Sets the description error visible or invisible
@@ -615,8 +624,9 @@ public class EditTaskView extends JPanel {
 	 *            true will make the description error visible, false will make
 	 *            the description error invisible
 	 */
+
 	public void setDescriptionErrorVisible(boolean v) {
-		descripErrorTip.setVisible(v);
+		descripError.setVisible(v);
 	}
 
 	/**
@@ -631,9 +641,15 @@ public class EditTaskView extends JPanel {
 					.createLineBorder(Color.red));
 		} else {
 			this.descripArea.setBorder(BorderFactory
-					.createLineBorder(Color.red));
+					.createLineBorder(Color.black));
 		}
 	}
+
+	/**
+	 * Sets the description field border red
+	 * 
+	 * @param boolean turns the red border on and off
+	 */
 
 	/**
 	 * Sets the estimated effort error visible or invisible
@@ -643,7 +659,7 @@ public class EditTaskView extends JPanel {
 	 *            make the estimated effort error invisible
 	 */
 	public void setEstEffortErrorVisible(boolean v) {
-		estEffortErrorTip.setVisible(v);
+		estEffortError.setVisible(v);
 	}
 
 	/**
@@ -684,7 +700,7 @@ public class EditTaskView extends JPanel {
 	 *            make the actual effort error invisible
 	 */
 	public void setActualEffortErrorVisible(boolean v) {
-		actEffortErrorTip.setVisible(v);
+		actEffortError.setVisible(v);
 	}
 
 	/**
