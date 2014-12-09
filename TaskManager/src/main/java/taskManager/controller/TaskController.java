@@ -139,9 +139,6 @@ public class TaskController implements MouseListener, MouseMotionListener {
 		// another taskinfo bubble is already out
 		if ((!FetchWorkflowObserver.ignoreAllResponses || TaskController.anyTaskInfoOut)
 				&& !StageController.anyChangeTitleOut) {
-			// Don't reload (so the correct task can be highlighted while the
-			// bubble is up
-			FetchWorkflowObserver.ignoreAllResponses = true;
 
 			// Create the taskinfo bubble
 			Point stageLoc = view.getParent().getParent().getParent()
