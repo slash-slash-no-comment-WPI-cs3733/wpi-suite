@@ -29,6 +29,10 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 
 import net.java.balloontip.BalloonTip;
+import net.java.balloontip.BalloonTip.AttachLocation;
+import net.java.balloontip.BalloonTip.Orientation;
+import net.java.balloontip.styles.BalloonTipStyle;
+import net.java.balloontip.styles.EdgedBalloonStyle;
 import net.miginfocom.swing.MigLayout;
 
 import org.jdesktop.swingx.JXDatePicker;
@@ -69,7 +73,8 @@ public class EditTaskView extends JPanel {
 	public static final String TITLE = "title";
 	public static final String DESCRIP = "description";
 
-	private static final String TITLE_ERROR = "Title cannot be empty";
+	private static final JLabel TITLE_ERROR = new JLabel(
+			"Title cannot be empty");
 	private static final String DESCRIPTION_ERROR = "Description cannot be empty";
 	private static final String EFFORT_ERROR = "Must be an integer between 0 and 9999";
 	/**
@@ -137,11 +142,6 @@ public class EditTaskView extends JPanel {
 		window.setPreferredSize(panelSize);
 		this.setPreferredSize(panelSize);
 		this.setMinimumSize(panelSize);
-
-		titleErrorTip = new BalloonTip(getTitle(), TITLE_ERROR);
-		descripErrorTip = new BalloonTip(getDescription(), DESCRIPTION_ERROR);
-		actEffortErrorTip = new BalloonTip(getActEffort(), EFFORT_ERROR);
-		estEffortErrorTip = new BalloonTip(getEstEffort(), EFFORT_ERROR);
 
 		activities = new ArrayList<ActivityModel>();
 		newActivities = new ArrayList<ActivityModel>();
@@ -272,13 +272,13 @@ public class EditTaskView extends JPanel {
 		// BasicInfo Panel internal content
 		BasicInfo.setBorder(BorderFactory.createTitledBorder("Basic Info"));
 		BasicInfo.add(titleLabel, "wrap");
-		BasicInfo.add(titleField);
+		BasicInfo.add(titleField, "wrap");
 		BasicInfo.add(descriptionLabel, "wrap");
 		BasicInfo.add(descriptionScrollPane, "gapbottom 20px");
 		BasicInfo.add(dueDateLabel);
 		BasicInfo.add(stageLabel, "wrap");
-		BasicInfo.add(dateField);
-		BasicInfo.add(stages);
+		BasicInfo.add(dateField, "wrap");
+		BasicInfo.add(stages, "wrap");
 
 		// Users Panel internal content
 		Users.setBorder(BorderFactory.createTitledBorder("Users"));
@@ -338,6 +338,25 @@ public class EditTaskView extends JPanel {
 		window.add(EditSaveCancel, "dock south, h 10%");
 		window.add(Activities, "w 25%, dock east, gapleft 5px");
 		this.add(window);
+
+		BalloonTipStyle edgedLook = new EdgedBalloonStyle(Color.WHITE,
+				Color.BLACK);
+		titleErrorTip = new BalloonTip(getTitle(), TITLE_ERROR, edgedLook,
+				Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST, 10, 10, false);
+		descripErrorTip = new BalloonTip(getDescription(), TITLE_ERROR,
+				edgedLook, Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST,
+				10, 10, false);
+		actEffortErrorTip = new BalloonTip(getActEffort(), TITLE_ERROR,
+				edgedLook, Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST,
+				10, 10, false);
+		estEffortErrorTip = new BalloonTip(getEstEffort(), TITLE_ERROR,
+				edgedLook, Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST,
+				10, 10, false);
+
+		setTitleErrorVisible(false);
+		setDescriptionErrorVisible(false);
+		setActualEffortErrorVisible(false);
+		setEstEffortErrorVisible(false);
 	}
 
 	/**
@@ -417,22 +436,6 @@ public class EditTaskView extends JPanel {
 	 */
 	public JTextField getTitle() {
 		return titleField;
-	}
-
-	public void showTitleError(boolean visible) {
-		titleErrorTip.setVisible(visible);
-	}
-
-	public void showDescripError(boolean visible) {
-		descripErrorTip.setVisible(visible);
-	}
-
-	public void showActEffortError(boolean visible) {
-		actEffortErrorTip.setVisible(visible);
-	}
-
-	public void showEstEffortError(boolean visible) {
-		estEffortErrorTip.setVisible(visible);
 	}
 
 	/**

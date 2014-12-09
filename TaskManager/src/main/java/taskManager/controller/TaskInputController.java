@@ -74,15 +74,12 @@ public class TaskInputController implements KeyListener, FocusListener,
 		// Estimated Effort
 		if (!etv.getEstEffort().getText().isEmpty()) {
 			try {
-
 				if (Integer.parseInt(etv.getEstEffort().getText()) <= 0
 						|| Integer.parseInt(etv.getEstEffort().getText()) > 9999) {
 					estEffortValid = false;
-					etv.setEstEffortFieldRed(true);
 				}
 			} catch (NumberFormatException e) {
 				estEffortValid = false;
-				etv.setEstEffortFieldRed(true);
 			}
 		}
 		if (!etv.getActEffort().getText().isEmpty()) {
@@ -91,16 +88,15 @@ public class TaskInputController implements KeyListener, FocusListener,
 				if (Integer.parseInt(etv.getActEffort().getText()) < 0
 						|| Integer.parseInt(etv.getActEffort().getText()) > 9999) {
 					actEffortValid = false;
-					etv.setActEffortFieldRed(true);
 				}
 			} catch (NumberFormatException e) {
 				actEffortValid = false;
-				etv.setActEffortFieldRed(true);
 			}
 		}
 		etv.setEstEffortFieldRed(!estEffortValid);
 		etv.setActEffortFieldRed(!actEffortValid); // set the borders back to
-													// black
+		etv.setDescriptionErrorVisible(!descriptionValid);
+		etv.setTitleErrorVisible(!titleValid); // black
 
 		// display the errors
 		etv.setTitleErrorVisible(!titleValid);
@@ -121,32 +117,32 @@ public class TaskInputController implements KeyListener, FocusListener,
 			switch (fieldWithFocus.getName()) {
 			case EditTaskView.TITLE:
 				if (!titleValid) {
-					etv.showTitleError(true);
+					etv.setTitleErrorVisible(true);
 				}
 				break;
 			case EditTaskView.DESCRIP:
 				if (!descriptionValid) {
-					etv.showDescripError(true);
+					etv.setDescriptionErrorVisible(true);
 				}
 				break;
 			case EditTaskView.EST_EFFORT:
 				if (!estEffortValid) {
-					etv.showEstEffortError(true);
+					etv.setEstEffortErrorVisible(true);
 				}
 				break;
 
 			case EditTaskView.ACT_EFFORT:
 				if (!actEffortValid) {
-					etv.showActEffortError(true);
+					etv.setActualEffortErrorVisible(true);
 				}
 				break;
 
 			}
 		} else {
-			etv.showActEffortError(false);
-			etv.showDescripError(false);
-			etv.showEstEffortError(false);
-			etv.showTitleError(false);
+			etv.setActualEffortErrorVisible(false);
+			etv.setEstEffortErrorVisible(false);
+			etv.setDescriptionErrorVisible(false);
+			etv.setTitleErrorVisible(false);
 		}
 		// enable or disable the appropriate buttons
 		etv.setSaveEnabled(this.checkFields());
@@ -156,7 +152,7 @@ public class TaskInputController implements KeyListener, FocusListener,
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-
+		validate();
 	}
 
 	@Override
