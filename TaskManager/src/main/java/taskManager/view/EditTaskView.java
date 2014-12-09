@@ -310,9 +310,6 @@ public class EditTaskView extends JPanel {
 		Effort.add(actualEffortLabel, "wrap");
 		Effort.add(estEffortField);
 		Effort.add(actEffortField);
-		JPanel Errors = new JPanel(new MigLayout());
-		Errors.add(estimatedEffortError, "wrap");
-		Errors.add(actualEffortError);
 
 		// Requirements Panel internal content
 		Requirements
@@ -329,7 +326,6 @@ public class EditTaskView extends JPanel {
 			EditSaveCancel.add(archive);
 			EditSaveCancel.add(delete);
 		}
-		EditSaveCancel.add(Errors);
 
 		// The finished panels are added to the main window panel
 
@@ -570,17 +566,59 @@ public class EditTaskView extends JPanel {
 		titleError.setVisible(v);
 	}
 
+
+	
+	/**
+	 * Sets the title field border red
+	 * 
+	 * @param boolean
+	 *            turns the red border on and off
+	 */
+
+	
+	public void setTitleFieldRed(boolean red){
+		if(red){
+		 titleField.setBorder(BorderFactory.createLineBorder(Color.red));
+	}
+		else{
+			titleField.setBorder(BorderFactory.createLineBorder(Color.black));
+		}
+	}
+	
 	/**
 	 * Sets the description error visible or invisible
 	 * 
 	 * @param v
 	 *            true will make the description error visible, false will make
 	 *            the description error invisible
-	 */
+	 */	
+	
+	
+	
 	public void setDescriptionErrorVisible(boolean v) {
 		descriptionError.setVisible(v);
 	}
 
+
+	/**
+	 * Sets the description field border red
+	 * 
+	 * @param boolean
+	 *            turns the red border on and off
+	 */
+
+	
+	public void setDescriptionFieldRed(boolean red){
+		if(red){
+		 descripArea.setBorder(BorderFactory.createLineBorder(Color.red));
+	}
+		else{
+			descripArea.setBorder(BorderFactory.createLineBorder(Color.black));
+		}
+	}
+	
+	
+	
 	/**
 	 * Sets the estimated effort error visible or invisible
 	 * 

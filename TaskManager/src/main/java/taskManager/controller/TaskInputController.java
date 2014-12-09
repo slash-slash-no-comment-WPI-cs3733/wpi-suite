@@ -101,9 +101,11 @@ public class TaskInputController implements KeyListener, FocusListener,
 				etv.setActEffortFieldRed(true);
 			}
 		}
+		etv.setTitleFieldRed(!titleValid);
+		etv.setDescriptionFieldRed(!descriptionValid);
 		etv.setEstEffortFieldRed(!estEffortValid);
 		etv.setActEffortFieldRed(!actEffortValid);  //set the borders back to black
-		
+	
 		// display the errors
 		etv.setTitleErrorVisible(!titleValid);
 		etv.setDescriptionErrorVisible(!descriptionValid);
