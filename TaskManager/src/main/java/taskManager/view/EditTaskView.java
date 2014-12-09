@@ -20,6 +20,7 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -73,10 +74,10 @@ public class EditTaskView extends JPanel {
 	private JButton cancel;
 	private JButton addUser;
 	private JButton removeUser;
-	private JButton archive;
 	private JButton delete;
 	private JButton addReq;
 	private JButton submitComment;
+	private JCheckBox archive;
 
 	private JTextArea commentsField;
 	private JTextField titleField;
@@ -220,9 +221,6 @@ public class EditTaskView extends JPanel {
 		// Delete Task and close the window
 		delete = new JButton("Delete");
 		delete.setName(DELETE);
-		// Archive
-		archive = new JButton("Archive");
-		archive.setName(ARCHIVE);
 		// Add user to list
 		addUser = new JButton("<<");
 		addUser.setName(ADD_USER);
@@ -247,7 +245,7 @@ public class EditTaskView extends JPanel {
 		// closes the window without saving
 		cancel = new JButton("Cancel");
 		cancel.setName(CANCEL);
-		archive = new JButton("Archive");
+		archive = new JCheckBox("Archived");
 		archive.setName(ARCHIVE);
 
 		// Combo Box for Stage
@@ -326,8 +324,8 @@ public class EditTaskView extends JPanel {
 		EditSaveCancel.add(save);
 		EditSaveCancel.add(cancel);
 		if (this.mode == Mode.EDIT) {
-			EditSaveCancel.add(archive);
 			EditSaveCancel.add(delete);
+			EditSaveCancel.add(archive);
 		}
 		EditSaveCancel.add(Errors);
 
@@ -406,6 +404,27 @@ public class EditTaskView extends JPanel {
 	 */
 	public void setArchiveButtonText(String text) {
 		archive.setText(text);
+	}
+
+	/**
+	 * 
+	 * Sets the archive checkbox to selected/unselected.
+	 *
+	 * @param selected
+	 *            when true, sets the checkbox to selected
+	 */
+	public void checkArchive(Boolean selected) {
+		archive.setSelected(selected);
+	}
+
+	/**
+	 * 
+	 * Returns the state of the archive checkbox.
+	 *
+	 * @return true if selected.
+	 */
+	public Boolean isArchived() {
+		return archive.isSelected();
 	}
 
 	/**
