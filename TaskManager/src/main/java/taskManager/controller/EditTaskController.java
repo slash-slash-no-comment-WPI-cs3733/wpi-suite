@@ -95,6 +95,7 @@ public class EditTaskController implements ActionListener {
 	public EditTaskController(TaskModel model) {
 		etv = new EditTaskView(Mode.EDIT);
 		this.model = model;
+		this.taskID = model.getID();
 
 		etv.setController(this);
 		etv.setFieldController(new TaskInputController(etv));
@@ -256,7 +257,6 @@ public class EditTaskController implements ActionListener {
 						"Warning - Deleting a task", JOptionPane.YES_NO_OPTION);
 				if (choice.equals(JOptionPane.YES_OPTION)) {
 					// delete this task
-					model = currentStage.findTaskByID(taskID);
 					currentStage.getTasks().remove(model);
 					etv.resetFields();
 
