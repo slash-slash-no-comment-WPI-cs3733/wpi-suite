@@ -9,6 +9,7 @@
 package taskManager.view;
 
 import java.awt.Component;
+import java.awt.dnd.DropTarget;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLayeredPane;
@@ -16,6 +17,7 @@ import javax.swing.JLayeredPane;
 import taskManager.controller.WorkflowController;
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DropAreaPanel;
+import taskManager.draganddrop.DropTargetRedispatcher;
 
 /**
  * @author Beth Martino
@@ -32,19 +34,23 @@ public class WorkflowView extends JLayeredPane {
 
 	/**
 	 * Constructor for WorkflowView.
+	 * 
+	 * @param controller
+	 *            The workflow controller for this view
 	 */
-	public WorkflowView() {
+	public WorkflowView(WorkflowController controller) {
+		this.controller = controller;
+		this.addMouseListener(controller);
 
 		// The stages panel accepts stage drops
 		stages = new DropAreaPanel(DDTransferHandler.getStageFlavor());
+		stages.setSaveListener(controller);
 
 		// arranges the stages horizontally and evenly spaced
 		this.setLayout(new WorkflowLayout());
 
 		stages.setLayout(new BoxLayout(stages, BoxLayout.LINE_AXIS));
 		this.add(stages);
-
-		this.addMouseListener(controller);
 	}
 
 	/**
@@ -60,6 +66,10 @@ public class WorkflowView extends JLayeredPane {
 			stages.setLayout(new BoxLayout(stages, BoxLayout.LINE_AXIS));
 			stages.setSaveListener(controller);
 			add(stages);
+
+			// Redispatch drag events down to DropAreaPanel
+			this.setDropTarget(new DropTarget(this, new DropTargetRedispatcher(
+					stages, DDTransferHandler.getStageFlavor())));
 		}
 		stages.add(stv);
 	}
@@ -73,24 +83,6 @@ public class WorkflowView extends JLayeredPane {
 	public void addTaskInfo(TaskInfoPreviewView ti) {
 		controller.removeTaskInfos(true);
 		add(ti, new Integer(1));
-	}
-
-	/**
-	 * attaches the controller to this view
-	 * 
-	 * @param controller
-	 *            the workflow controller to be attached
-	 *
-	 * @param controller
-	 *            The controller to attach to this view
-	 */
-	public void setController(WorkflowController controller) {
-		this.controller = controller;
-
-		stages.setSaveListener(controller);
-
-		this.addMouseListener(controller);
-
 	}
 
 	/**
@@ -121,6 +113,7 @@ public class WorkflowView extends JLayeredPane {
 	@Override
 	public void setVisible(boolean visible) {
 		if (visible && controller != null && !isVisible()) {
+			controller.removeTaskInfos(false);
 			controller.reloadData();
 		}
 		super.setVisible(visible);

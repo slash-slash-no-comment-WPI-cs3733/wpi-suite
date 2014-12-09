@@ -8,7 +8,7 @@
  *******************************************************************************/
 package taskManager.model;
 
-import taskManager.JanewayModule;
+import taskManager.controller.WorkflowController;
 import edu.wpi.cs.wpisuitetng.network.models.IRequest;
 import edu.wpi.cs.wpisuitetng.network.models.ResponseModel;
 
@@ -41,7 +41,7 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 	 *            If the connection should be kept
 	 */
 	public FetchWorkflowObserver(boolean keepOpen) {
-		this.model = WorkflowModel.getInstance();
+		model = WorkflowModel.getInstance();
 		this.keepOpen = keepOpen;
 	}
 
@@ -60,11 +60,11 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 			return;
 		}
 
-		ResponseModel response = iReq.getResponse();
-		String body = response.getBody();
+		final ResponseModel response = iReq.getResponse();
+		final String body = response.getBody();
 		System.out.println("Response:" + body);
 
-		WorkflowModel[] workflows = AbstractJsonableModel.fromJson(body,
+		final WorkflowModel[] workflows = AbstractJsonableModel.fromJson(body,
 				WorkflowModel[].class);
 		if (workflows == null) {
 			System.out.println("Workflow not found on server");
@@ -73,11 +73,11 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 			return;
 		}
 
-		WorkflowModel workflow = workflows[0];
+		final WorkflowModel workflow = workflows[0];
 		model.makeIdenticalTo(workflow);
 		model.rebuildAllRefs();
 
-		JanewayModule.tabPaneC.getTabView().reloadWorkflow();
+		WorkflowController.getInstance().reloadData();
 
 		// restart the connection
 		restartConnection();
@@ -113,7 +113,7 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 	 */
 	private void restartConnection() {
 		if (WorkflowModel.alive && keepOpen) {
-			WorkflowModel.getInstance().update();
+			WorkflowModel.update();
 		}
 	}
 

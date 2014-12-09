@@ -41,21 +41,32 @@ import taskManager.view.WorkflowView;
 
 public class WorkflowController implements DropAreaSaveListener, MouseListener {
 
-	private final WorkflowView view;
-	private final WorkflowModel model;
+	private WorkflowView view;
+	private WorkflowModel model;
 	private boolean hasNewStageView;
 
+	private static WorkflowController instance;
+
 	/**
-	 * Constructor for the WorkflowController, gets all the stages from the
+	 * Hide Singleton constructor
+	 */
+	private WorkflowController() {
+		reset();
+	}
+
+	/**
+	 * Reset for the WorkflowController, gets all the stages from the
 	 * WorkflowView, creates the corresponding StageView and StageControllers,
 	 * and adds the StageViews to the UI.
 	 * 
 	 * @param view
 	 *            the corresponding WorkflowView object
 	 */
-	public WorkflowController(WorkflowView view) {
-		this.view = view;
-		this.model = WorkflowModel.getInstance();
+	public void reset() {
+		view = new WorkflowView(this);
+		model = WorkflowModel.getInstance();
+		model.reset();
+
 		hasNewStageView = false;
 
 		reloadData();
@@ -93,10 +104,13 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 */
 	public synchronized void reloadData() {
 		// clear the stages previously on the view
-		this.removeTaskInfos(false);
 		this.removeChangeTitles();
 		hasNewStageView = false;
-		view.removeAll();
+		for (Component c : view.getComponents()) {
+			if (!(c instanceof TaskInfoPreviewView)) {
+				view.remove(c);
+			}
+		}
 
 		// get all the stages in this workflow
 		final List<StageModel> stages = model.getStages();
@@ -118,11 +132,15 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 *
 	 */
 	public void fetch() {
-		model.update();
+		WorkflowModel.update();
 	}
 
+	/**
+	 * Requests the list of users from the server
+	 *
+	 */
 	public void fetchUsers() {
-		model.updateUsers();
+		WorkflowModel.updateUsers();
 	}
 
 	/**
@@ -131,7 +149,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	public void addStageToView() {
 		if (!hasNewStageView) {
 			hasNewStageView = true;
-			StageView newStageV = new StageView("");
+			final StageView newStageV = new StageView("");
 			newStageV.setController(new StageController(newStageV, null));
 			newStageV.enableTitleEditing(true);
 			PromptSupport
@@ -158,11 +176,11 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		if (!(panel instanceof StageView)) {
 			return;
 		}
-		StageController tc = ((StageView) panel).getController();
-		boolean changed = tc.moveStageToIndex(index);
+		final StageController tc = ((StageView) panel).getController();
+		final boolean changed = tc.moveStageToIndex(index);
 
 		if (changed) {
-			WorkflowModel.getInstance().save();
+			model.save();
 			DDTransferHandler.dragSaved = true;
 		}
 	}
@@ -194,7 +212,8 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		for (Component c : view.getComponents()) {
 			if (c instanceof TaskInfoPreviewView) {
 				view.remove(c);
-				((TaskInfoPreviewView) c).getTaskController().thisTaskInfoOut = false;
+				((TaskInfoPreviewView) c).getTaskController()
+						.setThisTaskInfoOut(false);
 				((TaskInfoPreviewView) c).getTaskController().resetBackground();
 			}
 			TaskController.anyTaskInfoOut = false;
@@ -213,7 +232,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	public void removeChangeTitles() {
 		for (Component c : view.getComponents()) {
 			if (c instanceof StageView) {
-				((StageView) c).getController().thisChangeTitleOut = false;
+				((StageView) c).getController().setThisChangeTitleOut(false);
 			}
 		}
 		StageController.anyChangeTitleOut = false;
@@ -233,6 +252,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		if (!StageController.anyChangeTitleOut) {
 			// Removes the task info bubble from the screen
 			FetchWorkflowObserver.ignoreAllResponses = false;
+			removeTaskInfos(false);
 			this.reloadData();
 			this.repaintView();
 		}
@@ -260,5 +280,27 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	public void mouseExited(MouseEvent e) {
 		// Do nothing
 
+	}
+
+	/**
+	 * Returns the associated WorkflowView.
+	 * 
+	 * @return The associated WorkflowView
+	 */
+	public WorkflowView getView() {
+		return view;
+	}
+
+	/**
+	 * Returns the singleton instance of WorkflowController. Creates one if
+	 * needed.
+	 * 
+	 * @return the WorkflowController singleton
+	 */
+	public static WorkflowController getInstance() {
+		if (instance == null) {
+			instance = new WorkflowController();
+		}
+		return instance;
 	}
 }

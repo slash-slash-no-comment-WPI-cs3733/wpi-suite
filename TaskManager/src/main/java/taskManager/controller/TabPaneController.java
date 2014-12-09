@@ -10,15 +10,11 @@
 package taskManager.controller;
 
 import java.awt.Component;
-import java.util.ArrayList;
 
-import taskManager.JanewayModule;
 import taskManager.view.EditTaskView;
-import taskManager.view.EditTaskView.Mode;
 import taskManager.view.TabPaneView;
 import taskManager.view.TabView;
 import taskManager.view.WorkflowView;
-import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
  * This is the singleton controller for the singleton TabPaneView.
@@ -30,10 +26,21 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 public class TabPaneController {
 
 	// singleton TabPaneView
-	private TabPaneView tabPaneV;
+	private TabPaneView view;
+	private static TabPaneController instance = null;
 
-	public TabPaneController(TabPaneView tabPaneV) {
-		this.tabPaneV = tabPaneV;
+	/**
+	 * Hide Singleton constructor
+	 */
+	private TabPaneController() {
+		reset();
+	}
+
+	/**
+	 * Resets instance
+	 */
+	public void reset() {
+		view = new TabPaneView();
 	}
 
 	/**
@@ -42,36 +49,14 @@ public class TabPaneController {
 	 *
 	 */
 	public void addCreateTaskTab() {
-
 		// Each press of create a new tab should launch a new createTaskTab
-		EditTaskView etv = new EditTaskView(Mode.CREATE);
-		etv.setController(new EditTaskController(etv));
-		etv.setFieldController(new TaskInputController(etv));
-		// Set the dropdown menu to first stage and disable the menu.
-		etv.setStageDropdown(0);
+		final EditTaskController etc = new EditTaskController();
 
-		etv.setRefreshEnabled(false);
-		// Disable save button when creating a task.
-		etv.setSaveEnabled(false);
-
-		addTab("Create Task", etv, true);
 		// Focuses on the new tab
-		int index = this.tabPaneV.getTabCount() - 1;
-		this.tabPaneV.setSelectedIndex(index);
+		final int index = view.getTabCount() - 1;
+		view.setSelectedIndex(index);
 
-		// Clear all activities, reset fields.
-		etv.clearActivities();
-		etv.resetFields();
-
-		// fills the user lists
-		ArrayList<String> projectUserNames = new ArrayList<String>();
-		for (User u : JanewayModule.users) {
-			String name = u.getUsername();
-			if (!projectUserNames.contains(name)) {
-				projectUserNames.add(name);
-			}
-		}
-		etv.getProjectUsersList().addAllToList(projectUserNames);
+		etc.getView().focusOnTitleField();
 	}
 
 	/**
@@ -84,7 +69,7 @@ public class TabPaneController {
 	public void addEditTaskTab(EditTaskView etv) {
 		boolean exists = false;
 		EditTaskView etv2 = null;
-		for (Component c : tabPaneV.getComponents()) {
+		for (Component c : view.getComponents()) {
 			if (c instanceof EditTaskView) {
 				etv2 = (EditTaskView) c;
 
@@ -97,10 +82,10 @@ public class TabPaneController {
 			}
 		}
 		if (exists) {
-			tabPaneV.setSelectedComponent(etv2);
+			view.setSelectedComponent(etv2);
 		} else {
 			addTab(etv.getTitle().getText(), etv, true);
-			tabPaneV.setSelectedComponent(etv);
+			view.setSelectedComponent(etv);
 		}
 	}
 
@@ -117,9 +102,9 @@ public class TabPaneController {
 	 *            the tab
 	 */
 	public void addTab(String title, Component component, boolean closeable) {
-		tabPaneV.addTab(title, component);
-		tabPaneV.setTabComponentAt(tabPaneV.indexOfComponent(component),
-				new TabView(title, component, closeable));
+		view.addTab(title, component);
+		view.setTabComponentAt(view.indexOfComponent(component), new TabView(
+				title, component, closeable));
 	}
 
 	/**
@@ -131,30 +116,28 @@ public class TabPaneController {
 	 */
 	public void removeTabByComponent(Component component) {
 		if (!(component instanceof WorkflowView)) {
-			tabPaneV.remove(component);
+			view.remove(component);
 		}
 	}
 
 	/**
-	 * Changes the selected tab to the tab with the given index
+	 * Returns the associated TabPaneView
 	 * 
-	 * @param tabIndex
-	 *            the index of the tab to select
+	 * @return The associated TabPaneView
 	 */
-	private void switchToTab(int tabIndex) {
-		try {
-			tabPaneV.setSelectedIndex(tabIndex);
-		} catch (IndexOutOfBoundsException e) {
-			// an invalid tab was requested, do nothing
+	public TabPaneView getView() {
+		return view;
+	}
+
+	/**
+	 * Returns the singleton instance of TabPaneController
+	 * 
+	 * @return The singleton instance of TabPaneController
+	 */
+	public static TabPaneController getInstance() {
+		if (instance == null) {
+			instance = new TabPaneController();
 		}
+		return instance;
 	}
-
-	public TabPaneView getTabView() {
-		return tabPaneV;
-	}
-
-	public void reloadWorkflow() {
-		tabPaneV.reloadWorkflow();
-	}
-
 }
