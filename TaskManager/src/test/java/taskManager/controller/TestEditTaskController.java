@@ -21,6 +21,8 @@ import java.util.Date;
 
 import javax.swing.JFrame;
 
+import org.fest.swing.exception.ComponentLookupException;
+import org.fest.swing.exception.WaitTimedOutError;
 import org.fest.swing.fixture.FrameFixture;
 import org.fest.swing.fixture.JOptionPaneFixture;
 import org.fest.swing.fixture.JTextComponentFixture;
@@ -325,20 +327,31 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	@Test
 	public void testClose() {
 		fixture.button(TabView.X).click();
-		TaskModel task = createAndLoadTask();
+		// If warning comes up, hit yes
+		try {
+			fixture.optionPane().yesButton().click();
+		} catch (ComponentLookupException | WaitTimedOutError e) {
+		}
 
+		TaskModel task = createAndLoadTask();
 		fixture.button(TabView.X).click();
-		fixture.optionPane().requireNotVisible();
+		try { // dialog shouldn't come up if no changes made
+			fixture.optionPane();
+			fail();
+		} catch (ComponentLookupException | WaitTimedOutError e) {
+		}
 
 		task = createAndLoadTask();
 		String name = task.getName();
-		getTitleBoxFixture().enterText(name + '2');
+		getTitleBoxFixture().deleteText();
+		getTitleBoxFixture().enterText("nt2");
 		fixture.button(TabView.X).click();
-		new JOptionPaneFixture(fixture.robot).noButton().click();
+		fixture.optionPane().noButton().click();
 		assertEquals(task.getName(), name);
+		getTitleBoxFixture().requireText("nt2");
 		fixture.button(TabView.X).click();
-		new JOptionPaneFixture(fixture.robot).yesButton().click();
-		assertEquals(task.getName(), name + '2');
+		fixture.optionPane().yesButton().click();
+		assertEquals(task.getName(), name);
 
 	}
 
