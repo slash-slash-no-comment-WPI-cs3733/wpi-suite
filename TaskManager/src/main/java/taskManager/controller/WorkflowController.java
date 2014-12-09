@@ -41,23 +41,32 @@ import taskManager.view.WorkflowView;
 
 public class WorkflowController implements DropAreaSaveListener, MouseListener {
 
-	private final WorkflowView view;
-	private final WorkflowModel model;
+	private WorkflowView view;
+	private WorkflowModel model;
 	private boolean hasNewStageView;
 
-	private static WorkflowController instance = null;
+	private static WorkflowController instance;
 
 	/**
-	 * Constructor for the WorkflowController, gets all the stages from the
+	 * Hide Singleton constructor
+	 */
+	private WorkflowController() {
+		reset();
+	}
+
+	/**
+	 * Reset for the WorkflowController, gets all the stages from the
 	 * WorkflowView, creates the corresponding StageView and StageControllers,
 	 * and adds the StageViews to the UI.
 	 * 
 	 * @param view
 	 *            the corresponding WorkflowView object
 	 */
-	private WorkflowController() {
+	public void reset() {
 		view = new WorkflowView(this);
 		model = WorkflowModel.getInstance();
+		model.reset();
+
 		hasNewStageView = false;
 
 		reloadData();
@@ -95,10 +104,13 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 */
 	public synchronized void reloadData() {
 		// clear the stages previously on the view
-		this.removeTaskInfos(false);
 		this.removeChangeTitles();
 		hasNewStageView = false;
-		view.removeAll();
+		for (Component c : view.getComponents()) {
+			if (!(c instanceof TaskInfoPreviewView)) {
+				view.remove(c);
+			}
+		}
 
 		// get all the stages in this workflow
 		final List<StageModel> stages = model.getStages();
@@ -240,6 +252,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		if (!StageController.anyChangeTitleOut) {
 			// Removes the task info bubble from the screen
 			FetchWorkflowObserver.ignoreAllResponses = false;
+			removeTaskInfos(false);
 			this.reloadData();
 			this.repaintView();
 		}

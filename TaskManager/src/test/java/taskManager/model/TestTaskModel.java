@@ -17,6 +17,7 @@ import java.util.Date;
 import org.junit.Before;
 import org.junit.Test;
 
+import taskManager.JanewayModule;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
@@ -31,8 +32,8 @@ public class TestTaskModel {
 
 	@Before
 	public void setUp() {
-		WorkflowModel wf = WorkflowModel.getInstance();
-		wf.makeIdenticalTo(new WorkflowModel("Workflow"));
+		JanewayModule.reset();
+
 		StageModel stage = new StageModel("Stage");
 		task = new TaskModel("Task", stage);
 	}

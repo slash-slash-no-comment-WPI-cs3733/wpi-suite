@@ -80,7 +80,7 @@ public class EditTaskController implements ActionListener {
 		}
 		etv.getProjectUsersList().addAllToList(projectUserNames);
 
-		JanewayModule.tabPaneC.addTab("Create Task", etv, true);
+		TabPaneController.getInstance().addTab("Create Task", etv, true);
 
 		reloadData();
 	}
@@ -95,6 +95,7 @@ public class EditTaskController implements ActionListener {
 	public EditTaskController(TaskModel model) {
 		etv = new EditTaskView(Mode.EDIT);
 		this.model = model;
+		this.taskID = model.getID();
 
 		etv.setController(this);
 		etv.setFieldController(new TaskInputController(etv));
@@ -118,7 +119,7 @@ public class EditTaskController implements ActionListener {
 			etv.setActEffort(model.getActualEffort());
 		}
 
-		JanewayModule.tabPaneC.addEditTaskTab(etv);
+		TabPaneController.getInstance().addEditTaskTab(etv);
 
 		// figures out the index of the stage, then sets the drop down to the
 		// stage at that index
@@ -256,7 +257,6 @@ public class EditTaskController implements ActionListener {
 						"Warning - Deleting a task", JOptionPane.YES_NO_OPTION);
 				if (choice.equals(JOptionPane.YES_OPTION)) {
 					// delete this task
-					model = currentStage.findTaskByID(taskID);
 					currentStage.getTasks().remove(model);
 					etv.resetFields();
 
@@ -365,7 +365,7 @@ public class EditTaskController implements ActionListener {
 	 * switches back to workflow view
 	 */
 	private void returnToWorkflowView() {
-		JanewayModule.tabPaneC.removeTabByComponent(etv);
+		TabPaneController.getInstance().removeTabByComponent(etv);
 		WorkflowController.getInstance().reloadData();
 	}
 

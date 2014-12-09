@@ -197,12 +197,12 @@ public class TaskController implements MouseListener, MouseMotionListener {
 
 		final boolean isArchived = model.isArchived();
 		if (isArchived) {
-			JanewayModule.toolV.setArchiveIcon(ToolbarView.UNARCHIVE);
+			JanewayModule.getToolV().setArchiveIcon(ToolbarView.UNARCHIVE);
 		} else {
-			JanewayModule.toolV.setArchiveIcon(ToolbarView.ARCHIVE);
+			JanewayModule.getToolV().setArchiveIcon(ToolbarView.ARCHIVE);
 		}
-		JanewayModule.toolV.setArchiveEnabled(true);
-		JanewayModule.toolV.setDeleteEnabled(isArchived);
+		JanewayModule.getToolV().setArchiveEnabled(true);
+		JanewayModule.getToolV().setDeleteEnabled(isArchived);
 	}
 
 	@Override

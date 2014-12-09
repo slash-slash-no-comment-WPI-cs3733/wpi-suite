@@ -45,18 +45,15 @@ public class TestStageController {
 
 	@Before
 	public void setup() {
-		JanewayModule.toolV.setController(new ToolbarController(
-				JanewayModule.tabPaneC.getTabView()));
+		JanewayModule.reset();
 
-		// create a new workflow model
-		wfm.makeIdenticalTo(new WorkflowModel());
 		// give it a stage
 		new StageModel("blah", false);
 
 		frame = new JFrame();
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		panel.add(JanewayModule.toolV);
+		panel.add(JanewayModule.getToolV());
 		panel.add(WorkflowController.getInstance().getView());
 		frame.add(panel);
 		Dimension size = new Dimension(1500, 500);

@@ -239,6 +239,7 @@ public class EditTaskView extends JPanel {
 		// Add comment to comments
 		submitComment = new JButton("Submit Comment");
 		submitComment.setName(SUBMIT_COMMENT);
+		this.setCommentSubmitEnabled(false);
 		// add requirement
 		addReq = new JButton("View Requirement");
 		addReq.setName(VIEW_REQ);
@@ -387,6 +388,7 @@ public class EditTaskView extends JPanel {
 		stages.addPopupMenuListener(fieldC);
 		usersList.setController(fieldC);
 		projectUsersList.setController(fieldC);
+		commentsField.addKeyListener(fieldC);
 	}
 
 	/**
@@ -683,6 +685,16 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
+	 * enables or disables the comment submit button
+	 * 
+	 * @param e
+	 *            true is enabled false is disabled
+	 */
+	public void setCommentSubmitEnabled(boolean e) {
+		this.submitComment.setEnabled(e);
+	}
+
+	/**
 	 * 
 	 * Adds comment to the activities list and refreshes the activities panel.
 	 *
@@ -694,6 +706,7 @@ public class EditTaskView extends JPanel {
 		newActivities.add(act);
 		commentsField.setText("");
 		reloadActivitiesPanel();
+		fieldC.validate();
 	}
 
 	/**
@@ -837,5 +850,14 @@ public class EditTaskView extends JPanel {
 	 */
 	public Mode getMode() {
 		return mode;
+	}
+
+	/**
+	 * Returns the comments field's text
+	 * 
+	 * @return The text the user wants to say
+	 */
+	public String getCommentsFieldText() {
+		return commentsField.getText();
 	}
 }

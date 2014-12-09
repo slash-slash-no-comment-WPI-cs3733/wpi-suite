@@ -22,12 +22,10 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-import taskManager.JanewayModule;
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
-import taskManager.view.TabPaneView;
 import taskManager.view.TaskView;
 import taskManager.view.ToolbarView;
 
@@ -40,19 +38,6 @@ import taskManager.view.ToolbarView;
 public class ToolbarController extends DropTargetAdapter implements
 		ActionListener, ItemListener {
 
-	private final TabPaneView tabPaneV;
-	private final TabPaneController tabPaneC;
-
-	/**
-	 *
-	 * @param tabV
-	 *            tabView used to add tabs to the tab-bar
-	 */
-	public ToolbarController(TabPaneView tabV) {
-		tabPaneV = tabV;
-		tabPaneC = JanewayModule.tabPaneC;
-	}
-
 	/**
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
@@ -61,9 +46,11 @@ public class ToolbarController extends DropTargetAdapter implements
 		final Object button = e.getSource();
 		if (button instanceof JButton) {
 			final String name = ((JButton) button).getName();
+			// close the task preview pane
+			WorkflowController.getInstance().removeTaskInfos(true);
 			switch (name) {
 			case ToolbarView.CREATE_TASK:
-				tabPaneC.addCreateTaskTab();
+				TabPaneController.getInstance().addCreateTaskTab();
 				break;
 			case ToolbarView.CREATE_STAGE:
 				// add a new stage from workflow controller
@@ -141,7 +128,8 @@ public class ToolbarController extends DropTargetAdapter implements
 						if (!stageC.isEmpty()) {
 							final Integer choice = JOptionPane
 									.showConfirmDialog(
-											tabPaneV,
+											TabPaneController.getInstance()
+													.getView(),
 											"The "
 													+ stageV.getName()
 													+ " stage contains tasks. Are you sure you want to delete this stage?",
@@ -156,7 +144,8 @@ public class ToolbarController extends DropTargetAdapter implements
 						model.save();
 						WorkflowController.getInstance().reloadData();
 					} else {
-						JOptionPane.showConfirmDialog(tabPaneC.getTabView(),
+						JOptionPane.showConfirmDialog(TabPaneController
+								.getInstance().getView(),
 								"You cannot delete the last stage.",
 								"Warning - Invalid stage deletion",
 								JOptionPane.CLOSED_OPTION);

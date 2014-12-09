@@ -146,6 +146,6 @@ public class ActivityView extends JPanel {
 	 *            the text in the message field
 	 */
 	public void setMessage(String content) {
-		message.setText(content);
+			message.setText(content);
 	}
 }

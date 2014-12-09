@@ -48,6 +48,7 @@ public class TaskInfoPreviewController implements ActionListener {
 				// reset the flag
 				FetchWorkflowObserver.ignoreAllResponses = false;
 				// remove any taskInfo bubbles from the workflow
+				WorkflowController.getInstance().removeTaskInfos(false);
 				WorkflowController.getInstance().reloadData();
 				WorkflowController.getInstance().repaintView();
 				break;

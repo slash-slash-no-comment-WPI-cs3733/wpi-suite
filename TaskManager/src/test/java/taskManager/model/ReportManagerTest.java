@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import taskManager.JanewayModule;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 public class ReportManagerTest {
@@ -26,11 +27,11 @@ public class ReportManagerTest {
 
 	@Before
 	public void setUp() {
+		JanewayModule.reset();
+
 		rm = new ReportManager();
 		user = new User("Name", "userName", "password", 42);
 
-		workflow = WorkflowModel.getInstance();
-		workflow.makeIdenticalTo(new WorkflowModel("Workflow"));
 		stage = new StageModel("Stage");
 		task1 = new TaskModel("task1", stage);
 		task2 = new TaskModel("task2", stage);

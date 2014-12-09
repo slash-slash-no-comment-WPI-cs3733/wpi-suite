@@ -114,12 +114,30 @@ public class TaskInputController implements KeyListener, FocusListener,
 	}
 
 	/**
+	 * checks if comments are valid
+	 * 
+	 * @param commentValid
+	 *            true if comment is valid
+	 * @return commentValid
+	 *
+	 */
+	public boolean checkSaveComment() {
+		boolean commentValid = true;
+		if (etv.getCommentsFieldText().trim().isEmpty()) {
+			// Comments Pane
+			commentValid = false;
+		}
+		return commentValid;
+	}
+
+	/**
 	 * validate the inputs
 	 */
 	public void validate() {
 		etv.setSaveEnabled(this.checkFields());
 		etv.setAddUserEnabled(addUsersSelected);
 		etv.setRemoveUserEnabled(removeUsersSelected);
+		etv.setCommentSubmitEnabled(this.checkSaveComment());
 	}
 
 	@Override

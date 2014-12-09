@@ -131,6 +131,7 @@ public class WorkflowView extends JLayeredPane {
 	@Override
 	public void setVisible(boolean visible) {
 		if (visible && controller != null && !isVisible()) {
+			controller.removeTaskInfos(false);
 			controller.reloadData();
 		}
 		super.setVisible(visible);

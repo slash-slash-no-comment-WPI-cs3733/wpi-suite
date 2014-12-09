@@ -27,7 +27,7 @@ import net.miginfocom.swing.MigLayout;
 
 import org.jdesktop.swingx.border.DropShadowBorder;
 
-import taskManager.JanewayModule;
+import taskManager.controller.TabPaneController;
 import taskManager.controller.TaskController;
 import taskManager.controller.TaskInfoPreviewController;
 import taskManager.model.TaskModel;
@@ -50,14 +50,16 @@ public class TaskInfoPreviewView extends JPanel {
 	public static final int WIDTH = 220;
 
 	/**
-	 * Constructor for a task preview view
-	 *
+	 * Constructs a TaskInfoPreviewView for a task based on the given TaskModel
+	 * and TaskController. It will be located next to the TaskView, whose
+	 * location is given by the parameter loc.
+	 * 
 	 * @param model
-	 *            the task that is being previewed
+	 *            The TaskModel for the associated task
 	 * @param controller
-	 *            the controller for the task being previewed
+	 *            The TaskController for the associated task
 	 * @param loc
-	 *            the point on the screen to draw the preview view
+	 *            The location of the associated TaskView
 	 */
 	public TaskInfoPreviewView(TaskModel model, TaskController controller,
 			Point loc) {
@@ -210,7 +212,8 @@ public class TaskInfoPreviewView extends JPanel {
 	 *            The height of the view
 	 */
 	private void setBoundsWithoutClipping(Point loc, int width, int height) {
-		final Rectangle paneBounds = JanewayModule.getTabPaneView().getBounds();
+		final Rectangle paneBounds = TabPaneController.getInstance().getView()
+				.getBounds();
 		final int x = (loc.x + StageView.STAGE_WIDTH + width > (paneBounds
 				.getWidth())) ? loc.x - width : loc.x + StageView.STAGE_WIDTH;
 		final int y = (loc.y + height > (paneBounds.getHeight() - 35)) ? (int) paneBounds
