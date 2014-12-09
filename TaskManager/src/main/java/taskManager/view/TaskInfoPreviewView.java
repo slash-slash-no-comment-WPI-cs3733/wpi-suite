@@ -17,6 +17,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
@@ -163,10 +164,10 @@ public class TaskInfoPreviewView extends JPanel {
 		// The task's due date
 		// final Calendar calDate = Calendar.getInstance();
 		// calDate.setTime();
+		// The task's due date
+		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		JLabel dueDate = new JLabel("<html><b><i>Due:</i></b> "
-				+ DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
-						DateFormat.SHORT).format(this.taskM.getDueDate())
-				+ "</html>");
+				+ df.format(this.taskM.getDueDate()) + "</html>");
 
 		dueDate.setFont(dueDate.getFont().deriveFont(Font.PLAIN));
 		dueDate.setMaximumSize(new Dimension(this.getWidth(), 20));
