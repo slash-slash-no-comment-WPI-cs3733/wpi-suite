@@ -15,7 +15,6 @@ import javax.swing.ImageIcon;
 
 import taskManager.controller.TabPaneController;
 import taskManager.controller.ToolbarController;
-import taskManager.view.TabPaneView;
 import taskManager.view.ToolbarView;
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
 import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
@@ -35,9 +34,6 @@ public class JanewayModule implements IJanewayModule {
 
 	private final ArrayList<JanewayTabModel> tabs;
 	public static final ToolbarView toolV = new ToolbarView();
-	private static final TabPaneView tabPaneV = new TabPaneView();
-	public static final TabPaneController tabPaneC = new TabPaneController(
-			tabPaneV);
 	public static User[] users = {};
 	public static String currentUser = null; // the username of the current user
 
@@ -45,12 +41,12 @@ public class JanewayModule implements IJanewayModule {
 	 * Construct a blank tab
 	 */
 	public JanewayModule() {
-		toolV.setController(new ToolbarController(tabPaneV));
+		toolV.setController(new ToolbarController());
 
 		tabs = new ArrayList<JanewayTabModel>();
 		JanewayTabModel tab = new JanewayTabModel("Task Manager",
-
-		new ImageIcon(), toolV, tabPaneV);
+				new ImageIcon(), toolV, TabPaneController.getInstance()
+						.getView());
 		tabs.add(tab);
 	}
 
@@ -68,15 +64,5 @@ public class JanewayModule implements IJanewayModule {
 	@Override
 	public List<JanewayTabModel> getTabs() {
 		return tabs;
-	}
-
-	/**
-	 * 
-	 * Returns the tabPaneView
-	 *
-	 * @return tabPaneV
-	 */
-	public static TabPaneView getTabPaneView() {
-		return tabPaneV;
 	}
 }
