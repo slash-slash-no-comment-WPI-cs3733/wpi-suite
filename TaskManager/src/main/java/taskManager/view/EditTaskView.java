@@ -22,6 +22,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -120,16 +121,16 @@ public class EditTaskView extends JPanel {
 		// TODO: User Mode to switch between create and edit views
 		// When Task added make EditTask take in a Task called currTask
 		this.mode = mode;
-
+		this.setLayout(new MigLayout());
 		window = new JPanel(new MigLayout());
 
 		this.setLayout(new FlowLayout());
 		Dimension panelSize = getPreferredSize();
-		panelSize.width = 1100; // TODO
-		panelSize.height = 500; // Decide size
+		panelSize.width = 1300; // TODO
+		panelSize.height = 650; // Decide size
 		window.setPreferredSize(panelSize);
-		this.setPreferredSize(panelSize);
-		this.setMinimumSize(panelSize);
+		//this.setPreferredSize(panelSize);
+		//this.setMinimumSize(panelSize);
 
 		activities = new ArrayList<ActivityModel>();
 		newActivities = new ArrayList<ActivityModel>();
@@ -171,7 +172,7 @@ public class EditTaskView extends JPanel {
 		descriptionScrollPane
 				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
-		commentsField = new JTextArea(2, 22);
+		commentsField = new JTextArea(6, 24);
 		JScrollPane commentScrollPane = new JScrollPane(commentsField);
 		commentScrollPane
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -270,11 +271,11 @@ public class EditTaskView extends JPanel {
 		// BasicInfo Panel internal content
 		BasicInfo.setBorder(BorderFactory.createTitledBorder("Basic Info"));
 		BasicInfo.add(titleLabel, "wrap");
-		BasicInfo.add(titleField);
-		BasicInfo.add(titleError, "wrap");
+		BasicInfo.add(titleField, "wrap");
+
 		BasicInfo.add(descriptionLabel, "wrap");
-		BasicInfo.add(descriptionScrollPane, "gapbottom 20px");
-		BasicInfo.add(descriptionError, "wrap");
+		BasicInfo.add(descriptionScrollPane, "gapbottom 20px, wrap");
+	
 		BasicInfo.add(dueDateLabel);
 		BasicInfo.add(stageLabel, "wrap");
 		BasicInfo.add(dateField);
@@ -308,7 +309,7 @@ public class EditTaskView extends JPanel {
 		Effort.add(estimatedEffortLabel);
 		Effort.add(actualEffortLabel, "wrap");
 		Effort.add(estEffortField);
-		Effort.add(actEffortField, "wrap");
+		Effort.add(actEffortField);
 		JPanel Errors = new JPanel(new MigLayout());
 		Errors.add(estimatedEffortError, "wrap");
 		Errors.add(actualEffortError);
