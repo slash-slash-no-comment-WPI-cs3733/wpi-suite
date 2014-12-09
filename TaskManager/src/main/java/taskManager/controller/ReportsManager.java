@@ -225,6 +225,9 @@ public class ReportsManager implements ActionListener {
 		int seriesNum = 0;
 		// We get this user to add some 0s to, rather than creating a "" user.
 		String dummyUsername = "User";
+		if (!data.isEmpty()) {
+			dummyUsername = data.iterator().next().username;
+		}
 		// Populate the buckets with names before-hand.
 		for (Instant i = start; i.compareTo(end) < 0; i = i.plus(interval)) {
 			dataset.addValue(0, dummyUsername, intervalName + (seriesNum + 1));
