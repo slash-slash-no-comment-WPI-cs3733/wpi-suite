@@ -365,6 +365,7 @@ public class EditTaskController implements ActionListener {
 	 */
 	private void returnToWorkflowView() {
 		JanewayModule.tabPaneC.removeTabByComponent(etv);
+		WorkflowController.getInstance().removeTaskInfos(false);
 		WorkflowController.getInstance().reloadData();
 	}
 
@@ -423,8 +424,6 @@ public class EditTaskController implements ActionListener {
 			}
 		}
 		model.setReq(r);
-		WorkflowModel.getInstance().save(); // TODO make this call an
-											// appropriate save method.
 
 		// Add the newly added activities.
 		List<ActivityModel> newActivities = etv.getNewActivities();
