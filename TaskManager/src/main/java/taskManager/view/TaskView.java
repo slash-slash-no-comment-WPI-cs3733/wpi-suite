@@ -9,6 +9,8 @@
 package taskManager.view;
 
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Image;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -17,8 +19,10 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
@@ -42,6 +46,9 @@ public class TaskView extends JPanel implements Transferable {
 
 	private TaskController controller;
 
+	private JLabel userNumber;
+	private JLabel commentNumber;
+
 	/**
 	 * Constructor, creates a list-like view for the following information: the
 	 * name of the task, the due date and the estimated effort
@@ -53,7 +60,7 @@ public class TaskView extends JPanel implements Transferable {
 	 * @param estEffort
 	 *            the estimated effort of the task
 	 */
-	public TaskView(String name, Date duedate, int estEffort) {
+	public TaskView(String name, Date duedate, int users, int comments) {
 
 		// organizes the data in a vertical list
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -63,9 +70,9 @@ public class TaskView extends JPanel implements Transferable {
 				.createTitledBorder(raisedbevel);
 		title.setTitlePosition(TitledBorder.LEFT);
 		this.setBorder(title);
-		this.setMinimumSize(new Dimension(200, 40));
-		this.setPreferredSize(new Dimension(200, 40));
-		this.setMaximumSize(new Dimension(200, 40));
+		this.setMinimumSize(new Dimension(200, 60));
+		this.setPreferredSize(new Dimension(200, 60));
+		this.setMaximumSize(new Dimension(200, 60));
 		this.setName(name);
 
 		// convert Date object to Calendar object to avoid using deprecated
@@ -78,9 +85,36 @@ public class TaskView extends JPanel implements Transferable {
 		// to the month.
 
 		JLabel nameLabel = new JLabel();
+		JPanel lower = new JPanel();
 		JLabel dueLabel = new JLabel("Due: " + (date.get(Calendar.MONTH) + 1)
 				+ "/" + date.get(Calendar.DATE) + "/"
 				+ (date.get(Calendar.YEAR)));
+		lower.add(dueLabel);
+
+		JPanel icons = new JPanel(new FlowLayout());
+		JLabel userIcon = new JLabel();
+		JLabel commentIcon = new JLabel();
+		Integer uNum = new Integer(users);
+		userNumber = new JLabel(uNum.toString());
+		Integer cNum = new Integer(comments);
+		commentNumber = new JLabel(cNum.toString());
+		try {
+			Image u = ImageIO.read(this.getClass().getResourceAsStream(
+					"user146.png"));
+			userIcon.setIcon(new ImageIcon(u));
+			u = ImageIO.read(this.getClass().getResourceAsStream("chat51.png"));
+			commentIcon.setIcon(new ImageIcon(u));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		icons.add(userIcon);
+		icons.add(userNumber);
+		icons.add(commentIcon);
+		icons.add(commentNumber);
+		lower.add(icons);
+		icons.setOpaque(false);
+		lower.setOpaque(false);
+		lower.setAlignmentX(RIGHT_ALIGNMENT);
 
 		// This creates a maximum text-string length before the name gets
 		// truncated in the view
@@ -90,11 +124,11 @@ public class TaskView extends JPanel implements Transferable {
 
 		nameLabel.setMaximumSize(size);
 		nameLabel.setPreferredSize(size);
-
+		nameLabel.setAlignmentX(RIGHT_ALIGNMENT);
 		nameLabel.setText(name);
 
 		this.add(nameLabel);
-		this.add(dueLabel);
+		this.add(lower);
 
 		// -----------------------
 		// Drag and drop handling:

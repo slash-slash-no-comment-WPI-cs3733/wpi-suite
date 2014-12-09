@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import taskManager.JanewayModule;
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DropAreaSaveListener;
+import taskManager.model.ActivityModel;
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
@@ -80,8 +81,15 @@ public class StageController implements DropAreaSaveListener,
 				// archive shown is set to true.
 				if (!task.isArchived() || showArchive) {
 					// create stage view and controller.
+					int comments = 0;
+					for (ActivityModel a : task.getActivities()) {
+						if (a.getType() == ActivityModel.activityModelType.COMMENT) {
+							comments++;
+						}
+					}
 					TaskView tkv = new TaskView(task.getName(),
-							task.getDueDate(), task.getEstimatedEffort());
+							task.getDueDate(), task.getAssigned().size(),
+							comments);
 					tkv.setController(new TaskController(tkv, task));
 					this.view.addTaskView(tkv);
 				}
