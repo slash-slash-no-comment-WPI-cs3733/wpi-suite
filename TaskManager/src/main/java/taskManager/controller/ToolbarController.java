@@ -22,13 +22,11 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-import taskManager.JanewayModule;
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.StageView;
-import taskManager.view.TabPaneView;
 import taskManager.view.TaskView;
 import taskManager.view.ToolbarView;
 
@@ -41,19 +39,6 @@ import taskManager.view.ToolbarView;
 public class ToolbarController extends DropTargetAdapter implements
 		ActionListener, ItemListener {
 
-	private final TabPaneView tabPaneV;
-	private final TabPaneController tabPaneC;
-
-	/**
-	 *
-	 * @param tabV
-	 *            tabView used to add tabs to the tab-bar
-	 */
-	public ToolbarController(TabPaneView tabV) {
-		this.tabPaneV = tabV;
-		this.tabPaneC = JanewayModule.tabPaneC;
-	}
-
 	/**
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
@@ -64,18 +49,14 @@ public class ToolbarController extends DropTargetAdapter implements
 			String name = ((JButton) button).getName();
 			switch (name) {
 			case ToolbarView.CREATE_TASK:
-				this.tabPaneC.addCreateTaskTab();
+				TabPaneController.getInstance().addCreateTaskTab();
 				break;
 			case ToolbarView.CREATE_STAGE:
 				// add a new stage from workflow controller
-				tabPaneV.getWorkflowController().addStageToView();
+				WorkflowController.getInstance().addStageToView();
 
 				break;
 			case ToolbarView.REPORT:
-				break;
-
-			case ToolbarView.REFRESH:
-				tabPaneV.refreshWorkflow();
 				break;
 			}
 		}
@@ -104,23 +85,31 @@ public class ToolbarController extends DropTargetAdapter implements
 				switch (name) {
 				case ToolbarView.DELETE:
 					if (target.isEnabled()) {
-						taskV.getController().deleteTask(); // remove from model
-						taskV.getParent().remove(taskV); // remove from view
-						// Reload and save workflow.
-						for (Component t : JanewayModule.tabPaneC.getTabView()
-								.getComponents()) {
-							if (t instanceof EditTaskView) {
-								EditTaskView tab = (EditTaskView) t;
-								if (tab.getName().equals(taskV.getName())) {
-									JanewayModule.tabPaneC.getTabView().remove(
-											t);
+						Integer choice = JOptionPane.showConfirmDialog(
+								TabPaneController.getInstance().getView(),
+								"Are you sure you want to delete this task?",
+								"Warning - Deleting a task",
+								JOptionPane.YES_NO_OPTION);
+						if (choice.equals(JOptionPane.YES_OPTION)) {
+							// delete this task
+							taskV.getController().deleteTask(); // remove from
+																// model
+							taskV.getParent().remove(taskV); // remove from view
+
+							// remove the tab if it's open
+							for (Component t : TabPaneController.getInstance()
+									.getView().getComponents()) {
+								if (t instanceof EditTaskView) {
+									EditTaskView tab = (EditTaskView) t;
+									if (tab.getName().equals(taskV.getName())) {
+										TabPaneController.getInstance()
+												.getView().remove(t);
+									}
 								}
 							}
 						}
-						JanewayModule.tabPaneC.getTabView().reloadWorkflow();
-						JanewayModule.tabPaneC.getTabView()
-								.getWorkflowController().repaintView();
-						// TODO remove edit task tab if task is deleted
+						WorkflowController.getInstance().reloadData();
+						WorkflowController.getInstance().repaintView();
 						WorkflowModel.getInstance().save();
 						DDTransferHandler.dragSaved = true;
 					}
@@ -131,9 +120,8 @@ public class ToolbarController extends DropTargetAdapter implements
 					System.out.println("Archive is set to: "
 							+ taskV.getController().isArchived());
 					// Reload and save workflow.
-					JanewayModule.tabPaneC.getTabView().reloadWorkflow();
-					JanewayModule.tabPaneC.getTabView().getWorkflowController()
-							.repaintView();
+					WorkflowController.getInstance().reloadData();
+					WorkflowController.getInstance().repaintView();
 					WorkflowModel.getInstance().save();
 					DDTransferHandler.dragSaved = true;
 					break;
@@ -161,7 +149,8 @@ public class ToolbarController extends DropTargetAdapter implements
 						if (!stageC.isEmpty()) {
 							Integer choice = JOptionPane
 									.showConfirmDialog(
-											tabPaneV,
+											TabPaneController.getInstance()
+													.getView(),
 											"The "
 													+ stageV.getName()
 													+ " stage contains tasks. Are you sure you want to delete this stage?",
@@ -174,9 +163,10 @@ public class ToolbarController extends DropTargetAdapter implements
 						stageC.deleteStage();
 						DDTransferHandler.dragSaved = true;
 						model.save();
-						tabPaneC.getTabView().reloadWorkflow();
+						WorkflowController.getInstance().reloadData();
 					} else {
-						JOptionPane.showConfirmDialog(tabPaneC.getTabView(),
+						JOptionPane.showConfirmDialog(TabPaneController
+								.getInstance().getView(),
 								"You cannot delete the last stage.",
 								"Warning - Invalid stage deletion",
 								JOptionPane.CLOSED_OPTION);
@@ -189,6 +179,6 @@ public class ToolbarController extends DropTargetAdapter implements
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		// Reload the workflow view.
-		JanewayModule.tabPaneC.getTabView().reloadWorkflow();
+		WorkflowController.getInstance().reloadData();
 	}
 }

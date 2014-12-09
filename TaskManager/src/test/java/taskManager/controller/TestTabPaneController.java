@@ -31,8 +31,8 @@ import taskManager.view.ToolbarView;
 public class TestTabPaneController {
 
 	private static final WorkflowModel wfm = WorkflowModel.getInstance();
-	private static final WorkflowController wfc = JanewayModule
-			.getTabPaneView().getWorkflowController();
+	private static final WorkflowController wfc = WorkflowController
+			.getInstance();
 	private static final ToolbarView toolV = JanewayModule.toolV;
 
 	private final String[] stageNames = { "New", "Scheduled", "In Progress",
@@ -63,7 +63,8 @@ public class TestTabPaneController {
 		frame.setPreferredSize(size);
 		frame.setLayout(new BorderLayout());
 		frame.add(JanewayModule.toolV, BorderLayout.NORTH);
-		frame.add(JanewayModule.tabPaneC.getTabView(), BorderLayout.CENTER);
+		frame.add(TabPaneController.getInstance().getView(),
+				BorderLayout.CENTER);
 		fixture = new FrameFixture(frame);
 
 		fixture.show();
@@ -78,7 +79,8 @@ public class TestTabPaneController {
 		fixture.button(TaskInfoPreviewView.EDIT).click();
 
 		// check that the tab is open
-		assertEquals(JanewayModule.getTabPaneView().getTitleAt(1), "Task 1");
+		assertEquals(TabPaneController.getInstance().getView().getTitleAt(1),
+				"Task 1");
 	}
 
 	@Ignore
@@ -90,7 +92,7 @@ public class TestTabPaneController {
 		fixture.button(TaskInfoPreviewView.EDIT).click();
 
 		// go back to the workflow
-		JanewayModule.tabPaneC.getTabView().setSelectedIndex(0);
+		TabPaneController.getInstance().getView().setSelectedIndex(0);
 
 		// archive the task
 		// make sure it is visible
@@ -144,7 +146,7 @@ public class TestTabPaneController {
 		fixture.robot.waitForIdle();
 
 		// switch to edit task tab
-		JanewayModule.getTabPaneView().setSelectedIndex(1);
+		TabPaneController.getInstance().getView().setSelectedIndex(1);
 
 		String result = fixture.button(EditTaskView.ARCHIVE).text();
 
@@ -160,7 +162,7 @@ public class TestTabPaneController {
 		fixture.button(TaskInfoPreviewView.EDIT).click();
 
 		// go back to the workflow
-		JanewayModule.tabPaneC.getTabView().setSelectedIndex(0);
+		TabPaneController.getInstance().getView().setSelectedIndex(0);
 
 		// archive the task
 		taskFixture.robot.pressMouse(MouseButton.LEFT_BUTTON);
@@ -177,8 +179,9 @@ public class TestTabPaneController {
 				.getLocation());
 		taskFixture.robot.releaseMouse(MouseButton.LEFT_BUTTON);
 
-		assertEquals(JanewayModule.getTabPaneView().getTabCount(), 1);
-		assertEquals(JanewayModule.getTabPaneView().getTitleAt(0), "Workflow");
+		assertEquals(TabPaneController.getInstance().getView().getTabCount(), 1);
+		assertEquals(TabPaneController.getInstance().getView().getTitleAt(0),
+				"Workflow");
 
 	}
 
@@ -186,7 +189,7 @@ public class TestTabPaneController {
 	public void cleanup() {
 		fixture.cleanUp();
 		// remove all tabs
-		JanewayModule.tabPaneC.getTabView().remove(1);
+		TabPaneController.getInstance().getView().remove(1);
 
 	}
 

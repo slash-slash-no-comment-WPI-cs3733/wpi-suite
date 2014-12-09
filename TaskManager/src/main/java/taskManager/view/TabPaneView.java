@@ -9,7 +9,6 @@
 
 package taskManager.view;
 
-import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
@@ -17,9 +16,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
-import taskManager.controller.TabPaneController;
 import taskManager.controller.WorkflowController;
-import taskManager.model.WorkflowModel;
 
 /**
  * 
@@ -27,74 +24,28 @@ import taskManager.model.WorkflowModel;
  * removing tabs
  *
  * @author Samee Swartz
+ * @author Clark Jacobsohn
  * @version Nov 17, 2014
  */
 public class TabPaneView extends JTabbedPane {
 
 	private static final long serialVersionUID = -4912871689110151496L;
-	// Because the workflow is a permanent tab, tabview should keep track of it
-	private final WorkflowController wfc;
-	private final WorkflowModel wfm;
-	private final WorkflowView wfv;
 
+	/**
+	 * Constructs the TabPaneView and adds the WorkflowView to a scrollable pane
+	 * in a permanent tab.
+	 */
 	public TabPaneView() {
 		setTabPlacement(TOP);
 		setTabLayoutPolicy(SCROLL_TAB_LAYOUT);
 		setBorder(BorderFactory.createEmptyBorder(5, 3, 3, 3));
 		this.setSize(new Dimension(500, 500));
 
-		// Create a workflow view, controller, and model
-		wfv = new WorkflowView();
-		wfm = WorkflowModel.getInstance();
-		wfc = new WorkflowController(wfv);
-		wfv.setController(wfc);
-
-		// Make workflow scrollable
-		JScrollPane scroll = new JScrollPane(wfv);
-		scroll.setBorder(BorderFactory.createLineBorder(Color.black));
+		// Add the scrollable workflow
+		JScrollPane scroll = new JScrollPane(WorkflowController.getInstance()
+				.getView());
 
 		this.addTab("Workflow", new ImageIcon(), scroll, "Workflow");
 	}
 
-	/**
-	 * pulls workflow data from the server
-	 */
-	public void refreshWorkflow() {
-		wfc.fetch();
-	}
-
-	/**
-	 * returns the attached workflow model
-	 * 
-	 * @return the workflow model
-	 */
-	public WorkflowModel getWorkflowModel() {
-		return wfm;
-	}
-
-	/**
-	 * reloads workflow data
-	 */
-	public void reloadWorkflow() {
-		wfc.reloadData();
-	}
-
-	/**
-	 * return the workflow controller
-	 * 
-	 * @return the workflow controller
-	 */
-	public WorkflowController getWorkflowController() {
-		return wfc;
-	}
-
-	/**
-	 * Adds a TabPaneController as a change listener
-	 * 
-	 * @param c
-	 *            the tabPaneController to be added as a change listener
-	 */
-	public void setController(TabPaneController c) {
-		this.addChangeListener(c);
-	}
 }

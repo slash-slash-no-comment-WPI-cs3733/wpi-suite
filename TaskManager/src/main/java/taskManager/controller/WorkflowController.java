@@ -45,6 +45,8 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	private final WorkflowModel model;
 	private boolean hasNewStageView;
 
+	private static WorkflowController instance = null;
+
 	/**
 	 * Constructor for the WorkflowController, gets all the stages from the
 	 * WorkflowView, creates the corresponding StageView and StageControllers,
@@ -53,8 +55,8 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 * @param view
 	 *            the corresponding WorkflowView object
 	 */
-	public WorkflowController(WorkflowView view) {
-		this.view = view;
+	public WorkflowController() {
+		this.view = new WorkflowView(this);
 		this.model = WorkflowModel.getInstance();
 		hasNewStageView = false;
 
@@ -152,15 +154,6 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		return model;
 	}
 
-	/**
-	 * returns the workflow view
-	 * 
-	 * @return the workflow view
-	 */
-	public WorkflowView getView() {
-		return this.view;
-	}
-
 	@Override
 	public void saveDrop(JPanel panel, int index) {
 		// Make sure we cast safely
@@ -171,7 +164,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		boolean changed = tc.moveStageToIndex(index);
 
 		if (changed) {
-			WorkflowModel.getInstance().save();
+			model.save();
 			DDTransferHandler.dragSaved = true;
 		}
 	}
@@ -269,5 +262,27 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	public void mouseExited(MouseEvent e) {
 		// Do nothing
 
+	}
+
+	/**
+	 * Returns the associated WorkflowView.
+	 * 
+	 * @return The associated WorkflowView
+	 */
+	public WorkflowView getView() {
+		return view;
+	}
+
+	/**
+	 * Returns the singleton instance of WorkflowController. Creates one if
+	 * needed.
+	 * 
+	 * @return the WorkflowController singleton
+	 */
+	public static WorkflowController getInstance() {
+		if (instance == null) {
+			instance = new WorkflowController();
+		}
+		return instance;
 	}
 }
