@@ -80,7 +80,7 @@ public class EditTaskController implements ActionListener {
 		}
 		etv.getProjectUsersList().addAllToList(projectUserNames);
 
-		JanewayModule.tabPaneC.addTab("Create Task", etv, true);
+		TabPaneController.getInstance().addTab("Create Task", etv, true);
 
 		reloadData();
 	}
@@ -118,7 +118,7 @@ public class EditTaskController implements ActionListener {
 			etv.setActEffort(model.getActualEffort());
 		}
 
-		JanewayModule.tabPaneC.addEditTaskTab(etv);
+		TabPaneController.getInstance().addEditTaskTab(etv);
 
 		// figures out the index of the stage, then sets the drop down to the
 		// stage at that index
@@ -364,7 +364,7 @@ public class EditTaskController implements ActionListener {
 	 * switches back to workflow view
 	 */
 	private void returnToWorkflowView() {
-		JanewayModule.tabPaneC.removeTabByComponent(etv);
+		TabPaneController.getInstance().removeTabByComponent(etv);
 		WorkflowController.getInstance().reloadData();
 	}
 
