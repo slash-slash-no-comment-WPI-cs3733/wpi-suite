@@ -63,6 +63,8 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 */
 	public void reset() {
 		stageList = new ArrayList<StageModel>();
+
+		alive = true;
 	}
 
 	/**
