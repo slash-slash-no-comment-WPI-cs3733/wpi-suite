@@ -22,6 +22,7 @@ import java.util.TreeSet;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.jfree.chart.ChartFactory;
@@ -223,7 +224,7 @@ public class ReportsManager implements ActionListener {
 		}
 		int seriesNum = 0;
 		// We get this user to add some 0s to, rather than creating a "" user.
-		String dummyUsername = data.iterator().next().username;
+		String dummyUsername = "User";
 		// Populate the buckets with names before-hand.
 		for (Instant i = start; i.compareTo(end) < 0; i = i.plus(interval)) {
 			dataset.addValue(0, dummyUsername, intervalName + (seriesNum + 1));
@@ -347,11 +348,24 @@ public class ReportsManager implements ActionListener {
 					.getDate().getTime());
 			Instant endCal = Instant.ofEpochMilli(rtv.getEndDate().getDate()
 					.getTime());
-			// startCal.minus(Period.ofDays(1));
-			// endCal.minus(Period.ofDays(1));
+
+			// TODO: Do validation for the calendars rather than showing
+			// JOptionPanes.
+			Instant now = Instant.now();
+			if (startCal.isAfter(now)) {
+				JOptionPane.showMessageDialog(rtv,
+						"Start Date cannot be in the future.");
+				return;
+			}
+			if (endCal.isBefore(startCal) || startCal.equals(endCal)) {
+				JOptionPane.showMessageDialog(rtv,
+						"End Date must be after the Start Date.");
+				return;
+			}
 
 			Set<String> users = new HashSet<String>();
-			// JList<JCheckBox> usersCheckbox = rtv.getUsers();
+			// TODO: Get only the selected users from the view rather than
+			// considering all of the users.
 			for (User u : JanewayModule.users) {
 				users.add(u.getUsername());
 			}
