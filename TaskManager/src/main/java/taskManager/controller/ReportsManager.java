@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
@@ -37,6 +38,7 @@ import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.ReportsToolbarView;
+import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
  * Code extended from BarChartDemo1.java
@@ -92,6 +94,7 @@ public class ReportsManager implements ActionListener {
 		workflow = WorkflowModel.getInstance();
 		this.rtv = rtv;
 		reloadStages();
+		reloadUsers();
 	}
 
 	/**
@@ -305,6 +308,15 @@ public class ReportsManager implements ActionListener {
 		}
 		// Select the 1st item if the old selected item doesn't exist
 		stages.setSelectedItem(0);
+	}
+
+	private void reloadUsers() {
+		// populates the project users list
+		for (User u : JanewayModule.users) {
+			String name = u.getUsername();
+			JCheckBox usrBox = new JCheckBox(name);
+			rtv.addUsers(usrBox);
+		}
 	}
 
 	@Override
