@@ -343,9 +343,14 @@ public class EditTaskView extends JPanel {
 		fields.add(EditSaveCancel, "dock south, h 10%");
 		fields.add(Activities, "w 25%, dock east, gapleft 5px");
 
+		Dimension activitiesSize = new Dimension(500, 100);
+		activitiesView = new JPanel();
+		activitiesView.setMinimumSize(activitiesSize);
+		activitiesView.setPreferredSize(activitiesSize);
 		window = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, fields,
 				activitiesView);
-		window.setOneTouchExpandable(true);
+		// window.setOneTouchExpandable(true);
+
 		this.add(window);
 	}
 
