@@ -9,6 +9,9 @@
 package taskManager.controller;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.awt.Component;
@@ -19,12 +22,17 @@ import java.util.Date;
 import javax.swing.JFrame;
 
 import org.fest.swing.fixture.FrameFixture;
+import org.fest.swing.fixture.JOptionPaneFixture;
 import org.fest.swing.fixture.JTextComponentFixture;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import taskManager.ClientDataStore;
 import taskManager.JanewayModule;
+import taskManager.MockNetwork;
 import taskManager.ScreenshotOnFail;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
@@ -34,6 +42,7 @@ import taskManager.view.TaskView;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
+import edu.wpi.cs.wpisuitetng.network.Network;
 
 /**
  * Tests for the edit task controller
@@ -52,6 +61,11 @@ public class TestEditTaskController extends ScreenshotOnFail {
 
 	private FrameFixture fixture;
 	private JFrame frame;
+
+	@BeforeClass
+	public static void netSetup() {
+		Network.setInstance(new MockNetwork());
+	}
 
 	@Before
 	public void setup() {
@@ -275,6 +289,39 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		assertEquals(result, users);
 	}
 
+	@Test
+	public void testArchive() {
+		TaskModel task = createAndLoadTask();
+
+		assertFalse(task.isArchived());
+		fixture.button(EditTaskView.ARCHIVE).click();
+		fixture.button(EditTaskView.SAVE).click();
+		assertTrue(task.isArchived());
+
+		TaskController tc = new TaskController(new TaskView("Task", new Date(),
+				0), task);
+		tc.editTask();
+
+		fixture.button(EditTaskView.ARCHIVE).click();
+		fixture.button(EditTaskView.SAVE).click();
+		assertFalse(task.isArchived());
+	}
+
+	@Test
+	public void testDelete() {
+		TaskModel task = createAndLoadTask();
+
+		fixture.button(EditTaskView.DELETE).requireDisabled();
+		fixture.button(EditTaskView.ARCHIVE).click();
+		fixture.button(EditTaskView.DELETE).requireEnabled();
+		fixture.button(EditTaskView.DELETE).click();
+
+		// fixture.optionPane().buttonWithText("Yes");
+		new JOptionPaneFixture(fixture.robot).yesButton().click();
+
+		assertNull(wfm.findTaskByID(task.getID()));
+	}
+
 	@After
 	public void cleanup() {
 		fixture.cleanUp();
@@ -353,6 +400,11 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	 */
 	private JTextComponentFixture getTitleBoxFixture() {
 		return new JTextComponentFixture(fixture.robot, etv.getTitle());
+	}
+
+	@AfterClass
+	public static void netTeardown() {
+		ClientDataStore.deleteDataStore();
 	}
 
 }
