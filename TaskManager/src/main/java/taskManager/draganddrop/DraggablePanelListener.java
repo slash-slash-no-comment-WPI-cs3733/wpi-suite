@@ -25,7 +25,7 @@ import taskManager.JanewayModule;
  * 
  */
 public class DraggablePanelListener extends MouseAdapter {
-	private JComponent exportedComponent;
+	private final JComponent exportedComponent;
 
 	/**
 	 * @param exportedComponent

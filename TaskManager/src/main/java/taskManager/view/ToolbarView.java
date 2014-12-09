@@ -32,7 +32,7 @@ import taskManager.draganddrop.DDTransferHandler;
 
 /**
  * The Task Managers tab's toolbar panel.
- * 
+ *
  * @author Clark Jacobsohn
  */
 @SuppressWarnings("serial")
@@ -62,7 +62,7 @@ public class ToolbarView extends JToolBar {
 
 	/**
 	 * Create a ToolbarView.
-	 * 
+	 *
 	 * @param controller
 	 *            The ToolbarController associated with this view
 	 */
@@ -71,12 +71,13 @@ public class ToolbarView extends JToolBar {
 		this.controller = controller;
 
 		// Construct and set up the buttons and title panels
-		JPanel buttons = new JPanel();
-		JPanel title = new JPanel();
-		JPanel targets = new JPanel();
-		FlowLayout flowLayout = new FlowLayout();
-		BoxLayout toolbarLayout = new BoxLayout(this, BoxLayout.LINE_AXIS);
-		BoxLayout targetsLayout = new BoxLayout(targets, BoxLayout.LINE_AXIS);
+		final JPanel buttons = new JPanel();
+		final JPanel title = new JPanel();
+		final JPanel targets = new JPanel();
+		final FlowLayout flowLayout = new FlowLayout();
+		final BoxLayout toolbarLayout = new BoxLayout(this, BoxLayout.LINE_AXIS);
+		final BoxLayout targetsLayout = new BoxLayout(targets,
+				BoxLayout.LINE_AXIS);
 		buttons.setLayout(flowLayout);
 		buttons.setOpaque(false);
 		title.setLayout(flowLayout);
@@ -85,7 +86,7 @@ public class ToolbarView extends JToolBar {
 		targets.setOpaque(false);
 		this.setLayout(toolbarLayout);
 
-		Insets margins = new Insets(15, 5, 0, 5);
+		final Insets margins = new Insets(15, 5, 0, 5);
 		this.setMargin(margins);
 
 		this.setFloatable(false);
@@ -174,19 +175,57 @@ public class ToolbarView extends JToolBar {
 		this.add(Box.createHorizontalGlue());
 	}
 
+	/**
+	 * adds the toolbar controller as the action listener for all buttons
+	 *
+	 * @param controller
+	 *            the toolbar controller to be addded to the buttons
+	 */
+	public void setController(ToolbarController controller) {
+		this.controller = controller;
+		createTask.addActionListener(this.controller);
+		createStage.addActionListener(this.controller);
+		statistics.addActionListener(this.controller);
+
+		archiveCheckBox.addItemListener(controller);
+
+		archive.setTransferHandler(new DDTransferHandler());
+		archive.setDropTarget(new DropTarget(delete, controller));
+
+	}
+
 	@Override
 	public String getName() {
 		return super.getName();
 	}
 
-	public void setTitle(String name) {
+	/**
+	 * Set the displayed project name
+	 *
+	 * @param name
+	 *            the name of the project
+	 */
+	public void setProjectName(String name) {
 		projectName.setText("<html>" + name + "</html>");
 	}
 
+	/**
+	 * Sets if the archive icon is lit up
+	 *
+	 * @param bool
+	 *            if the archive should be enabled or not
+	 */
 	public void setArchiveEnabled(boolean bool) {
 		archive.setEnabled(bool);
 	}
 
+	/**
+	 * Sets if the delete icon is lit up and whether it is currently a drop
+	 * target
+	 *
+	 * @param bool
+	 *            if the delete should be enabled or not
+	 */
 	public void setDeleteEnabled(boolean bool) {
 		delete.setEnabled(bool);
 
@@ -204,7 +243,7 @@ public class ToolbarView extends JToolBar {
 	}
 
 	/**
-	 * 
+	 *
 	 * Sets the archive icon to the specified type.
 	 *
 	 * @param iconType

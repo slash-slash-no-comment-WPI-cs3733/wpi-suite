@@ -33,7 +33,8 @@ public class JanewayModule implements IJanewayModule {
 
 	// The tabs used by this module
 
-	private final ArrayList<JanewayTabModel> tabs;
+	private final List<JanewayTabModel> tabs;
+	private static ToolbarView toolV;
 	public static User[] users = {};
 	public static String currentUser = null; // the username of the current user
 
@@ -43,9 +44,9 @@ public class JanewayModule implements IJanewayModule {
 	public JanewayModule() {
 
 		tabs = new ArrayList<JanewayTabModel>();
-		JanewayTabModel tab = new JanewayTabModel("Task Manager",
-				new ImageIcon(), ToolbarController.getInstance().getView(),
-				TabPaneController.getInstance().getView());
+		final JanewayTabModel tab = new JanewayTabModel("Task Manager",
+				new ImageIcon(), getToolV(), TabPaneController.getInstance()
+						.getView());
 		tabs.add(tab);
 
 		// Add default stages
@@ -85,9 +86,19 @@ public class JanewayModule implements IJanewayModule {
 		return tabs;
 	}
 
+	/**
+	 * @return the toolV
+	 */
+	public static ToolbarView getToolV() {
+		if (toolV == null) {
+			throw new IllegalStateException("JanewayModule not initialized");
+		}
+		return toolV;
+	}
+
 	/*
 	 * If we're on OS X
-	 * 
+	 *
 	 * @return If we're using a mac.
 	 */
 	public static boolean isOnMac() {

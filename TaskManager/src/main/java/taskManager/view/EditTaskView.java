@@ -42,7 +42,7 @@ import taskManager.model.ActivityModel.activityModelType;
  */
 
 /**
- * 
+ *
  * @author Thane Hunt
  * @author Tyler Jaskoviak
  */
@@ -66,47 +66,48 @@ public class EditTaskView extends JPanel {
 	public static final String NO_REQ = "[None]";
 	public static final String REFRESH = "refresh";
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
-	private JButton save;
-	private JButton cancel;
-	private JButton addUser;
-	private JButton removeUser;
+	private final JButton save;
+	private final JButton cancel;
+	private final JButton addUser;
+	private final JButton removeUser;
 	private JButton archive;
-	private JButton delete;
-	private JButton addReq;
-	private JButton submitComment;
+	private final JButton delete;
+	private final JButton addReq;
+	private final JButton submitComment;
 
-	private JTextArea commentsField;
-	private JTextField titleField;
-	private JTextArea descripArea;
-	private JXDatePicker dateField;
-	private JTextField estEffortField;
-	private JTextField actEffortField;
-	private JPanel window;
+	private final JTextArea commentsField;
+	private final JTextField titleField;
+	private final JTextArea descripArea;
+	private final JXDatePicker dateField;
+	private final JTextField estEffortField;
+	private final JTextField actEffortField;
+	private final JPanel window;
 
-	private Mode mode;
+	private final Mode mode;
 
 	public enum Mode {
 		CREATE, EDIT;
 	}
 
-	private ScrollList usersList;
-	private ScrollList projectUsersList;
+	private final ScrollList usersList;
+	private final ScrollList projectUsersList;
 
-	private JLabel titleError;
-	private JLabel descriptionError;
-	private JLabel estimatedEffortError;
-	private JLabel actualEffortError;
+	private final JLabel titleError;
+	private final JLabel descriptionError;
+	private final JLabel estimatedEffortError;
+	private final JLabel actualEffortError;
 
-	private JComboBox<String> stages;
-	private JComboBox<String> requirements;
+	private final JComboBox<String> stages;
+	private final JComboBox<String> requirements;
 
 	private EditTaskController controller;
-	private ActivityView activityPane;
+	private final ActivityView activityPane;
 
 	private List<ActivityModel> activities;
+	private final List<ActivityModel> newActivities;
 
 	private TaskInputController fieldC;
 
@@ -114,6 +115,9 @@ public class EditTaskView extends JPanel {
 	 * Creates a Edit Task Panel so that you can change all of the values of a
 	 * task: Title Description Due Date Estimated Effort Actual Effort Adding
 	 * Comments
+	 *
+	 * @param mode
+	 *            Which mode this view should be created in
 	 */
 	public EditTaskView(Mode mode) {
 		// TODO: User Mode to switch between create and edit views
@@ -123,7 +127,7 @@ public class EditTaskView extends JPanel {
 		window = new JPanel(new MigLayout());
 
 		this.setLayout(new FlowLayout());
-		Dimension panelSize = getPreferredSize();
+		final Dimension panelSize = getPreferredSize();
 		panelSize.width = 1100; // TODO
 		panelSize.height = 500; // Decide size
 		window.setPreferredSize(panelSize);
@@ -133,13 +137,13 @@ public class EditTaskView extends JPanel {
 		activities = new ArrayList<ActivityModel>();
 
 		// JLabels
-		JLabel titleLabel = new JLabel("Title ");
-		JLabel descriptionLabel = new JLabel("Description ");
-		JLabel dueDateLabel = new JLabel("Due Date ");
-		JLabel stageLabel = new JLabel("Stage ");
-		JLabel estimatedEffortLabel = new JLabel("Estimated Effort ");
-		JLabel actualEffortLabel = new JLabel("Actual Effort ");
-		JLabel requirementLabel = new JLabel("Select Requirement ");
+		final JLabel titleLabel = new JLabel("Title ");
+		final JLabel descriptionLabel = new JLabel("Description ");
+		final JLabel dueDateLabel = new JLabel("Due Date ");
+		final JLabel stageLabel = new JLabel("Stage ");
+		final JLabel estimatedEffortLabel = new JLabel("Estimated Effort ");
+		final JLabel actualEffortLabel = new JLabel("Actual Effort ");
+		final JLabel requirementLabel = new JLabel("Select Requirement ");
 
 		titleError = new JLabel("Cannot be empty");
 		titleError.setVisible(false);
@@ -163,14 +167,14 @@ public class EditTaskView extends JPanel {
 		descripArea.setEditable(true);
 		descripArea.setLineWrap(true);
 		descripArea.setWrapStyleWord(true);
-		JScrollPane descriptionScrollPane = new JScrollPane(descripArea);
+		final JScrollPane descriptionScrollPane = new JScrollPane(descripArea);
 		descriptionScrollPane
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		descriptionScrollPane
 				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
 		commentsField = new JTextArea(2, 22);
-		JScrollPane commentScrollPane = new JScrollPane(commentsField);
+		final JScrollPane commentScrollPane = new JScrollPane(commentsField);
 		commentScrollPane
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		commentScrollPane
@@ -257,13 +261,13 @@ public class EditTaskView extends JPanel {
 		window.add(titleLabel);
 
 		// This is where the 6 primary panels are defined
-		JPanel Spacer = new JPanel(new MigLayout());
-		JPanel BasicInfo = new JPanel(new MigLayout());
-		JPanel Users = new JPanel(new MigLayout());
-		JPanel Activities = new JPanel(new MigLayout());
-		JPanel Effort = new JPanel(new MigLayout("fill"));
-		JPanel Requirements = new JPanel(new MigLayout());
-		JPanel EditSaveCancel = new JPanel(new MigLayout());
+		final JPanel Spacer = new JPanel(new MigLayout());
+		final JPanel BasicInfo = new JPanel(new MigLayout());
+		final JPanel Users = new JPanel(new MigLayout());
+		final JPanel Activities = new JPanel(new MigLayout());
+		final JPanel Effort = new JPanel(new MigLayout("fill"));
+		final JPanel Requirements = new JPanel(new MigLayout());
+		final JPanel EditSaveCancel = new JPanel(new MigLayout());
 
 		// ready to go
 		// BasicInfo Panel internal content
@@ -281,9 +285,9 @@ public class EditTaskView extends JPanel {
 
 		// Users Panel internal content
 		Users.setBorder(BorderFactory.createTitledBorder("Users"));
-		JPanel usersListPanel = new JPanel(new MigLayout());
-		JPanel projectUsersListPanel = new JPanel(new MigLayout());
-		JPanel addRemoveButtons = new JPanel(new MigLayout());
+		final JPanel usersListPanel = new JPanel(new MigLayout());
+		final JPanel projectUsersListPanel = new JPanel(new MigLayout());
+		final JPanel addRemoveButtons = new JPanel(new MigLayout());
 		usersListPanel.add(usersList);
 		projectUsersListPanel.add(projectUsersList);
 
@@ -308,7 +312,7 @@ public class EditTaskView extends JPanel {
 		Effort.add(actualEffortLabel, "wrap");
 		Effort.add(estEffortField);
 		Effort.add(actEffortField, "wrap");
-		JPanel Errors = new JPanel(new MigLayout());
+		final JPanel Errors = new JPanel(new MigLayout());
 		Errors.add(estimatedEffortError, "wrap");
 		Errors.add(actualEffortError);
 
@@ -342,17 +346,17 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * 
+	 *
 	 * Sets the focus to the title field.
 	 *
 	 */
-	public void setTitleFieldFocus() {
+	public void focusOnTitleField() {
 		titleField.requestFocus();
 	}
 
 	/**
 	 * Adds the action listener (controller) to this view
-	 * 
+	 *
 	 * @param controller
 	 *            the controller to be attached to this view
 	 */
@@ -370,12 +374,12 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Adds the action listener (controller) to this view
-	 * 
+	 *
 	 * @param controller
 	 *            the controller to be attached to this view
 	 */
 	public void setFieldController(TaskInputController controller) {
-		this.fieldC = controller;
+		fieldC = controller;
 		titleField.addKeyListener(fieldC);
 		descripArea.addKeyListener(fieldC);
 		estEffortField.addKeyListener(fieldC);
@@ -388,15 +392,15 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * returns the task input controller
-	 * 
+	 *
 	 * @return the task input controller
 	 */
 	public TaskInputController getFieldController() {
-		return this.fieldC;
+		return fieldC;
 	}
 
 	/**
-	 * 
+	 *
 	 * Sets the archive button's text
 	 *
 	 * @param text
@@ -408,7 +412,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Gets the text in the title field
-	 * 
+	 *
 	 * @return the title field
 	 */
 	public JTextField getTitle() {
@@ -417,7 +421,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Gets the description field
-	 * 
+	 *
 	 * @return the description field
 	 */
 	public JTextArea getDescription() {
@@ -426,7 +430,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Gets the date field
-	 * 
+	 *
 	 * @return the date field
 	 */
 	public JXDatePicker getDateField() {
@@ -435,7 +439,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Gets the estimated effort field
-	 * 
+	 *
 	 * @return the estimated effort field
 	 */
 	public JTextField getEstEffort() {
@@ -444,7 +448,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Gets the actual effort field
-	 * 
+	 *
 	 * @return the actual effort field
 	 */
 	public JTextField getActEffort() {
@@ -453,7 +457,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * gets the dropdown box in the view that contains all the stage names
-	 * 
+	 *
 	 * @return the stages dropdown box
 	 */
 	public JComboBox<String> getStages() {
@@ -466,25 +470,25 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * return the JList containing the assigned user names
-	 * 
+	 *
 	 * @return the JList of assigned usernames
 	 */
 	public ScrollList getUsersList() {
-		return this.usersList;
+		return usersList;
 	}
 
 	/**
 	 * return the JList containing the project user names
-	 * 
+	 *
 	 * @return the JLst of project user names
 	 */
 	public ScrollList getProjectUsersList() {
-		return this.projectUsersList;
+		return projectUsersList;
 	}
 
 	/**
 	 * sets the text in the title field
-	 * 
+	 *
 	 * @param d
 	 *            the text in the title field
 	 */
@@ -494,7 +498,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * sets the text in the description field
-	 * 
+	 *
 	 * @param d
 	 *            the text in the description field
 	 */
@@ -504,7 +508,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Sets the text in the date field
-	 * 
+	 *
 	 * @param d
 	 *            the text in the date field
 	 */
@@ -514,7 +518,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Sets the estimated effort to the value i
-	 * 
+	 *
 	 * @param i
 	 *            the value to set the estimated effort field to
 	 */
@@ -524,7 +528,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Set the the actual effort field to the value of i
-	 * 
+	 *
 	 * @param i
 	 *            the value to set the actual effort field to
 	 */
@@ -534,17 +538,17 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * set stage dropdown box to the stage associated with the task
-	 * 
+	 *
 	 * @param n
 	 *            the index of the stage in the workflow
 	 */
 	public void setStageDropdown(int n) {
-		String p = stages.getItemAt(n);
+		final String p = stages.getItemAt(n);
 		stages.setSelectedItem(p);
 	}
 
 	/**
-	 * 
+	 *
 	 * Returns the selected stage name. If the selected item cannot be retrieved
 	 * returns an empty string.
 	 *
@@ -558,9 +562,9 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * 
+	 *
 	 * Sets the title error visible or invisible
-	 * 
+	 *
 	 * @param v
 	 *            true will make the title error visible, false will make the
 	 *            title error invisible
@@ -571,7 +575,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Sets the description error visible or invisible
-	 * 
+	 *
 	 * @param v
 	 *            true will make the description error visible, false will make
 	 *            the description error invisible
@@ -582,7 +586,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Sets the estimated effort error visible or invisible
-	 * 
+	 *
 	 * @param v
 	 *            true will make the estimated effort error visible, false will
 	 *            make the estimated effort error invisible
@@ -593,7 +597,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Sets the estimated effort error text
-	 * 
+	 *
 	 * @param text
 	 *            the text to set the error
 	 */
@@ -603,7 +607,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Sets the actual effort error visible or invisible
-	 * 
+	 *
 	 * @param v
 	 *            true will make the actual effort error visible, false will
 	 *            make the actual effort error invisible
@@ -614,7 +618,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Sets the actual effort error text
-	 * 
+	 *
 	 * @param text
 	 *            the text to set the error
 	 */
@@ -626,32 +630,32 @@ public class EditTaskView extends JPanel {
 	 * disables the archive button
 	 */
 	public void disableArchive() {
-		this.archive.setEnabled(false);
+		archive.setEnabled(false);
 	}
 
 	/**
 	 * enables the archive button
 	 */
 	public void enableArchive() {
-		this.archive.setEnabled(true);
+		archive.setEnabled(true);
 	}
 
 	/**
 	 * set the add user button enabled or disabled
-	 * 
+	 *
 	 * @param e
 	 */
 	public void setAddUserEnabled(boolean e) {
-		this.addUser.setEnabled(e);
+		addUser.setEnabled(e);
 	}
 
 	/**
 	 * sets the remove user button enabled or disabled
-	 * 
+	 *
 	 * @param e
 	 */
 	public void setRemoveUserEnabled(boolean e) {
-		this.removeUser.setEnabled(e);
+		removeUser.setEnabled(e);
 	}
 
 	/**
@@ -671,17 +675,17 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * enables or disables the save button
-	 * 
+	 *
 	 * @param e
 	 *            true is enabled, false is disabled
 	 */
 	public void setSaveEnabled(boolean e) {
-		this.save.setEnabled(e);
+		save.setEnabled(e);
 	}
 
 	/**
 	 * enables or disables the comment submit button
-	 * 
+	 *
 	 * @param e
 	 *            true is enabled false is disabled
 	 */
@@ -690,13 +694,13 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * 
+	 *
 	 * Adds comment to the activities list and refreshes the activities panel.
 	 *
 	 * @return the resulting ActivityModel added.
 	 */
 	public ActivityModel addComment() {
-		ActivityModel act = new ActivityModel(commentsField.getText(),
+		final ActivityModel act = new ActivityModel(commentsField.getText(),
 				activityModelType.COMMENT);
 		activities.add(act);
 		commentsField.setText("");
@@ -706,13 +710,13 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * 
+	 *
 	 * Sets the activies panel according to the activities list.
 	 *
 	 * @param activities
 	 */
 	public void setActivitiesPanel(List<ActivityModel> activities) {
-		List<ActivityModel> tskActivitiesCopy = new ArrayList<ActivityModel>(
+		final List<ActivityModel> tskActivitiesCopy = new ArrayList<ActivityModel>(
 				activities);
 		activityPane.setMessage("");
 		for (ActivityModel act : tskActivitiesCopy) {
@@ -742,7 +746,7 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * 
+	 *
 	 * Reloads the activities panel.
 	 *
 	 */
@@ -751,20 +755,20 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * 
+	 *
 	 * Sets activities.
 	 *
 	 * @param act
 	 */
 	public void setActivities(List<ActivityModel> act) {
-		List<ActivityModel> tskActivitiesCopy = new ArrayList<ActivityModel>(
+		final List<ActivityModel> tskActivitiesCopy = new ArrayList<ActivityModel>(
 				act);
 		activityPane.setMessage("");
 		activities = tskActivitiesCopy;
 	}
 
 	/**
-	 * 
+	 *
 	 * Clears the activities.
 	 *
 	 */
@@ -773,18 +777,18 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * 
+	 *
 	 * Adds an activity.
 	 *
-	 * @param the
-	 *            activity.
+	 * @param act
+	 *            the activity.
 	 */
 	public void addActivity(ActivityModel act) {
 		activities.add(act);
 	}
 
 	/**
-	 * 
+	 *
 	 * Set the delete button to enabled/disabled.
 	 *
 	 * @param bool
@@ -800,7 +804,7 @@ public class EditTaskView extends JPanel {
 	@Override
 	public void setVisible(boolean visible) {
 		if (visible && titleField.getKeyListeners().length > 0) {
-			TaskInputController tic = (TaskInputController) titleField
+			final TaskInputController tic = (TaskInputController) titleField
 					.getKeyListeners()[0];
 			tic.checkFields();
 			reloadActivitiesPanel();
@@ -814,11 +818,11 @@ public class EditTaskView extends JPanel {
 
 	// Used for tests
 	public JPanel getWindow() {
-		return this.window;
+		return window;
 	}
 
 	/**
-	 * 
+	 *
 	 * Returns the EditTaskController.
 	 *
 	 * @return the controller.
@@ -828,7 +832,7 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * 
+	 *
 	 * Whether this editTaskView is creating a new task, or editing one.
 	 *
 	 * @return Mode.CREATE or Mode.EDIT
@@ -839,7 +843,7 @@ public class EditTaskView extends JPanel {
 
 	/**
 	 * Returns the comments field's text
-	 * 
+	 *
 	 * @return The text the user wants to say
 	 */
 	public String getCommentsFieldText() {
