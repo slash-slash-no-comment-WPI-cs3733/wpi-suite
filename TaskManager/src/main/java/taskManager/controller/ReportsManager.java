@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
 import org.jfree.chart.ChartFactory;
@@ -90,6 +91,7 @@ public class ReportsManager implements ActionListener {
 	public ReportsManager(ReportsToolbarView rtv) {
 		workflow = WorkflowModel.getInstance();
 		this.rtv = rtv;
+		reloadStages();
 	}
 
 	/**
@@ -290,6 +292,21 @@ public class ReportsManager implements ActionListener {
 		return new ChartPanel(chart, false);
 	}
 
+	/**
+	 * 
+	 * Update the stages dropdown for the view.
+	 *
+	 */
+	private void reloadStages() {
+		JComboBox<String> stages = rtv.getStages();
+		stages.removeAllItems();
+		for (StageModel stage : WorkflowModel.getInstance().getStages()) {
+			stages.addItem(stage.getName());
+		}
+		// Select the 1st item if the old selected item doesn't exist
+		stages.setSelectedItem(0);
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object button = e.getSource();
@@ -299,7 +316,10 @@ public class ReportsManager implements ActionListener {
 			Instant end = Instant.ofEpochMilli(rtv.getEndDate().getDate()
 					.getTime());
 			// Set<String> users = rtv.getUsers();
-			findVelocityData(null, start, end, false);
+			String stageStr = rtv.getSelectedStage();
+			StageModel stage = WorkflowModel.getInstance().findStageByName(
+					stageStr);
+			findVelocityData(null, start, end, false, stage);
 			JPanel chart = createChart("Test", "xlabel", "ylabel");
 			JanewayModule.tabPaneC.addTab("Graph", chart, true);
 			JanewayModule.tabPaneC.getTabView().setSelectedComponent(chart);

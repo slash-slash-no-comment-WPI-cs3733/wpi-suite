@@ -529,4 +529,14 @@ public class ReportsToolbarView extends JPanel {
 	public void setUser(int i, Boolean b) {
 		users.getModel().getElementAt(i).setSelected(b);
 	}
+
+	/**
+	 * 
+	 * Return the stages component.
+	 *
+	 * @return the stages component.
+	 */
+	public JComboBox<String> getStages() {
+		return stages;
+	}
 }
