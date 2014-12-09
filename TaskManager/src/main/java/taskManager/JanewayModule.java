@@ -70,8 +70,9 @@ public class JanewayModule implements IJanewayModule {
 		toolV.setController(new ToolbarController());
 
 		// Reset singletons
-		TabPaneController.getInstance().reset();
 		WorkflowController.getInstance().reset();
+		TabPaneController.getInstance().reset();
+
 	}
 
 	/**

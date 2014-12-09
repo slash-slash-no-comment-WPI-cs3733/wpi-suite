@@ -10,7 +10,6 @@ import java.util.Date;
 
 import javax.swing.JFrame;
 
-import org.fest.swing.core.ComponentDragAndDrop;
 import org.fest.swing.core.MouseButton;
 import org.fest.swing.fixture.FrameFixture;
 import org.fest.swing.fixture.JPanelFixture;
@@ -20,12 +19,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import taskManager.JanewayModule;
-import taskManager.draganddrop.DDTransferHandler;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.TaskInfoPreviewView;
+import taskManager.view.TaskView;
 import taskManager.view.ToolbarView;
 
 public class TestTabPaneController {
@@ -33,7 +32,7 @@ public class TestTabPaneController {
 	private static final WorkflowModel wfm = WorkflowModel.getInstance();
 	private static final WorkflowController wfc = WorkflowController
 			.getInstance();
-	private static final ToolbarView toolV = JanewayModule.toolV;
+	private static ToolbarView toolV;
 
 	private final String[] stageNames = { "New", "Scheduled", "In Progress",
 			"Complete" };
@@ -43,28 +42,33 @@ public class TestTabPaneController {
 	private TaskModel t1;
 	private TaskModel t2;
 	private TaskModel t3;
-	private TaskModel task;
 
 	private Dimension size = new Dimension(1000, 500);
 
 	@Before
 	public void setup() {
 		// create a new workflow model
-		wfm.makeIdenticalTo(new WorkflowModel());
+		JanewayModule.reset();
+		toolV = JanewayModule.getToolV();
 
 		// give it some stages
 		for (String name : stageNames) {
-			new StageModel(name, true);
+			new StageModel(name, false);
 		}
+
+		wfc.reloadData();
+		wfc.repaintView();
+
+		wfc.reloadData();
+
 		createDummyTasks();
 
 		frame = new JFrame();
 		frame.setSize(size);
 		frame.setPreferredSize(size);
 		frame.setLayout(new BorderLayout());
-		frame.add(JanewayModule.toolV, BorderLayout.NORTH);
-		frame.add(TabPaneController.getInstance().getView(),
-				BorderLayout.CENTER);
+		frame.add(toolV, BorderLayout.NORTH);
+		frame.add(TabPaneController.getInstance().getView());
 		fixture = new FrameFixture(frame);
 
 		fixture.show();
@@ -94,55 +98,31 @@ public class TestTabPaneController {
 		// go back to the workflow
 		TabPaneController.getInstance().getView().setSelectedIndex(0);
 
-		// archive the task
-		// make sure it is visible
-		fixture.requireVisible();
+		Component c = taskFixture.target;
+		while (!(c instanceof TaskView) && c != null) {
+			c = c.getParent();
 
-		// make sure stage is visible
-		fixture.panel("New").requireVisible();
+		}
+		Point location = c.getLocationOnScreen();
 
-		// make sure task is visible
-		taskFixture.requireVisible();
+		// click right on the edge
+		taskFixture.robot.pressMouse(location, MouseButton.LEFT_BUTTON);
 
-		// set the timing.
+		// move the mouse to the trash
+		Point goal = fixture.label(ToolbarView.DELETE).target
+				.getLocationOnScreen();
+		taskFixture.robot.settings().delayBetweenEvents(10);
+		while (!location.equals(goal)) {
+			int movex = Integer.min(Integer.max(goal.x - location.x, -3), 3);
+			int movey = Integer.min(Integer.max(goal.y - location.y, -3), 3);
+			location.x += movex;
+			location.y += movey;
+			taskFixture.robot.moveMouse(location);
+		}
+		taskFixture.robot.settings().delayBetweenEvents(60);
 
-		// get the dragon drop targets
-		Component task = fixture.panel("Task 1").target;
-		Component archive = fixture.label(ToolbarView.ARCHIVE).target;
-
-		// need to set to true to avoid network errors
-		DDTransferHandler.dragSaved = true;
-
-		// archive icon should be disabled at first.
-		fixture.label(ToolbarView.ARCHIVE).requireDisabled();
-		fixture.robot.settings().dropDelay(0);
-		fixture.robot.settings().dragDelay(0);
-		fixture.robot.settings().delayBetweenEvents(0);
-
-		ComponentDragAndDrop q = new ComponentDragAndDrop(taskFixture.robot);
-
-		Point loc = task.getLocation();
-		loc.x += 5;
-		loc.y += 5;
-
-		fixture.robot.pressMouse(task, loc, MouseButton.LEFT_BUTTON);
-
-		mouseMove(
-				task,
-				new Point(task.getLocation().x + 10 / 2,
-						task.getLocation().y + 10 / 2),
-				new Point(task.getLocation().x + 10, task.getLocation().y + 10),
-				new Point(task.getLocation().x + 10 / 2,
-						task.getLocation().y + 10 / 2),
-				new Point(task.getLocation().x, task.getLocation().y));
-		fixture.robot.waitForIdle();
-
-		fixture.robot.moveMouse(task, toolV.getArchive().getLocation().x - 4,
-				toolV.getArchive().getLocation().y);
-		fixture.robot.moveMouse(task, toolV.getArchive().getLocation().x, toolV
-				.getArchive().getLocation().y);
-
-		fixture.robot.releaseMouseButtons();
+		// end the drag
+		taskFixture.robot.releaseMouseButtons();
 		fixture.robot.waitForIdle();
 
 		// switch to edit task tab
@@ -165,19 +145,11 @@ public class TestTabPaneController {
 		TabPaneController.getInstance().getView().setSelectedIndex(0);
 
 		// archive the task
-		taskFixture.robot.pressMouse(MouseButton.LEFT_BUTTON);
-		taskFixture.robot.moveMouse(JanewayModule.toolV.getComponent(4)
-				.getLocation());
-		taskFixture.robot.releaseMouse(MouseButton.LEFT_BUTTON);
 
 		// show archived tasks
-		fixture.robot.click(JanewayModule.toolV.getComponent(3));
+		fixture.robot.click(toolV.getComponent(3));
 
-		// archive the task
-		taskFixture.robot.pressMouse(MouseButton.LEFT_BUTTON);
-		taskFixture.robot.moveMouse(JanewayModule.toolV.getComponent(5)
-				.getLocation());
-		taskFixture.robot.releaseMouse(MouseButton.LEFT_BUTTON);
+		// delete the task
 
 		assertEquals(TabPaneController.getInstance().getView().getTabCount(), 1);
 		assertEquals(TabPaneController.getInstance().getView().getTitleAt(0),
@@ -188,8 +160,6 @@ public class TestTabPaneController {
 	@After
 	public void cleanup() {
 		fixture.cleanUp();
-		// remove all tabs
-		TabPaneController.getInstance().getView().remove(1);
 
 	}
 
@@ -208,12 +178,8 @@ public class TestTabPaneController {
 		t3.setDescription("description");
 
 		wfc.reloadData();
+		wfc.repaintView();
 
-	}
-
-	private void mouseMove(Component target, Point... points) {
-		for (Point p : points)
-			fixture.robot.moveMouse(target, p.x, p.y);
 	}
 
 }
