@@ -95,10 +95,13 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 */
 	public synchronized void reloadData() {
 		// clear the stages previously on the view
-		this.removeTaskInfos(false);
 		this.removeChangeTitles();
 		hasNewStageView = false;
-		view.removeAll();
+		for (Component c : view.getComponents()) {
+			if (!(c instanceof TaskInfoPreviewView)) {
+				view.remove(c);
+			}
+		}
 
 		// get all the stages in this workflow
 		final List<StageModel> stages = model.getStages();
@@ -235,6 +238,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		if (!StageController.anyChangeTitleOut) {
 			// Removes the task info bubble from the screen
 			FetchWorkflowObserver.ignoreAllResponses = false;
+			removeTaskInfos(false);
 			this.reloadData();
 			this.repaintView();
 		}

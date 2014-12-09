@@ -198,6 +198,7 @@ public class StageController implements DropAreaSaveListener,
 			FetchWorkflowObserver.ignoreAllResponses = false;
 			// this will remove any changeTitle textboxes or taskInfo bubbles
 			// from the workflow
+			WorkflowController.getInstance().removeTaskInfos(false);
 			WorkflowController.getInstance().reloadData();
 			WorkflowController.getInstance().repaintView();
 		}

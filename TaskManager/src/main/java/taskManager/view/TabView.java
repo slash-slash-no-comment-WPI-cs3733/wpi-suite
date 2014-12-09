@@ -126,6 +126,7 @@ public class TabView extends JPanel implements ActionListener {
 			}
 		}
 		FetchWorkflowObserver.ignoreAllResponses = false;
+		WorkflowController.getInstance().removeTaskInfos(false);
 		WorkflowController.getInstance().reloadData();
 	}
 

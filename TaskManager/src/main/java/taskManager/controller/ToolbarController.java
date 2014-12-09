@@ -61,6 +61,8 @@ public class ToolbarController extends DropTargetAdapter implements
 		Object button = e.getSource();
 		if (button instanceof JButton) {
 			String name = ((JButton) button).getName();
+			// close the task preview pane
+			WorkflowController.getInstance().removeTaskInfos(true);
 			switch (name) {
 			case ToolbarView.CREATE_TASK:
 				this.tabPaneC.addCreateTaskTab();
