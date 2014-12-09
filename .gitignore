@@ -17,7 +17,7 @@ dist
 *.eml
 
 #Test Screenshots
-*.png
+/*.png
 
 # Module jar files #
 Janeway/modules/*.jar
