@@ -20,7 +20,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import taskManager.JanewayModule;
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DropAreaSaveListener;
 import taskManager.model.FetchWorkflowObserver;
@@ -69,7 +68,8 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 		// Get all the tasks associated with this Stage.
 
 		// Get state of archive shown check box.
-		boolean showArchive = JanewayModule.getToolV().isArchiveShown();
+		boolean showArchive = ToolbarController.getInstance().getView()
+				.isArchiveShown();
 
 		// Add the tasks.
 		if (model != null) {
@@ -104,7 +104,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 
 		// if archived tasks are hidden, change index to account for the hidden
 		// tasks
-		if (!JanewayModule.getToolV().isArchiveShown()) {
+		if (!ToolbarController.getInstance().getView().isArchiveShown()) {
 			List<TaskModel> taskList = model.getTasks();
 			for (int i = 0; i < index; i++) {
 				if (taskList.get(i).isArchived()) {
@@ -197,6 +197,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 			FetchWorkflowObserver.ignoreAllResponses = false;
 			// this will remove any changeTitle textboxes or taskInfo bubbles
 			// from the workflow
+			WorkflowController.getInstance().removeTaskInfos(false);
 			WorkflowController.getInstance().reloadData();
 			WorkflowController.getInstance().repaintView();
 		}

@@ -18,7 +18,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 import javax.swing.TransferHandler;
 
-import taskManager.JanewayModule;
+import taskManager.controller.ToolbarController;
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
@@ -133,7 +133,7 @@ public class DDTransferHandler extends TransferHandler {
 			DropAreaPanel.generatePlaceholder(comp.getSize());
 
 			// Set toolbar icon state
-			JanewayModule.toolC.setIconState(comp);
+			ToolbarController.getInstance().setIconState(comp);
 
 			// Initiate the drag
 			super.exportAsDrag(comp, e, action);
@@ -163,7 +163,6 @@ public class DDTransferHandler extends TransferHandler {
 		comp.setVisible(true);
 
 		// Reset icons
-		JanewayModule.toolC.resetIconState();
+		ToolbarController.getInstance().resetIconState();
 	}
-
 }
