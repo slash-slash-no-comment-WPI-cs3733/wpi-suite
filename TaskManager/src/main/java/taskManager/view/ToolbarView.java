@@ -178,7 +178,6 @@ public class ToolbarView extends JToolBar {
 		archive.setTransferHandler(new DDTransferHandler());
 		archive.setDropTarget(new DropTarget(delete, controller));
 
-		
 	}
 
 	@Override
@@ -192,12 +191,20 @@ public class ToolbarView extends JToolBar {
 
 	public void setArchiveEnabled(boolean bool) {
 		archive.setEnabled(bool);
+
+		if (bool) {
+			archive.setTransferHandler(new DDTransferHandler());
+			archive.setDropTarget(new DropTarget(archive, controller));
+			return;
+		}
+		archive.setTransferHandler(null);
+		archive.setDropTarget(null);
 	}
 
 	public void setDeleteEnabled(boolean bool) {
 		delete.setEnabled(bool);
-		
-		if(bool){
+
+		if (bool) {
 			delete.setTransferHandler(new DDTransferHandler());
 			delete.setDropTarget(new DropTarget(delete, controller));
 			return;
