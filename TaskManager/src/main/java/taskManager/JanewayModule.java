@@ -99,4 +99,14 @@ public class JanewayModule implements IJanewayModule {
 		}
 		return toolV;
 	}
+	
+  /*
+	 * If we're on OS X
+	 *
+	 * @return If we're using a mac.
+	 */
+	public static boolean isOnMac() {
+		final String osName = System.getProperty("os.name").toLowerCase();
+		return osName.startsWith("mac os x");
+	}
 }
