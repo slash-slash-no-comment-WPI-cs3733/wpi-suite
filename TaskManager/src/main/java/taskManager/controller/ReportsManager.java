@@ -31,6 +31,7 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.data.UnknownKeyException;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import taskManager.JanewayModule;
@@ -228,20 +229,38 @@ public class ReportsManager implements ActionListener {
 			dataset.addValue(0, dummyUsername, intervalName + (seriesNum + 1));
 			seriesNum++;
 		}
-		seriesNum = 0;
-		final Instant boundary = start.plus(interval);
+
+		// Iterate through each userdata.
 		for (UserData userData : data) {
-			if (userData.completion.compareTo(boundary) > 0) {
+			Instant boundary = start.plus(interval);
+			seriesNum = 0;
+
+			// continue until we find the seriesNum and boundary.
+			do {
+				boundary = boundary.plus(interval);
 				seriesNum++;
-				boundary.plus(interval);
+			} while (userData.completion.compareTo(boundary) >= 0);
+
+			// set the name depending on the teamData value.
+			String keyname = "Team";
+			if (!teamData) {
+				keyname = userData.username;
+			}
+
+			// either add or increment the effort value.
+			boolean hasKey = true;
+			try {
+				dataset.getValue(keyname, intervalName + (seriesNum));
+			} catch (UnknownKeyException e) {
+				hasKey = false;
+			}
+
+			if (hasKey) {
+				dataset.incrementValue(userData.effort, keyname, intervalName
+						+ (seriesNum));
 			} else {
-				if (!teamData) {
-					dataset.addValue(userData.effort, userData.username,
-							intervalName + (seriesNum + 1));
-				} else {
-					dataset.addValue(userData.effort, "Team", intervalName
-							+ (seriesNum + 1));
-				}
+				dataset.addValue(userData.effort, keyname, intervalName
+						+ (seriesNum));
 			}
 		}
 		if (dataset == null) {
@@ -324,10 +343,13 @@ public class ReportsManager implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		Object button = e.getSource();
 		if (button instanceof JButton) {
-			Instant start = Instant.ofEpochMilli(rtv.getStartDate().getDate()
+			Instant startCal = Instant.ofEpochMilli(rtv.getStartDate()
+					.getDate().getTime());
+			Instant endCal = Instant.ofEpochMilli(rtv.getEndDate().getDate()
 					.getTime());
-			Instant end = Instant.ofEpochMilli(rtv.getEndDate().getDate()
-					.getTime());
+			// startCal.minus(Period.ofDays(1));
+			// endCal.minus(Period.ofDays(1));
+
 			Set<String> users = new HashSet<String>();
 			// JList<JCheckBox> usersCheckbox = rtv.getUsers();
 			for (User u : JanewayModule.users) {
@@ -336,9 +358,9 @@ public class ReportsManager implements ActionListener {
 			String stageStr = rtv.getSelectedStage();
 			StageModel stage = WorkflowModel.getInstance().findStageByName(
 					stageStr);
-			findVelocityData(users, start, end, false, stage);
+			findVelocityData(users, startCal, endCal, false, stage);
 			generateDataset(false, Period.ofDays(1));
-			JPanel chart = createChart("Test", "xlabel", "ylabel");
+			JPanel chart = createChart("Test", "Time", "Effort");
 			TabPaneController.getInstance().addTab("Graph", chart, true);
 			TabPaneController.getInstance().getView()
 					.setSelectedComponent(chart);
