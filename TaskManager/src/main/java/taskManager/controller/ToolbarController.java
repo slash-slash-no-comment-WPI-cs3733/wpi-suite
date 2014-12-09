@@ -38,6 +38,52 @@ import taskManager.view.ToolbarView;
 public class ToolbarController extends DropTargetAdapter implements
 		ActionListener, ItemListener {
 
+	private ToolbarView view;
+
+	private static ToolbarController instance;
+
+	/**
+	 * Hide Singleton constructor
+	 */
+	private ToolbarController() {
+		reset();
+	}
+
+	public void reset() {
+		view = new ToolbarView(this);
+	}
+
+	/**
+	 * Returns the singleton instance of ToolbarController. Creates one if
+	 * needed.
+	 * 
+	 * @return the ToolbarController singleton
+	 */
+	public static ToolbarController getInstance() {
+		if (instance == null) {
+			instance = new ToolbarController();
+		}
+		return instance;
+	}
+
+	/**
+	 * Returns the associated ToolbarView.
+	 * 
+	 * @return The associated ToolbarView
+	 */
+	public ToolbarView getView() {
+		return view;
+	}
+
+	/**
+	 * Set's the visible title in the toolbar
+	 *
+	 * @param title
+	 */
+	public void setProjectTitle(String title) {
+		view.setTitle(title);
+	}
+
 	/**
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */

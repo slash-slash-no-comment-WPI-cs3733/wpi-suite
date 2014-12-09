@@ -18,7 +18,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 import javax.swing.TransferHandler;
 
-import taskManager.JanewayModule;
+import taskManager.controller.ToolbarController;
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
@@ -161,10 +161,11 @@ public class DDTransferHandler extends TransferHandler {
 		comp.setVisible(true);
 
 		// Set icons disabled.
-		JanewayModule.getToolV().setArchiveEnabled(false);
-		JanewayModule.getToolV().setDeleteEnabled(false);
+		ToolbarController.getInstance().getView().setArchiveEnabled(false);
+		ToolbarController.getInstance().getView().setDeleteEnabled(false);
 		// Set icon back to the archive icon.
-		JanewayModule.getToolV().setArchiveIcon(ToolbarView.ARCHIVE);
+		ToolbarController.getInstance().getView()
+				.setArchiveIcon(ToolbarView.ARCHIVE);
 	}
 
 }

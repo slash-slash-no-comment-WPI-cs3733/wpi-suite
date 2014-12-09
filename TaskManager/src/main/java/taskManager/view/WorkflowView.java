@@ -83,24 +83,6 @@ public class WorkflowView extends JLayeredPane {
 	}
 
 	/**
-	 * attaches the controller to this view
-	 * 
-	 * @param controller
-	 *            the workflow controller to be attached
-	 *
-	 * @param controller
-	 *            The controller to attach to this view
-	 */
-	public void setController(WorkflowController controller) {
-		this.controller = controller;
-
-		stages.setSaveListener(controller);
-
-		this.addMouseListener(controller);
-
-	}
-
-	/**
 	 * returns the requested StageView, or creates one if it does not exist
 	 * 
 	 * @param name

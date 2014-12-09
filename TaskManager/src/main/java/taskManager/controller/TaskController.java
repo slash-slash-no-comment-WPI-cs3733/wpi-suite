@@ -14,7 +14,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
-import taskManager.JanewayModule;
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
@@ -197,12 +196,14 @@ public class TaskController implements MouseListener, MouseMotionListener {
 
 		boolean isArchived = model.isArchived();
 		if (isArchived) {
-			JanewayModule.getToolV().setArchiveIcon(ToolbarView.UNARCHIVE);
+			ToolbarController.getInstance().getView()
+					.setArchiveIcon(ToolbarView.UNARCHIVE);
 		} else {
-			JanewayModule.getToolV().setArchiveIcon(ToolbarView.ARCHIVE);
+			ToolbarController.getInstance().getView()
+					.setArchiveIcon(ToolbarView.ARCHIVE);
 		}
-		JanewayModule.getToolV().setArchiveEnabled(true);
-		JanewayModule.getToolV().setDeleteEnabled(isArchived);
+		ToolbarController.getInstance().getView().setArchiveEnabled(true);
+		ToolbarController.getInstance().getView().setDeleteEnabled(isArchived);
 	}
 
 	@Override

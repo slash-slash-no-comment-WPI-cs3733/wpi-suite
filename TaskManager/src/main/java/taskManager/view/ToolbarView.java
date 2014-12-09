@@ -63,10 +63,12 @@ public class ToolbarView extends JToolBar {
 	/**
 	 * Create a ToolbarView.
 	 * 
-	 * @param tabController
-	 *            The MainTabController this view should open tabs with
+	 * @param controller
+	 *            The ToolbarController associated with this view
 	 */
-	public ToolbarView() {
+	public ToolbarView(ToolbarController controller) {
+
+		this.controller = controller;
 
 		// Construct and set up the buttons and title panels
 		JPanel buttons = new JPanel();
@@ -91,12 +93,15 @@ public class ToolbarView extends JToolBar {
 		// Construct the buttons
 		createTask = new JButton("Create Task");
 		createTask.setName(CREATE_TASK);
+		createTask.addActionListener(controller);
 
 		createStage = new JButton("Create Stage");
 		createStage.setName(CREATE_STAGE);
+		createStage.addActionListener(controller);
 
 		statistics = new JButton("Statistics");
 		statistics.setName(REPORT);
+		statistics.addActionListener(controller);
 
 		// Add icons
 		Image img;
@@ -115,6 +120,10 @@ public class ToolbarView extends JToolBar {
 			e.printStackTrace();
 		}
 
+		// Checkbox for toggling showing archived tasks.
+		archiveCheckBox = new JCheckBox("Show archived tasks");
+		archiveCheckBox.addItemListener(controller);
+
 		// Add archive and delete drop targets
 		try {
 			img = ImageIO.read(this.getClass().getResourceAsStream(
@@ -128,14 +137,18 @@ public class ToolbarView extends JToolBar {
 		}
 		archive.setToolTipText("Drag here to archive task");
 		archive.setEnabled(false);
-
-		// Checkbox for toggling showing archived tasks.
-		archiveCheckBox = new JCheckBox("Show archived tasks");
-
 		archive.setName(ARCHIVE);
+
+		// TODO: look at this
+		archive.setTransferHandler(new DDTransferHandler());
+		archive.setDropTarget(new DropTarget(archive, controller));
+
 		delete.setToolTipText("Drag here to delete task");
 		delete.setEnabled(false);
 		delete.setName(DELETE);
+
+		delete.setTransferHandler(new DDTransferHandler());
+		delete.setDropTarget(new DropTarget(delete, controller));
 
 		// Construct the project title
 		projectName = new JLabel();
@@ -161,32 +174,12 @@ public class ToolbarView extends JToolBar {
 		this.add(Box.createHorizontalGlue());
 	}
 
-	/**
-	 * adds the toolbar controller as the action listener for all buttons
-	 * 
-	 * @param controller
-	 *            the toolbar controller to be addded to the buttons
-	 */
-	public void setController(ToolbarController controller) {
-		this.controller = controller;
-		createTask.addActionListener(this.controller);
-		createStage.addActionListener(this.controller);
-		statistics.addActionListener(this.controller);
-
-		archiveCheckBox.addItemListener(controller);
-
-		archive.setTransferHandler(new DDTransferHandler());
-		archive.setDropTarget(new DropTarget(delete, controller));
-
-		
-	}
-
 	@Override
 	public String getName() {
 		return super.getName();
 	}
 
-	public void setProjectName(String name) {
+	public void setTitle(String name) {
 		projectName.setText("<html>" + name + "</html>");
 	}
 
@@ -196,8 +189,8 @@ public class ToolbarView extends JToolBar {
 
 	public void setDeleteEnabled(boolean bool) {
 		delete.setEnabled(bool);
-		
-		if(bool){
+
+		if (bool) {
 			delete.setTransferHandler(new DDTransferHandler());
 			delete.setDropTarget(new DropTarget(delete, controller));
 			return;
