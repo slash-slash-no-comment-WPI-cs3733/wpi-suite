@@ -252,8 +252,8 @@ public class LoginController implements ActionListener {
 	}
 
 	public void setTaskManagerData() {
-		JanewayModule.toolV.setProjectName(ConfigManager.getConfig()
-				.getProjectName());
+		JanewayModule.getToolV().setProjectName(
+				ConfigManager.getConfig().getProjectName());
 		JanewayModule.currentUser = ConfigManager.getConfig().getUserName();
 	}
 

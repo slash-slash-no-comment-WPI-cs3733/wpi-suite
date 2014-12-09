@@ -34,9 +34,16 @@ public class TabPaneController implements ChangeListener {
 	private static TabPaneController instance = null;
 
 	/**
-	 * Constructs the TabPaneController and its associated TabPaneView
+	 * Hide Singleton constructor
 	 */
-	public TabPaneController() {
+	private TabPaneController() {
+		reset();
+	}
+
+	/**
+	 * Resets instance
+	 */
+	public void reset() {
 		view = new TabPaneView();
 	}
 

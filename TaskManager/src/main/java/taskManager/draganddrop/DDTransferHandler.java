@@ -161,10 +161,10 @@ public class DDTransferHandler extends TransferHandler {
 		comp.setVisible(true);
 
 		// Set icons disabled.
-		JanewayModule.toolV.setArchiveEnabled(false);
-		JanewayModule.toolV.setDeleteEnabled(false);
+		JanewayModule.getToolV().setArchiveEnabled(false);
+		JanewayModule.getToolV().setDeleteEnabled(false);
 		// Set icon back to the archive icon.
-		JanewayModule.toolV.setArchiveIcon(ToolbarView.ARCHIVE);
+		JanewayModule.getToolV().setArchiveIcon(ToolbarView.ARCHIVE);
 	}
 
 }
