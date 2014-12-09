@@ -43,6 +43,9 @@ public class TestWorkflowController extends ScreenshotOnFail {
 
 		JFrame frame = new JFrame();
 		frame.add(WorkflowController.getInstance().getView());
+
+		WorkflowController.getInstance().reloadData();
+
 		Dimension frameSize = new Dimension(800, 800);
 		frame.setSize(frameSize);
 		frame.setPreferredSize(frameSize);

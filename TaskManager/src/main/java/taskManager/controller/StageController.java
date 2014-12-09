@@ -267,11 +267,12 @@ public class StageController implements DropAreaSaveListener,
 						model.setName(view.getLabelText());
 					}
 					newStage = false;
-					WorkflowModel.getInstance().save();
 
 					// refresh the workflow with the new stage
 					this.switchTitle(false);
 					WorkflowController.getInstance().reloadData();
+
+					WorkflowModel.getInstance().save();
 				}
 				break;
 			case StageView.X:
