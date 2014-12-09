@@ -41,25 +41,38 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 			.getName());
 
 	/**
-	 * Constructor for WorkflowModel.
+	 * Required to create dummy instance; necessary for passing TaskModel type
+	 * into DataStore. Should not be called manually.
+	 *
 	 */
-	public WorkflowModel(String ID) {
+	@Deprecated
+	public WorkflowModel() {
+	}
+
+	/**
+	 * Private for WorkflowModel.
+	 */
+	private WorkflowModel(String ID) {
 		// set ID
 		super(ID);
+		reset();
+	}
+
+	/**
+	 * Reset instance
+	 */
+	public void reset() {
 		stageList = new ArrayList<StageModel>();
 	}
 
-	public WorkflowModel() {
-		this("defaultWorkflow");
-	}
-
+	/**
+	 * Returns singleton instance WorkflowModel
+	 *
+	 * @return singleton instance
+	 */
 	public static WorkflowModel getInstance() {
 		if (instance == null) {
-			instance = new WorkflowModel();
-			new StageModel("New");
-			new StageModel("Scheduled");
-			new StageModel("In Progress");
-			new StageModel("Complete");
+			instance = new WorkflowModel("defaultWorkflow");
 		}
 		return instance;
 	}

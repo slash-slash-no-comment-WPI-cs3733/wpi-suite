@@ -54,8 +54,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 
 	@Before
 	public void setup() {
-		// create a new workflow model
-		wfm.makeIdenticalTo(new WorkflowModel());
+		JanewayModule.reset();
 
 		// create the edit task controller
 		etv = new EditTaskController().getView();
