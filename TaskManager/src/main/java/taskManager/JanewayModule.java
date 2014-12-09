@@ -46,6 +46,12 @@ public class JanewayModule implements IJanewayModule {
 		toolV = new ToolbarView();
 		toolV.setController(new ToolbarController());
 
+		tabs = new ArrayList<JanewayTabModel>();
+		JanewayTabModel tab = new JanewayTabModel("Task Manager",
+				new ImageIcon(), getToolV(), TabPaneController.getInstance()
+						.getView());
+		tabs.add(tab);
+
 		// Add default stages
 		new StageModel("New");
 		new StageModel("Scheduled");
@@ -53,12 +59,6 @@ public class JanewayModule implements IJanewayModule {
 		new StageModel("Complete");
 
 		WorkflowController.getInstance().reloadData();
-
-		tabs = new ArrayList<JanewayTabModel>();
-		JanewayTabModel tab = new JanewayTabModel("Task Manager",
-				new ImageIcon(), getToolV(), TabPaneController.getInstance()
-						.getView());
-		tabs.add(tab);
 	}
 
 	/**
