@@ -58,7 +58,7 @@ public class ToolbarController extends DropTargetAdapter implements
 			case ToolbarView.REPORT:
 				ReportsToolbarView rtv = new ReportsToolbarView();
 				rtv.setController(new ReportsManager(rtv));
-				this.tabPaneC.addReportsTab(rtv);
+				TabPaneController.getInstance().addReportsTab(rtv);
 				break;
 			}
 		}

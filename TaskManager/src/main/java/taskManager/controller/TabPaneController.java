@@ -94,17 +94,17 @@ public class TabPaneController {
 	public void addReportsTab(ReportsToolbarView rtv) {
 		boolean exists = false;
 		ReportsToolbarView rtv2 = null;
-		for (Component c : tabPaneV.getComponents()) {
+		for (Component c : view.getComponents()) {
 			if (c instanceof ReportsToolbarView) {
 				rtv2 = (ReportsToolbarView) c;
 				exists = true;
 			}
 		}
 		if (exists) {
-			tabPaneV.setSelectedComponent(rtv2);
+			view.setSelectedComponent(rtv2);
 		} else {
 			addTab("Reports", rtv, true);
-			tabPaneV.setSelectedComponent(rtv);
+			view.setSelectedComponent(rtv);
 		}
 	}
 

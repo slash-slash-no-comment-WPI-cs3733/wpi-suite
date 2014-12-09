@@ -340,8 +340,9 @@ public class ReportsManager implements ActionListener {
 			findVelocityData(users, start, end, false, stage);
 			generateDataset(false, Period.ofDays(1));
 			JPanel chart = createChart("Test", "xlabel", "ylabel");
-			JanewayModule.tabPaneC.addTab("Graph", chart, true);
-			JanewayModule.tabPaneC.getTabView().setSelectedComponent(chart);
+			TabPaneController.getInstance().addTab("Graph", chart, true);
+			TabPaneController.getInstance().getView()
+					.setSelectedComponent(chart);
 		}
 	}
 }
