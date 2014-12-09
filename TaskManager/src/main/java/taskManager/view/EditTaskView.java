@@ -600,6 +600,33 @@ public class EditTaskView extends JPanel {
 	public void setEstEffortErrorText(String text) {
 		estimatedEffortError.setText(text);
 	}
+	
+	/**
+	 * Sets the estimated effort field border red
+	 * 
+	 * @param boolean
+	 *            turns the red border on and off
+	 */
+	
+	public void setEstEffortFieldRed(boolean red){
+		if(red){
+		estEffortField.setBorder(BorderFactory.createLineBorder(Color.red));
+	}
+	}
+	
+	
+	/**
+	 * Sets the actual effort field border red
+	 * 
+	 * @param boolean
+	 *            turns the red border on and off
+	 */
+	
+	public void setActEffortFieldRed(boolean red){
+		if(red){
+		actEffortField.setBorder(BorderFactory.createLineBorder(Color.red));
+	}
+	}
 
 	/**
 	 * Sets the actual effort error visible or invisible

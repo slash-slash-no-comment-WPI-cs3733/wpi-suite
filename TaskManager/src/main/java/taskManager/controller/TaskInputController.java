@@ -70,9 +70,12 @@ public class TaskInputController implements KeyListener, FocusListener,
 				if (Integer.parseInt(etv.getEstEffort().getText()) <= 0) {
 					estEffortValid = false;
 					etv.setEstEffortErrorText("Must be a positive integer");
+					etv.setEstEffortFieldRed(true);
 				} else if (Integer.parseInt(etv.getEstEffort().getText()) > 9999) {
 					estEffortValid = false;
 					etv.setEstEffortErrorText("Must be between 1 and 9999");
+					etv.setEstEffortFieldRed(true);
+				
 				}
 			} catch (NumberFormatException e) {
 				estEffortValid = false;
@@ -85,13 +88,16 @@ public class TaskInputController implements KeyListener, FocusListener,
 				if (Integer.parseInt(etv.getActEffort().getText()) < 0) {
 					actEffortValid = false;
 					etv.setActualEffortErrorText("Can not be less than zero");
+					etv.setActEffortFieldRed(true);
 				} else if (Integer.parseInt(etv.getActEffort().getText()) > 9999) {
 					actEffortValid = false;
 					etv.setActualEffortErrorText("Must be between 0 and 9999");
+					etv.setActEffortFieldRed(true);
 				}
 			} catch (NumberFormatException e) {
 				actEffortValid = false;
 				etv.setActualEffortErrorText("Must be a non negative integer");
+				etv.setActEffortFieldRed(true);
 			}
 		}
 
