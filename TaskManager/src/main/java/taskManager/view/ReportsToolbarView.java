@@ -219,37 +219,37 @@ public class ReportsToolbarView extends JPanel {
 		window.add(endDate, toolbarGrid);
 
 		toolbarGrid.gridy = 8;
-		window.add(workTypeLabel, toolbarGrid);
+		// window.add(workTypeLabel, toolbarGrid);
 
 		toolbarGrid.gridy = 9;
-		window.add(workFlow, toolbarGrid);
+		// window.add(workFlow, toolbarGrid);
 
 		toolbarGrid.gridy = 10;
-		window.add(workVelocity, toolbarGrid);
+		// window.add(workVelocity, toolbarGrid);
 
 		toolbarGrid.gridy = 12;
-		window.add(distributionTitle, toolbarGrid);
+		// window.add(distributionTitle, toolbarGrid);
 
 		toolbarGrid.gridy = 13;
-		window.add(totaledDist, toolbarGrid);
+		// window.add(totaledDist, toolbarGrid);
 
 		toolbarGrid.gridy = 14;
-		window.add(dividedDist, toolbarGrid);
+		// window.add(dividedDist, toolbarGrid);
 
 		toolbarGrid.gridy = 16;
-		window.add(combineWork, toolbarGrid);
+		// window.add(combineWork, toolbarGrid);
 
 		toolbarGrid.gridy = 17;
-		window.add(compareWork, toolbarGrid);
+		// window.add(compareWork, toolbarGrid);
 
 		toolbarGrid.gridy = 19;
-		window.add(usersLabel, toolbarGrid);
+		// window.add(usersLabel, toolbarGrid);
 
 		toolbarGrid.gridy = 20;
-		window.add(allUsers, toolbarGrid);
+		// window.add(allUsers, toolbarGrid);
 
 		toolbarGrid.gridy = 21;
-		window.add(usersPane, toolbarGrid);
+		// window.add(usersPane, toolbarGrid);
 
 		toolbarGrid.gridy = 23;
 		window.add(generateGraph, toolbarGrid);
