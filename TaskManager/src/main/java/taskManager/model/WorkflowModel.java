@@ -65,6 +65,11 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		stageList = new ArrayList<StageModel>();
 	}
 
+	/**
+	 * Returns singleton instance WorkflowModel
+	 *
+	 * @return singleton instance
+	 */
 	public static WorkflowModel getInstance() {
 		if (instance == null) {
 			instance = new WorkflowModel("defaultWorkflow");
