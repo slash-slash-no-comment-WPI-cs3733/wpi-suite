@@ -91,19 +91,19 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	public TaskModel(String name, StageModel stage) {
 
 		super(WorkflowModel.getInstance().findUniqueTaskID(name));
-		final ActivityModel createTask = new ActivityModel("Created task "
-				+ name + " in stage " + stage.getName() + ".",
-				ActivityModel.activityModelType.CREATION);
 		this.name = name;
 
 		assigned = new HashSet<String>();
 		activities = new ArrayList<ActivityModel>();
-		activities.add(createTask);
 		this.stage = stage;
 
 		// Allow creation of null objects for database
 		if (stage != null) {
 			stage.addTask(this);
+			final ActivityModel createTask = new ActivityModel("Created task "
+					+ name + " in stage " + stage.getName() + ".",
+					ActivityModel.activityModelType.CREATION);
+			activities.add(createTask);
 		}
 	}
 
