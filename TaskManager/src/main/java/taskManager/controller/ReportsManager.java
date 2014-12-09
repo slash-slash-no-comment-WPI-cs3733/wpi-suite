@@ -35,6 +35,7 @@ import taskManager.model.ActivityModel;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
+import taskManager.view.ReportsToolbarView;
 
 /**
  * Code extended from BarChartDemo1.java
@@ -43,6 +44,8 @@ import taskManager.model.WorkflowModel;
  * @version Nov 29, 2014
  */
 public class ReportsManager implements ActionListener {
+
+	private ReportsToolbarView rtv;
 
 	/**
 	 * An internal data structure for building the bar chart. Sortable and
@@ -84,8 +87,9 @@ public class ReportsManager implements ActionListener {
 	/**
 	 * Constructor for ReportsManager.
 	 */
-	public ReportsManager() {
+	public ReportsManager(ReportsToolbarView rtv) {
 		workflow = WorkflowModel.getInstance();
+		this.rtv = rtv;
 	}
 
 	/**
@@ -290,6 +294,12 @@ public class ReportsManager implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		Object button = e.getSource();
 		if (button instanceof JButton) {
+			Instant start = Instant.ofEpochMilli(rtv.getStartDate().getDate()
+					.getTime());
+			Instant end = Instant.ofEpochMilli(rtv.getEndDate().getDate()
+					.getTime());
+			// Set<String> users = rtv.getUsers();
+			findVelocityData(null, start, end, false);
 			JPanel chart = createChart("Test", "xlabel", "ylabel");
 			JanewayModule.tabPaneC.addTab("Graph", chart, true);
 			JanewayModule.tabPaneC.getTabView().setSelectedComponent(chart);
