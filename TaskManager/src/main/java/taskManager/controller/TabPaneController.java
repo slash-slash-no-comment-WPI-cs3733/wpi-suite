@@ -32,9 +32,16 @@ public class TabPaneController {
 	private static TabPaneController instance = null;
 
 	/**
-	 * Constructs the TabPaneController and its associated TabPaneView
+	 * Hide Singleton constructor
 	 */
-	public TabPaneController() {
+	private TabPaneController() {
+		reset();
+	}
+
+	/**
+	 * Resets instance
+	 */
+	public void reset() {
 		view = new TabPaneView();
 	}
 
@@ -159,5 +166,4 @@ public class TabPaneController {
 		}
 		return instance;
 	}
-
 }
