@@ -77,7 +77,6 @@ public class EditTaskView extends JPanel {
 	private JButton delete;
 	private JButton addReq;
 	private JButton submitComment;
-	private JButton refreshActivities;
 
 	private JTextArea commentsField;
 	private JTextField titleField;
@@ -110,6 +109,8 @@ public class EditTaskView extends JPanel {
 	private List<ActivityModel> activities;
 	private List<ActivityModel> newActivities;
 
+	private TaskInputController fieldC;
+
 	/**
 	 * Creates a Edit Task Panel so that you can change all of the values of a
 	 * task: Title Description Due Date Estimated Effort Actual Effort Adding
@@ -129,8 +130,6 @@ public class EditTaskView extends JPanel {
 		window.setPreferredSize(panelSize);
 		this.setPreferredSize(panelSize);
 		this.setMinimumSize(panelSize);
-
-		// window.setBorder(BorderFactory.createTitledBorder("Edit Task"));
 
 		activities = new ArrayList<ActivityModel>();
 		newActivities = new ArrayList<ActivityModel>();
@@ -237,6 +236,7 @@ public class EditTaskView extends JPanel {
 		// Add comment to comments
 		submitComment = new JButton("Submit Comment");
 		submitComment.setName(SUBMIT_COMMENT);
+		this.setCommentSubmitEnabled(false);
 		// add requirement
 		addReq = new JButton("View Requirement");
 		addReq.setName(VIEW_REQ);
@@ -249,9 +249,6 @@ public class EditTaskView extends JPanel {
 		cancel.setName(CANCEL);
 		archive = new JButton("Archive");
 		archive.setName(ARCHIVE);
-		JButton refreshBtn = new JButton("Refresh");
-		refreshActivities = refreshBtn;
-		refreshActivities.setName(REFRESH);
 
 		// Combo Box for Stage
 		stages = new JComboBox<String>();
@@ -297,7 +294,7 @@ public class EditTaskView extends JPanel {
 
 		Users.add(usersListPanel, "w 100!, gapleft 15px");
 		Users.add(addRemoveButtons);
-		Users.add(projectUsersListPanel, "w 100!, gapright 15px");
+		Users.add(projectUsersListPanel, "w 100!");
 
 		// Activities Panel internal content
 		Activities.setBorder(BorderFactory.createTitledBorder("Activities"));
@@ -347,6 +344,15 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
+	 * 
+	 * Sets the focus to the title field.
+	 *
+	 */
+	public void setTitleFieldFocus() {
+		titleField.requestFocus();
+	}
+
+	/**
 	 * Adds the action listener (controller) to this view
 	 * 
 	 * @param controller
@@ -362,7 +368,6 @@ public class EditTaskView extends JPanel {
 		addReq.addActionListener(controller);
 		submitComment.addActionListener(controller);
 		delete.addActionListener(controller);
-		refreshActivities.addActionListener(controller);
 	}
 
 	/**
@@ -372,31 +377,35 @@ public class EditTaskView extends JPanel {
 	 *            the controller to be attached to this view
 	 */
 	public void setFieldController(TaskInputController controller) {
-		titleField.addKeyListener(controller);
-		descripArea.addKeyListener(controller);
-		estEffortField.addKeyListener(controller);
-		actEffortField.addKeyListener(controller);
-		stages.addPopupMenuListener(controller);
-		usersList.setController(controller);
-		projectUsersList.setController(controller);
+		this.fieldC = controller;
+		titleField.addKeyListener(fieldC);
+		descripArea.addKeyListener(fieldC);
+		estEffortField.addKeyListener(fieldC);
+		actEffortField.addKeyListener(fieldC);
+		stages.addPopupMenuListener(fieldC);
+		usersList.setController(fieldC);
+		projectUsersList.setController(fieldC);
+		commentsField.addKeyListener(fieldC);
 	}
 
 	/**
-	 * gets the save button object
+	 * returns the task input controller
 	 * 
-	 * @return the save button object
+	 * @return the task input controller
 	 */
-	public JButton getSaveButton() {
-		return this.save;
+	public TaskInputController getFieldController() {
+		return this.fieldC;
 	}
 
 	/**
-	 * gets the archive button object
 	 * 
-	 * @return the archive button object
+	 * Sets the archive button's text
+	 *
+	 * @param text
+	 *            The text to set it to
 	 */
-	public JButton getArchiveButton() {
-		return this.archive;
+	public void setArchiveButtonText(String text) {
+		archive.setText(text);
 	}
 
 	/**
@@ -648,16 +657,6 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * 
-	 * Sets the refreshActivities to enabled/disabled.
-	 *
-	 * @param boolean for whether or not to enable.
-	 */
-	public void setRefreshEnabled(boolean b) {
-		refreshActivities.setEnabled(b);
-	}
-
-	/**
 	 * makes all of the text fields blank
 	 */
 	public void resetFields() {
@@ -683,6 +682,16 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
+	 * enables or disables the comment submit button
+	 * 
+	 * @param e
+	 *            true is enabled false is disabled
+	 */
+	public void setCommentSubmitEnabled(boolean e) {
+		this.submitComment.setEnabled(e);
+	}
+
+	/**
 	 * 
 	 * Adds comment to the activities list and refreshes the activities panel.
 	 *
@@ -694,6 +703,7 @@ public class EditTaskView extends JPanel {
 		newActivities.add(act);
 		commentsField.setText("");
 		reloadActivitiesPanel();
+		fieldC.validate();
 	}
 
 	/**
@@ -810,6 +820,7 @@ public class EditTaskView extends JPanel {
 		if (visible && controller != null) {
 			controller.reloadData();
 		}
+
 		super.setVisible(visible);
 	}
 
@@ -826,5 +837,24 @@ public class EditTaskView extends JPanel {
 	 */
 	public EditTaskController getController() {
 		return controller;
+	}
+
+	/**
+	 * 
+	 * Whether this editTaskView is creating a new task, or editing one.
+	 *
+	 * @return Mode.CREATE or Mode.EDIT
+	 */
+	public Mode getMode() {
+		return mode;
+	}
+
+	/**
+	 * Returns the comments field's text
+	 * 
+	 * @return The text the user wants to say
+	 */
+	public String getCommentsFieldText() {
+		return commentsField.getText();
 	}
 }

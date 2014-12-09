@@ -138,89 +138,7 @@ public class TaskController implements MouseListener, MouseMotionListener, Actio
 	 *
 	 */
 	public void editTask() {
-		// uses the title field to hold the unique id
-		etv.getTitle().setName(this.model.getID());
-
-		// uses description field to hold the name of the stage
-		etv.getDescription().setName(this.model.getStage().getName());
-
-		// populate editable fields with this tasks info
-		etv.setTitle(model.getName());
-		etv.setDescription(model.getDescription());
-		etv.setDate(model.getDueDate());
-
-		// Sets the effort values only if user specified them.
-		if (model.isEstimatedEffortSet()) {
-			etv.setEstEffort(model.getEstimatedEffort());
-		}
-		if (model.isActualEffortSet()) {
-			etv.setActEffort(model.getActualEffort());
-		}
-
-		tabPaneC.addEditTaskTab(etv);
-
-		// figures out the index of the stage, then sets the drop down to the
-		// stage at that index
-		JComboBox<String> stages = etv.getStages();
-		for (int i = 0; i < stages.getItemCount(); i++) {
-			if (etv.getStages().getItemAt(i) == sm.getName()) {
-				etv.setStageDropdown(i);
-				break;
-			}
-		}
-
-		etv.getStages().setSelectedItem(model.getStage().getName());
-
-		// populates the project users list
-		ArrayList<String> projectUserNames = new ArrayList<String>();
-		for (User u : projectUsers) {
-			String name = u.getUsername();
-			if (!projectUserNames.contains(name)
-					&& !model.getAssigned().contains(name)) {
-				projectUserNames.add(name);
-			}
-		}
-		etv.getProjectUsersList().addAllToList(projectUserNames);
-
-		// populates the assigned users panel
-		ArrayList<String> assignedUserNames = new ArrayList<String>();
-		for (String u : assignedUsers) {
-			if (!assignedUserNames.contains(u)) {
-				assignedUserNames.add(u);
-			}
-		}
-		etv.getUsersList().addAllToList(assignedUserNames);
-
-		// Enable save button when editing a task.
-		etv.setSaveEnabled(true);
-
-		// Clear the activities list.
-		etv.clearActivities();
-
-		// set activities pane
-		List<ActivityModel> tskActivities = model.getActivities();
-		etv.setActivities(tskActivities);
-		etv.setActivitiesPanel(tskActivities);
-
-		etv.setRefreshEnabled(true);
-
-		// set the requirement dropdown
-		if (req != null) {
-			etv.getRequirements().setSelectedItem(req.getName());
-		} else {
-			etv.getRequirements().setSelectedItem(EditTaskView.NO_REQ);
-		}
-
-		// makes the archive button clickable
-		etv.enableArchive();
-
-		// Set text for archive button.
-		if (model.isArchived()) {
-			etv.getArchiveButton().setText("Unarchive");
-		} else {
-			etv.getArchiveButton().setText("Archive");
-		}
-		etv.setDeleteEnabled(model.isArchived());
+		new EditTaskController(model).getView().setTitleFieldFocus();
 	}
 
 	/**
@@ -267,8 +185,8 @@ public class TaskController implements MouseListener, MouseMotionListener, Actio
 					.getParent().getParent().getLocation();
 			Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
 					view.getLocation().y);
-			JanewayModule.tabPaneC.getTabView().getWorkflowController()
-					.setTaskInfo(new TaskInfoPreviewView(model, this, infoLoc));
+			WorkflowController.getInstance().setTaskInfo(
+					new TaskInfoPreviewView(model, this, infoLoc));
 
 			// Set the correct flags
 			thisTaskInfoOut = true;

@@ -76,6 +76,7 @@ public class TaskView extends JPanel implements Transferable {
 		this.setMinimumSize(new Dimension(200, 40));
 		this.setPreferredSize(new Dimension(200, 40));
 		this.setMaximumSize(new Dimension(200, 40));
+		this.setName(name);
 
 		// Creates the ContextMenu.
 		contextMenu = new ContextMenu(this);
