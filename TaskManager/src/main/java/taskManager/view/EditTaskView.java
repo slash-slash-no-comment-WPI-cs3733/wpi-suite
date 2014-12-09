@@ -224,12 +224,12 @@ public class EditTaskView extends JPanel {
 		archive = new JButton("Archive");
 		archive.setName(ARCHIVE);
 		// Add user to list
-		addUser = new JButton("<<");
+		addUser = new JButton(">>");
 		addUser.setName(ADD_USER);
 		this.setAddUserEnabled(false);
 		// remove user from list
 
-		removeUser = new JButton(">>");
+		removeUser = new JButton("<<");
 		removeUser.setName(REMOVE_USER);
 		this.setRemoveUserEnabled(false);
 
@@ -292,9 +292,9 @@ public class EditTaskView extends JPanel {
 		addRemoveButtons.add(addUser, "wrap");
 		addRemoveButtons.add(removeUser);
 
-		Users.add(usersListPanel, "w 100!, gapleft 15px");
+		Users.add(projectUsersListPanel, "w 100!, gapleft 15px");
 		Users.add(addRemoveButtons);
-		Users.add(projectUsersListPanel, "w 100!");
+		Users.add(usersListPanel, "w 100!");
 
 		// Activities Panel internal content
 		Activities.setBorder(BorderFactory.createTitledBorder("Activities"));
