@@ -9,6 +9,7 @@
 
 package taskManager.view;
 
+import java.awt.Component;
 import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
@@ -46,6 +47,36 @@ public class TabPaneView extends JTabbedPane {
 				.getView());
 
 		this.addTab("Workflow", new ImageIcon(), scroll, "Workflow");
+	}
+
+	@Override
+	/**
+	 * Returns the index of the tab for the specified component.
+	 * Returns -1 if there is no tab for this component.
+	 *
+	 * @param component the component for the tab
+	 * @return the first tab which matches this component, or -1
+	 *          if there is no tab for this component
+	 */
+	public int indexOfComponent(Component component) {
+		for (int i = 0; i < getTabCount(); i++) {
+			Component c = getComponentAt(i);
+			// This should check the original component, This constructor
+			// indirectly calls it
+			if ((c != null && c.equals(component))
+					|| (c == null && c == component)) {
+				return i;
+			}
+			// This should check editTaskView's which are in scrollpane's
+			if (c instanceof JScrollPane) {
+				c = ((JScrollPane) c).getViewport().getView();
+			}
+			if ((c != null && c.equals(component))
+					|| (c == null && c == component)) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 }
