@@ -22,8 +22,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import taskManager.JanewayModule;
 import taskManager.controller.EditTaskController;
+import taskManager.controller.TabPaneController;
 import taskManager.controller.WorkflowController;
 
 /**
@@ -38,7 +38,7 @@ public class TabView extends JPanel implements ActionListener {
 	private static final long serialVersionUID = -5461050356588592448L;
 	private Component component;
 	private boolean closeable;
-	private TabPaneView tabPaneV;
+	private TabPaneController tabPaneC;
 
 	/**
 	 * 
@@ -56,7 +56,7 @@ public class TabView extends JPanel implements ActionListener {
 
 		this.component = component;
 		this.closeable = closeable;
-		this.tabPaneV = JanewayModule.getTabPaneView();
+		this.tabPaneC = TabPaneController.getInstance();
 
 		setOpaque(false);
 
@@ -107,21 +107,21 @@ public class TabView extends JPanel implements ActionListener {
 				if (etc.isEdited()) {
 					Integer choice = JOptionPane
 							.showConfirmDialog(
-									tabPaneV,
+									tabPaneC.getView(),
 									"You still have unsaved edits. Are you sure you want to delete this tab?",
 									"Warning - Deleting a tab with edits",
 									JOptionPane.YES_NO_OPTION);
 					if (choice.equals(JOptionPane.YES_OPTION)) {
-						JanewayModule.tabPaneC.removeTabByComponent(component);
-						tabPaneV.setSelectedIndex(0);
+						tabPaneC.removeTabByComponent(component);
+						tabPaneC.getView().setSelectedIndex(0);
 					}
 				} else {
-					JanewayModule.tabPaneC.removeTabByComponent(component);
-					tabPaneV.setSelectedIndex(0);
+					tabPaneC.removeTabByComponent(component);
+					tabPaneC.getView().setSelectedIndex(0);
 				}
 			} else {
-				JanewayModule.tabPaneC.removeTabByComponent(component);
-				tabPaneV.setSelectedIndex(0);
+				tabPaneC.removeTabByComponent(component);
+				tabPaneC.getView().setSelectedIndex(0);
 			}
 		}
 		WorkflowController.getInstance().clearWorkflow(true);

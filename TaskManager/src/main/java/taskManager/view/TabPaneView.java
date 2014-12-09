@@ -25,21 +25,24 @@ import taskManager.controller.WorkflowController;
  * removing tabs
  *
  * @author Samee Swartz
+ * @author Clark Jacobsohn
  * @version Nov 17, 2014
  */
 public class TabPaneView extends JTabbedPane {
 
 	private static final long serialVersionUID = -4912871689110151496L;
 
+	/**
+	 * Constructs the TabPaneView and adds the WorkflowView to a scrollable pane
+	 * in a permanent tab.
+	 */
 	public TabPaneView() {
 		setTabPlacement(TOP);
 		setTabLayoutPolicy(SCROLL_TAB_LAYOUT);
 		setBorder(BorderFactory.createEmptyBorder(5, 3, 3, 3));
 		this.setSize(new Dimension(500, 500));
 
-		// Create a workflow view, controller, and model
-
-		// Make workflow scrollable
+		// Add the scrollable workflow
 		JScrollPane scroll = new JScrollPane(WorkflowController.getInstance()
 				.getView());
 		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
@@ -47,4 +50,5 @@ public class TabPaneView extends JTabbedPane {
 
 		this.addTab("Workflow", new ImageIcon(), scroll, "Workflow");
 	}
+
 }

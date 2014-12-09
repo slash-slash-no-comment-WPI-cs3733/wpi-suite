@@ -8,6 +8,8 @@
  *******************************************************************************/
 package taskManager.controller;
 
+import java.awt.Dimension;
+
 import javax.swing.JFrame;
 
 import org.fest.swing.fixture.FrameFixture;
@@ -15,11 +17,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import taskManager.JanewayModule;
 import taskManager.ScreenshotOnFail;
 import taskManager.model.StageModel;
-import taskManager.model.WorkflowModel;
-import taskManager.view.StageView;
-import taskManager.view.WorkflowView;
 
 /**
  * Tests for the workflow controller
@@ -34,18 +34,18 @@ public class TestWorkflowController extends ScreenshotOnFail {
 
 	@Before
 	public void setup() {
-		// create a new workflow model
-		WorkflowModel.getInstance().makeIdenticalTo(new WorkflowModel());
-		WorkflowView wfv = WorkflowController.getInstance().getView();
-		WorkflowController.getInstance().reloadData();
+		JanewayModule.reset();
+
 		// give it the stages
 		for (String name : stageNames) {
 			new StageModel(name, false);
-			wfv.addStageView(new StageView(name));
 		}
 
 		JFrame frame = new JFrame();
-		frame.add(wfv);
+		frame.add(WorkflowController.getInstance().getView());
+		Dimension frameSize = new Dimension(800, 800);
+		frame.setSize(frameSize);
+		frame.setPreferredSize(frameSize);
 
 		fixture = new FrameFixture(frame);
 

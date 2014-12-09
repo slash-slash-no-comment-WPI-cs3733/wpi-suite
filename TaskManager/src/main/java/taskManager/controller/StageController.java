@@ -75,7 +75,7 @@ public class StageController implements DropAreaSaveListener,
 		// Get all the tasks associated with this Stage.
 
 		// Get state of archive shown check box.
-		boolean showArchive = JanewayModule.toolV.isArchiveShown();
+		boolean showArchive = JanewayModule.getToolV().isArchiveShown();
 
 		// Add the tasks.
 		if (model != null) {
@@ -110,7 +110,7 @@ public class StageController implements DropAreaSaveListener,
 
 		// if archived tasks are hidden, change index to account for the hidden
 		// tasks
-		if (!JanewayModule.toolV.isArchiveShown()) {
+		if (!JanewayModule.getToolV().isArchiveShown()) {
 			List<TaskModel> taskList = model.getTasks();
 			for (int i = 0; i < index; i++) {
 				if (taskList.get(i).isArchived()) {
@@ -235,7 +235,7 @@ public class StageController implements DropAreaSaveListener,
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		JanewayModule.toolV.setDeleteEnabled(true);
+		JanewayModule.getToolV().setDeleteEnabled(true);
 	}
 
 	@Override
