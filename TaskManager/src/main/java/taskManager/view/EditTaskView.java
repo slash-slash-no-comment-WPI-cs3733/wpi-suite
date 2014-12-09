@@ -87,7 +87,7 @@ public class EditTaskView extends JPanel {
 	private JTextField actEffortField;
 	private JPanel fields;
 	private JSplitPane window;
-	private JPanel activitiesView;
+	private JPanel activities;
 
 	private Mode mode;
 
@@ -109,7 +109,7 @@ public class EditTaskView extends JPanel {
 	private EditTaskController controller;
 	private ActivityView activityPane;
 
-	private List<ActivityModel> activities;
+	private List<ActivityModel> activitiesList;
 	private List<ActivityModel> newActivities;
 
 	private TaskInputController fieldC;
@@ -123,6 +123,7 @@ public class EditTaskView extends JPanel {
 		// TODO: User Mode to switch between create and edit views
 		// When Task added make EditTask take in a Task called currTask
 		this.mode = mode;
+
 		fields = new JPanel(new MigLayout());
 
 		this.setLayout(new FlowLayout());
@@ -133,7 +134,7 @@ public class EditTaskView extends JPanel {
 		this.setPreferredSize(panelSize);
 		this.setMinimumSize(panelSize);
 
-		activities = new ArrayList<ActivityModel>();
+		activitiesList = new ArrayList<ActivityModel>();
 		newActivities = new ArrayList<ActivityModel>();
 
 		// JLabels
@@ -343,14 +344,11 @@ public class EditTaskView extends JPanel {
 		fields.add(EditSaveCancel, "dock south, h 10%");
 		fields.add(Activities, "w 25%, dock east, gapleft 5px");
 
-		Dimension activitiesSize = new Dimension(500, 100);
-		activitiesView = new JPanel();
-		activitiesView.setMinimumSize(activitiesSize);
-		activitiesView.setPreferredSize(activitiesSize);
-		window = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, fields,
-				activitiesView);
-		// window.setOneTouchExpandable(true);
-
+		activities = new JPanel();
+		activities.setSize(new Dimension(500, 500));
+		activities.setPreferredSize(new Dimension(500, 500));
+		window = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(
+				fields), activities);
 		this.add(window);
 	}
 
@@ -710,7 +708,7 @@ public class EditTaskView extends JPanel {
 	public void addComment() {
 		ActivityModel act = new ActivityModel(commentsField.getText(),
 				activityModelType.COMMENT);
-		activities.add(act);
+		activitiesList.add(act);
 		newActivities.add(act);
 		commentsField.setText("");
 		reloadActivitiesPanel();
@@ -759,7 +757,7 @@ public class EditTaskView extends JPanel {
 	 *
 	 */
 	public void reloadActivitiesPanel() {
-		setActivitiesPanel(activities);
+		setActivitiesPanel(activitiesList);
 	}
 
 	/**
@@ -772,7 +770,7 @@ public class EditTaskView extends JPanel {
 		List<ActivityModel> tskActivitiesCopy = new ArrayList<ActivityModel>(
 				act);
 		activityPane.setMessage("");
-		activities = tskActivitiesCopy;
+		activitiesList = tskActivitiesCopy;
 	}
 
 	/**
@@ -791,7 +789,7 @@ public class EditTaskView extends JPanel {
 	 *
 	 */
 	public void clearActivities() {
-		activities.clear();
+		activitiesList.clear();
 		newActivities.clear();
 	}
 
@@ -803,7 +801,7 @@ public class EditTaskView extends JPanel {
 	 *            activity.
 	 */
 	public void addActivity(ActivityModel act) {
-		activities.add(act);
+		activitiesList.add(act);
 	}
 
 	/**
