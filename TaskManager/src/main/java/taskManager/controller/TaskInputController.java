@@ -8,6 +8,7 @@
  *******************************************************************************/
 package taskManager.controller;
 
+import java.awt.Point;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
@@ -19,6 +20,7 @@ import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
 import taskManager.view.EditTaskView;
+import taskManager.view.InputErrorView;
 
 /**
  * The controller for validating the inputs while editing or creating a task
@@ -75,7 +77,7 @@ public class TaskInputController implements KeyListener, FocusListener,
 					estEffortValid = false;
 					etv.setEstEffortErrorText("Must be between 1 and 9999");
 					etv.setEstEffortFieldRed(true);
-				
+
 				}
 			} catch (NumberFormatException e) {
 				estEffortValid = false;
@@ -102,8 +104,9 @@ public class TaskInputController implements KeyListener, FocusListener,
 			}
 		}
 		etv.setEstEffortFieldRed(!estEffortValid);
-		etv.setActEffortFieldRed(!actEffortValid);  //set the borders back to black
-		
+		etv.setActEffortFieldRed(!actEffortValid); // set the borders back to
+													// black
+
 		// display the errors
 		etv.setTitleErrorVisible(!titleValid);
 		etv.setDescriptionErrorVisible(!descriptionValid);
@@ -121,6 +124,15 @@ public class TaskInputController implements KeyListener, FocusListener,
 		etv.setSaveEnabled(this.checkFields());
 		etv.setAddUserEnabled(addUsersSelected);
 		etv.setRemoveUserEnabled(removeUsersSelected);
+	}
+
+	/**
+	 * creates a new error message and adds it to the view
+	 * 
+	 * @param error
+	 */
+	public void generateError(String error, Point p) {
+		etv.addError(new InputErrorView(error), p);
 	}
 
 	@Override

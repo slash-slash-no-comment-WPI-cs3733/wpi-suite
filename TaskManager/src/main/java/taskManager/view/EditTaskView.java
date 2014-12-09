@@ -12,6 +12,7 @@ package taskManager.view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -22,6 +23,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -84,7 +86,7 @@ public class EditTaskView extends JPanel {
 	private JXDatePicker dateField;
 	private JTextField estEffortField;
 	private JTextField actEffortField;
-	private JPanel window;
+	private JLayeredPane window;
 
 	private Mode mode;
 
@@ -111,6 +113,8 @@ public class EditTaskView extends JPanel {
 
 	private TaskInputController fieldC;
 
+	private boolean hasError;
+
 	/**
 	 * Creates a Edit Task Panel so that you can change all of the values of a
 	 * task: Title Description Due Date Estimated Effort Actual Effort Adding
@@ -120,8 +124,10 @@ public class EditTaskView extends JPanel {
 		// TODO: User Mode to switch between create and edit views
 		// When Task added make EditTask take in a Task called currTask
 		this.mode = mode;
+		this.hasError = false;
 
-		window = new JPanel(new MigLayout());
+		window = new JLayeredPane();
+		window.setLayout(new MigLayout());
 
 		this.setLayout(new FlowLayout());
 		Dimension panelSize = getPreferredSize();
@@ -600,38 +606,35 @@ public class EditTaskView extends JPanel {
 	public void setEstEffortErrorText(String text) {
 		estimatedEffortError.setText(text);
 	}
-	
+
 	/**
 	 * Sets the estimated effort field border red
 	 * 
-	 * @param boolean
-	 *            turns the red border on and off
+	 * @param boolean turns the red border on and off
 	 */
-	
-	public void setEstEffortFieldRed(boolean red){
-		if(red){
-		estEffortField.setBorder(BorderFactory.createLineBorder(Color.red));
-	}
-		else{
-			estEffortField.setBorder(BorderFactory.createLineBorder(Color.black));
+
+	public void setEstEffortFieldRed(boolean red) {
+		if (red) {
+			estEffortField.setBorder(BorderFactory.createLineBorder(Color.red));
+		} else {
+			estEffortField.setBorder(BorderFactory
+					.createLineBorder(Color.black));
 		}
 	}
-	
-	
+
 	/**
 	 * Sets the actual effort field border red
 	 * 
-	 * @param boolean
-	 *            turns the red border on and off
+	 * @param boolean turns the red border on and off
 	 */
-	
-	public void setActEffortFieldRed(boolean red){
-		if(red){
-		actEffortField.setBorder(BorderFactory.createLineBorder(Color.red));
-	}
-		else{
-			actEffortField.setBorder(BorderFactory.createLineBorder(Color.black));
-	}
+
+	public void setActEffortFieldRed(boolean red) {
+		if (red) {
+			actEffortField.setBorder(BorderFactory.createLineBorder(Color.red));
+		} else {
+			actEffortField.setBorder(BorderFactory
+					.createLineBorder(Color.black));
+		}
 	}
 
 	/**
@@ -867,5 +870,25 @@ public class EditTaskView extends JPanel {
 	 */
 	public Mode getMode() {
 		return mode;
+	}
+
+	/**
+	 * returns whether or not there is an input error message on the screen
+	 * 
+	 * @return true if there is an input error on the screen, false if there is
+	 *         no input error on the screen
+	 */
+	public boolean hasError() {
+		return this.hasError;
+	}
+
+	/**
+	 * adds the error popup to the view
+	 * 
+	 * @param error
+	 *            the error popup to be added to the view
+	 */
+	public void addError(InputErrorView error, Point p) {
+		this.add(error, p);
 	}
 }
