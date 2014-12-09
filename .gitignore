@@ -10,6 +10,9 @@ javadoc
 test-results
 dist
 
+# Database Files #
+*.db
+
 # Package Files #
 *.war
 *.ear
