@@ -183,20 +183,24 @@ public class ToolbarView extends JToolBar {
 		projectName.setText("<html>" + name + "</html>");
 	}
 
+	public boolean isIconEnabled(String iconName) {
+		switch (iconName) {
+		case ARCHIVE:
+		case UNARCHIVE:
+			return archive.isEnabled();
+		case DELETE:
+			return delete.isEnabled();
+		default:
+			return false;
+		}
+	}
+
 	public void setArchiveEnabled(boolean bool) {
 		archive.setEnabled(bool);
 	}
 
 	public void setDeleteEnabled(boolean bool) {
 		delete.setEnabled(bool);
-
-		if (bool) {
-			delete.setTransferHandler(new DDTransferHandler());
-			delete.setDropTarget(new DropTarget(delete, controller));
-			return;
-		}
-		delete.setTransferHandler(null);
-		delete.setDropTarget(null);
 	}
 
 	public boolean isArchiveShown() {

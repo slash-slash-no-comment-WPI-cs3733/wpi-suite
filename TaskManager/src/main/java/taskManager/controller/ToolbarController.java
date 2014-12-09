@@ -11,6 +11,7 @@ package taskManager.controller;
 import java.awt.Component;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DropTargetAdapter;
+import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -200,6 +201,25 @@ public class ToolbarController extends DropTargetAdapter implements
 				}
 			} // End switch
 		} // End instanceof
+	}
+
+	/**
+	 * Rejects or accepts the drag to make drag-over cursor correct.
+	 * 
+	 * {@inheritDoc}
+	 * 
+	 * @see java.awt.dnd.DropTargetAdapter#dragOver(java.awt.dnd.DropTargetDragEvent)
+	 */
+	@Override
+	public void dragOver(DropTargetDragEvent dtde) {
+		String name = dtde.getDropTargetContext().getComponent().getName();
+
+		if (view.isIconEnabled(name)) {
+			dtde.acceptDrag(dtde.getDropAction());
+		} else {
+			dtde.rejectDrag();
+		}
+
 	}
 
 	@Override
