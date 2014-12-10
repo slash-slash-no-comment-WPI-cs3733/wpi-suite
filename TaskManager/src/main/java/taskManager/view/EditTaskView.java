@@ -192,7 +192,7 @@ public class EditTaskView extends JPanel {
 		descriptionScrollPane
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		descriptionScrollPane
-				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 
 
 		commentsField = new JTextArea(6, 24);
@@ -200,7 +200,7 @@ public class EditTaskView extends JPanel {
 		commentScrollPane
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		commentScrollPane
-				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 
 		estEffortField = new JTextField(4);
 		estEffortField.setEditable(true);
@@ -362,7 +362,7 @@ public class EditTaskView extends JPanel {
 		// Activities Panel internal content
 		Activities.setBorder(BorderFactory.createTitledBorder(""));
 		Activities.add(activitiesLabel, "wrap, gaptop 10px, gapleft 15px");
-		Activities.add(activityPane, "wrap, gapbottom 20px, gapleft 15px");
+		Activities.add(activityPane, "wrap, gapbottom 50px, gapleft 15px");
 		Activities.add(commentScrollPane, "center, wrap, gapbottom 10px, gapleft 15px");
 		Activities.add(submitComment, "dock south, gapleft 30px, gapright 30px");
 
@@ -710,8 +710,8 @@ public class EditTaskView extends JPanel {
 			this.descripArea.setBorder(BorderFactory
 					.createLineBorder(Color.red));
 		} else {
-			this.descripArea.setBorder(BorderFactory
-					.createLineBorder(Color.black));
+			this.descripArea.setBorder(BorderFactory.
+					createLineBorder(Color.gray, 1));
 		}
 	}
 
@@ -743,7 +743,7 @@ public class EditTaskView extends JPanel {
 			estEffortField.setBorder(BorderFactory.createLineBorder(Color.red));
 		} else {
 			estEffortField.setBorder(BorderFactory
-					.createLineBorder(Color.black));
+					.createLineBorder(Color.gray));
 		}
 	}
 
@@ -758,7 +758,7 @@ public class EditTaskView extends JPanel {
 			actEffortField.setBorder(BorderFactory.createLineBorder(Color.red));
 		} else {
 			actEffortField.setBorder(BorderFactory
-					.createLineBorder(Color.black));
+					.createLineBorder(Color.gray));
 		}
 	}
 
