@@ -288,6 +288,7 @@ public class TaskInfoPreviewView extends JPanel {
 	 *            The height of the view
 	 */
 	private void setBoundsWithoutClipping(Point loc, int width, int height) {
+
 		final Rectangle paneBounds = TabPaneController.getInstance().getView()
 				.getBounds();
 		final int x = (loc.x + StageView.STAGE_WIDTH + width > (paneBounds
@@ -295,6 +296,7 @@ public class TaskInfoPreviewView extends JPanel {
 		final int y = (loc.y + height > (paneBounds.getHeight() - 35)) ? (int) paneBounds
 				.getHeight() - 35 - height
 				: loc.y;
+
 		this.setBounds(x, y, width, height);
 	}
 

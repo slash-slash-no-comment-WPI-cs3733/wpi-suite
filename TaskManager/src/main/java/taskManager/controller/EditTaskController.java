@@ -359,7 +359,9 @@ public class EditTaskController implements ActionListener {
 	 * switches back to workflow view
 	 */
 	private void returnToWorkflowView() {
+
 		TabPaneController.getInstance().removeTabByComponent(etv);
+		WorkflowController.getInstance().removeTaskInfos(false);
 		WorkflowController.getInstance().reloadData();
 	}
 
@@ -419,8 +421,6 @@ public class EditTaskController implements ActionListener {
 			}
 		}
 		model.setReq(r);
-		WorkflowModel.getInstance().save(); // TODO make this call an
-											// appropriate save method.
 
 		// Set archived to checkbox value.
 		model.setArchived(etv.isArchived());
