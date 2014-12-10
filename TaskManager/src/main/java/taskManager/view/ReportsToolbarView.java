@@ -26,11 +26,8 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.ScrollPaneConstants;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -119,8 +116,8 @@ public class ReportsToolbarView extends JPanel {
 		window = new JPanel();
 		window.setPreferredSize(nt_panelSize);
 		this.setLayout(new FlowLayout());
-		
-		//Used to organize every JPanel
+
+		// Used to organize every JPanel
 		GridBagConstraints reportsGridBag = new GridBagConstraints();
 
 		// Stage
@@ -203,32 +200,28 @@ public class ReportsToolbarView extends JPanel {
 		workTypePanel.setPreferredSize(workTypeDimension);
 		workTypePanel.setMinimumSize(workTypeDimension);
 		workTypePanel.setMaximumSize(workTypeDimension);
-		
 
-		/*/ Distribution
-		 *removed for initial release
-		distributionPanel = new JPanel();
-		distributionPanel.setLayout(new GridBagLayout());
-		totaledDist = new JRadioButton("Totaled Distribution");
-		totaledDist.setName(TOTALED_DIST);
-		dividedDist = new JRadioButton("Divided Distribution");
-		dividedDist.setName(DIVIDED_DIST);
-		distributionGroup = new ButtonGroup();
-		distributionGroup.add(totaledDist);
-		distributionGroup.add(dividedDist);
-		reportsGridBag.anchor = GridBagConstraints.FIRST_LINE_START;
-		reportsGridBag.gridx = 0;
-		reportsGridBag.gridy = 0;
-		distributionPanel.setBorder(BorderFactory.createTitledBorder("Distribution"));
-		distributionPanel.add(totaledDist, reportsGridBag);
-		reportsGridBag.gridy = 1;
-		distributionPanel.add(dividedDist, reportsGridBag);
-		Dimension distributionDimension = getPreferredSize();
-		distributionDimension.width = 175;
-		distributionDimension.height = 75;
-		distributionPanel.setPreferredSize(distributionDimension);
-		distributionPanel.setMinimumSize(distributionDimension);
-		distributionPanel.setMaximumSize(distributionDimension);*/
+		/*
+		 * / Distributionremoved for initial release distributionPanel = new
+		 * JPanel(); distributionPanel.setLayout(new GridBagLayout());
+		 * totaledDist = new JRadioButton("Totaled Distribution");
+		 * totaledDist.setName(TOTALED_DIST); dividedDist = new
+		 * JRadioButton("Divided Distribution");
+		 * dividedDist.setName(DIVIDED_DIST); distributionGroup = new
+		 * ButtonGroup(); distributionGroup.add(totaledDist);
+		 * distributionGroup.add(dividedDist); reportsGridBag.anchor =
+		 * GridBagConstraints.FIRST_LINE_START; reportsGridBag.gridx = 0;
+		 * reportsGridBag.gridy = 0;
+		 * distributionPanel.setBorder(BorderFactory.createTitledBorder
+		 * ("Distribution")); distributionPanel.add(totaledDist,
+		 * reportsGridBag); reportsGridBag.gridy = 1;
+		 * distributionPanel.add(dividedDist, reportsGridBag); Dimension
+		 * distributionDimension = getPreferredSize();
+		 * distributionDimension.width = 175; distributionDimension.height = 75;
+		 * distributionPanel.setPreferredSize(distributionDimension);
+		 * distributionPanel.setMinimumSize(distributionDimension);
+		 * distributionPanel.setMaximumSize(distributionDimension);
+		 */
 
 		// Combined or Compared graph
 		workModePanel = new JPanel();
@@ -243,7 +236,8 @@ public class ReportsToolbarView extends JPanel {
 		reportsGridBag.anchor = GridBagConstraints.WEST;
 		reportsGridBag.gridx = 0;
 		reportsGridBag.gridy = 0;
-		workModePanel.setBorder(BorderFactory.createTitledBorder("Compare/Combine"));
+		workModePanel.setBorder(BorderFactory
+				.createTitledBorder("Compare/Combine"));
 		workModePanel.add(combineWork, reportsGridBag);
 		reportsGridBag.gridy = 1;
 		workModePanel.add(compareWork, reportsGridBag);
@@ -317,13 +311,13 @@ public class ReportsToolbarView extends JPanel {
 		window.add(datePanel, toolbarGrid);
 
 		toolbarGrid.gridy = 3;
-		window.add(workTypePanel, toolbarGrid);
+		// window.add(workTypePanel, toolbarGrid);
 
 		toolbarGrid.gridy = 4;
-		//window.add(distributionPanel, toolbarGrid);
+		// window.add(distributionPanel, toolbarGrid);
 
 		toolbarGrid.gridy = 5;
-		window.add(workModePanel, toolbarGrid);
+		// window.add(workModePanel, toolbarGrid);
 
 		toolbarGrid.gridy = 6;
 		window.add(usersPanel, toolbarGrid);
@@ -357,6 +351,9 @@ public class ReportsToolbarView extends JPanel {
 		controller = manager;
 		addUser.addActionListener(manager);
 		removeUser.addActionListener(manager);
+		allUsers.addChangeListener(manager);
+		currUsersList.setController(manager);
+		projectUsersList.setController(manager);
 		generateGraph.addActionListener(manager);
 	}
 
@@ -582,32 +579,24 @@ public class ReportsToolbarView extends JPanel {
 	 * Returns the list of all of the users
 	 * 
 	 * @return the list of users as a JList<JCheckBox>
-	 *
-	public JList<JCheckBox> getUsers() {
-		return users;
-	}
-
-	/*
-	 * Sets the users of the JList
 	 * 
-	 * @param u
-	 *            the checkbox of a user to add
-	 *
-	public void addUsers(JCheckBox u) {
-		users.add(u);
-	}
-
-	/*
-	 * Sets the state of a particular user in the users list
+	 * public JList<JCheckBox> getUsers() { return users; }
 	 * 
-	 * @param i
-	 *            index of the user
-	 * @param b
-	 *            state to set the user
-	 *
-	public void setUser(int i, Boolean b) {
-		users.getModel().getElementAt(i).setSelected(b);
-	}*/
+	 * /* Sets the users of the JList
+	 * 
+	 * @param u the checkbox of a user to add
+	 * 
+	 * public void addUsers(JCheckBox u) { users.add(u); }
+	 * 
+	 * /* Sets the state of a particular user in the users list
+	 * 
+	 * @param i index of the user
+	 * 
+	 * @param b state to set the user
+	 * 
+	 * public void setUser(int i, Boolean b) {
+	 * users.getModel().getElementAt(i).setSelected(b); }
+	 */
 
 	/**
 	 * 
@@ -618,7 +607,7 @@ public class ReportsToolbarView extends JPanel {
 	public JComboBox<String> getStages() {
 		return stages;
 	}
-	
+
 	/**
 	 * return the JList containing the assigned user names
 	 * 
@@ -636,7 +625,7 @@ public class ReportsToolbarView extends JPanel {
 	public ScrollList getProjectUsersList() {
 		return this.projectUsersList;
 	}
-	
+
 	/**
 	 * set the add user button enabled or disabled
 	 * 
@@ -653,5 +642,14 @@ public class ReportsToolbarView extends JPanel {
 	 */
 	public void setRemoveUserEnabled(boolean e) {
 		this.removeUser.setEnabled(e);
+	}
+
+	/**
+	 * return the JList containing the assigned user names
+	 * 
+	 * @return the JList of assigned usernames
+	 */
+	public ScrollList getUsersList() {
+		return currUsersList;
 	}
 }

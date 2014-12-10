@@ -21,10 +21,13 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -50,9 +53,11 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.User;
  * @author Joseph Blackman
  * @version Nov 29, 2014
  */
-public class ReportsManager implements ActionListener {
+public class ReportsManager implements ActionListener, ChangeListener,
+		ListSelectionListener {
 
 	private ReportsToolbarView rtv;
+	private ArrayList<String> toRemove = new ArrayList<String>();
 
 	/**
 	 * An internal data structure for building the bar chart. Sortable and
@@ -338,11 +343,9 @@ public class ReportsManager implements ActionListener {
 	private void reloadUsers() {
 		// populates the project users list
 		/*
-		for (User u : JanewayModule.users) {
-			String name = u.getUsername();
-			JCheckBox usrBox = new JCheckBox(name);
-			rtv.addUsers(usrBox);
-		}*/
+		 * for (User u : JanewayModule.users) { String name = u.getUsername();
+		 * JCheckBox usrBox = new JCheckBox(name); rtv.addUsers(usrBox); }
+		 */
 		ArrayList<String> projectUserNames = new ArrayList<String>();
 		for (User u : JanewayModule.users) {
 			String name = u.getUsername();
@@ -354,44 +357,133 @@ public class ReportsManager implements ActionListener {
 
 	}
 
+	/**
+	 * 
+	 * copied from edittaskcontroller.
+	 * 
+	 * adds selected usernames to the assigned users list and removes them from
+	 * the project user list.
+	 */
+	public void addUsersToList() {
+		int[] toAdd = rtv.getProjectUsersList().getSelectedIndices();
+		ArrayList<String> namesToAdd = new ArrayList<String>();
+
+		for (int ind : toAdd) {
+			namesToAdd.add(rtv.getProjectUsersList().getValueAtIndex(ind));
+		}
+
+		for (String n1 : namesToAdd) {
+			rtv.getProjectUsersList().removeFromList(n1);
+			if (!rtv.getUsersList().contains(n1)) {
+				// add the new username to the assigned user list
+				rtv.getUsersList().addToList(n1);
+				rtv.getProjectUsersList().removeFromList(n1);
+				// if this user was to be removed take it out of the
+				// list
+				if (this.toRemove.contains(n1)) {
+					this.toRemove.remove(n1);
+				}
+
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * copied from edittaskcontroller.
+	 * 
+	 * removes selected usernames from the assigned users list and adds them to
+	 * the project user list. marks selected usernames to be removed from the
+	 * model
+	 */
+	public void removeUsersFromList() {
+		// grab all of the indices of the usernames selected in
+		// assigned users and grab the associated strings
+		int[] usersToRemove = rtv.getUsersList().getSelectedIndices();
+		ArrayList<String> namesToRemove = new ArrayList<String>();
+		for (int ind : usersToRemove) {
+			namesToRemove.add(rtv.getUsersList().getValueAtIndex(ind));
+		}
+
+		// for every name that is selected, remove it from assigned
+		// users and add it to project users
+		for (String n2 : namesToRemove) {
+			rtv.getUsersList().removeFromList(n2);
+			if (!rtv.getProjectUsersList().contains(n2)) {
+				rtv.getProjectUsersList().addToList(n2);
+				rtv.getUsersList().removeFromList(n2);
+				if (!this.toRemove.contains(n2)) {
+					this.toRemove.add(n2);
+				}
+			}
+
+		}
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object button = e.getSource();
 		if (button instanceof JButton) {
-			Instant startCal = Instant.ofEpochMilli(rtv.getStartDate()
-					.getDate().getTime());
-			Instant endCal = Instant.ofEpochMilli(rtv.getEndDate().getDate()
-					.getTime());
+			String buttonName = ((JButton) button).getName();
+			if (buttonName.equals(ReportsToolbarView.ADD_USER)) {
+				addUsersToList();
+			} else if (buttonName.equals(ReportsToolbarView.REMOVE_USER)) {
+				removeUsersFromList();
+			} else if (buttonName.equals(ReportsToolbarView.ALL_USERS)) {
 
-			// TODO: Do validation for the calendars rather than showing
-			// JOptionPanes.
-			Instant now = Instant.now();
-			if (startCal.isAfter(now)) {
-				JOptionPane.showMessageDialog(rtv,
-						"Start Date cannot be in the future.");
-				return;
-			}
-			if (endCal.isBefore(startCal) || startCal.equals(endCal)) {
-				JOptionPane.showMessageDialog(rtv,
-						"End Date must be after the Start Date.");
-				return;
+			} else {
+				Instant startCal = Instant.ofEpochMilli(rtv.getStartDate()
+						.getDate().getTime());
+				Instant endCal = Instant.ofEpochMilli(rtv.getEndDate()
+						.getDate().getTime());
+
+				// TODO: Do validation for the calendars rather than showing
+				// JOptionPanes.
+				Instant now = Instant.now();
+				if (startCal.isAfter(now)) {
+					JOptionPane.showMessageDialog(rtv,
+							"Start Date cannot be in the future.");
+					return;
+				}
+				if (endCal.isBefore(startCal) || startCal.equals(endCal)) {
+					JOptionPane.showMessageDialog(rtv,
+							"End Date must be after the Start Date.");
+					return;
+				}
+
+				Set<String> users = new HashSet<String>();
+				// TODO: Get only the selected users from the view rather than
+				// considering all of the users.
+				for (User u : JanewayModule.users) {
+					users.add(u.getUsername());
+				}
+				String stageStr = rtv.getSelectedStage();
+				StageModel stage = WorkflowModel.getInstance().findStageByName(
+						stageStr);
+				findVelocityData(users, startCal, endCal, false, stage);
+				generateDataset(false, Period.ofDays(1));
+				JPanel chart = createChart("Test", "Time", "Effort");
+				TabPaneController.getInstance().addTab("Graph", chart, true);
+				TabPaneController.getInstance().getView()
+						.setSelectedComponent(chart);
 			}
 
-			Set<String> users = new HashSet<String>();
-			// TODO: Get only the selected users from the view rather than
-			// considering all of the users.
-			for (User u : JanewayModule.users) {
-				users.add(u.getUsername());
-			}
-			String stageStr = rtv.getSelectedStage();
-			StageModel stage = WorkflowModel.getInstance().findStageByName(
-					stageStr);
-			findVelocityData(users, startCal, endCal, false, stage);
-			generateDataset(false, Period.ofDays(1));
-			JPanel chart = createChart("Test", "Time", "Effort");
-			TabPaneController.getInstance().addTab("Graph", chart, true);
-			TabPaneController.getInstance().getView()
-					.setSelectedComponent(chart);
 		}
+	}
+
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void valueChanged(ListSelectionEvent e) {
+		// TODO Auto-generated method stub
+		Boolean addUsersSelected = !rtv.getProjectUsersList()
+				.isSelectionEmpty();
+		Boolean removeUsersSelected = !rtv.getUsersList().isSelectionEmpty();
+		rtv.setAddUserEnabled(addUsersSelected);
+		rtv.setRemoveUserEnabled(removeUsersSelected);
 	}
 }
