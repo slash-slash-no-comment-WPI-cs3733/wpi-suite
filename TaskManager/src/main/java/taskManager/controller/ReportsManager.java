@@ -196,6 +196,8 @@ public class ReportsManager implements ActionListener, ChangeListener,
 							effort /= task.getAssigned().size();
 						}
 						data.add(new UserData(username, completed, effort));
+						System.out.println("name: " + username + " completed: "
+								+ completed + " effort: " + effort);
 					}
 				}
 			} // End if inDateRange
@@ -249,7 +251,9 @@ public class ReportsManager implements ActionListener, ChangeListener,
 			do {
 				boundary = boundary.plus(interval);
 				seriesNum++;
-			} while (userData.completion.compareTo(boundary) >= 0);
+			} while ((boundary.getEpochSecond() - userData.completion
+					.getEpochSecond()) < 86400); // while the difference is less
+													// than a full day.
 
 			// set the name depending on the teamData value.
 			String keyname = "Team";
@@ -268,9 +272,15 @@ public class ReportsManager implements ActionListener, ChangeListener,
 			if (hasKey) {
 				dataset.incrementValue(userData.effort, keyname, intervalName
 						+ (seriesNum));
+				System.out.println("Increment: +" + userData.effort + " name: "
+						+ keyname + " interval: " + seriesNum);
+				System.out.println("Boundary: " + boundary);
 			} else {
 				dataset.addValue(userData.effort, keyname, intervalName
 						+ (seriesNum));
+				System.out.println("Add: +" + userData.effort + " name: "
+						+ keyname + " interval: " + seriesNum);
+				System.out.println("Boundary: " + boundary);
 			}
 		}
 		if (dataset == null) {
