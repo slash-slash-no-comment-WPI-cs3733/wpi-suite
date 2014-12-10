@@ -9,10 +9,14 @@
 package taskManager.controller;
 
 import java.awt.Component;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -28,8 +32,10 @@ import taskManager.view.EditTaskView;
  * @author Stefan Alexander
  *
  */
+
 public class TaskInputController implements KeyListener, MouseListener,
-		PopupMenuListener, ListSelectionListener {
+		PopupMenuListener, ListSelectionListener, PropertyChangeListener,
+		ItemListener {
 
 	private final EditTaskView etv;
 	private boolean addUsersSelected = false;
@@ -192,10 +198,20 @@ public class TaskInputController implements KeyListener, MouseListener,
 
 		etv.repaint();
 		// enable or disable the appropriate buttons
-		etv.setSaveEnabled(this.checkFields());
+
+		etv.setSaveEnabled(this.checkFields() && isEdited());
 		etv.setAddUserEnabled(addUsersSelected);
 		etv.setRemoveUserEnabled(removeUsersSelected);
 		etv.setCommentSubmitEnabled(this.checkSaveComment());
+	}
+
+	/**
+	 * Whether the view has been changed since the last save.
+	 *
+	 * @return true if the user has edited the form
+	 */
+	private boolean isEdited() {
+		return etv.getController().isEdited();
 	}
 
 	@Override
@@ -263,6 +279,17 @@ public class TaskInputController implements KeyListener, MouseListener,
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		validate();
+
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		validate();
 	}
 
 }
