@@ -103,8 +103,11 @@ public class ReportsManager implements ActionListener, ChangeListener,
 	public ReportsManager(ReportsToolbarView rtv) {
 		workflow = WorkflowModel.getInstance();
 		this.rtv = rtv;
+		// Populate the fields.
 		reloadStages();
 		reloadUsers();
+		// Default to last stage.
+		rtv.setStageDropdown(workflow.getStages().size() - 1);
 	}
 
 	/**
@@ -374,12 +377,12 @@ public class ReportsManager implements ActionListener, ChangeListener,
 		stages.setSelectedItem(0);
 	}
 
+	/**
+	 * 
+	 * Update the users view.
+	 *
+	 */
 	private void reloadUsers() {
-		// populates the project users list
-		/*
-		 * for (User u : JanewayModule.users) { String name = u.getUsername();
-		 * JCheckBox usrBox = new JCheckBox(name); rtv.addUsers(usrBox); }
-		 */
 		ArrayList<String> projectUserNames = new ArrayList<String>();
 		for (User u : JanewayModule.users) {
 			String name = u.getUsername();
@@ -387,8 +390,8 @@ public class ReportsManager implements ActionListener, ChangeListener,
 				projectUserNames.add(name);
 			}
 		}
-		rtv.getProjectUsersList().addAllToList(projectUserNames);
-
+		// Default to have all users selected.
+		rtv.getCurrUsersList().addAllToList(projectUserNames);
 	}
 
 	/**
@@ -466,24 +469,28 @@ public class ReportsManager implements ActionListener, ChangeListener,
 			} else if (buttonName.equals(ReportsToolbarView.ALL_USERS)) {
 
 			} else {
-				Instant startCal = Instant.ofEpochMilli(rtv.getStartDate()
-						.getDate().getTime());
-				Instant endCal = Instant.ofEpochMilli(rtv.getEndDate()
-						.getDate().getTime());
+				Date startdate = rtv.getStartDate().getDate();
+				Date enddate = rtv.getEndDate().getDate();
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(enddate);
+				cal.add(Calendar.DATE, 1);
 
 				// TODO: Do validation for the calendars rather than showing
 				// JOptionPanes.
-				Instant now = Instant.now();
-				if (startCal.isAfter(now)) {
+				Date now = new Date();
+				if (startdate.after(now)) {
 					JOptionPane.showMessageDialog(rtv,
 							"Start Date cannot be in the future.");
 					return;
 				}
-				if (endCal.isBefore(startCal) || startCal.equals(endCal)) {
+				if (cal.getTime().before(startdate)) {
 					JOptionPane.showMessageDialog(rtv,
 							"End Date must be after the Start Date.");
 					return;
 				}
+
+				Instant startCal = Instant.ofEpochMilli(startdate.getTime());
+				Instant endCal = Instant.ofEpochMilli(cal.getTime().getTime());
 
 				Set<String> users = new HashSet<String>();
 				for (String u : rtv.getCurrUsersList().getAllValues()) {
