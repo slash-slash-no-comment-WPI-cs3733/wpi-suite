@@ -570,24 +570,25 @@ public class EditTaskController implements ActionListener {
 	 * @return true if there are edits
 	 */
 	public Boolean checkDate(TaskModel task) {
+		// if the task had a due date, check if it changed
 		final Date dueDate = task.getDueDate();
 
-		// if the task had a due date, check if it changed
-		if (dueDate != null && dueDate.equals(etv.getDateField().getDate())) {
-			return false;
-		} else if (!isEditingTask()) {
-			// check if it has the default date (today)
-			final Calendar cal1 = Calendar.getInstance();
-			final Calendar cal2 = Calendar.getInstance();
-			cal1.setTime(etv.getDateField().getDate());
-			cal2.setTime(Calendar.getInstance().getTime());
+		Calendar cal1 = Calendar.getInstance();
 
-			// check if the two dates are the same day
-			return !(cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) && cal1
-					.get(Calendar.DAY_OF_YEAR) == cal2
-					.get(Calendar.DAY_OF_YEAR));
+		Calendar cal2 = Calendar.getInstance();
+
+		cal2.setTime(Calendar.getInstance().getTime());
+		if (isEditingTask() && dueDate != null) {
+			cal2.setTime(etv.getDateField().getDate());
+		} else {
+			// check if it has the default date (today)
+			cal1.setTime(dueDate);
 		}
-		return true;
+		boolean sameDay = cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
+				&& cal1.get(Calendar.DAY_OF_YEAR) == cal2
+						.get(Calendar.DAY_OF_YEAR);
+
+		return !sameDay;
 	}
 
 	/**
