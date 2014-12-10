@@ -13,9 +13,13 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
+import taskManager.controller.StageController;
 import taskManager.controller.TabPaneController;
+import taskManager.controller.TaskController;
 import taskManager.controller.ToolbarController;
 import taskManager.controller.WorkflowController;
+import taskManager.draganddrop.DDTransferHandler;
+import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
 import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
@@ -32,7 +36,8 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 public class JanewayModule implements IJanewayModule {
 
 	// The tabs used by this module
-	private final ArrayList<JanewayTabModel> tabs;
+
+	private final List<JanewayTabModel> tabs;
 
 	public static User[] users = {};
 	public static String currentUser = null; // the username of the current user
@@ -43,7 +48,7 @@ public class JanewayModule implements IJanewayModule {
 	public JanewayModule() {
 
 		tabs = new ArrayList<JanewayTabModel>();
-		JanewayTabModel tab = new JanewayTabModel("Task Manager",
+		final JanewayTabModel tab = new JanewayTabModel("Task Manager",
 				new ImageIcon(), ToolbarController.getInstance().getView(),
 				TabPaneController.getInstance().getView());
 		tabs.add(tab);
@@ -62,6 +67,11 @@ public class JanewayModule implements IJanewayModule {
 	 *
 	 */
 	public static void reset() {
+
+		StageController.anyChangeTitleOut = false;
+		TaskController.anyTaskInfoOut = false;
+		DDTransferHandler.dragSaved = false;
+		FetchWorkflowObserver.ignoreAllResponses = false;
 
 		// Reset singletons
 		ToolbarController.getInstance().reset();

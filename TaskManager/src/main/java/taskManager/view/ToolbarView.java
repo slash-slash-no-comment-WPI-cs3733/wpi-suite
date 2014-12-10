@@ -71,12 +71,13 @@ public class ToolbarView extends JToolBar {
 		this.controller = controller;
 
 		// Construct and set up the buttons and title panels
-		JPanel buttons = new JPanel();
-		JPanel title = new JPanel();
-		JPanel targets = new JPanel();
-		FlowLayout flowLayout = new FlowLayout();
-		BoxLayout toolbarLayout = new BoxLayout(this, BoxLayout.LINE_AXIS);
-		BoxLayout targetsLayout = new BoxLayout(targets, BoxLayout.LINE_AXIS);
+		final JPanel buttons = new JPanel();
+		final JPanel title = new JPanel();
+		final JPanel targets = new JPanel();
+		final FlowLayout flowLayout = new FlowLayout();
+		final BoxLayout toolbarLayout = new BoxLayout(this, BoxLayout.LINE_AXIS);
+		final BoxLayout targetsLayout = new BoxLayout(targets,
+				BoxLayout.LINE_AXIS);
 		buttons.setLayout(flowLayout);
 		buttons.setOpaque(false);
 		title.setLayout(flowLayout);
@@ -85,7 +86,7 @@ public class ToolbarView extends JToolBar {
 		targets.setOpaque(false);
 		this.setLayout(toolbarLayout);
 
-		Insets margins = new Insets(15, 5, 0, 5);
+		final Insets margins = new Insets(15, 5, 0, 5);
 		this.setMargin(margins);
 
 		this.setFloatable(false);
@@ -179,6 +180,12 @@ public class ToolbarView extends JToolBar {
 		return super.getName();
 	}
 
+	/**
+	 * Set the displayed project name
+	 *
+	 * @param name
+	 *            the name of the project
+	 */
 	public void setTitle(String name) {
 		projectName.setText("<html>" + name + "</html>");
 	}
@@ -195,10 +202,23 @@ public class ToolbarView extends JToolBar {
 		}
 	}
 
+	/**
+	 * Sets if the archive icon is lit up
+	 *
+	 * @param bool
+	 *            if the archive should be enabled or not
+	 */
 	public void setArchiveEnabled(boolean bool) {
 		archive.setEnabled(bool);
 	}
 
+	/**
+	 * Sets if the delete icon is lit up and whether it is currently a drop
+	 * target
+	 *
+	 * @param bool
+	 *            if the delete should be enabled or not
+	 */
 	public void setDeleteEnabled(boolean bool) {
 		delete.setEnabled(bool);
 	}
