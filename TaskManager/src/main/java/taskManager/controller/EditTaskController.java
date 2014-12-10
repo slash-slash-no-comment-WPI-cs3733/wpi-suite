@@ -94,17 +94,12 @@ public class EditTaskController implements ActionListener {
 	 */
 	public EditTaskController(TaskModel model) {
 		etv = new EditTaskView(Mode.EDIT);
+		etv.setName(model.getName());
 		this.model = model;
 		this.taskID = model.getID();
 
 		etv.setController(this);
 		etv.setFieldController(new TaskInputController(etv));
-
-		// uses the title field to hold the unique id
-		etv.getTitle().setName(this.model.getID());
-
-		// uses description field to hold the name of the stage
-		etv.getDescription().setName(this.model.getStage().getName());
 
 		// populate editable fields with this tasks info
 		etv.setTitle(model.getName());
@@ -153,7 +148,7 @@ public class EditTaskController implements ActionListener {
 		}
 		etv.getUsersList().addAllToList(assignedUserNames);
 
-		// Enable save button when editing a task.
+		// Disable save button until user starts making edits.
 		etv.setSaveEnabled(false);
 
 		// Clear the activities list.
@@ -722,5 +717,20 @@ public class EditTaskController implements ActionListener {
 	 */
 	public EditTaskView getView() {
 		return etv;
+	}
+
+	/**
+	 * If this controller and the other controller are duplicates (use the same
+	 * model)
+	 *
+	 * @param other
+	 * @return true if they're the same.
+	 */
+	public boolean isDuplicate(EditTaskController other) {
+		if (isEditingTask() && model != null) {
+			return model.getID().equals(other.model.getID());
+		}
+		// EditTaskControllers that are creating a task are always unique
+		return false;
 	}
 }

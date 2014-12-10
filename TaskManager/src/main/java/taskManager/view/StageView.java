@@ -15,6 +15,7 @@ package taskManager.view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Insets;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -64,7 +65,7 @@ public class StageView extends JPanel implements Transferable {
 	private final JButton cancel;
 	private final DropAreaPanel tasks;
 	private final JScrollPane stage;
-	public static final int STAGE_WIDTH = 200;
+	public static final int STAGE_WIDTH = 225;
 
 	/**
 	 * 
@@ -99,6 +100,7 @@ public class StageView extends JPanel implements Transferable {
 		labelName.setMaximumSize(new Dimension(STAGE_WIDTH - 15, 25));
 		labelName.setMinimumSize(new Dimension(STAGE_WIDTH - 15, 25));
 		labelName.setPreferredSize(new Dimension(STAGE_WIDTH - 15, 25));
+		labelName.setFont(new Font("Default", Font.PLAIN, 16));
 		label.add(labelName);
 
 		// The text field to change the stage's title
@@ -144,14 +146,16 @@ public class StageView extends JPanel implements Transferable {
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
 		label.setBackground(Colors.STAGE);
-		final Border color = BorderFactory.createLineBorder(label.getBackground(), 3);
+		final Border color = BorderFactory.createLineBorder(
+				label.getBackground(), 3);
 		final DropShadowBorder shadow = new DropShadowBorder();
 		shadow.setShadowColor(Color.BLACK);
 		shadow.setShowLeftShadow(true);
 		shadow.setShowRightShadow(true);
 		shadow.setShowBottomShadow(true);
 		shadow.setShowTopShadow(true);
-		final Border compound = BorderFactory.createCompoundBorder(shadow, color);
+		final Border compound = BorderFactory.createCompoundBorder(shadow,
+				color);
 		this.setBorder(compound);
 
 		stage.setMinimumSize(new Dimension(STAGE_WIDTH, 300));
