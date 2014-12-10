@@ -13,6 +13,7 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.text.SimpleDateFormat;
 
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
@@ -212,4 +213,10 @@ public class TaskController implements MouseListener, MouseMotionListener {
 
 	}
 
+	public String getString() {
+		String s = "Name: " + model.getName() + "\nDescription: "
+				+ model.getDescription() + "\nDue Date: "
+				+ new SimpleDateFormat("MM/dd/yy").format(model.getDueDate());
+		return s;
+	}
 }
