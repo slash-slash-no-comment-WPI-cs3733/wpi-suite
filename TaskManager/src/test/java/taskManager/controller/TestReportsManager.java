@@ -8,8 +8,6 @@
  *******************************************************************************/
 package taskManager.controller;
 
-import static java.lang.Thread.sleep;
-
 import java.awt.Dimension;
 import java.time.Instant;
 import java.time.Period;
@@ -20,9 +18,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import org.fest.swing.fixture.FrameFixture;
+import org.fest.swing.timing.Pause;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import taskManager.JanewayModule;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.view.ReportsView;
@@ -44,6 +45,8 @@ public class TestReportsManager {
 
 	@Before
 	public void setup() {
+		JanewayModule.reset();
+
 		now = Instant.now();
 		finished = new StageModel("Finished");
 		rm = new ReportsManager(new ReportsView());
@@ -58,6 +61,13 @@ public class TestReportsManager {
 		fixture.show();
 	}
 
+	/**
+	 * 
+	 * Currently this is just a test to make sure things don't crash, and must
+	 * be validated by human eyes. TODO: make it a real automated test
+	 *
+	 * @throws InterruptedException
+	 */
 	@Test
 	public void simpleTest() throws InterruptedException {
 		Set<String> users = new HashSet<String>();
@@ -68,9 +78,17 @@ public class TestReportsManager {
 		final JPanel chart = rm.createChart("Title", "Time", "Effort");
 		frame.add(chart);
 		frame.revalidate();
-		sleep(10000);
+		Pause.pause(1000);
+		// TODO add real validation
 	}
 
+	/**
+	 * 
+	 * Currently this is just a test to make sure things don't crash, and must
+	 * be validated by human eyes. TODO: make it a real automated test
+	 *
+	 * @throws InterruptedException
+	 */
 	@Test
 	public void testSingleUser() throws InterruptedException {
 		Set<String> users = new HashSet<String>();
@@ -81,6 +99,12 @@ public class TestReportsManager {
 		final JPanel chart = rm.createChart("Title", "Time", "Effort");
 		frame.add(chart);
 		frame.revalidate();
-		sleep(10000);
+		Pause.pause(1000);
+		// TODO add real testing
+	}
+
+	@After
+	public void cleanUp() {
+		fixture.cleanUp();
 	}
 }
