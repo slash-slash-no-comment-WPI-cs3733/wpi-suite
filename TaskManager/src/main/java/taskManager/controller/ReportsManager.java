@@ -12,6 +12,8 @@ package taskManager.controller;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.time.Instant;
 import java.time.Period;
 import java.util.ArrayList;
@@ -54,7 +56,7 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.User;
  * @version Nov 29, 2014
  */
 public class ReportsManager implements ActionListener, ChangeListener,
-		ListSelectionListener {
+		ListSelectionListener, PropertyChangeListener {
 
 	private ReportsView rtv;
 
@@ -498,5 +500,11 @@ public class ReportsManager implements ActionListener, ChangeListener,
 		Boolean removeUsersSelected = !rtv.getUsersList().isSelectionEmpty();
 		rtv.setAddUserEnabled(addUsersSelected);
 		rtv.setRemoveUserEnabled(removeUsersSelected);
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		// TODO Auto-generated method stub
+
 	}
 }
