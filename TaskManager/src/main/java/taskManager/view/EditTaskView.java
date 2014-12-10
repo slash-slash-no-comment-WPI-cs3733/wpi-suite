@@ -8,10 +8,10 @@
  *******************************************************************************/
 
 package taskManager.view;
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -121,6 +121,9 @@ public class EditTaskView extends JPanel {
 	private List<ActivityModel> newActivities;
 
 	private TaskInputController fieldC;
+	
+	 //create new Font
+    Font bigFont = new Font("Default", Font.BOLD,14);
 
 	/**
 	 * Creates a Edit Task Panel so that you can change all of the values of a
@@ -131,7 +134,6 @@ public class EditTaskView extends JPanel {
 		// TODO: User Mode to switch between create and edit views
 		// When Task added make EditTask take in a Task called currTask
 		this.mode = mode;
-		this.setLayout(new MigLayout());
 		window = new JPanel(new MigLayout());
 
 		this.setLayout(new FlowLayout());
@@ -139,29 +141,41 @@ public class EditTaskView extends JPanel {
 		panelSize.width = 1300; // TODO
 		panelSize.height = 650; // Decide size
 		window.setPreferredSize(panelSize);
-		// this.setPreferredSize(panelSize);
-		// this.setMinimumSize(panelSize);
+		this.setPreferredSize(panelSize);
+		this.setMinimumSize(panelSize);
 
 		activities = new ArrayList<ActivityModel>();
 		newActivities = new ArrayList<ActivityModel>();
 
 		// JLabels
-		JLabel titleLabel = new JLabel("Title ");
-		JLabel descriptionLabel = new JLabel("Description ");
-		JLabel dueDateLabel = new JLabel("Due Date ");
-		JLabel stageLabel = new JLabel("Stage ");
-		JLabel estimatedEffortLabel = new JLabel("Estimated Effort ");
-		JLabel actualEffortLabel = new JLabel("Actual Effort ");
-		JLabel requirementLabel = new JLabel("Select Requirement ");
-
+		JLabel titleLabel = new JLabel("Title");
+		titleLabel.setFont(bigFont);
+		JLabel descriptionLabel = new JLabel("Description");
+		descriptionLabel.setFont(bigFont);
+		JLabel dueDateLabel = new JLabel("Due Date");
+		dueDateLabel.setFont(bigFont);
+		JLabel stageLabel = new JLabel("Stage");
+		stageLabel.setFont(bigFont);
+		JLabel estimatedEffortLabel = new JLabel("Estimated Effort");
+		estimatedEffortLabel.setFont(bigFont);
+		JLabel actualEffortLabel = new JLabel("Actual Effort");
+		actualEffortLabel.setFont(bigFont);
+		JLabel requirementLabel = new JLabel("Select Requirement");
+		requirementLabel.setFont(bigFont);
+		JLabel assignedUsersLabel = new JLabel("Assigned Users");
+		assignedUsersLabel.setFont(bigFont);
+		JLabel projectUsersLabel = new JLabel("Project Users");
+		projectUsersLabel.setFont(bigFont);
+		JLabel activitiesLabel = new JLabel("Activities");
+		activitiesLabel.setFont(bigFont);
 		// JTextFields
 		// sets all text fields editable and adds them to global variables
 
-		titleField = new JTextField(25);
+		titleField = new JTextField(26);
 		titleField.setEditable(true);
 		titleField.setName(TITLE);
 
-		descripArea = new JTextArea(4, 25);
+		descripArea = new JTextArea(14, 26);
 		descripArea.setName(DESCRIP);
 		descripArea.setEditable(true);
 		descripArea.setLineWrap(true);
@@ -206,9 +220,9 @@ public class EditTaskView extends JPanel {
 		// JTextArea
 		// TODO
 		// Get to add users
-		usersList = new ScrollList("Assigned Users");
+		usersList = new ScrollList("");
 		usersList.setBackground(this.getBackground());
-		projectUsersList = new ScrollList("Project Users");
+		projectUsersList = new ScrollList("");
 		projectUsersList.setBackground(this.getBackground());
 
 		// Comment Pane
@@ -216,21 +230,23 @@ public class EditTaskView extends JPanel {
 		// Requirement Pane
 		requirements = new JComboBox<String>();
 		requirements.setName(REQUIREMENTS);
-
+		requirements.setPrototypeDisplayValue("Select a requirement");
 		// JButtons
 		// Delete Task and close the window
 		delete = new JButton("Delete");
 		delete.setName(DELETE);
+		
 		// Archive
 		archive = new JButton("Archive");
 		archive.setName(ARCHIVE);
+		
 		// Add user to list
-		addUser = new JButton("<<");
+		addUser = new JButton(">>");
 		addUser.setName(ADD_USER);
 		this.setAddUserEnabled(false);
+		
 		// remove user from list
-
-		removeUser = new JButton(">>");
+		removeUser = new JButton("<<");
 		removeUser.setName(REMOVE_USER);
 		this.setRemoveUserEnabled(false);
 
@@ -238,13 +254,16 @@ public class EditTaskView extends JPanel {
 		submitComment = new JButton("Submit Comment");
 		submitComment.setName(SUBMIT_COMMENT);
 		this.setCommentSubmitEnabled(false);
+		
 		// add requirement
 		addReq = new JButton("View Requirement");
 		addReq.setName(VIEW_REQ);
+	
 		// saves all the data and closes the window
 		save = new JButton("Save");
 		save.setName(SAVE);
 		this.setSaveEnabled(false);
+	
 		// closes the window without saving
 		cancel = new JButton("Cancel");
 		cancel.setName(CANCEL);
@@ -259,66 +278,83 @@ public class EditTaskView extends JPanel {
 
 		window.add(titleLabel);
 
-		// This is where the 6 primary panels are defined
+		// This is where the 9 primary panels are defined
 		JPanel Spacer = new JPanel(new MigLayout());
 		JPanel BasicInfo = new JPanel(new MigLayout());
 		JPanel Users = new JPanel(new MigLayout());
 		JPanel Activities = new JPanel(new MigLayout());
-		JPanel Effort = new JPanel(new MigLayout("fill"));
+		JPanel Effort = new JPanel(new MigLayout());
 		JPanel Requirements = new JPanel(new MigLayout());
 		JPanel EditSaveCancel = new JPanel(new MigLayout());
+		JPanel dateAndStage = new JPanel(new MigLayout());
+		JPanel EffortDateStage = new JPanel(new MigLayout());
+		
+		// Effort Panel internal content
 
-		// ready to go
+		
+		Effort.add(estimatedEffortLabel, "wrap");
+		Effort.add(estEffortField, "wrap");
+		Effort.add(actualEffortLabel, "wrap, gaptop 10px");
+		Effort.add(actEffortField);
+		
+		//dateAndStage internal content
+		dateAndStage.add(dueDateLabel, "wrap");
+		dateAndStage.add(dateField, "wrap");
+		dateAndStage.add(stageLabel, "gaptop 10px, wrap");
+		dateAndStage.add(stages);
+		
+		//EffortDateStage internal content
+		EffortDateStage.add(dateAndStage);
+		EffortDateStage.add(Effort);
+		
+		
+		
 		// BasicInfo Panel internal content
-		BasicInfo.setBorder(BorderFactory.createTitledBorder("Basic Info"));
-		BasicInfo.add(titleLabel, "wrap");
-		BasicInfo.add(titleField, "wrap");
+		BasicInfo.setBorder(BorderFactory.createTitledBorder(""));
+		BasicInfo.add(titleLabel, "gapleft 5px, wrap");
+		BasicInfo.add(titleField, "gapleft 5px, wrap");
 
-		BasicInfo.add(descriptionLabel, "wrap");
-		BasicInfo.add(descriptionScrollPane, "gapbottom 20px, wrap");
-
-		BasicInfo.add(dueDateLabel);
-		BasicInfo.add(stageLabel, "wrap");
-		BasicInfo.add(dateField);
-		BasicInfo.add(stages, "wrap");
+		BasicInfo.add(descriptionLabel, "gapleft 5px, wrap");
+		BasicInfo.add(descriptionScrollPane, "gapbottom 20px, gapleft 5px, wrap");
+		BasicInfo.add(EffortDateStage, "h 25%, gapleft 5px, gaptop 20px");
+		
+		
+		// Requirements Panel internal content
+		Requirements.add(requirementLabel, "wrap");
+		Requirements.add(requirements, "gapright 10px");
+		Requirements.add(addReq);
+		
+		
 
 		// Users Panel internal content
-		Users.setBorder(BorderFactory.createTitledBorder("Users"));
+		Users.setBorder(BorderFactory.createTitledBorder(""));
+		JPanel UserPanel = new JPanel(new MigLayout());
 		JPanel usersListPanel = new JPanel(new MigLayout());
 		JPanel projectUsersListPanel = new JPanel(new MigLayout());
 		JPanel addRemoveButtons = new JPanel(new MigLayout());
+		usersListPanel.add(assignedUsersLabel, "wrap");
 		usersListPanel.add(usersList);
+		projectUsersListPanel.add(projectUsersLabel, "wrap");
 		projectUsersListPanel.add(projectUsersList);
-
+	
 		addRemoveButtons.add(addUser, "wrap");
 		addRemoveButtons.add(removeUser);
-
-		Users.add(usersListPanel, "w 100!, gapleft 15px");
-		Users.add(addRemoveButtons);
-		Users.add(projectUsersListPanel, "w 100!");
+		
+		UserPanel.add(projectUsersListPanel);
+		UserPanel.add(addRemoveButtons);
+		UserPanel.add(usersListPanel);
+		
+		Users.add(UserPanel, "h 60%, wrap, gapbottom 15px");
+		Users.add(Requirements, "h 40%, gaptop 20px, gapleft 35px");
 
 		// Activities Panel internal content
-		Activities.setBorder(BorderFactory.createTitledBorder("Activities"));
-		Activities.add(activityPane, "wrap, gapbottom 20px");
-		Activities.add(commentScrollPane, "center, wrap, gapbottom 10px");
-		Activities
-				.add(submitComment, "dock south, gapleft 30px, gapright 30px");
+		Activities.setBorder(BorderFactory.createTitledBorder(""));
+		Activities.add(activitiesLabel, "wrap, gaptop 10px, gapleft 15px");
+		Activities.add(activityPane, "wrap, gapbottom 20px, gapleft 15px");
+		Activities.add(commentScrollPane, "center, wrap, gapbottom 10px, gapleft 15px");
+		Activities.add(submitComment, "dock south, gapleft 30px, gapright 30px");
 
-		// Effort Panel internal content
-
-		Effort.setBorder(BorderFactory.createTitledBorder("Effort"));
-		Effort.add(estimatedEffortLabel);
-		Effort.add(actualEffortLabel, "wrap");
-		Effort.add(estEffortField);
-
-		Effort.add(actEffortField);
-
-		// Requirements Panel internal content
-		Requirements
-				.setBorder(BorderFactory.createTitledBorder("Requirements"));
-		Requirements.add(requirementLabel, "wrap");
-		Requirements.add(requirements);
-		Requirements.add(addReq);
+		
 
 		// EditSaveCancel Panel internal content
 
@@ -332,12 +368,12 @@ public class EditTaskView extends JPanel {
 		// The finished panels are added to the main window panel
 
 		window.add(Spacer, "dock north");
-		window.add(BasicInfo, "w 30%, h 50%, gapbottom 20px");
-		window.add(Users, "w 30%, h 50%, gapbottom 20px, wrap");
-		window.add(Effort, "w 30%, h 20%");
-		window.add(Requirements, "w 30%, h 20%");
+		window.add(BasicInfo, "h 80%, w 30%");
+		window.add(Users, "h 80%, w 30%, gapleft 10px");
+		window.add(Activities, "h 80%, w 25%, gapleft 10px");
 		window.add(EditSaveCancel, "dock south, h 10%");
-		window.add(Activities, "w 25%, dock east, gapleft 5px");
+		
+		//Add the window to EditTaskView
 		this.add(window);
 
 		BalloonTipStyle errorStyle = new RoundedBalloonStyle(5, 5,

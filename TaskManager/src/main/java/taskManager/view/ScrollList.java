@@ -36,18 +36,18 @@ public class ScrollList extends JPanel {
 
 	public ScrollList(String t) {
 		setLayout(new BorderLayout());
-		this.setMinimumSize(new Dimension(200, 75));
-		this.setMaximumSize(new Dimension(200, 75));
-		this.setPreferredSize(new Dimension(200, 75));
-		this.setSize(new Dimension(200, 75));
+		this.setMinimumSize(new Dimension(140, 290));
+		this.setMaximumSize(new Dimension(140, 290));
+		this.setPreferredSize(new Dimension(140, 290));
+		this.setSize(new Dimension(140, 290));
 		lm = new DefaultListModel<String>();
 		jl = new JList<String>(lm);
 		jl.setVisibleRowCount(3);
 		listScroller = new JScrollPane(jl);
-		listScroller.setMinimumSize(new Dimension(200, 75));
-		listScroller.setMaximumSize(new Dimension(200, 75));
-		listScroller.setPreferredSize(new Dimension(200, 75));
-		listScroller.setSize(new Dimension(200, 75));
+		listScroller.setMinimumSize(new Dimension(200, 175));
+		listScroller.setMaximumSize(new Dimension(200, 175));
+		listScroller.setPreferredSize(new Dimension(200, 175));
+		listScroller.setSize(new Dimension(200, 175));
 		listScroller
 				.setVerticalScrollBarPolicy(listScroller.VERTICAL_SCROLLBAR_AS_NEEDED);
 		listScroller
