@@ -10,8 +10,12 @@ package taskManager.controller;
 
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -28,12 +32,19 @@ import taskManager.view.EditTaskView;
  *
  */
 public class TaskInputController implements KeyListener, FocusListener,
-		PopupMenuListener, ListSelectionListener {
+		PopupMenuListener, ListSelectionListener, PropertyChangeListener,
+		ItemListener {
 
 	private final EditTaskView etv;
 	private boolean addUsersSelected = false;
 	private boolean removeUsersSelected = false;
 
+	/**
+	 * The controller to validate input when editing a task
+	 *
+	 * @param etv
+	 *            The edit task view being edited
+	 */
 	public TaskInputController(EditTaskView etv) {
 		this.etv = etv;
 		checkFields();
@@ -42,6 +53,8 @@ public class TaskInputController implements KeyListener, FocusListener,
 	/**
 	 * checks to see if the edit task fields aren't empty and meet the
 	 * requirements. If a field doesn't meet the requirements, display an error
+	 * 
+	 * @return true if all the fields are valid
 	 */
 	public boolean checkFields() {
 
@@ -126,10 +139,19 @@ public class TaskInputController implements KeyListener, FocusListener,
 	 * validate the inputs
 	 */
 	public void validate() {
-		etv.setSaveEnabled(this.checkFields());
+		etv.setSaveEnabled(this.checkFields() && isEdited());
 		etv.setAddUserEnabled(addUsersSelected);
 		etv.setRemoveUserEnabled(removeUsersSelected);
 		etv.setCommentSubmitEnabled(this.checkSaveComment());
+	}
+
+	/**
+	 * Whether the view has been changed since the last save.
+	 *
+	 * @return true if the user has edited the form
+	 */
+	private boolean isEdited() {
+		return etv.getController().isEdited();
 	}
 
 	@Override
@@ -176,6 +198,17 @@ public class TaskInputController implements KeyListener, FocusListener,
 	public void valueChanged(ListSelectionEvent e) {
 		validate();
 
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		validate();
+
+	}
+
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		validate();
 	}
 
 }

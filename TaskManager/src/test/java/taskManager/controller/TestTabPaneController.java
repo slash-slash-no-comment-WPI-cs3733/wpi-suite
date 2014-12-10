@@ -57,7 +57,7 @@ public class TestTabPaneController {
 	public void setup() {
 		// create a new workflow model
 		JanewayModule.reset();
-		toolV = JanewayModule.getToolV();
+		toolV = ToolbarController.getInstance().getView();
 
 		// give it some stages
 		for (String name : stageNames) {
