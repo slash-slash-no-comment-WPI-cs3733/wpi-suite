@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.Instant;
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -336,11 +337,21 @@ public class ReportsManager implements ActionListener {
 
 	private void reloadUsers() {
 		// populates the project users list
+		/*
 		for (User u : JanewayModule.users) {
 			String name = u.getUsername();
 			JCheckBox usrBox = new JCheckBox(name);
 			rtv.addUsers(usrBox);
+		}*/
+		ArrayList<String> projectUserNames = new ArrayList<String>();
+		for (User u : JanewayModule.users) {
+			String name = u.getUsername();
+			if (!projectUserNames.contains(name)) {
+				projectUserNames.add(name);
+			}
 		}
+		rtv.getProjectUsersList().addAllToList(projectUserNames);
+
 	}
 
 	@Override

@@ -32,6 +32,8 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.jdesktop.swingx.JXDatePicker;
 
 import taskManager.controller.ReportsManager;
@@ -55,7 +57,8 @@ public class ReportsToolbarView extends JPanel {
 	public static final String COLLABORATIVE = "collaborative";
 	public static final String COMPARATIVE = "comparative";
 	public static final String ALL_USERS = "all_users";
-	public static final String USERS_LIST = "users_list";
+	public static final String ADD_USER = "add_user";
+	public static final String REMOVE_USER = "remove_user";
 	public static final String GENERATE = "generate";
 
 	private JPanel window;
@@ -95,7 +98,10 @@ public class ReportsToolbarView extends JPanel {
 	// Users
 	private JPanel usersPanel;
 	private JCheckBox allUsers;
-	private JList<JCheckBox> users;
+	private ScrollList currUsersList;
+	private ScrollList projectUsersList;
+	private JButton addUser;
+	private JButton removeUser;
 
 	// Generate Graph Button
 	private JButton generateGraph;
@@ -250,29 +256,36 @@ public class ReportsToolbarView extends JPanel {
 
 		// Users
 		usersPanel = new JPanel();
-		usersPanel.setLayout(new GridBagLayout());
 		allUsers = new JCheckBox("All");
 		allUsers.setName(ALL_USERS);
-		users = new JList<JCheckBox>();
-		users.setName(USERS_LIST);
-		JScrollPane usersPane = new JScrollPane(users);
-		usersPane
-				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		usersPane
-				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		currUsersList = new ScrollList("Assigned Users");
+		currUsersList.setBackground(this.getBackground());
+		projectUsersList = new ScrollList("Project Users");
+		projectUsersList.setBackground(this.getBackground());
+		// Add user to list
+		addUser = new JButton("<<");
+		addUser.setName(ADD_USER);
+		this.setAddUserEnabled(false);
+		// remove user from list
+		removeUser = new JButton(">>");
+		removeUser.setName(REMOVE_USER);
+		this.setRemoveUserEnabled(false);
 		reportsGridBag.anchor = GridBagConstraints.WEST;
 		reportsGridBag.gridx = 0;
 		reportsGridBag.gridy = 0;
 		usersPanel.setBorder(BorderFactory.createTitledBorder("Users"));
+		usersPanel.setBorder(BorderFactory.createTitledBorder("Users"));
+		JPanel usersListPanel = new JPanel(new MigLayout());
+		JPanel projectUsersListPanel = new JPanel(new MigLayout());
+		JPanel addRemoveButtons = new JPanel(new MigLayout());
 		usersPanel.add(allUsers, reportsGridBag);
-		reportsGridBag.gridy = 1;
-		usersPanel.add(usersPane, reportsGridBag);
-		Dimension usersDimension = getPreferredSize();
-		usersDimension.width = 125;
-		usersDimension.height = 75;
-		workModePanel.setPreferredSize(usersDimension);
-		workModePanel.setMinimumSize(usersDimension);
-		workModePanel.setMaximumSize(usersDimension);
+		usersListPanel.add(currUsersList);
+		projectUsersListPanel.add(projectUsersList);
+		addRemoveButtons.add(addUser, "wrap");
+		addRemoveButtons.add(removeUser);
+		usersPanel.add(usersListPanel, "w 100!, gapleft 15px");
+		usersPanel.add(addRemoveButtons);
+		usersPanel.add(projectUsersListPanel, "w 100!");
 
 		// Generate Graph
 		generateGraph = new JButton("Generate");
@@ -342,6 +355,8 @@ public class ReportsToolbarView extends JPanel {
 
 	public void setController(ReportsManager manager) {
 		controller = manager;
+		addUser.addActionListener(manager);
+		removeUser.addActionListener(manager);
 		generateGraph.addActionListener(manager);
 	}
 
@@ -563,36 +578,36 @@ public class ReportsToolbarView extends JPanel {
 		allUsers.setSelected(b);
 	}
 
-	/**
+	/*
 	 * Returns the list of all of the users
 	 * 
 	 * @return the list of users as a JList<JCheckBox>
-	 */
+	 *
 	public JList<JCheckBox> getUsers() {
 		return users;
 	}
 
-	/**
+	/*
 	 * Sets the users of the JList
 	 * 
 	 * @param u
 	 *            the checkbox of a user to add
-	 */
+	 *
 	public void addUsers(JCheckBox u) {
 		users.add(u);
 	}
 
-	/**
+	/*
 	 * Sets the state of a particular user in the users list
 	 * 
 	 * @param i
 	 *            index of the user
 	 * @param b
 	 *            state to set the user
-	 */
+	 *
 	public void setUser(int i, Boolean b) {
 		users.getModel().getElementAt(i).setSelected(b);
-	}
+	}*/
 
 	/**
 	 * 
@@ -602,5 +617,41 @@ public class ReportsToolbarView extends JPanel {
 	 */
 	public JComboBox<String> getStages() {
 		return stages;
+	}
+	
+	/**
+	 * return the JList containing the assigned user names
+	 * 
+	 * @return the JList of assigned usernames
+	 */
+	public ScrollList getCurrUsersList() {
+		return this.currUsersList;
+	}
+
+	/**
+	 * return the JList containing the project user names
+	 * 
+	 * @return the JLst of project user names
+	 */
+	public ScrollList getProjectUsersList() {
+		return this.projectUsersList;
+	}
+	
+	/**
+	 * set the add user button enabled or disabled
+	 * 
+	 * @param e
+	 */
+	public void setAddUserEnabled(boolean e) {
+		this.addUser.setEnabled(e);
+	}
+
+	/**
+	 * sets the remove user button enabled or disabled
+	 * 
+	 * @param e
+	 */
+	public void setRemoveUserEnabled(boolean e) {
+		this.removeUser.setEnabled(e);
 	}
 }
