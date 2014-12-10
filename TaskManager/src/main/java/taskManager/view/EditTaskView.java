@@ -387,6 +387,7 @@ public class EditTaskView extends JPanel {
 		commentsField.addKeyListener(fieldC);
 		requirements.addPopupMenuListener(fieldC);
 		dateField.addPropertyChangeListener(fieldC);
+		archive.addItemListener(fieldC);
 	}
 
 	/**
