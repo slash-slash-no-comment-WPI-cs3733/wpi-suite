@@ -15,6 +15,8 @@ import java.awt.event.ActionListener;
 import java.time.Instant;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -150,10 +152,12 @@ public class ReportsManager implements ActionListener, ChangeListener,
 	 * @param stage
 	 *            The stage to consider as the completion stage
 	 */
-	public void findVelocityData(Set<String> users, Instant start, Instant end,
-			boolean averageCredit, StageModel stage) {
-		this.start = start;
-		this.end = end;
+	public void findVelocityData(Set<String> users, Instant start2,
+			Instant end2, boolean averageCredit, StageModel stage) {
+		// adjust for EST.
+		start = start2.minusSeconds(18000);
+		end = end2.minusSeconds(18000);
+
 		if (!workflow.getStages().contains(stage)) {
 			throw new IllegalArgumentException("Invalid stage");
 		}
@@ -169,8 +173,10 @@ public class ReportsManager implements ActionListener, ChangeListener,
 				ActivityModel activity = task.getActivities().get(i);
 				if (activity.getType() == ActivityModel.activityModelType.MOVE) {
 					foundMoveEvent = true;
-					completed = Instant.ofEpochMilli(activity.getDateCreated()
-							.getTime());
+
+					completed = Instant.ofEpochMilli(setToEST(
+							activity.getDateCreated()).getTime());
+
 					if (completed.compareTo(start) < 0
 							|| completed.compareTo(end) > 0) {
 						completed = null;
@@ -185,7 +191,8 @@ public class ReportsManager implements ActionListener, ChangeListener,
 				// If the task has no move events, then it was created in the
 				// completion stage. This is likely a retroactive completion, so
 				// we'll assume that the task was completed on its due date.
-				completed = Instant.ofEpochMilli(task.getDueDate().getTime());
+				completed = Instant.ofEpochMilli(setToEST(task.getDueDate())
+						.getTime());
 			}
 			if (completed != null) {
 				for (String username : task.getAssigned()) {
@@ -201,6 +208,22 @@ public class ReportsManager implements ActionListener, ChangeListener,
 				}
 			} // End if inDateRange
 		} // End for TaskModel
+	}
+
+	/**
+	 * 
+	 * Convert the given date to EST assuming we are 5 hours behind.
+	 *
+	 * @param original
+	 *            the original Date object.
+	 * @return the converted Date object.
+	 */
+	public Date setToEST(Date original) {
+		Calendar cal = Calendar.getInstance();
+		Date created = original;
+		cal.setTime(created);
+		cal.add(Calendar.HOUR_OF_DAY, -5);
+		return cal.getTime();
 	}
 
 	/**
