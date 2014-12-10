@@ -10,10 +10,8 @@
 package taskManager.view;
 
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
-import java.awt.Insets;
 import java.awt.dnd.DropTarget;
 import java.io.IOException;
 
@@ -72,36 +70,32 @@ public class ToolbarView extends JToolBar {
 
 		// Construct and set up the buttons and title panels
 		final JPanel buttons = new JPanel();
-		final JPanel title = new JPanel();
+		final JPanel name = new JPanel();
 		final JPanel targets = new JPanel();
-		final FlowLayout flowLayout = new FlowLayout();
-		final BoxLayout toolbarLayout = new BoxLayout(this, BoxLayout.LINE_AXIS);
-		final BoxLayout targetsLayout = new BoxLayout(targets,
-				BoxLayout.LINE_AXIS);
-		buttons.setLayout(flowLayout);
+		buttons.setLayout(new BoxLayout(buttons, BoxLayout.LINE_AXIS));
 		buttons.setOpaque(false);
-		title.setLayout(flowLayout);
-		title.setOpaque(false);
-		targets.setLayout(targetsLayout);
+		name.setLayout(new BoxLayout(name, BoxLayout.LINE_AXIS));
+		name.setOpaque(false);
+		targets.setLayout(new BoxLayout(targets, BoxLayout.LINE_AXIS));
 		targets.setOpaque(false);
-		this.setLayout(toolbarLayout);
-
-		final Insets margins = new Insets(15, 5, 0, 5);
-		this.setMargin(margins);
+		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 
 		this.setFloatable(false);
 
 		// Construct the buttons
-		createTask = new JButton("Create Task");
+		createTask = new JButton("<html>Create Task</html>");
 		createTask.setName(CREATE_TASK);
+		createTask.setMaximumSize(new Dimension(160, 58));
 		createTask.addActionListener(controller);
 
-		createStage = new JButton("Create Stage");
+		createStage = new JButton("<html>Create Stage</html>");
 		createStage.setName(CREATE_STAGE);
+		createStage.setMaximumSize(new Dimension(160, 58));
 		createStage.addActionListener(controller);
 
-		statistics = new JButton("Statistics");
+		statistics = new JButton("<html>Statistics</html>");
 		statistics.setName(REPORT);
+		statistics.setMaximumSize(new Dimension(160, 58));
 		statistics.addActionListener(controller);
 
 		// Add icons
@@ -122,8 +116,9 @@ public class ToolbarView extends JToolBar {
 		}
 
 		// Checkbox for toggling showing archived tasks.
-		archiveCheckBox = new JCheckBox("Show archived tasks");
+		archiveCheckBox = new JCheckBox("<html>Show archived tasks</html>");
 		archiveCheckBox.addItemListener(controller);
+		archiveCheckBox.setOpaque(false);
 
 		// Add archive and delete drop targets
 		try {
@@ -155,24 +150,37 @@ public class ToolbarView extends JToolBar {
 		projectName = new JLabel();
 		projectName.setFont(new Font("TextField.font", Font.BOLD, 20));
 
-		// Add buttons to the content panel
-		title.add(projectName);
+		// Add title to the title panel
+		name.add(Box.createHorizontalStrut(10));
+		name.add(projectName);
+
+		// Add buttons with to the button panel
+		buttons.add(Box.createHorizontalGlue());
 		buttons.add(createTask);
 		buttons.add(createStage);
 		// buttons.add(statistics);
 		buttons.add(archiveCheckBox);
+		buttons.add(Box.createHorizontalGlue());
+
+		// Add targets to the target panel
 		targets.add(archive);
 		targets.add(new Box.Filler(new Dimension(5, 0), new Dimension(40, 0),
 				new Dimension(40, 0)));
 		targets.add(delete);
+		targets.add(Box.createHorizontalStrut(10));
 
-		// Title and buttons to the toolbar
-		this.add(title);
-		this.add(Box.createHorizontalGlue());
+		// Set vertical alignments of panels to be centered.
+		name.setAlignmentY(CENTER_ALIGNMENT);
+		buttons.setAlignmentY(CENTER_ALIGNMENT);
+		targets.setAlignmentY(CENTER_ALIGNMENT);
+
+		// Add panels to the toolbar
+		this.add(name);
 		this.add(buttons);
-		this.add(Box.createHorizontalGlue());
 		this.add(targets);
-		this.add(Box.createHorizontalGlue());
+
+		// Add resize listener to fix title
+		this.addComponentListener(controller);
 	}
 
 	@Override
@@ -186,7 +194,7 @@ public class ToolbarView extends JToolBar {
 	 * @param name
 	 *            the name of the project
 	 */
-	public void setTitle(String name) {
+	public void setProjectName(String name) {
 		projectName.setText("<html>" + name + "</html>");
 	}
 
@@ -247,5 +255,14 @@ public class ToolbarView extends JToolBar {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Returns the project name component
+	 * 
+	 * @return The project name component
+	 */
+	public JLabel getProjectName() {
+		return projectName;
 	}
 }
