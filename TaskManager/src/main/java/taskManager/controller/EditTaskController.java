@@ -577,12 +577,12 @@ public class EditTaskController implements ActionListener {
 
 		Calendar cal2 = Calendar.getInstance();
 
-		cal2.setTime(Calendar.getInstance().getTime());
+		cal1.setTime(dueDate);
 		if (isEditingTask() && dueDate != null) {
 			cal2.setTime(etv.getDateField().getDate());
 		} else {
 			// check if it has the default date (today)
-			cal1.setTime(dueDate);
+			cal2.setTime(Calendar.getInstance().getTime());
 		}
 		boolean sameDay = cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
 				&& cal1.get(Calendar.DAY_OF_YEAR) == cal2
