@@ -142,6 +142,11 @@ public class TaskInputController implements KeyListener, FocusListener,
 		etv.setCommentSubmitEnabled(this.checkSaveComment());
 	}
 
+	/**
+	 * Whether the view has been changed since the last save.
+	 *
+	 * @return true if the user has edited the form
+	 */
 	private boolean isEdited() {
 		return etv.getController().isEdited();
 	}
