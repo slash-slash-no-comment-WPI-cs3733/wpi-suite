@@ -47,16 +47,10 @@ public class TaskController implements MouseListener, MouseMotionListener, Actio
 
 	private final TaskView view;
 	private final TaskModel model;
-	private StageModel sm;
-	private TabPaneController tabPaneC;
-	private EditTaskView etv;
-	private Requirement req;
-	private final User[] projectUsers = JanewayModule.users;
-	private Set<String> assignedUsers;
-	private Color background;
+	private final Color background;
 
 	public static Boolean anyTaskInfoOut = false;
-	public Boolean thisTaskInfoOut = false;
+	private Boolean thisTaskInfoOut = false;
 
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
@@ -68,18 +62,8 @@ public class TaskController implements MouseListener, MouseMotionListener, Actio
 	 *            the corresponding TaskModel object
 	 */
 	public TaskController(TaskView view, TaskModel model) {
-		this.tabPaneC = JanewayModule.tabPaneC;
 		this.view = view;
 		this.model = model;
-		sm = model.getStage();
-
-		etv = new EditTaskView(Mode.EDIT);
-		etv.setController(new EditTaskController(etv));
-		etv.setFieldController(new TaskInputController(etv));
-
-		assignedUsers = model.getAssigned();
-
-		req = model.getReq();
 
 		// Set the background to orange if the task is archived.
 		if (model.isArchived()) {
@@ -88,7 +72,7 @@ public class TaskController implements MouseListener, MouseMotionListener, Actio
 			view.setBackground(Colors.TASK);
 		}
 
-		this.background = view.getBackground();
+		background = view.getBackground();
 	}
 
 	/**
@@ -138,7 +122,7 @@ public class TaskController implements MouseListener, MouseMotionListener, Actio
 	 *
 	 */
 	public void editTask() {
-		new EditTaskController(model).getView().setTitleFieldFocus();
+		new EditTaskController(model).getView().focusOnTitleField();
 	}
 
 	/**
@@ -179,17 +163,17 @@ public class TaskController implements MouseListener, MouseMotionListener, Actio
 			FetchWorkflowObserver.ignoreAllResponses = true;
 
 			// Create the taskinfo bubble
-			Point stageLoc = view.getParent().getParent().getParent()
+			final Point stageLoc = view.getParent().getParent().getParent()
 					.getParent().getLocation();
-			Point stagesPanelLoc = view.getParent().getParent().getParent()
-					.getParent().getParent().getLocation();
-			Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
+			final Point stagesPanelLoc = view.getParent().getParent()
+					.getParent().getParent().getParent().getLocation();
+			final Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
 					view.getLocation().y);
 			WorkflowController.getInstance().setTaskInfo(
 					new TaskInfoPreviewView(model, this, infoLoc));
 
 			// Set the correct flags
-			thisTaskInfoOut = true;
+			setThisTaskInfoOut(true);
 			TaskController.anyTaskInfoOut = true;
 			// make the associated task a darker color while the bubble is out
 			if (isArchived()) {
@@ -259,14 +243,17 @@ public class TaskController implements MouseListener, MouseMotionListener, Actio
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		// Enable/disable the archive and delete icons when dragged.
-		boolean isArchived = model.isArchived();
+
+		final boolean isArchived = model.isArchived();
 		if (isArchived) {
-			JanewayModule.toolV.setArchiveIcon(ToolbarView.UNARCHIVE);
+			ToolbarController.getInstance().getView()
+					.setArchiveIcon(ToolbarView.UNARCHIVE);
 		} else {
-			JanewayModule.toolV.setArchiveIcon(ToolbarView.ARCHIVE);
+			ToolbarController.getInstance().getView()
+					.setArchiveIcon(ToolbarView.ARCHIVE);
 		}
-		JanewayModule.toolV.setArchiveEnabled(true);
-		JanewayModule.toolV.setDeleteEnabled(isArchived);
+		ToolbarController.getInstance().getView().setArchiveEnabled(true);
+		ToolbarController.getInstance().getView().setDeleteEnabled(isArchived);
 	}
 
 	@Override
@@ -283,6 +270,21 @@ public class TaskController implements MouseListener, MouseMotionListener, Actio
 		if (((JMenuItem) e.getSource()).getText().equals("New Task"))
 			leftMouseClick();
 		System.out.println(((JMenuItem)e.getSource()).getText());
+	}
+
+	/**
+	 * @return the thisTaskInfoOut
+	 */
+	public Boolean getThisTaskInfoOut() {
+		return thisTaskInfoOut;
+	}
+
+	/**
+	 * @param thisTaskInfoOut
+	 *            the thisTaskInfoOut to set
+	 */
+	public void setThisTaskInfoOut(Boolean thisTaskInfoOut) {
+		this.thisTaskInfoOut = thisTaskInfoOut;
 	}
 
 }

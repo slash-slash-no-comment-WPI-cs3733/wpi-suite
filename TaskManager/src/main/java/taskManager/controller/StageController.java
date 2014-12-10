@@ -21,7 +21,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import taskManager.JanewayModule;
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DropAreaSaveListener;
 import taskManager.model.FetchWorkflowObserver;
@@ -35,15 +34,10 @@ import taskManager.view.TaskView;
  * Controller for stages.
  *
  * @author Stefan Alexander
+ * @author Sam Khalandovsky
  * @version November 9, 2014
  */
 
-/**
- * Description
- *
- * @author Sam Khalandovsky
- * @version Dec 3, 2014
- */
 public class StageController implements DropAreaSaveListener,
 		MouseMotionListener, MouseListener, ActionListener {
 
@@ -51,7 +45,7 @@ public class StageController implements DropAreaSaveListener,
 	private StageModel model;
 
 	public static Boolean anyChangeTitleOut = false;
-	public Boolean thisChangeTitleOut = false;
+	private Boolean thisChangeTitleOut = false;
 
 	/**
 	 * Constructor for the StageController gets all the tasks from the
@@ -70,7 +64,8 @@ public class StageController implements DropAreaSaveListener,
 		// Get all the tasks associated with this Stage.
 
 		// Get state of archive shown check box.
-		boolean showArchive = JanewayModule.toolV.isArchiveShown();
+		final boolean showArchive = ToolbarController.getInstance().getView()
+				.isArchiveShown();
 
 		// Add the tasks.
 		if (model != null) {
@@ -101,12 +96,12 @@ public class StageController implements DropAreaSaveListener,
 		if (!(panel instanceof TaskView)) {
 			return;
 		}
-		TaskController tc = ((TaskView) panel).getController();
+		final TaskController tc = ((TaskView) panel).getController();
 
 		// if archived tasks are hidden, change index to account for the hidden
 		// tasks
-		if (!JanewayModule.toolV.isArchiveShown()) {
-			List<TaskModel> taskList = model.getTasks();
+		if (!ToolbarController.getInstance().getView().isArchiveShown()) {
+			final List<TaskModel> taskList = model.getTasks();
 			for (int i = 0; i < index; i++) {
 				if (taskList.get(i).isArchived()) {
 					index++;
@@ -114,7 +109,7 @@ public class StageController implements DropAreaSaveListener,
 			}
 		}
 
-		boolean changed = tc.moveToStage(model, index);
+		final boolean changed = tc.moveToStage(model, index);
 
 		if (changed) {
 			WorkflowModel.getInstance().save();
@@ -135,6 +130,10 @@ public class StageController implements DropAreaSaveListener,
 
 	}
 
+	/**
+	 * Removes this stage from the workflow
+	 *
+	 */
 	public void deleteStage() {
 		WorkflowModel.getInstance().removeStage(model);
 	}
@@ -158,21 +157,11 @@ public class StageController implements DropAreaSaveListener,
 	 *            visible
 	 */
 	public void switchTitle(Boolean editable) {
-		if (editable) {
-			for (Component c : view.getComponents()) {
-				if (c.getName() == StageView.TITLE) {
-					c.setVisible(false);
-				} else if (c.getName() == StageView.CHANGE_TITLE) {
-					c.setVisible(true);
-				}
-			}
-		} else {
-			for (Component c : view.getComponents()) {
-				if (c.getName() == StageView.TITLE) {
-					c.setVisible(true);
-				} else if (c.getName() == StageView.CHANGE_TITLE) {
-					c.setVisible(false);
-				}
+		for (Component c : view.getComponents()) {
+			if (StageView.TITLE.equals(c.getName())) {
+				c.setVisible(!editable);
+			} else if (StageView.CHANGE_TITLE.equals(c.getName())) {
+				c.setVisible(editable);
 			}
 		}
 	}
@@ -187,7 +176,7 @@ public class StageController implements DropAreaSaveListener,
 				// Don't reload while changing a stage name is open.
 				FetchWorkflowObserver.ignoreAllResponses = true;
 				anyChangeTitleOut = true;
-				thisChangeTitleOut = true;
+				setThisChangeTitleOut(true);
 				// bring up the title textbox
 				switchTitle(true);
 			}
@@ -198,6 +187,7 @@ public class StageController implements DropAreaSaveListener,
 			FetchWorkflowObserver.ignoreAllResponses = false;
 			// this will remove any changeTitle textboxes or taskInfo bubbles
 			// from the workflow
+			WorkflowController.getInstance().removeTaskInfos(false);
 			WorkflowController.getInstance().reloadData();
 			WorkflowController.getInstance().repaintView();
 		}
@@ -229,7 +219,7 @@ public class StageController implements DropAreaSaveListener,
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		JanewayModule.toolV.setDeleteEnabled(true);
+		ToolbarController.getInstance().getView().setDeleteEnabled(true);
 	}
 
 	@Override
@@ -240,7 +230,7 @@ public class StageController implements DropAreaSaveListener,
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Object button = e.getSource();
+		final Object button = e.getSource();
 		if (button instanceof JButton) {
 
 			switch (((JButton) button).getName()) {
@@ -273,7 +263,7 @@ public class StageController implements DropAreaSaveListener,
 			case StageView.X:
 				if (model == null) {
 					// ask the user if they want to cancel the new stage
-					int opt = JOptionPane
+					final int opt = JOptionPane
 							.showConfirmDialog(
 									view,
 									"Are you sure you want to cancel creating the stage?",
@@ -288,7 +278,7 @@ public class StageController implements DropAreaSaveListener,
 
 				} else {
 					// reset the flags
-					thisChangeTitleOut = false;
+					setThisChangeTitleOut(false);
 					FetchWorkflowObserver.ignoreAllResponses = false;
 					// reload which will remove the textbox
 					WorkflowController.getInstance().reloadData();
@@ -299,6 +289,21 @@ public class StageController implements DropAreaSaveListener,
 			}
 		}
 
+	}
+
+	/**
+	 * @return the thisChangeTitleOut
+	 */
+	public Boolean getThisChangeTitleOut() {
+		return thisChangeTitleOut;
+	}
+
+	/**
+	 * @param thisChangeTitleOut
+	 *            the thisChangeTitleOut to set
+	 */
+	public void setThisChangeTitleOut(Boolean thisChangeTitleOut) {
+		this.thisChangeTitleOut = thisChangeTitleOut;
 	}
 
 }

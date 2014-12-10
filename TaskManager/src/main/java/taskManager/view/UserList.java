@@ -48,7 +48,7 @@ public class UserList extends JPanel {
 	 *            is the user to add to the user list
 	 */
 	public void addUser(User user) {
-		UserView uv = new UserView(user);
+		final UserView uv = new UserView(user);
 		// This makes the tab disappear. No clue why...
 		// this.usersList.add(uv);
 		this.add(uv);

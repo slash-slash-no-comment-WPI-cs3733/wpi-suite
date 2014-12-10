@@ -15,6 +15,7 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.JFrame;
 
@@ -55,8 +56,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 
 	@Before
 	public void setup() {
-		// create a new workflow model
-		wfm.makeIdenticalTo(new WorkflowModel());
+		JanewayModule.reset();
 
 		// give it some stages
 		for (String name : stageNames) {
@@ -242,11 +242,11 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		fixture.button(EditTaskView.SAVE).click();
 
 		// check to make sure users were added to model
-		ArrayList<String> users = new ArrayList<String>();
+		List<String> users = new ArrayList<String>();
 		for (String user : task.getAssigned()) {
 			users.add(user);
 		}
-		ArrayList<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<String>();
 		result.add("testUser");
 		result.add("name2");
 		result.add("name1");
@@ -268,11 +268,11 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		fixture.button(EditTaskView.SAVE).click();
 
 		// check that the user has been removed from the task model
-		ArrayList<String> users = new ArrayList<String>();
+		List<String> users = new ArrayList<String>();
 		for (String user : task.getAssigned()) {
 			users.add(user);
 		}
-		ArrayList<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<String>();
 		assertEquals(result, users);
 	}
 
