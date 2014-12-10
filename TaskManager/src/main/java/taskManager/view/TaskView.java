@@ -59,9 +59,9 @@ public class TaskView extends JPanel implements Transferable {
 	 * @param duedate
 	 *            the due date of the task
 	 * @param users
-	 *            number of users on the task
+	 *            the number of users assigned to the task
 	 * @param comments
-	 *            number of comments on the task
+	 *            the number of comments on the task
 	 */
 	public TaskView(String name, Date duedate, int users, int comments) {
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
