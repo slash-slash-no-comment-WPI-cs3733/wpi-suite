@@ -137,11 +137,11 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// Create the taskinfo bubble
-		Point stageLoc = view.getParent().getParent().getParent().getParent()
-				.getLocation();
-		Point stagesPanelLoc = view.getParent().getParent().getParent()
+		final Point stageLoc = view.getParent().getParent().getParent()
+				.getParent().getLocation();
+		final Point stagesPanelLoc = view.getParent().getParent().getParent()
 				.getParent().getParent().getLocation();
-		Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
+		final Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
 				view.getLocation().y);
 		WorkflowController.getInstance().setTaskInfo(
 				new TaskInfoPreviewView(model, this, infoLoc));
