@@ -104,10 +104,13 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 */
 	public synchronized void reloadData() {
 		// clear the stages previously on the view
-		this.removeTaskInfos(false);
 		this.removeChangeTitles();
 		hasNewStageView = false;
-		view.removeAll();
+		for (Component c : view.getComponents()) {
+			if (!(c instanceof TaskInfoPreviewView)) {
+				view.remove(c);
+			}
+		}
 
 		// get all the stages in this workflow
 		final List<StageModel> stages = model.getStages();
@@ -129,11 +132,15 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 *
 	 */
 	public void fetch() {
-		model.update();
+		WorkflowModel.update();
 	}
 
+	/**
+	 * Requests the list of users from the server
+	 *
+	 */
 	public void fetchUsers() {
-		model.updateUsers();
+		WorkflowModel.updateUsers();
 	}
 
 	/**
@@ -142,12 +149,15 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	public void addStageToView() {
 		if (!hasNewStageView) {
 			hasNewStageView = true;
-			StageView newStageV = new StageView("");
+			final StageView newStageV = new StageView("");
 			newStageV.setController(new StageController(newStageV, null));
 			newStageV.enableTitleEditing(true);
 			PromptSupport
 					.setPrompt("New Stage Name", newStageV.getLabelField());
 			view.addStageView(newStageV);
+
+			removeTaskInfos(false);
+
 			view.revalidate();
 			view.repaint();
 		}
@@ -169,8 +179,8 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		if (!(panel instanceof StageView)) {
 			return;
 		}
-		StageController tc = ((StageView) panel).getController();
-		boolean changed = tc.moveStageToIndex(index);
+		final StageController tc = ((StageView) panel).getController();
+		final boolean changed = tc.moveStageToIndex(index);
 
 		if (changed) {
 			model.save();
@@ -205,11 +215,12 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		for (Component c : view.getComponents()) {
 			if (c instanceof TaskInfoPreviewView) {
 				view.remove(c);
-				((TaskInfoPreviewView) c).getTaskController().thisTaskInfoOut = false;
+				((TaskInfoPreviewView) c).getTaskController()
+						.setThisTaskInfoOut(false);
 				((TaskInfoPreviewView) c).getTaskController().resetBackground();
 			}
-			TaskController.anyTaskInfoOut = false;
 		}
+		TaskController.anyTaskInfoOut = false;
 		if (repaint) {
 			// display without reloading
 			this.repaintView();
@@ -224,7 +235,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	public void removeChangeTitles() {
 		for (Component c : view.getComponents()) {
 			if (c instanceof StageView) {
-				((StageView) c).getController().thisChangeTitleOut = false;
+				((StageView) c).getController().setThisChangeTitleOut(false);
 			}
 		}
 		StageController.anyChangeTitleOut = false;
@@ -244,6 +255,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		if (!StageController.anyChangeTitleOut) {
 			// Removes the task info bubble from the screen
 			FetchWorkflowObserver.ignoreAllResponses = false;
+			removeTaskInfos(false);
 			this.reloadData();
 			this.repaintView();
 		}

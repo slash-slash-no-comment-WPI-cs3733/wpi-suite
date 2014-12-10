@@ -41,6 +41,12 @@ public class TaskInputController implements KeyListener, MouseListener,
 	boolean estEffortValid = true;
 	boolean actEffortValid = true;
 
+	/**
+	 * The controller to validate input when editing a task
+	 *
+	 * @param etv
+	 *            The edit task view being edited
+	 */
 	public TaskInputController(EditTaskView etv) {
 		this.etv = etv;
 		fieldWithFocus = null;
@@ -49,6 +55,8 @@ public class TaskInputController implements KeyListener, MouseListener,
 	/**
 	 * checks to see if the edit task fields aren't empty and meet the
 	 * requirements. If a field doesn't meet the requirements, display an error
+	 * 
+	 * @return true if all the fields are valid
 	 */
 	public boolean checkFields() {
 

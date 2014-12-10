@@ -9,31 +9,44 @@
 package taskManager.controller;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.JFrame;
 
+import org.fest.swing.exception.ComponentLookupException;
+import org.fest.swing.exception.WaitTimedOutError;
 import org.fest.swing.fixture.FrameFixture;
+import org.fest.swing.fixture.JOptionPaneFixture;
 import org.fest.swing.fixture.JTextComponentFixture;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import taskManager.ClientDataStore;
 import taskManager.JanewayModule;
+import taskManager.MockNetwork;
 import taskManager.ScreenshotOnFail;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
+import taskManager.view.TabView;
 import taskManager.view.TaskView;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
+import edu.wpi.cs.wpisuitetng.network.Network;
 
 /**
  * Tests for the edit task controller
@@ -52,6 +65,11 @@ public class TestEditTaskController extends ScreenshotOnFail {
 
 	private FrameFixture fixture;
 	private JFrame frame;
+
+	@BeforeClass
+	public static void netSetup() {
+		Network.setInstance(new MockNetwork());
+	}
 
 	@Before
 	public void setup() {
@@ -241,11 +259,11 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		fixture.button(EditTaskView.SAVE).click();
 
 		// check to make sure users were added to model
-		ArrayList<String> users = new ArrayList<String>();
+		List<String> users = new ArrayList<String>();
 		for (String user : task.getAssigned()) {
 			users.add(user);
 		}
-		ArrayList<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<String>();
 		result.add("testUser");
 		result.add("name2");
 		result.add("name1");
@@ -267,12 +285,81 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		fixture.button(EditTaskView.SAVE).click();
 
 		// check that the user has been removed from the task model
-		ArrayList<String> users = new ArrayList<String>();
+		List<String> users = new ArrayList<String>();
 		for (String user : task.getAssigned()) {
 			users.add(user);
 		}
-		ArrayList<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<String>();
 		assertEquals(result, users);
+	}
+
+	@Test
+	public void testArchive() {
+		TaskModel task = createAndLoadTask();
+
+		assertFalse(task.isArchived());
+		fixture.checkBox(EditTaskView.ARCHIVE).check();
+		fixture.button(EditTaskView.SAVE).click();
+		assertTrue(task.isArchived());
+
+		TaskController tc = new TaskController(new TaskView("Task", new Date(),
+				0), task);
+		tc.editTask();
+
+		fixture.checkBox(EditTaskView.ARCHIVE).uncheck();
+		fixture.button(EditTaskView.SAVE).click();
+		assertFalse(task.isArchived());
+	}
+
+	@Test
+	public void testDelete() {
+		TaskModel task = createAndLoadTask();
+
+		fixture.button(EditTaskView.DELETE).requireDisabled();
+		fixture.checkBox(EditTaskView.ARCHIVE).check();
+		// Only archived tasks can be deleted, and the archive checkbox doesn't
+		// take effect immediately.
+		// So you have to save and reload the view.
+		fixture.button(EditTaskView.SAVE).click();
+		new EditTaskController(task); // reopen view
+
+		fixture.button(EditTaskView.DELETE).requireEnabled();
+		fixture.button(EditTaskView.DELETE).click();
+
+		new JOptionPaneFixture(fixture.robot).yesButton().click();
+
+		assertNull(wfm.findTaskByID(task.getID()));
+	}
+
+	@Test
+	public void testClose() {
+		fixture.button(TabView.X).click();
+		// If warning comes up, hit yes
+		try {
+			fixture.optionPane().yesButton().click();
+		} catch (ComponentLookupException | WaitTimedOutError e) {
+		}
+
+		TaskModel task = createAndLoadTask();
+		fixture.button(TabView.X).click();
+		try { // dialog shouldn't come up if no changes made
+			fixture.optionPane();
+			fail();
+		} catch (ComponentLookupException | WaitTimedOutError e) {
+		}
+
+		task = createAndLoadTask();
+		String name = task.getName();
+		getTitleBoxFixture().deleteText();
+		getTitleBoxFixture().enterText("nt2");
+		fixture.button(TabView.X).click();
+		fixture.optionPane().noButton().click();
+		assertEquals(task.getName(), name);
+		getTitleBoxFixture().requireText("nt2");
+		fixture.button(TabView.X).click();
+		fixture.optionPane().yesButton().click();
+		assertEquals(task.getName(), name);
+
 	}
 
 	@After
@@ -353,6 +440,11 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	 */
 	private JTextComponentFixture getTitleBoxFixture() {
 		return new JTextComponentFixture(fixture.robot, etv.getTitle());
+	}
+
+	@AfterClass
+	public static void netTeardown() {
+		ClientDataStore.deleteDataStore();
 	}
 
 }

@@ -8,11 +8,14 @@
  *******************************************************************************/
 package taskManager.draganddrop;
 
+import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JComponent;
 import javax.swing.TransferHandler;
+
+import taskManager.JanewayModule;
 
 /**
  * Listener for initiating a panel drag
@@ -22,7 +25,7 @@ import javax.swing.TransferHandler;
  * 
  */
 public class DraggablePanelListener extends MouseAdapter {
-	private JComponent exportedComponent;
+	private final JComponent exportedComponent;
 
 	/**
 	 * @param exportedComponent
@@ -38,8 +41,14 @@ public class DraggablePanelListener extends MouseAdapter {
 	@Override
 	public void mousePressed(MouseEvent e) {
 		System.out.println("Panel pressed");
+		Point p = e.getPoint();
+		if (JanewayModule.isOnMac()) {
+			// Macs appear to define the coordinates differently.
+			p.x = -p.x;
+			p.y = -p.y;
+		}
 
-		exportedComponent.getTransferHandler().setDragImageOffset(e.getPoint());
+		exportedComponent.getTransferHandler().setDragImageOffset(p);
 	}
 
 	/*

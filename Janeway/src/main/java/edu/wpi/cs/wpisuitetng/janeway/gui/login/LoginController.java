@@ -26,6 +26,7 @@ import javax.swing.JOptionPane;
 import org.apache.commons.codec.binary.Base64;
 
 import taskManager.JanewayModule;
+import taskManager.controller.ToolbarController;
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.GetUsersObserver;
 import edu.wpi.cs.wpisuitetng.janeway.config.ConfigManager;
@@ -252,8 +253,9 @@ public class LoginController implements ActionListener {
 	}
 
 	public void setTaskManagerData() {
-		JanewayModule.getToolV().setProjectName(
+		ToolbarController.getInstance().setProjectTitle(
 				ConfigManager.getConfig().getProjectName());
+
 		JanewayModule.currentUser = ConfigManager.getConfig().getUserName();
 	}
 

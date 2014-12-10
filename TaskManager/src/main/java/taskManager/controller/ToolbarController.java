@@ -11,6 +11,7 @@ package taskManager.controller;
 import java.awt.Component;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DropTargetAdapter;
+import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,6 +20,7 @@ import java.awt.event.ItemListener;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -38,14 +40,62 @@ import taskManager.view.ToolbarView;
 public class ToolbarController extends DropTargetAdapter implements
 		ActionListener, ItemListener {
 
+	private ToolbarView view;
+
+	private static ToolbarController instance;
+
+	/**
+	 * Hide Singleton constructor
+	 */
+	private ToolbarController() {
+		reset();
+	}
+
+	public void reset() {
+		view = new ToolbarView(this);
+	}
+
+	/**
+	 * Returns the singleton instance of ToolbarController. Creates one if
+	 * needed.
+	 * 
+	 * @return the ToolbarController singleton
+	 */
+	public static ToolbarController getInstance() {
+		if (instance == null) {
+			instance = new ToolbarController();
+		}
+		return instance;
+	}
+
+	/**
+	 * Returns the associated ToolbarView.
+	 * 
+	 * @return The associated ToolbarView
+	 */
+	public ToolbarView getView() {
+		return view;
+	}
+
+	/**
+	 * Set's the visible title in the toolbar
+	 *
+	 * @param title
+	 */
+	public void setProjectTitle(String title) {
+		view.setTitle(title);
+	}
+
 	/**
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Object button = e.getSource();
+		final Object button = e.getSource();
 		if (button instanceof JButton) {
-			String name = ((JButton) button).getName();
+			final String name = ((JButton) button).getName();
+			// close the task preview pane
+			WorkflowController.getInstance().removeTaskInfos(true);
 			switch (name) {
 			case ToolbarView.CREATE_TASK:
 				TabPaneController.getInstance().addCreateTaskTab();
@@ -66,13 +116,13 @@ public class ToolbarController extends DropTargetAdapter implements
 	 */
 	@Override
 	public void drop(DropTargetDropEvent e) {
-		Component target = e.getDropTargetContext().getComponent();
+		final Component target = e.getDropTargetContext().getComponent();
 		if (target instanceof JLabel) {
-			String name = ((JLabel) target).getName();
+			final String name = ((JLabel) target).getName();
 
-			Transferable trans = e.getTransferable();
+			final Transferable trans = e.getTransferable();
 			if (trans.isDataFlavorSupported(DDTransferHandler.getTaskFlavor())) {
-				TaskView taskV;
+				final TaskView taskV;
 				try {
 					taskV = (TaskView) trans.getTransferData(DDTransferHandler
 							.getTaskFlavor());
@@ -102,10 +152,10 @@ public class ToolbarController extends DropTargetAdapter implements
 					WorkflowModel.getInstance().save();
 					DDTransferHandler.dragSaved = true;
 					break;
-				}
+				} // end switch
 			} else if (trans.isDataFlavorSupported(DDTransferHandler
 					.getStageFlavor())) {
-				StageView stageV;
+				final StageView stageV;
 				try {
 					stageV = (StageView) trans
 							.getTransferData(DDTransferHandler.getStageFlavor());
@@ -113,18 +163,18 @@ public class ToolbarController extends DropTargetAdapter implements
 					System.out.println(ex.getStackTrace());
 					return;
 				}
-				StageController stageC = stageV.getController();
-				WorkflowModel model = WorkflowModel.getInstance();
-				List<StageModel> stages = model.getStages();
+				final StageController stageC = stageV.getController();
+				final WorkflowModel model = WorkflowModel.getInstance();
+				final List<StageModel> stages = model.getStages();
 
-				if (name == ToolbarView.DELETE) {
+				if (ToolbarView.DELETE.equals(name)) {
 					// Delete only when there are 2 or more stages.
 					if (stages.size() >= 2) {
 						// If the stage has tasks, show a confirmation dialog,
 						// else
 						// just delete the stage.
 						if (!stageC.isEmpty()) {
-							Integer choice = JOptionPane
+							final Integer choice = JOptionPane
 									.showConfirmDialog(
 											TabPaneController.getInstance()
 													.getView(),
@@ -149,13 +199,65 @@ public class ToolbarController extends DropTargetAdapter implements
 								JOptionPane.CLOSED_OPTION);
 					}
 				}
-			} // End switch
+			}
 		} // End instanceof
+	}
+
+	/**
+	 * Rejects or accepts the drag to make drag-over cursor correct.
+	 * 
+	 * {@inheritDoc}
+	 * 
+	 * @see java.awt.dnd.DropTargetAdapter#dragOver(java.awt.dnd.DropTargetDragEvent)
+	 */
+	@Override
+	public void dragOver(DropTargetDragEvent dtde) {
+		String name = dtde.getDropTargetContext().getComponent().getName();
+
+		if (view.isIconEnabled(name)) {
+			dtde.acceptDrag(dtde.getDropAction());
+		} else {
+			dtde.rejectDrag();
+		}
+
 	}
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		// Reload the workflow view.
 		WorkflowController.getInstance().reloadData();
+	}
+
+	/**
+	 * Set toolbar icons during drag action
+	 *
+	 * @param flavor
+	 *            DataFlavor of drag
+	 * @param comp
+	 *            component being dragged
+	 */
+	public void setIconState(JComponent comp) {
+		if (comp instanceof TaskView) {
+			boolean isArchived = ((TaskView) comp).getController().isArchived();
+			if (isArchived) {
+				view.setArchiveIcon(ToolbarView.UNARCHIVE);
+			} else {
+				view.setArchiveIcon(ToolbarView.ARCHIVE);
+			}
+			view.setDeleteEnabled(isArchived);
+			view.setArchiveEnabled(true);
+		} else if (comp instanceof StageView) {
+			view.setDeleteEnabled(true);
+			view.setArchiveEnabled(false);
+		}
+	}
+
+	/**
+	 * Reset the state of the icons
+	 */
+	public void resetIconState() {
+		view.setArchiveEnabled(false);
+		view.setDeleteEnabled(false);
+		view.setArchiveIcon(ToolbarView.ARCHIVE);
 	}
 }

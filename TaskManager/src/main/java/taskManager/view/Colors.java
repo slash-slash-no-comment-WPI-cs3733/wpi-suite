@@ -28,8 +28,4 @@ public class Colors {
 	public static Color STAGE = Color.decode("#C8DDF1");
 	public static Color INPUT_ERROR = Color.decode("#FCFCFC");
 
-	public Colors() {
-
-	}
-
 }

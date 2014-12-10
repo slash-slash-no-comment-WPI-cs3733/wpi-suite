@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import taskManager.JanewayModule;
+import taskManager.ScreenshotOnFail;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
@@ -37,7 +38,7 @@ import taskManager.view.ToolbarView;
  *
  * @author Jon Sorrells
  */
-public class TestStageController {
+public class TestStageController extends ScreenshotOnFail {
 
 	private FrameFixture fixture;
 	private JFrame frame;
@@ -53,7 +54,7 @@ public class TestStageController {
 		frame = new JFrame();
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		panel.add(JanewayModule.getToolV());
+		panel.add(ToolbarController.getInstance().getView());
 		panel.add(WorkflowController.getInstance().getView());
 		frame.add(panel);
 		Dimension size = new Dimension(1500, 500);

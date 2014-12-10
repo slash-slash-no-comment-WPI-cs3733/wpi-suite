@@ -10,30 +10,37 @@ package taskManager.view;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ListSelectionListener;
 
+/**
+ * A component that has a scroll pane containing a list of strings
+ * 
+ * @author Jack R
+ * @author Beth Martino
+ */
 public class ScrollList extends JPanel {
 
-	/**
-	 * A component that has a scroll pane containing a list of strings
-	 * 
-	 * @author Jack R
-	 * @author Beth Martino
-	 */
 	private static final long serialVersionUID = -1862712982356137942L;
 
-	private DefaultListModel<String> lm;
-	private JScrollPane listScroller;
-	private JList<String> jl;
+	private final DefaultListModel<String> lm;
+	private final JScrollPane listScroller;
+	private final JList<String> jl;
 
+	/**
+	 * Constructor for a scroll list
+	 *
+	 * @param t
+	 *            The title of the scroll list
+	 */
 	public ScrollList(String t) {
 		setLayout(new BorderLayout());
 		this.setMinimumSize(new Dimension(140, 290));
@@ -49,11 +56,11 @@ public class ScrollList extends JPanel {
 		listScroller.setPreferredSize(new Dimension(200, 175));
 		listScroller.setSize(new Dimension(200, 175));
 		listScroller
-				.setVerticalScrollBarPolicy(listScroller.VERTICAL_SCROLLBAR_AS_NEEDED);
+				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		listScroller
-				.setHorizontalScrollBarPolicy(listScroller.HORIZONTAL_SCROLLBAR_NEVER);
+				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-		JLabel title = new JLabel(t);
+		final JLabel title = new JLabel(t);
 		this.add(title, BorderLayout.NORTH);
 		this.setBackground(Colors.TASK);
 		this.add(listScroller, BorderLayout.CENTER);
@@ -83,7 +90,7 @@ public class ScrollList extends JPanel {
 	 * @param elements
 	 *            the list to be added
 	 */
-	public void addAllToList(ArrayList<String> elements) {
+	public void addAllToList(List<String> elements) {
 		int i = 0;
 		while (i < elements.size()) {
 			lm.addElement(elements.get(i));
@@ -119,7 +126,7 @@ public class ScrollList extends JPanel {
 	 * 
 	 * @param s
 	 *            the string to search for in the list
-	 * @return
+	 * @return if the scroll list contains the given string
 	 */
 	public boolean contains(String s) {
 		return lm.contains(s);
@@ -146,6 +153,12 @@ public class ScrollList extends JPanel {
 		return jl.isSelectionEmpty();
 	}
 
+	/**
+	 * Remove the given items from the list
+	 *
+	 * @param index
+	 *            an array of indices to be removed
+	 */
 	public void removeSelectedIndices(int[] index) {
 		int i = 0;
 		while (i < index.length) {
@@ -159,10 +172,10 @@ public class ScrollList extends JPanel {
 	 * 
 	 * @return the lit of strings
 	 */
-	public LinkedList<String> getAllValues() {
-		LinkedList<String> result = new LinkedList<String>();
-		for (int i = 0; i < this.lm.getSize(); i++) {
-			result.add(this.lm.get(i));
+	public List<String> getAllValues() {
+		final List<String> result = new LinkedList<String>();
+		for (int i = 0; i < lm.getSize(); i++) {
+			result.add(lm.get(i));
 		}
 		return result;
 	}
@@ -170,7 +183,6 @@ public class ScrollList extends JPanel {
 	/**
 	 * get the list of strings
 	 * 
-	 * @return the lit of strings
 	 */
 	public void removeAllValues() {
 		lm.removeAllElements();
@@ -189,10 +201,11 @@ public class ScrollList extends JPanel {
 	/**
 	 * Sets the selected value to the given indices
 	 * 
-	 * @param index
+	 * @param i
+	 *            array of indices to set selected
 	 */
 	public void setSelected(int[] i) {
-		this.jl.setSelectedIndices(i);
+		jl.setSelectedIndices(i);
 	}
 
 	/**
