@@ -13,9 +13,13 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
+import taskManager.controller.StageController;
 import taskManager.controller.TabPaneController;
+import taskManager.controller.TaskController;
 import taskManager.controller.ToolbarController;
 import taskManager.controller.WorkflowController;
+import taskManager.draganddrop.DDTransferHandler;
+import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
 import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
@@ -61,6 +65,11 @@ public class JanewayModule implements IJanewayModule {
 	 *
 	 */
 	public static void reset() {
+
+		StageController.anyChangeTitleOut = false;
+		TaskController.anyTaskInfoOut = false;
+		DDTransferHandler.dragSaved = false;
+		FetchWorkflowObserver.ignoreAllResponses = false;
 
 		// Reset singletons
 		ToolbarController.getInstance().reset();

@@ -174,12 +174,8 @@ public class EditTaskController implements ActionListener {
 		// makes the archive button clickable
 		etv.enableArchive();
 
-		// Set text for archive button.
-		if (model.isArchived()) {
-			etv.setArchiveButtonText("Unarchive");
-		} else {
-			etv.setArchiveButtonText("Archive");
-		}
+		etv.checkArchive(model.isArchived());
+
 		etv.setDeleteEnabled(model.isArchived());
 
 		this.reloadData();
@@ -237,12 +233,8 @@ public class EditTaskController implements ActionListener {
 
 				// archive this task
 				boolean isArchived = model.isArchived();
-				if (isArchived) {
-					etv.setArchiveButtonText("Archive");
-				} else {
-					etv.setArchiveButtonText("Unarchive");
-				}
-				model.setArchived(!isArchived);
+
+				etv.checkArchive(isArchived);
 				etv.setDeleteEnabled(!isArchived);
 
 				// Save and reload the workflow.
@@ -430,6 +422,9 @@ public class EditTaskController implements ActionListener {
 		WorkflowModel.getInstance().save(); // TODO make this call an
 											// appropriate save method.
 
+		// Set archived to checkbox value.
+		model.setArchived(etv.isArchived());
+
 		// exit the edit view, this refreshes the workflow
 		this.returnToWorkflowView();
 		// makes all the fields blank again
@@ -558,6 +553,10 @@ public class EditTaskController implements ActionListener {
 		}
 		// Requirements.
 		else if (checkReq(model)) {
+			edited = true;
+		}
+		// Archived.
+		else if (model.isArchived() != etv.isArchived()) {
 			edited = true;
 		}
 		return edited;
