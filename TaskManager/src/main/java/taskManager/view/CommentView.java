@@ -9,14 +9,15 @@
 
 package taskManager.view;
 
-/*
- * @author 
- */
-
 import java.awt.LayoutManager;
 
 import javax.swing.JPanel;
 
+/**
+ * Description
+ *
+ * @author
+ */
 public class CommentView extends JPanel {
 
 	/**

@@ -27,7 +27,6 @@ public class TabPaneController {
 
 	// singleton TabPaneView
 	private TabPaneView view;
-
 	private static TabPaneController instance = null;
 
 	/**
@@ -51,13 +50,13 @@ public class TabPaneController {
 	 */
 	public void addCreateTaskTab() {
 		// Each press of create a new tab should launch a new createTaskTab
-		EditTaskController etc = new EditTaskController();
+		final EditTaskController etc = new EditTaskController();
 
 		// Focuses on the new tab
-		int index = view.getTabCount() - 1;
+		final int index = view.getTabCount() - 1;
 		view.setSelectedIndex(index);
 
-		etc.getView().setTitleFieldFocus();
+		etc.getView().focusOnTitleField();
 	}
 
 	/**

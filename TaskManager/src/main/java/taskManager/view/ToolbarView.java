@@ -61,15 +61,17 @@ public class ToolbarView extends JToolBar {
 	/**
 	 * Create a ToolbarView.
 	 * 
-	 * @param tabController
-	 *            The MainTabController this view should open tabs with
+	 * @param controller
+	 *            The ToolbarController associated with this view
 	 */
-	public ToolbarView() {
+	public ToolbarView(ToolbarController controller) {
+
+		this.controller = controller;
 
 		// Construct and set up the buttons and title panels
-		JPanel buttons = new JPanel();
-		JPanel title = new JPanel();
-		JPanel targets = new JPanel();
+		final JPanel buttons = new JPanel();
+		final JPanel title = new JPanel();
+		final JPanel targets = new JPanel();
 		buttons.setLayout(new BoxLayout(buttons, BoxLayout.LINE_AXIS));
 		buttons.setOpaque(false);
 		title.setLayout(new BoxLayout(title, BoxLayout.LINE_AXIS));
@@ -84,14 +86,17 @@ public class ToolbarView extends JToolBar {
 		createTask = new JButton("<html>Create Task</html>");
 		createTask.setName(CREATE_TASK);
 		createTask.setMaximumSize(new Dimension(160, 58));
+		createTask.addActionListener(controller);
 
 		createStage = new JButton("<html>Create Stage</html>");
 		createStage.setName(CREATE_STAGE);
 		createStage.setMaximumSize(new Dimension(160, 58));
+		createStage.addActionListener(controller);
 
 		statistics = new JButton("<html>Statistics</html>");
 		statistics.setName(REPORT);
 		statistics.setMaximumSize(new Dimension(160, 58));
+		statistics.addActionListener(controller);
 
 		// Add icons
 		Image img;
@@ -110,6 +115,11 @@ public class ToolbarView extends JToolBar {
 			e.printStackTrace();
 		}
 
+		// Checkbox for toggling showing archived tasks.
+		archiveCheckBox = new JCheckBox("<html>Show archived tasks</html>");
+		archiveCheckBox.addItemListener(controller);
+		archiveCheckBox.setOpaque(false);
+
 		// Add archive and delete drop targets
 		try {
 			img = ImageIO.read(this.getClass().getResourceAsStream(
@@ -123,15 +133,18 @@ public class ToolbarView extends JToolBar {
 		}
 		archive.setToolTipText("Drag here to archive task");
 		archive.setEnabled(false);
-
-		// Checkbox for toggling showing archived tasks.
-		archiveCheckBox = new JCheckBox("<html>Show archived tasks</html>");
-		archiveCheckBox.setOpaque(false);
-
 		archive.setName(ARCHIVE);
+
+		// TODO: look at this
+		archive.setTransferHandler(new DDTransferHandler());
+		archive.setDropTarget(new DropTarget(archive, controller));
+
 		delete.setToolTipText("Drag here to delete task");
 		delete.setEnabled(false);
 		delete.setName(DELETE);
+
+		delete.setTransferHandler(new DDTransferHandler());
+		delete.setDropTarget(new DropTarget(delete, controller));
 
 		// Construct the project title
 		projectName = new JLabel();
@@ -167,38 +180,38 @@ public class ToolbarView extends JToolBar {
 		this.add(targets);
 	}
 
-	/**
-	 * adds the toolbar controller as the action listener for all buttons
-	 * 
-	 * @param controller
-	 *            the toolbar controller to be addded to the buttons
-	 */
-	public void setController(ToolbarController controller) {
-		this.controller = controller;
-		createTask.addActionListener(this.controller);
-		createStage.addActionListener(this.controller);
-		statistics.addActionListener(this.controller);
-
-		archiveCheckBox.addItemListener(controller);
-
-		archive.setTransferHandler(new DDTransferHandler());
-		archive.setDropTarget(new DropTarget(delete, controller));
-
-	}
-
 	@Override
 	public String getName() {
 		return super.getName();
 	}
 
-	public void setProjectName(String name) {
+	/**
+	 * Set the displayed project name
+	 *
+	 * @param name
+	 *            the name of the project
+	 */
+	public void setTitle(String name) {
 		projectName.setText("<html>" + name + "</html>");
 	}
 
+	/**
+	 * Sets if the archive icon is lit up
+	 *
+	 * @param bool
+	 *            if the archive should be enabled or not
+	 */
 	public void setArchiveEnabled(boolean bool) {
 		archive.setEnabled(bool);
 	}
 
+	/**
+	 * Sets if the delete icon is lit up and whether it is currently a drop
+	 * target
+	 *
+	 * @param bool
+	 *            if the delete should be enabled or not
+	 */
 	public void setDeleteEnabled(boolean bool) {
 		delete.setEnabled(bool);
 
