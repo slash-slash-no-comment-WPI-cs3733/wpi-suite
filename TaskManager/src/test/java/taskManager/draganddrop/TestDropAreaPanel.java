@@ -101,6 +101,7 @@ public class TestDropAreaPanel {
 		taskFixture.robot.releaseMouseButtons();
 
 		// let it process things
+		taskFixture.robot.settings().idleTimeout(100);
 		fixture.robot.waitForIdle();
 
 		// check if anything failed in other threads
