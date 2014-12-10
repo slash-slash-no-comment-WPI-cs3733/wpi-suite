@@ -308,6 +308,7 @@ public class EditTaskController implements ActionListener {
 				ActivityModel comment = etv.addComment();
 				// add immediately to the model.
 				model.addActivity(comment);
+				WorkflowModel.getInstance().save();
 				break;
 			}
 		}
