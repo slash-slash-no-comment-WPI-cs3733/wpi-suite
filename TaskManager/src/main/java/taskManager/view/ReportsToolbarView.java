@@ -19,6 +19,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import javax.imageio.ImageIO;
+import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -63,34 +64,36 @@ public class ReportsToolbarView extends JPanel {
 	Image img;
 
 	// Stage picker
-	private JLabel stageTitle;
+	private JPanel stagePanel;
 	private JComboBox<String> stages;
 
 	// Date Picker
+	private JPanel datePanel;
 	private JLabel fromLabel;
 	private JLabel toLabel;
 	private JXDatePicker startDate;
 	private JXDatePicker endDate;
 
 	// Flow vs Velocity
-	private JLabel workTypeLabel;
+	private JPanel workTypePanel;
 	private JRadioButton workFlow;
 	private JRadioButton workVelocity;
 	private ButtonGroup workTypeGroup;
 
 	// Work Distribution
-	private JLabel distributionTitle;
+	private JPanel distributionPanel;
 	private JRadioButton totaledDist;
 	private JRadioButton dividedDist;
 	private ButtonGroup distributionGroup;
 
 	// Compare/Combine
+	private JPanel workModePanel;
 	private JRadioButton combineWork;
 	private JRadioButton compareWork;
 	private ButtonGroup workflowGroup;
 
 	// Users
-	private JLabel usersLabel;
+	private JPanel usersPanel;
 	private JCheckBox allUsers;
 	private JList<JCheckBox> users;
 
@@ -110,16 +113,33 @@ public class ReportsToolbarView extends JPanel {
 		window = new JPanel();
 		window.setPreferredSize(nt_panelSize);
 		this.setLayout(new FlowLayout());
+		
+		//Used to organize every JPanel
+		GridBagConstraints reportsGridBag = new GridBagConstraints();
 
 		// Stage
-		stageTitle = new JLabel(" Select Stage");
+		stagePanel = new JPanel();
+		stagePanel.setLayout(new GridBagLayout());
 		stages = new JComboBox<String>();
 		stages.setName(STAGE_NAME);
+		reportsGridBag.anchor = GridBagConstraints.FIRST_LINE_START;
+		reportsGridBag.gridx = 0;
+		reportsGridBag.gridy = 0;
+		stagePanel.setBorder(BorderFactory.createTitledBorder("Stage"));
+		stagePanel.add(stages, reportsGridBag);
+		Dimension stageDimensions = getPreferredSize();
+		stageDimensions.width = 175;
+		stageDimensions.height = 75;
+		stagePanel.setPreferredSize(stageDimensions);
+		stagePanel.setMinimumSize(stageDimensions);
+		stagePanel.setMaximumSize(stageDimensions);
 
 		fromLabel = new JLabel("Start Date:");
 		toLabel = new JLabel("End Date:");
 
 		// Date
+		datePanel = new JPanel();
+		datePanel.setLayout(new GridBagLayout());
 		startDate = new JXDatePicker();
 		startDate.setName(START_DATE);
 		startDate.setDate(Calendar.getInstance().getTime());
@@ -135,9 +155,28 @@ public class ReportsToolbarView extends JPanel {
 				((new ImageIcon(getClass().getResource("calendar-icon.png")))
 						.getImage()).getScaledInstance(20, 20,
 						java.awt.Image.SCALE_SMOOTH)));
+		reportsGridBag.anchor = GridBagConstraints.WEST;
+		reportsGridBag.gridx = 0;
+		reportsGridBag.gridy = 0;
+		datePanel.setBorder(BorderFactory.createTitledBorder("Timeframe"));
+		datePanel.add(fromLabel, reportsGridBag);
+		reportsGridBag.gridy = 1;
+		datePanel.add(toLabel, reportsGridBag);
+		reportsGridBag.gridx = 1;
+		reportsGridBag.gridy = 0;
+		datePanel.add(startDate, reportsGridBag);
+		reportsGridBag.gridy = 1;
+		datePanel.add(endDate, reportsGridBag);
+		Dimension dateDimensions = getPreferredSize();
+		dateDimensions.width = 200;
+		dateDimensions.height = 75;
+		datePanel.setPreferredSize(dateDimensions);
+		datePanel.setMinimumSize(dateDimensions);
+		datePanel.setMaximumSize(dateDimensions);
 
 		// WorkType
-		workTypeLabel = new JLabel("Work Type");
+		workTypePanel = new JPanel();
+		workTypePanel.setLayout(new GridBagLayout());
 		workFlow = new JRadioButton("Flow");
 		workFlow.setName(WORK_FLOW);
 		workVelocity = new JRadioButton("Velocity");
@@ -145,9 +184,25 @@ public class ReportsToolbarView extends JPanel {
 		workTypeGroup = new ButtonGroup();
 		workTypeGroup.add(workFlow);
 		workTypeGroup.add(workVelocity);
+		reportsGridBag.anchor = GridBagConstraints.FIRST_LINE_START;
+		reportsGridBag.gridx = 0;
+		reportsGridBag.gridy = 0;
+		workTypePanel.setBorder(BorderFactory.createTitledBorder("WorkType"));
+		workTypePanel.add(workFlow, reportsGridBag);
+		reportsGridBag.gridy = 1;
+		workTypePanel.add(workVelocity, reportsGridBag);
+		Dimension workTypeDimension = getPreferredSize();
+		workTypeDimension.width = 125;
+		workTypeDimension.height = 75;
+		workTypePanel.setPreferredSize(workTypeDimension);
+		workTypePanel.setMinimumSize(workTypeDimension);
+		workTypePanel.setMaximumSize(workTypeDimension);
+		
 
-		// Distribution
-		distributionTitle = new JLabel("Ditribution Method");
+		/*/ Distribution
+		 *removed for initial release
+		distributionPanel = new JPanel();
+		distributionPanel.setLayout(new GridBagLayout());
 		totaledDist = new JRadioButton("Totaled Distribution");
 		totaledDist.setName(TOTALED_DIST);
 		dividedDist = new JRadioButton("Divided Distribution");
@@ -155,8 +210,23 @@ public class ReportsToolbarView extends JPanel {
 		distributionGroup = new ButtonGroup();
 		distributionGroup.add(totaledDist);
 		distributionGroup.add(dividedDist);
+		reportsGridBag.anchor = GridBagConstraints.FIRST_LINE_START;
+		reportsGridBag.gridx = 0;
+		reportsGridBag.gridy = 0;
+		distributionPanel.setBorder(BorderFactory.createTitledBorder("Distribution"));
+		distributionPanel.add(totaledDist, reportsGridBag);
+		reportsGridBag.gridy = 1;
+		distributionPanel.add(dividedDist, reportsGridBag);
+		Dimension distributionDimension = getPreferredSize();
+		distributionDimension.width = 175;
+		distributionDimension.height = 75;
+		distributionPanel.setPreferredSize(distributionDimension);
+		distributionPanel.setMinimumSize(distributionDimension);
+		distributionPanel.setMaximumSize(distributionDimension);*/
 
 		// Combined or Compared graph
+		workModePanel = new JPanel();
+		workModePanel.setLayout(new GridBagLayout());
 		combineWork = new JRadioButton("Combine Work");
 		combineWork.setName(COLLABORATIVE);
 		compareWork = new JRadioButton("Compare Work");
@@ -164,9 +234,23 @@ public class ReportsToolbarView extends JPanel {
 		workflowGroup = new ButtonGroup();
 		workflowGroup.add(combineWork);
 		workflowGroup.add(compareWork);
+		reportsGridBag.anchor = GridBagConstraints.WEST;
+		reportsGridBag.gridx = 0;
+		reportsGridBag.gridy = 0;
+		workModePanel.setBorder(BorderFactory.createTitledBorder("Compare/Combine"));
+		workModePanel.add(combineWork, reportsGridBag);
+		reportsGridBag.gridy = 1;
+		workModePanel.add(compareWork, reportsGridBag);
+		Dimension workModeDimension = getPreferredSize();
+		workModeDimension.width = 125;
+		workModeDimension.height = 75;
+		workModePanel.setPreferredSize(workModeDimension);
+		workModePanel.setMinimumSize(workModeDimension);
+		workModePanel.setMaximumSize(workModeDimension);
 
 		// Users
-		usersLabel = new JLabel("Users");
+		usersPanel = new JPanel();
+		usersPanel.setLayout(new GridBagLayout());
 		allUsers = new JCheckBox("All");
 		allUsers.setName(ALL_USERS);
 		users = new JList<JCheckBox>();
@@ -176,6 +260,19 @@ public class ReportsToolbarView extends JPanel {
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		usersPane
 				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		reportsGridBag.anchor = GridBagConstraints.WEST;
+		reportsGridBag.gridx = 0;
+		reportsGridBag.gridy = 0;
+		usersPanel.setBorder(BorderFactory.createTitledBorder("Users"));
+		usersPanel.add(allUsers, reportsGridBag);
+		reportsGridBag.gridy = 1;
+		usersPanel.add(usersPane, reportsGridBag);
+		Dimension usersDimension = getPreferredSize();
+		usersDimension.width = 125;
+		usersDimension.height = 75;
+		workModePanel.setPreferredSize(usersDimension);
+		workModePanel.setMinimumSize(usersDimension);
+		workModePanel.setMaximumSize(usersDimension);
 
 		// Generate Graph
 		generateGraph = new JButton("Generate");
@@ -201,57 +298,24 @@ public class ReportsToolbarView extends JPanel {
 		toolbarGrid.gridx = 0;
 
 		toolbarGrid.gridy = 0;
-		window.add(stageTitle, toolbarGrid);
+		window.add(stagePanel, toolbarGrid);
 
 		toolbarGrid.gridy = 1;
-		window.add(stages, toolbarGrid);
+		window.add(datePanel, toolbarGrid);
 
 		toolbarGrid.gridy = 3;
-		window.add(fromLabel, toolbarGrid);
+		window.add(workTypePanel, toolbarGrid);
 
 		toolbarGrid.gridy = 4;
-		window.add(startDate, toolbarGrid);
+		//window.add(distributionPanel, toolbarGrid);
 
 		toolbarGrid.gridy = 5;
-		window.add(toLabel, toolbarGrid);
+		window.add(workModePanel, toolbarGrid);
 
 		toolbarGrid.gridy = 6;
-		window.add(endDate, toolbarGrid);
+		window.add(usersPanel, toolbarGrid);
 
-		toolbarGrid.gridy = 8;
-		// window.add(workTypeLabel, toolbarGrid);
-
-		toolbarGrid.gridy = 9;
-		// window.add(workFlow, toolbarGrid);
-
-		toolbarGrid.gridy = 10;
-		// window.add(workVelocity, toolbarGrid);
-
-		toolbarGrid.gridy = 12;
-		// window.add(distributionTitle, toolbarGrid);
-
-		toolbarGrid.gridy = 13;
-		// window.add(totaledDist, toolbarGrid);
-
-		toolbarGrid.gridy = 14;
-		// window.add(dividedDist, toolbarGrid);
-
-		toolbarGrid.gridy = 16;
-		// window.add(combineWork, toolbarGrid);
-
-		toolbarGrid.gridy = 17;
-		// window.add(compareWork, toolbarGrid);
-
-		toolbarGrid.gridy = 19;
-		// window.add(usersLabel, toolbarGrid);
-
-		toolbarGrid.gridy = 20;
-		// window.add(allUsers, toolbarGrid);
-
-		toolbarGrid.gridy = 21;
-		// window.add(usersPane, toolbarGrid);
-
-		toolbarGrid.gridy = 23;
+		toolbarGrid.gridy = 7;
 		window.add(generateGraph, toolbarGrid);
 
 		this.add(window);
