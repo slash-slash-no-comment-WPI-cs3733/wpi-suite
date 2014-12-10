@@ -18,6 +18,7 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.JFrame;
 
@@ -258,11 +259,11 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		fixture.button(EditTaskView.SAVE).click();
 
 		// check to make sure users were added to model
-		ArrayList<String> users = new ArrayList<String>();
+		List<String> users = new ArrayList<String>();
 		for (String user : task.getAssigned()) {
 			users.add(user);
 		}
-		ArrayList<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<String>();
 		result.add("testUser");
 		result.add("name2");
 		result.add("name1");
@@ -284,11 +285,11 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		fixture.button(EditTaskView.SAVE).click();
 
 		// check that the user has been removed from the task model
-		ArrayList<String> users = new ArrayList<String>();
+		List<String> users = new ArrayList<String>();
 		for (String user : task.getAssigned()) {
 			users.add(user);
 		}
-		ArrayList<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<String>();
 		assertEquals(result, users);
 	}
 
@@ -297,7 +298,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		TaskModel task = createAndLoadTask();
 
 		assertFalse(task.isArchived());
-		fixture.button(EditTaskView.ARCHIVE).click();
+		fixture.checkBox(EditTaskView.ARCHIVE).check();
 		fixture.button(EditTaskView.SAVE).click();
 		assertTrue(task.isArchived());
 
@@ -305,7 +306,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 				0), task);
 		tc.editTask();
 
-		fixture.button(EditTaskView.ARCHIVE).click();
+		fixture.checkBox(EditTaskView.ARCHIVE).uncheck();
 		fixture.button(EditTaskView.SAVE).click();
 		assertFalse(task.isArchived());
 	}
@@ -315,7 +316,13 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		TaskModel task = createAndLoadTask();
 
 		fixture.button(EditTaskView.DELETE).requireDisabled();
-		fixture.button(EditTaskView.ARCHIVE).click();
+		fixture.checkBox(EditTaskView.ARCHIVE).check();
+		// Only archived tasks can be deleted, and the archive checkbox doesn't
+		// take effect immediately.
+		// So you have to save and reload the view.
+		fixture.button(EditTaskView.SAVE).click();
+		new EditTaskController(task); // reopen view
+
 		fixture.button(EditTaskView.DELETE).requireEnabled();
 		fixture.button(EditTaskView.DELETE).click();
 

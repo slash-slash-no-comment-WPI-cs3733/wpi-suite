@@ -12,6 +12,7 @@ import static org.junit.Assert.assertFalse;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Date;
 
 import javax.swing.JFrame;
@@ -72,12 +73,15 @@ public class TestDropAreaPanel {
 	@Test
 	public void dragOnePixel() {
 		// catch exceptions from EDT
+		UncaughtExceptionHandler old = java.lang.Thread
+				.getDefaultUncaughtExceptionHandler();
 		Thread.UncaughtExceptionHandler h = new Thread.UncaughtExceptionHandler() {
 			public void uncaughtException(Thread th, Throwable ex) {
 				// ignore networking stuff
 				StackTraceElement[] x = ex.getStackTrace();
 				if (!x[0].getClassName().equals(Request.class.getName())
 						&& !(ex instanceof DatabaseClosedException)) {
+
 					shouldFail = true;
 				}
 			}
@@ -104,6 +108,7 @@ public class TestDropAreaPanel {
 		fixture.robot.waitForIdle();
 
 		// check if anything failed in other threads
+		java.lang.Thread.setDefaultUncaughtExceptionHandler(old);
 		assertFalse(shouldFail);
 	}
 
