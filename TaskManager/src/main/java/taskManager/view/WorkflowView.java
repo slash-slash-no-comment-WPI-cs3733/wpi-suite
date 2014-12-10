@@ -34,6 +34,9 @@ public class WorkflowView extends JLayeredPane {
 
 	/**
 	 * Constructor for WorkflowView.
+	 * 
+	 * @param controller
+	 *            The workflow controller for this view
 	 */
 	public WorkflowView(WorkflowController controller) {
 		this.controller = controller;
@@ -80,24 +83,6 @@ public class WorkflowView extends JLayeredPane {
 	public void addTaskInfo(TaskInfoPreviewView ti) {
 		controller.removeTaskInfos(true);
 		add(ti, new Integer(1));
-	}
-
-	/**
-	 * attaches the controller to this view
-	 * 
-	 * @param controller
-	 *            the workflow controller to be attached
-	 *
-	 * @param controller
-	 *            The controller to attach to this view
-	 */
-	public void setController(WorkflowController controller) {
-		this.controller = controller;
-
-		stages.setSaveListener(controller);
-
-		this.addMouseListener(controller);
-
 	}
 
 	/**
