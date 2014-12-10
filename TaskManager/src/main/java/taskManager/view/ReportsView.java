@@ -230,9 +230,9 @@ public class ReportsView extends JPanel {
 		usersPanel = new JPanel();
 		allUsers = new JCheckBox("All");
 		allUsers.setName(ALL_USERS);
-		currUsersList = new ScrollList("Assigned Users");
+		currUsersList = new ScrollList("Users Included in Report");
 		currUsersList.setBackground(this.getBackground());
-		projectUsersList = new ScrollList("Project Users");
+		projectUsersList = new ScrollList("Users Not Included in Report");
 		projectUsersList.setBackground(this.getBackground());
 		// Add user to list
 		addUser = new JButton(">>");
