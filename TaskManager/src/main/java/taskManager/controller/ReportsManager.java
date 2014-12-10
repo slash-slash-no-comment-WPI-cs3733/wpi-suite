@@ -283,6 +283,8 @@ public class ReportsManager implements ActionListener, ChangeListener,
 				keyname = userData.username;
 			}
 
+			// If the dataset contains the keyname, increment the effort value.
+			// Else, add the value as a new object in the dataset.
 			if (dataset.getRowKeys().contains(keyname)) {
 				dataset.incrementValue(userData.effort, keyname, intervalName
 						+ (seriesNum));
