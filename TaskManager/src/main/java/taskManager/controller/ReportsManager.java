@@ -452,11 +452,10 @@ public class ReportsManager implements ActionListener, ChangeListener,
 				}
 
 				Set<String> users = new HashSet<String>();
-				// TODO: Get only the selected users from the view rather than
-				// considering all of the users.
-				for (User u : JanewayModule.users) {
-					users.add(u.getUsername());
+				for (String u : rtv.getCurrUsersList().getAllValues()) {
+					users.add(u);
 				}
+
 				String stageStr = rtv.getSelectedStage();
 				StageModel stage = WorkflowModel.getInstance().findStageByName(
 						stageStr);

@@ -328,25 +328,6 @@ public class ReportsToolbarView extends JPanel {
 		this.add(window);
 	}
 
-	/**
-	 * Adds the action listener (controller) to this view
-	 * 
-	 * @param controller
-	 *            the controller to be attached to this view
-	 *
-	 *            public void setController(ReportsController controller) {
-	 *            //TODO this.controller = controller;
-	 *            workFlow.addActionListener(controller);
-	 *            workVelocity.addActionListener(controller);
-	 *            totaledDist.addActionListener(controller);
-	 *            dividedDist.addActionListener(controller);
-	 *            combineWork.addActionListener(controller);
-	 *            compareWork.addActionListener(controller);
-	 *            allUsers.addActionListener(controller);
-	 * 
-	 *            //TODO help with action listeners for all users }
-	 */
-
 	public void setController(ReportsManager manager) {
 		controller = manager;
 		addUser.addActionListener(manager);
@@ -574,29 +555,6 @@ public class ReportsToolbarView extends JPanel {
 	public void setAllUsers(Boolean b) {
 		allUsers.setSelected(b);
 	}
-
-	/*
-	 * Returns the list of all of the users
-	 * 
-	 * @return the list of users as a JList<JCheckBox>
-	 * 
-	 * public JList<JCheckBox> getUsers() { return users; }
-	 * 
-	 * /* Sets the users of the JList
-	 * 
-	 * @param u the checkbox of a user to add
-	 * 
-	 * public void addUsers(JCheckBox u) { users.add(u); }
-	 * 
-	 * /* Sets the state of a particular user in the users list
-	 * 
-	 * @param i index of the user
-	 * 
-	 * @param b state to set the user
-	 * 
-	 * public void setUser(int i, Boolean b) {
-	 * users.getModel().getElementAt(i).setSelected(b); }
-	 */
 
 	/**
 	 * 
