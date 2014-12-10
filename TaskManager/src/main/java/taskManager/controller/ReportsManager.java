@@ -37,7 +37,6 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
-import org.jfree.data.UnknownKeyException;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import taskManager.JanewayModule;
@@ -45,11 +44,11 @@ import taskManager.model.ActivityModel;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
-import taskManager.view.ReportsToolbarView;
+import taskManager.view.ReportsView;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
- * Code extended from BarChartDemo1.java
+ * Code extended from BarChartDemo1.java at www.jfree.org/jfreechart
  *
  * @author Joseph Blackman
  * @version Nov 29, 2014
@@ -57,8 +56,7 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 public class ReportsManager implements ActionListener, ChangeListener,
 		ListSelectionListener {
 
-	private ReportsToolbarView rtv;
-	private ArrayList<String> toRemove = new ArrayList<String>();
+	private ReportsView rtv;
 
 	/**
 	 * An internal data structure for building the bar chart. Sortable and
@@ -100,7 +98,7 @@ public class ReportsManager implements ActionListener, ChangeListener,
 	/**
 	 * Constructor for ReportsManager.
 	 */
-	public ReportsManager(ReportsToolbarView rtv) {
+	public ReportsManager(ReportsView rtv) {
 		workflow = WorkflowModel.getInstance();
 		this.rtv = rtv;
 		// Populate the fields.
@@ -155,11 +153,11 @@ public class ReportsManager implements ActionListener, ChangeListener,
 	 * @param stage
 	 *            The stage to consider as the completion stage
 	 */
-	public void findVelocityData(Set<String> users, Instant start2,
-			Instant end2, boolean averageCredit, StageModel stage) {
+	public void findVelocityData(Set<String> users, Instant _start,
+			Instant _end, boolean averageCredit, StageModel stage) {
 		// adjust for EST.
-		start = start2.minusSeconds(18000);
-		end = end2.minusSeconds(18000);
+		start = _start.minusSeconds(18000);
+		end = _end.minusSeconds(18000);
 
 		if (!workflow.getStages().contains(stage)) {
 			throw new IllegalArgumentException("Invalid stage");
@@ -179,12 +177,6 @@ public class ReportsManager implements ActionListener, ChangeListener,
 
 					completed = Instant.ofEpochMilli(setToEST(
 							activity.getDateCreated()).getTime());
-
-					if (completed.compareTo(start) < 0
-							|| completed.compareTo(end) > 0) {
-						completed = null;
-						// Pretend as if we didn't find the completion event.
-					}
 				}
 				if (foundMoveEvent) {
 					break;
@@ -197,7 +189,8 @@ public class ReportsManager implements ActionListener, ChangeListener,
 				completed = Instant.ofEpochMilli(setToEST(task.getDueDate())
 						.getTime());
 			}
-			if (completed != null) {
+			if (completed != null && completed.isAfter(start)
+					&& completed.isBefore(end)) {
 				for (String username : task.getAssigned()) {
 					if (users.contains(username)) {
 						Double effort = (double) task.getEstimatedEffort();
@@ -209,8 +202,8 @@ public class ReportsManager implements ActionListener, ChangeListener,
 								+ completed + " effort: " + effort);
 					}
 				}
-			} // End if inDateRange
-		} // End for TaskModel
+			} // End if (inDateRange)
+		} // End if (TaskModel)
 	}
 
 	/**
@@ -288,15 +281,7 @@ public class ReportsManager implements ActionListener, ChangeListener,
 				keyname = userData.username;
 			}
 
-			// either add or increment the effort value.
-			boolean hasKey = true;
-			try {
-				dataset.getValue(keyname, intervalName + (seriesNum));
-			} catch (UnknownKeyException e) {
-				hasKey = false;
-			}
-
-			if (hasKey) {
+			if (dataset.getRowKeys().contains(keyname)) {
 				dataset.incrementValue(userData.effort, keyname, intervalName
 						+ (seriesNum));
 				System.out.println("Increment: +" + userData.effort + " name: "
@@ -415,12 +400,6 @@ public class ReportsManager implements ActionListener, ChangeListener,
 				// add the new username to the assigned user list
 				rtv.getUsersList().addToList(n1);
 				rtv.getProjectUsersList().removeFromList(n1);
-				// if this user was to be removed take it out of the
-				// list
-				if (this.toRemove.contains(n1)) {
-					this.toRemove.remove(n1);
-				}
-
 			}
 		}
 	}
@@ -449,11 +428,7 @@ public class ReportsManager implements ActionListener, ChangeListener,
 			if (!rtv.getProjectUsersList().contains(n2)) {
 				rtv.getProjectUsersList().addToList(n2);
 				rtv.getUsersList().removeFromList(n2);
-				if (!this.toRemove.contains(n2)) {
-					this.toRemove.add(n2);
-				}
 			}
-
 		}
 	}
 
@@ -462,11 +437,11 @@ public class ReportsManager implements ActionListener, ChangeListener,
 		Object button = e.getSource();
 		if (button instanceof JButton) {
 			String buttonName = ((JButton) button).getName();
-			if (buttonName.equals(ReportsToolbarView.ADD_USER)) {
+			if (buttonName.equals(ReportsView.ADD_USER)) {
 				addUsersToList();
-			} else if (buttonName.equals(ReportsToolbarView.REMOVE_USER)) {
+			} else if (buttonName.equals(ReportsView.REMOVE_USER)) {
 				removeUsersFromList();
-			} else if (buttonName.equals(ReportsToolbarView.ALL_USERS)) {
+			} else if (buttonName.equals(ReportsView.ALL_USERS)) {
 
 			} else {
 				Date startdate = rtv.getStartDate().getDate();

@@ -12,7 +12,7 @@ package taskManager.controller;
 import java.awt.Component;
 
 import taskManager.view.EditTaskView;
-import taskManager.view.ReportsToolbarView;
+import taskManager.view.ReportsView;
 import taskManager.view.TabPaneView;
 import taskManager.view.TabView;
 import taskManager.view.WorkflowView;
@@ -97,12 +97,12 @@ public class TabPaneController {
 	 * @param rtv
 	 *            the reports view to add.
 	 */
-	public void addReportsTab(ReportsToolbarView rtv) {
+	public void addReportsTab(ReportsView rtv) {
 		boolean exists = false;
-		ReportsToolbarView rtv2 = null;
+		ReportsView rtv2 = null;
 		for (Component c : view.getComponents()) {
-			if (c instanceof ReportsToolbarView) {
-				rtv2 = (ReportsToolbarView) c;
+			if (c instanceof ReportsView) {
+				rtv2 = (ReportsView) c;
 				exists = true;
 			}
 		}

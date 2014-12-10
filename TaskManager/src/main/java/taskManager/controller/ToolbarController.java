@@ -27,7 +27,7 @@ import javax.swing.JOptionPane;
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
-import taskManager.view.ReportsToolbarView;
+import taskManager.view.ReportsView;
 import taskManager.view.StageView;
 import taskManager.view.TaskView;
 import taskManager.view.ToolbarView;
@@ -106,7 +106,7 @@ public class ToolbarController extends DropTargetAdapter implements
 				WorkflowController.getInstance().addStageToView();
 				break;
 			case ToolbarView.REPORT:
-				ReportsToolbarView rtv = new ReportsToolbarView();
+				ReportsView rtv = new ReportsView();
 				rtv.setController(new ReportsManager(rtv));
 				TabPaneController.getInstance().addReportsTab(rtv);
 				break;

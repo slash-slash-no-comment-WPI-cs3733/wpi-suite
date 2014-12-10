@@ -25,7 +25,7 @@ import org.junit.Test;
 
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
-import taskManager.view.ReportsToolbarView;
+import taskManager.view.ReportsView;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
@@ -46,7 +46,7 @@ public class TestReportsManager {
 	public void setup() {
 		now = Instant.now();
 		finished = new StageModel("Finished");
-		rm = new ReportsManager(new ReportsToolbarView());
+		rm = new ReportsManager(new ReportsView());
 		TaskModel tm1 = new TaskModel("Task", new StageModel("Start"));
 		tm1.setEstimatedEffort(5);
 		u1 = new User("User 1", "User 1", null, 42);

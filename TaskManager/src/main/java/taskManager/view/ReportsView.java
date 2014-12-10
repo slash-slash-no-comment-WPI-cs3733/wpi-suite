@@ -42,7 +42,7 @@ import taskManager.controller.TaskInputController;
  * @author Tyler Jaskoviak
  *
  */
-public class ReportsToolbarView extends JPanel {
+public class ReportsView extends JPanel {
 
 	public static final String STAGE_NAME = "stage_name";
 	public static final String START_DATE = "start_date";
@@ -105,7 +105,7 @@ public class ReportsToolbarView extends JPanel {
 
 	private ReportsManager controller;
 
-	public ReportsToolbarView() {
+	public ReportsView() {
 
 		Dimension nt_panelSize = getPreferredSize();
 		nt_panelSize.width = 1000;
@@ -288,6 +288,8 @@ public class ReportsToolbarView extends JPanel {
 		toolbarGrid.gridy = 1;
 		window.add(datePanel, toolbarGrid);
 
+		// TODO: once the ReportsManager is updated with more functionality show
+		// the commented out components to the view.
 		toolbarGrid.gridy = 3;
 		// window.add(workTypePanel, toolbarGrid);
 
