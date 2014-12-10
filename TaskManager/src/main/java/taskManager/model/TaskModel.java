@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import taskManager.JanewayModule;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
@@ -305,7 +306,8 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	public void addAssigned(User user) {
 		final ActivityModel addUser = new ActivityModel("User "
 				+ user.getName() + " added to task",
-				ActivityModel.activityModelType.USER_ADD, user);
+				ActivityModel.activityModelType.USER_ADD,
+				JanewayModule.currentUser);
 		final String q = user.getUsername();
 		assigned.add(q);
 		addActivity(addUser);
@@ -328,7 +330,8 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		assigned.remove(user.getUsername());
 		final ActivityModel delUser = new ActivityModel("Removed user "
 				+ user.getName() + " from task " + name + ".",
-				ActivityModel.activityModelType.USER_ADD, user);
+				ActivityModel.activityModelType.USER_ADD,
+				JanewayModule.currentUser);
 		addActivity(delUser);
 		logger.log(Level.FINER, "Removed user " + user.getName()
 				+ " from task " + name + ".");
@@ -360,7 +363,8 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 */
 	public void addComment(String comment, User user) {
 		final ActivityModel commentActivity = new ActivityModel(comment,
-				ActivityModel.activityModelType.COMMENT, user);
+				ActivityModel.activityModelType.COMMENT,
+				JanewayModule.currentUser);
 		addActivity(commentActivity);
 	}
 
@@ -395,6 +399,13 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 *            The boolean to set the task's isArchived field.
 	 */
 	public void setArchived(boolean bool) {
+		if (bool != isArchived) {
+			final ActivityModel archive = new ActivityModel((bool ? "Archived"
+					: "Unarchived") + " task",
+					ActivityModel.activityModelType.ARCHIVE,
+					JanewayModule.currentUser);
+			addActivity(archive);
+		}
 		isArchived = bool;
 	}
 

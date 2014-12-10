@@ -10,8 +10,6 @@ package taskManager.model;
 
 import java.util.Date;
 
-import edu.wpi.cs.wpisuitetng.modules.core.models.User;
-
 /**
  * Description Activities represent changes to a Task and comments users have
  * written about a Task.
@@ -25,7 +23,7 @@ public class ActivityModel {
 	/**
 	 */
 	public enum activityModelType {
-		CREATION, MOVE, COMPLETION, USER_ADD, USER_REMOVE, COMMENT
+		CREATION, MOVE, COMPLETION, USER_ADD, USER_REMOVE, COMMENT, ARCHIVE
 	};
 
 	// Actual type of this model
@@ -62,11 +60,12 @@ public class ActivityModel {
 	 * @param actor
 	 *            The user who is doing the activity
 	 */
-	public ActivityModel(String description, activityModelType type, User actor) {
+	public ActivityModel(String description, activityModelType type,
+			String actor) {
 		this.description = description;
 		modelType = type;
 		if (actor != null) {
-			this.actor = actor.getUsername();
+			this.actor = actor;
 		} else {
 			this.actor = null;
 		}
