@@ -132,6 +132,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+
 		// Create the taskinfo bubble
 		final Point stageLoc = view.getParent().getParent().getParent()
 				.getParent().getLocation();
