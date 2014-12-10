@@ -27,8 +27,6 @@ public class ScreenshotOnFail {
 	public TestWatcher tw = new TestWatcher() {
 		@Override
 		protected void failed(Throwable e, Description description) {
-			new ScreenshotTaker().saveDesktopAsPng(description.getMethodName()
-					+ ".png");
 			GraphicsEnvironment ge = GraphicsEnvironment
 					.getLocalGraphicsEnvironment();
 			GraphicsDevice[] gs = ge.getScreenDevices();
@@ -36,6 +34,10 @@ public class ScreenshotOnFail {
 				GraphicsDevice gd = gs[j];
 				System.out.println(gd.toString());
 			}
+			System.out.println("done listing graphics devices");
+			new ScreenshotTaker().saveDesktopAsPng(description.getMethodName()
+					+ ".png");
+
 		}
 	};
 

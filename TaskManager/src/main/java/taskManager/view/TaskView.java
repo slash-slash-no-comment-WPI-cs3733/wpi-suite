@@ -81,10 +81,10 @@ public class TaskView extends JPanel implements Transferable {
 		title.setTitlePosition(TitledBorder.LEFT);
 		this.setBorder(title);
 
-		this.setMinimumSize(new Dimension(215, 60));
-		this.setPreferredSize(new Dimension(215, 60));
-		this.setMaximumSize(new Dimension(215, 60));
-		this.setSize(new Dimension(215, 60));
+		this.setMinimumSize(new Dimension(215, 62));
+		this.setPreferredSize(new Dimension(215, 62));
+		this.setMaximumSize(new Dimension(215, 62));
+		this.setSize(new Dimension(215, 62));
 		this.setName(name);
 
 		// convert Date object to Calendar object to avoid using deprecated
@@ -101,7 +101,7 @@ public class TaskView extends JPanel implements Transferable {
 		JLabel dueLabel = new JLabel("Due: " + (date.get(Calendar.MONTH) + 1)
 				+ "/" + date.get(Calendar.DATE) + "/"
 				+ (date.get(Calendar.YEAR)));
-		// dueLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 3));
+		dueLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 3));
 		lower.add(dueLabel);
 		JPanel icons = new JPanel(new FlowLayout());
 		icons.setOpaque(false);
@@ -157,9 +157,9 @@ public class TaskView extends JPanel implements Transferable {
 		// truncated in the view
 		JLabel nameLabel = new JLabel();
 		nameLabel.setText("Average Name Length plu");
-		final Dimension size = nameLabel.getPreferredSize();
-		nameLabel.setMaximumSize(size);
-		nameLabel.setPreferredSize(size);
+		nameLabel.setSize(this.getWidth(), 20);
+		nameLabel.setMaximumSize(this.getSize());
+		nameLabel.setPreferredSize(this.getSize());
 		nameLabel.setAlignmentX(LEFT_ALIGNMENT);
 		nameLabel.setText(name);
 		nameLabel.setFont(new Font("Default", Font.BOLD, 14));

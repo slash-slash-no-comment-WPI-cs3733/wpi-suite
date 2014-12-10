@@ -154,7 +154,7 @@ public class EditTaskController implements ActionListener {
 		etv.getUsersList().addAllToList(assignedUserNames);
 
 		// Enable save button when editing a task.
-		etv.setSaveEnabled(true);
+		etv.setSaveEnabled(false);
 
 		// Clear the activities list.
 		etv.clearActivities();
@@ -570,23 +570,25 @@ public class EditTaskController implements ActionListener {
 	 * @return true if there are edits
 	 */
 	public Boolean checkDate(TaskModel task) {
+		// if the task had a due date, check if it changed
 		final Date dueDate = task.getDueDate();
 
-		// if the task had a due date, check if it changed
-		if (dueDate != null && dueDate.equals(etv.getDateField().getDate())) {
-			return false;
+		Calendar cal1 = Calendar.getInstance();
+
+		Calendar cal2 = Calendar.getInstance();
+
+		cal1.setTime(dueDate);
+		if (isEditingTask() && dueDate != null) {
+			cal2.setTime(etv.getDateField().getDate());
 		} else {
 			// check if it has the default date (today)
-			final Calendar cal1 = Calendar.getInstance();
-			final Calendar cal2 = Calendar.getInstance();
-			cal1.setTime(etv.getDateField().getDate());
 			cal2.setTime(Calendar.getInstance().getTime());
-
-			// check if the two dates are the same day
-			return !(cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) && cal1
-					.get(Calendar.DAY_OF_YEAR) == cal2
-					.get(Calendar.DAY_OF_YEAR));
 		}
+		boolean sameDay = cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
+				&& cal1.get(Calendar.DAY_OF_YEAR) == cal2
+						.get(Calendar.DAY_OF_YEAR);
+
+		return !sameDay;
 	}
 
 	/**
@@ -600,8 +602,7 @@ public class EditTaskController implements ActionListener {
 	 */
 	public boolean checkUsers(TaskModel task) {
 		boolean edited = false;
-		Set<String> taskAssigned = new HashSet<String>();
-		taskAssigned = task.getAssigned();
+		Set<String> taskAssigned = task.getAssigned();
 		final Set<String> usersAssigned = new HashSet<String>();
 		usersAssigned.addAll(etv.getUsersList().getAllValues());
 		if (!usersAssigned.equals(taskAssigned)) {
