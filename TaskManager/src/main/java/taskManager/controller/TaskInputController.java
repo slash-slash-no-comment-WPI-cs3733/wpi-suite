@@ -134,10 +134,14 @@ public class TaskInputController implements KeyListener, FocusListener,
 	 * validate the inputs
 	 */
 	public void validate() {
-		etv.setSaveEnabled(this.checkFields() && etv.getController().isEdited());
+		etv.setSaveEnabled(this.checkFields() && isEdited());
 		etv.setAddUserEnabled(addUsersSelected);
 		etv.setRemoveUserEnabled(removeUsersSelected);
 		etv.setCommentSubmitEnabled(this.checkSaveComment());
+	}
+
+	private boolean isEdited() {
+		return etv.getController().isEdited();
 	}
 
 	@Override
