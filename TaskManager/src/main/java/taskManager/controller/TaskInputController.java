@@ -8,7 +8,6 @@
  *******************************************************************************/
 package taskManager.controller;
 
-
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
@@ -17,7 +16,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-
 
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -38,12 +36,9 @@ public class TaskInputController implements KeyListener, FocusListener,
 		PopupMenuListener, ListSelectionListener, PropertyChangeListener,
 		ItemListener {
 
-
 	private final EditTaskView etv;
 	private boolean addUsersSelected = false;
 	private boolean removeUsersSelected = false;
-	
-
 
 	/**
 	 * The controller to validate input when editing a task
@@ -107,17 +102,18 @@ public class TaskInputController implements KeyListener, FocusListener,
 			}
 		}
 
+		etv.setTitleErrorVisible(!titleValid);
 		etv.setTitleFieldRed(!titleValid);
+		etv.setDescriptionErrorVisible(!descriptionValid);
 		etv.setDescriptionFieldRed(!descriptionValid);
+		etv.setEstEffortErrorVisible(!estEffortValid);
 		etv.setEstEffortFieldRed(!estEffortValid);
+		etv.setActualEffortErrorVisible(!actEffortValid);
 		etv.setActEffortFieldRed(!actEffortValid);
 
 		return titleValid && descriptionValid && estEffortValid
 				&& actEffortValid;
 	}
-
-
-
 
 	/**
 	 * sets all 4 error bubbles to invisible
@@ -201,8 +197,6 @@ public class TaskInputController implements KeyListener, FocusListener,
 
 	}
 
-	
-
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
 		validate();
@@ -217,13 +211,13 @@ public class TaskInputController implements KeyListener, FocusListener,
 	@Override
 	public void focusGained(FocusEvent arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void focusLost(FocusEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
