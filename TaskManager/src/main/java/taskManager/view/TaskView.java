@@ -99,15 +99,28 @@ public class TaskView extends JPanel implements Transferable {
 		JLabel dueLabel = new JLabel("Due: " + (date.get(Calendar.MONTH) + 1)
 				+ "/" + date.get(Calendar.DATE) + "/"
 				+ (date.get(Calendar.YEAR)));
+		dueLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 4));
 		lower.add(dueLabel);
 		JPanel icons = new JPanel(new FlowLayout());
 		icons.setOpaque(false);
 		JLabel userIcon = new JLabel();
 		JLabel commentIcon = new JLabel();
+		// formats the user number
 		Integer uNum = new Integer(users);
-		userNumber = new JLabel(uNum.toString());
+		if (users > 99) {
+			userNumber = new JLabel("99+");
+		} else {
+			userNumber = new JLabel(uNum.toString());
+		}
+		userNumber.setPreferredSize(new Dimension(25, 12));
+		// formats the comment number
 		Integer cNum = new Integer(comments);
-		commentNumber = new JLabel(cNum.toString());
+		if (comments > 99) {
+			commentNumber = new JLabel("99+");
+		} else {
+			commentNumber = new JLabel(cNum.toString());
+		}
+		commentNumber.setPreferredSize(new Dimension(25, 12));
 
 		// icons from:
 		// <div>Icon made by <a href="http://catalinfertu.com"
@@ -147,6 +160,7 @@ public class TaskView extends JPanel implements Transferable {
 		nameLabel.setPreferredSize(size);
 		nameLabel.setAlignmentX(LEFT_ALIGNMENT);
 		nameLabel.setText(name);
+		nameLabel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 
 		// adds the title, date and icons to the task view
 		spacer.add(nameLabel);

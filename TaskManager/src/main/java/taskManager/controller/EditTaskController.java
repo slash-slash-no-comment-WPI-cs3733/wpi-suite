@@ -153,7 +153,7 @@ public class EditTaskController implements ActionListener {
 		etv.getUsersList().addAllToList(assignedUserNames);
 
 		// Enable save button when editing a task.
-		etv.setSaveEnabled(true);
+		etv.setSaveEnabled(false);
 
 		// Clear the activities list.
 		etv.clearActivities();
@@ -528,7 +528,11 @@ public class EditTaskController implements ActionListener {
 
 		// Compare the task info with the filled in info.
 		if (model == null) { // If we're creating a task
-			edited = true;
+			if (!allFieldsEmpty()) {
+				edited = true;
+			} else {
+				edited = false;
+			}
 		}
 		// Title.
 		else if (!model.getName().equals(etv.getTitle().getText())) {
@@ -721,5 +725,18 @@ public class EditTaskController implements ActionListener {
 	 */
 	public EditTaskView getView() {
 		return etv;
+	}
+
+	/**
+	 * returns whether or not the fields are empty
+	 * 
+	 * @return true if all fields are empty and stages is set to default stage
+	 */
+	private boolean allFieldsEmpty() {
+
+		return etv.getTitle().getText().equals("")
+				&& etv.getDescription().getText().equals("")
+				&& etv.getEstEffort().getText().equals("")
+				&& etv.getActEffort().getText().equals("");
 	}
 }

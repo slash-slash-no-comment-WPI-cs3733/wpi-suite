@@ -64,7 +64,7 @@ public class StageView extends JPanel implements Transferable {
 	private JButton cancel;
 	private DropAreaPanel tasks;
 	private JScrollPane stage;
-	public static final int STAGE_WIDTH = 200;
+	public static final int STAGE_WIDTH = 215;
 
 	/**
 	 * 
