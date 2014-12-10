@@ -557,6 +557,10 @@ public class EditTaskController implements ActionListener {
 		else if (checkReq(model)) {
 			edited = true;
 		}
+		// Archived.
+		else if (model.isArchived() != etv.isArchived()) {
+			edited = true;
+		}
 		return edited;
 	}
 
