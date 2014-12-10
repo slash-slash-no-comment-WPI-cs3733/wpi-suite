@@ -12,6 +12,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -28,7 +30,7 @@ import taskManager.view.EditTaskView;
  *
  */
 public class TaskInputController implements KeyListener, FocusListener,
-		PopupMenuListener, ListSelectionListener {
+		PopupMenuListener, ListSelectionListener, PropertyChangeListener {
 
 	private final EditTaskView etv;
 	private boolean addUsersSelected = false;
@@ -186,6 +188,12 @@ public class TaskInputController implements KeyListener, FocusListener,
 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
+		validate();
+
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
 		validate();
 
 	}

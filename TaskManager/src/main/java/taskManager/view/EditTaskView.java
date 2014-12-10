@@ -385,6 +385,8 @@ public class EditTaskView extends JPanel {
 		usersList.setController(fieldC);
 		projectUsersList.setController(fieldC);
 		commentsField.addKeyListener(fieldC);
+		requirements.addPopupMenuListener(fieldC);
+		dateField.addPropertyChangeListener(fieldC);
 	}
 
 	/**
