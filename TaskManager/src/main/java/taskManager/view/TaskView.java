@@ -10,6 +10,7 @@ package taskManager.view;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -113,7 +114,7 @@ public class TaskView extends JPanel implements Transferable {
 		} else {
 			userNumber = new JLabel(uNum.toString());
 		}
-		userNumber.setPreferredSize(new Dimension(22, 12));
+		userNumber.setPreferredSize(new Dimension(21, 12));
 		// formats the comment number
 		Integer cNum = new Integer(comments);
 		if (comments > 99) {
@@ -121,7 +122,7 @@ public class TaskView extends JPanel implements Transferable {
 		} else {
 			commentNumber = new JLabel(cNum.toString());
 		}
-		commentNumber.setPreferredSize(new Dimension(22, 12));
+		commentNumber.setPreferredSize(new Dimension(21, 12));
 
 		// icons from:
 		// <div>Icon made by <a href="http://catalinfertu.com"
@@ -161,6 +162,7 @@ public class TaskView extends JPanel implements Transferable {
 		nameLabel.setPreferredSize(size);
 		nameLabel.setAlignmentX(LEFT_ALIGNMENT);
 		nameLabel.setText(name);
+		nameLabel.setFont(new Font("Default", Font.BOLD, 14));
 		nameLabel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 
 		// adds the title, date and icons to the task view
@@ -170,7 +172,7 @@ public class TaskView extends JPanel implements Transferable {
 
 		// -----------------------
 		// Drag and drop handling:
-		MouseAdapter listener = new DraggablePanelListener(this);
+		final MouseAdapter listener = new DraggablePanelListener(this);
 		addMouseListener(listener);
 		addMouseMotionListener(listener);
 
@@ -196,7 +198,6 @@ public class TaskView extends JPanel implements Transferable {
 	public void setController(TaskController controller) {
 		this.controller = controller;
 		this.addMouseListener(controller);
-		this.addMouseMotionListener(controller);
 	}
 
 	@Override
@@ -225,7 +226,7 @@ public class TaskView extends JPanel implements Transferable {
 	 */
 	@Override
 	public Object getTransferData(DataFlavor flavor)
-			throws UnsupportedFlavorException, IOException {
+			throws UnsupportedFlavorException {
 		if (!flavor.equals(DDTransferHandler.getTaskFlavor())) {
 			throw new UnsupportedFlavorException(flavor);
 		}
@@ -238,7 +239,7 @@ public class TaskView extends JPanel implements Transferable {
 	 */
 	@Override
 	public DataFlavor[] getTransferDataFlavors() {
-		DataFlavor[] flavors = { DDTransferHandler.getTaskFlavor() };
+		final DataFlavor[] flavors = { DDTransferHandler.getTaskFlavor() };
 		return flavors;
 	}
 

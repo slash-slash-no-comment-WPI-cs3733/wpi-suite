@@ -8,6 +8,9 @@
  *******************************************************************************/
 package taskManager;
 
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+
 import org.fest.swing.image.ScreenshotTaker;
 import org.junit.Rule;
 import org.junit.rules.TestWatcher;
@@ -26,6 +29,13 @@ public class ScreenshotOnFail {
 		protected void failed(Throwable e, Description description) {
 			new ScreenshotTaker().saveDesktopAsPng(description.getMethodName()
 					+ ".png");
+			GraphicsEnvironment ge = GraphicsEnvironment
+					.getLocalGraphicsEnvironment();
+			GraphicsDevice[] gs = ge.getScreenDevices();
+			for (int j = 0; j < gs.length; j++) {
+				GraphicsDevice gd = gs[j];
+				System.out.println(gd.toString());
+			}
 		}
 	};
 

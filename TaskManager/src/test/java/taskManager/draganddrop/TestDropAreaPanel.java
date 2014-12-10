@@ -12,6 +12,7 @@ import static org.junit.Assert.assertFalse;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Date;
 
 import javax.swing.JFrame;
@@ -26,6 +27,9 @@ import taskManager.JanewayModule;
 import taskManager.controller.WorkflowController;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
+
+import com.db4o.ext.DatabaseClosedException;
+
 import edu.wpi.cs.wpisuitetng.network.Request;
 
 /**
@@ -69,11 +73,15 @@ public class TestDropAreaPanel {
 	@Test
 	public void dragOnePixel() {
 		// catch exceptions from EDT
+		UncaughtExceptionHandler old = java.lang.Thread
+				.getDefaultUncaughtExceptionHandler();
 		Thread.UncaughtExceptionHandler h = new Thread.UncaughtExceptionHandler() {
 			public void uncaughtException(Thread th, Throwable ex) {
 				// ignore networking stuff
 				StackTraceElement[] x = ex.getStackTrace();
-				if (!x[0].getClassName().equals(Request.class.getName())) {
+				if (!x[0].getClassName().equals(Request.class.getName())
+						&& !(ex instanceof DatabaseClosedException)) {
+
 					shouldFail = true;
 				}
 			}
@@ -97,9 +105,11 @@ public class TestDropAreaPanel {
 		taskFixture.robot.releaseMouseButtons();
 
 		// let it process things
+		taskFixture.robot.settings().idleTimeout(100);
 		fixture.robot.waitForIdle();
 
 		// check if anything failed in other threads
+		java.lang.Thread.setDefaultUncaughtExceptionHandler(old);
 		assertFalse(shouldFail);
 	}
 
