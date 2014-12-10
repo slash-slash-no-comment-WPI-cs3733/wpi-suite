@@ -125,6 +125,13 @@ public class WorkflowView extends JLayeredPane {
 		return new StageView(name);
 	}
 
+	/**
+	 * returns the stage view at the given index
+	 * 
+	 * @param s
+	 *            the index of the desired stage view
+	 * @return the stage view at the given index
+	 */
 	public StageView getStageViewByIndex(int s) {
 		return (StageView) stages.getComponent(s);
 	}
