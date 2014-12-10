@@ -39,7 +39,7 @@ import edu.wpi.cs.wpisuitetng.modules.requirementmanager.view.ViewEventControlle
 
 /**
  * The controller for editing and creating a new task
- *
+ * 
  * @author Beth Martino
  * @author Ezra Davis
  *
@@ -86,7 +86,7 @@ public class EditTaskController implements ActionListener {
 	}
 
 	/**
-	 *
+	 * 
 	 * Creates an EditTaskController and EditTaskView form for an *already
 	 * existing* Task.
 	 *
@@ -374,7 +374,7 @@ public class EditTaskController implements ActionListener {
 	/**
 	 * sets the fields of the given task object to the values on the fields of
 	 * the edit task view and saves the task data
-	 *
+	 * 
 	 */
 	private void save() {
 		if (model == null) {
@@ -430,12 +430,6 @@ public class EditTaskController implements ActionListener {
 		WorkflowModel.getInstance().save(); // TODO make this call an
 											// appropriate save method.
 
-		// Add the newly added activities.
-		final List<ActivityModel> newActivities = etv.getNewActivities();
-		for (ActivityModel act : newActivities) {
-			model.addActivity(act);
-		}
-
 		// exit the edit view, this refreshes the workflow
 		this.returnToWorkflowView();
 		// makes all the fields blank again
@@ -449,7 +443,7 @@ public class EditTaskController implements ActionListener {
 	/**
 	 * returns the user object with the given name from the list of project
 	 * users
-	 *
+	 * 
 	 * @param name
 	 *            the name of the user to find
 	 * @return the user with the given name
@@ -522,9 +516,9 @@ public class EditTaskController implements ActionListener {
 	}
 
 	/**
-	 *
+	 * 
 	 * Returns a boolean of whether or not the task is edited.
-	 *
+	 * 
 	 * @return boolean stating whether the task is edited.
 	 */
 	public boolean isEdited() {
@@ -597,7 +591,7 @@ public class EditTaskController implements ActionListener {
 	}
 
 	/**
-	 *
+	 * 
 	 * Checks whether the users in the view and the users stored in the task are
 	 * the same.
 	 *
@@ -621,7 +615,7 @@ public class EditTaskController implements ActionListener {
 	}
 
 	/**
-	 *
+	 * 
 	 * Checks whether the estimated effort value in the task and on the view are
 	 * equivalent.
 	 *
@@ -653,7 +647,7 @@ public class EditTaskController implements ActionListener {
 	}
 
 	/**
-	 *
+	 * 
 	 * Checks whether the actual effort value in the task and on the view are
 	 * equivalent.
 	 *
@@ -685,7 +679,7 @@ public class EditTaskController implements ActionListener {
 	}
 
 	/**
-	 *
+	 * 
 	 * Checks whether the requirement in the task and on the view are
 	 * equivalent.
 	 *
@@ -710,7 +704,7 @@ public class EditTaskController implements ActionListener {
 	}
 
 	/**
-	 *
+	 * 
 	 * Returns whether this controller is editing a task.
 	 *
 	 * @return Whether we are creating (false) or editing (true) a task
@@ -721,7 +715,7 @@ public class EditTaskController implements ActionListener {
 	}
 
 	/**
-	 *
+	 * 
 	 * Returns this controller's view.
 	 *
 	 * @return The Form to edit a task

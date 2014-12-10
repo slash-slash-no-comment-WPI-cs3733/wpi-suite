@@ -32,7 +32,7 @@ import taskManager.draganddrop.DDTransferHandler;
 
 /**
  * The Task Managers tab's toolbar panel.
- *
+ * 
  * @author Clark Jacobsohn
  */
 @SuppressWarnings("serial")
@@ -62,7 +62,7 @@ public class ToolbarView extends JToolBar {
 
 	/**
 	 * Create a ToolbarView.
-	 *
+	 * 
 	 * @param controller
 	 *            The ToolbarController associated with this view
 	 */
@@ -175,25 +175,6 @@ public class ToolbarView extends JToolBar {
 		this.add(Box.createHorizontalGlue());
 	}
 
-	/**
-	 * adds the toolbar controller as the action listener for all buttons
-	 *
-	 * @param controller
-	 *            the toolbar controller to be addded to the buttons
-	 */
-	public void setController(ToolbarController controller) {
-		this.controller = controller;
-		createTask.addActionListener(this.controller);
-		createStage.addActionListener(this.controller);
-		statistics.addActionListener(this.controller);
-
-		archiveCheckBox.addItemListener(controller);
-
-		archive.setTransferHandler(new DDTransferHandler());
-		archive.setDropTarget(new DropTarget(delete, controller));
-
-	}
-
 	@Override
 	public String getName() {
 		return super.getName();
@@ -205,7 +186,7 @@ public class ToolbarView extends JToolBar {
 	 * @param name
 	 *            the name of the project
 	 */
-	public void setProjectName(String name) {
+	public void setTitle(String name) {
 		projectName.setText("<html>" + name + "</html>");
 	}
 
@@ -243,7 +224,7 @@ public class ToolbarView extends JToolBar {
 	}
 
 	/**
-	 *
+	 * 
 	 * Sets the archive icon to the specified type.
 	 *
 	 * @param iconType
