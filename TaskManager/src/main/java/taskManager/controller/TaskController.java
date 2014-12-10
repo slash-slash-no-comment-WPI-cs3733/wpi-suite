@@ -12,14 +12,12 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.view.Colors;
 import taskManager.view.TaskInfoPreviewView;
 import taskManager.view.TaskView;
-import taskManager.view.ToolbarView;
 
 /**
  * Controller for Tasks.
@@ -27,7 +25,7 @@ import taskManager.view.ToolbarView;
  * @author Stefan Alexander
  * @version November 9, 2014
  */
-public class TaskController implements MouseListener, MouseMotionListener {
+public class TaskController implements MouseListener {
 
 	private final TaskView view;
 	private final TaskModel model;
@@ -180,28 +178,6 @@ public class TaskController implements MouseListener, MouseMotionListener {
 		}
 	}
 
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		// Enable/disable the archive and delete icons when dragged.
-
-		final boolean isArchived = model.isArchived();
-		if (isArchived) {
-			ToolbarController.getInstance().getView()
-					.setArchiveIcon(ToolbarView.UNARCHIVE);
-		} else {
-			ToolbarController.getInstance().getView()
-					.setArchiveIcon(ToolbarView.ARCHIVE);
-		}
-		ToolbarController.getInstance().getView().setArchiveEnabled(true);
-		ToolbarController.getInstance().getView().setDeleteEnabled(isArchived);
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
 	/**
 	 * @return the thisTaskInfoOut
 	 */
@@ -216,5 +192,4 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	public void setThisTaskInfoOut(Boolean thisTaskInfoOut) {
 		this.thisTaskInfoOut = thisTaskInfoOut;
 	}
-
 }

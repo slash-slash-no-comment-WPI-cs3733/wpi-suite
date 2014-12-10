@@ -11,6 +11,7 @@ package taskManager.controller;
 import java.awt.Component;
 import java.awt.datatransfer.Transferable;
 import java.awt.dnd.DropTargetAdapter;
+import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,6 +20,7 @@ import java.awt.event.ItemListener;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
@@ -204,9 +206,61 @@ public class ToolbarController extends DropTargetAdapter implements
 		} // End instanceof
 	}
 
+	/**
+	 * Rejects or accepts the drag to make drag-over cursor correct.
+	 * 
+	 * {@inheritDoc}
+	 * 
+	 * @see java.awt.dnd.DropTargetAdapter#dragOver(java.awt.dnd.DropTargetDragEvent)
+	 */
+	@Override
+	public void dragOver(DropTargetDragEvent dtde) {
+		String name = dtde.getDropTargetContext().getComponent().getName();
+
+		if (view.isIconEnabled(name)) {
+			dtde.acceptDrag(dtde.getDropAction());
+		} else {
+			dtde.rejectDrag();
+		}
+
+	}
+
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		// Reload the workflow view.
 		WorkflowController.getInstance().reloadData();
+	}
+
+	/**
+	 * Set toolbar icons during drag action
+	 *
+	 * @param flavor
+	 *            DataFlavor of drag
+	 * @param comp
+	 *            component being dragged
+	 */
+	public void setIconState(JComponent comp) {
+		if (comp instanceof TaskView) {
+			boolean isArchived = ((TaskView) comp).getController().isArchived();
+			if (isArchived) {
+				view.setArchiveIcon(ToolbarView.UNARCHIVE);
+			} else {
+				view.setArchiveIcon(ToolbarView.ARCHIVE);
+			}
+			view.setDeleteEnabled(isArchived);
+			view.setArchiveEnabled(true);
+		} else if (comp instanceof StageView) {
+			view.setDeleteEnabled(true);
+			view.setArchiveEnabled(false);
+		}
+	}
+
+	/**
+	 * Reset the state of the icons
+	 */
+	public void resetIconState() {
+		view.setArchiveEnabled(false);
+		view.setDeleteEnabled(false);
+		view.setArchiveIcon(ToolbarView.ARCHIVE);
 	}
 }
