@@ -25,7 +25,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 
 import taskManager.JanewayModule;
-import taskManager.model.ActivityModel;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
@@ -56,7 +55,7 @@ public class EditTaskController implements ActionListener {
 	 *
 	 */
 	public EditTaskController() {
-		etv = new EditTaskView(Mode.CREATE);
+		etv = new EditTaskView(Mode.CREATE, null);
 
 		etv.setController(this);
 		etv.setFieldController(new TaskInputController(etv));
@@ -67,7 +66,6 @@ public class EditTaskController implements ActionListener {
 		etv.setSaveEnabled(false);
 
 		// Clear all activities, reset fields.
-		etv.clearActivities();
 		etv.resetFields();
 
 		// fills the user lists
@@ -93,7 +91,7 @@ public class EditTaskController implements ActionListener {
 	 * @param model
 	 */
 	public EditTaskController(TaskModel model) {
-		etv = new EditTaskView(Mode.EDIT);
+		etv = new EditTaskView(Mode.EDIT, model.getActivities());
 		this.model = model;
 
 		etv.setController(this);
@@ -154,14 +152,6 @@ public class EditTaskController implements ActionListener {
 
 		// Enable save button when editing a task.
 		etv.setSaveEnabled(true);
-
-		// Clear the activities list.
-		etv.clearActivities();
-
-		// set activities pane
-		List<ActivityModel> tskActivities = model.getActivities();
-		etv.setActivities(tskActivities);
-		etv.setActivitiesPanel(tskActivities);
 
 		// set the requirement dropdown
 		if (model.getReq() != null) {
@@ -315,11 +305,6 @@ public class EditTaskController implements ActionListener {
 				etv.resetFields();
 				returnToWorkflowView();
 				break;
-
-			case EditTaskView.SUBMIT_COMMENT:
-				// adds a comment activity
-				etv.addComment();
-				break;
 			}
 		}
 	}
@@ -425,12 +410,6 @@ public class EditTaskController implements ActionListener {
 		model.setReq(r);
 		WorkflowModel.getInstance().save(); // TODO make this call an
 											// appropriate save method.
-
-		// Add the newly added activities.
-		List<ActivityModel> newActivities = etv.getNewActivities();
-		for (ActivityModel act : newActivities) {
-			model.addActivity(act);
-		}
 
 		// exit the edit view, this refreshes the workflow
 		this.returnToWorkflowView();

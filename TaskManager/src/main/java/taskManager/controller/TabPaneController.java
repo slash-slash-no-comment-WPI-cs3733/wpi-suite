@@ -10,9 +10,9 @@
 package taskManager.controller;
 
 import java.awt.Component;
+import java.util.List;
 
-import javax.swing.JScrollPane;
-
+import taskManager.model.ActivityModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.TabPaneView;
 import taskManager.view.TabView;
@@ -37,6 +37,10 @@ public class TabPaneController {
 	 */
 	public TabPaneController() {
 		view = new TabPaneView();
+	}
+
+	public TabPaneController(List<ActivityModel> activityList) {
+		view = new TabPaneView(activityList);
 	}
 
 	/**
@@ -66,9 +70,7 @@ public class TabPaneController {
 		boolean exists = false;
 		EditTaskView etv2 = null;
 		for (Component c : view.getComponents()) {
-			if (c instanceof JScrollPane
-					&& ((JScrollPane) c).getViewport().getView() instanceof EditTaskView) {
-				c = ((JScrollPane) c).getViewport().getView();
+			if (c instanceof EditTaskView) {
 				etv2 = (EditTaskView) c;
 
 				if (etv2.getTitle().getName() != null
@@ -100,7 +102,7 @@ public class TabPaneController {
 	 *            the tab
 	 */
 	public void addTab(String title, Component component, boolean closeable) {
-		view.addTab(title, new JScrollPane(component));
+		view.addTab(title, component);
 		view.setTabComponentAt(view.indexOfComponent(component), new TabView(
 				title, component, closeable));
 	}

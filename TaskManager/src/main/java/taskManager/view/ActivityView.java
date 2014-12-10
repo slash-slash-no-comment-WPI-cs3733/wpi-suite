@@ -9,14 +9,12 @@
 
 package taskManager.view;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.ScrollPaneConstants;
+
+import taskManager.model.ActivityModel;
 
 /**
  * @author Tyler Jaskoviak
@@ -24,12 +22,14 @@ import javax.swing.ScrollPaneConstants;
  */
 public class ActivityView extends JPanel {
 
-	public static final String USER_NAME = "user_name";
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6524598229849111521L;
+	public static final String INFO = "info";
 	public static final String MESSAGE_BODY = "message_body";
-	public static final String MESSAGE_DATE = "message_date";
 
-	private JLabel userName;
-	private JLabel date;
+	private JLabel info;
 
 	private JTextArea message;
 
@@ -40,118 +40,22 @@ public class ActivityView extends JPanel {
 	 */
 
 	/**
-	 * Creates an ActivityView panel, meant to display activity done on a task
-	 * displays the activity with name of user, date, and message
-	 * (activity/comment)
+	 * Creates an ActivityView panel, meant to display an activity with name of
+	 * user, date, and message (activity/comment)
 	 */
-	public ActivityView() {
-
+	public ActivityView(ActivityModel m) {
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		// Name of the user who created it
-		userName = new JLabel();
-		userName.setName(USER_NAME);
-
-		// Date the activity happened
-		date = new JLabel();
-		date.setName(MESSAGE_DATE);
+		info = new JLabel();
+		info.setName(INFO);
+		info.setText(m.getDescription() + "  " + m.getActor());
 
 		// Content of the activity
 		message = new JTextArea(14, 22);
+		message.setText(m.getDescription());
 		message.setName(MESSAGE_BODY);
 		message.setLineWrap(true);
 		message.setWrapStyleWord(true);
 		message.setEditable(false);
-		JScrollPane messageScrollPane = new JScrollPane(message);
-		messageScrollPane
-				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		messageScrollPane
-				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-
-		setLayout(new GridBagLayout());
-
-		GridBagConstraints newActivityGridBag = new GridBagConstraints();
-
-		// First Column ////
-
-		newActivityGridBag.anchor = GridBagConstraints.FIRST_LINE_START;
-
-		newActivityGridBag.weightx = 0.5;
-		newActivityGridBag.weighty = 0.2;
-
-		newActivityGridBag.gridx = 0;
-
-		newActivityGridBag.gridy = 0;
-		add(userName, newActivityGridBag);
-
-		newActivityGridBag.weighty = 0.8;
-		newActivityGridBag.gridy = 1;
-		add(messageScrollPane, newActivityGridBag);
-
-		// Second Column //
-
-		newActivityGridBag.anchor = GridBagConstraints.FIRST_LINE_END;
-
-		newActivityGridBag.weightx = 0.5;
-		newActivityGridBag.weighty = 0.2;
-
-		newActivityGridBag.gridx = 0;
-		newActivityGridBag.gridy = 0;
-		add(date, newActivityGridBag);
-	}
-
-	/**
-	 * Gets the text in the userName field
-	 * 
-	 * @return the userName field
-	 */
-	public JLabel getUser() {
-		return userName;
-	}
-
-	/**
-	 * Gets the text in the date field
-	 * 
-	 * @return the date field
-	 */
-	public JLabel getDate() {
-		return date;
-	}
-
-	/**
-	 * Gets the message field
-	 * 
-	 * @return the message field
-	 */
-	public JTextArea getMessage() {
-		return message;
-	}
-
-	/**
-	 * sets the text in the userName field
-	 * 
-	 * @param name
-	 *            the text in the userName field
-	 */
-	public void setUser(String name) {
-		userName.setText(name);
-	}
-
-	/**
-	 * sets the text in the date field
-	 * 
-	 * @param inputDate
-	 *            the text in the date field
-	 */
-	public void setDate(String inputDate) {
-		date.setText(inputDate);
-	}
-
-	/**
-	 * sets the text in the message field
-	 * 
-	 * @param content
-	 *            the text in the message field
-	 */
-	public void setMessage(String content) {
-			message.setText(content);
 	}
 }
