@@ -174,6 +174,8 @@ public class EditTaskView extends JPanel {
 		projectUsersLabel.setFont(bigFont);
 		JLabel activitiesLabel = new JLabel("Activities");
 		activitiesLabel.setFont(bigFont);
+		JLabel commentsLabel = new JLabel("Comment");
+		commentsLabel.setFont(bigFont);
 
 
 
@@ -289,10 +291,10 @@ public class EditTaskView extends JPanel {
 		JPanel Spacer = new JPanel(new MigLayout());
 		JPanel BasicInfo = new JPanel(new MigLayout());
 		JPanel Users = new JPanel(new MigLayout());
-		JPanel Activities = new JPanel(new MigLayout());
+		JPanel Activities = new JPanel(new MigLayout("fill"));
 		JPanel Effort = new JPanel(new MigLayout());
 		JPanel Requirements = new JPanel(new MigLayout());
-		JPanel EditSaveCancel = new JPanel(new MigLayout());
+		JPanel EditSaveCancel = new JPanel(new MigLayout("align center"));
 		JPanel dateAndStage = new JPanel(new MigLayout());
 		JPanel EffortDateStage = new JPanel(new MigLayout());
 		
@@ -361,10 +363,11 @@ public class EditTaskView extends JPanel {
 
 		// Activities Panel internal content
 		Activities.setBorder(BorderFactory.createTitledBorder(""));
-		Activities.add(activitiesLabel, "wrap, gaptop 10px, gapleft 15px");
-		Activities.add(activityPane, "wrap, gapbottom 50px, gapleft 15px");
-		Activities.add(commentScrollPane, "center, wrap, gapbottom 10px, gapleft 15px");
-		Activities.add(submitComment, "dock south, gapleft 30px, gapright 30px");
+		Activities.add(activitiesLabel, "wrap, gaptop 10px, gapleft 25px");
+		Activities.add(activityPane, "wrap, gapbottom 50px, gapleft 25px");
+		Activities.add(commentsLabel, "gapleft 25px, wrap");
+		Activities.add(commentScrollPane, "wrap, gapbottom 10px, gapleft 25px");
+		Activities.add(submitComment, "dock south, gapleft 30px, gapright 30px, gapbottom 20px");
 
 
 		// EditSaveCancel Panel internal content
@@ -381,7 +384,7 @@ public class EditTaskView extends JPanel {
 		window.add(Spacer, "dock north");
 		window.add(BasicInfo, "h 80%, w 30%");
 		window.add(Users, "h 80%, w 30%, gapleft 10px");
-		//window.add(Activities, "h 80%, w 25%, gapleft 10px");
+		window.add(Activities, "h 80%, w 25%, gapleft 10px");
 		window.add(EditSaveCancel, "dock south, h 10%");
 		
 		//Add the window to EditTaskView
@@ -447,18 +450,13 @@ public class EditTaskView extends JPanel {
 		descripArea.addKeyListener(fieldC);
 		estEffortField.addKeyListener(fieldC);
 		actEffortField.addKeyListener(fieldC);
-
-		titleField.addMouseListener(fieldC);
-		descripArea.addMouseListener(fieldC);
-		estEffortField.addMouseListener(fieldC);
-		actEffortField.addMouseListener(fieldC);
-
-		this.addMouseListener(fieldC);
-
 		stages.addPopupMenuListener(fieldC);
 		usersList.setController(fieldC);
 		projectUsersList.setController(fieldC);
 		commentsField.addKeyListener(fieldC);
+		requirements.addPopupMenuListener(fieldC);
+		dateField.addPropertyChangeListener(fieldC);
+		archive.addItemListener(fieldC);
 	}
 
 	/**
@@ -887,7 +885,13 @@ public class EditTaskView extends JPanel {
 			case COMMENT:
 				activityPane.setMessage(current + "User: "
 						+ act.getDescription() + "\n");
+			case ARCHIVE:
+				activityPane.setMessage(current + act.getDescription() + "\n");
 				break;
+			default:
+				System.out.println("Unknown activity type");
+				// dispaly it anyway
+				activityPane.setMessage(current + act.getDescription() + "\n");
 			}
 		}
 	}

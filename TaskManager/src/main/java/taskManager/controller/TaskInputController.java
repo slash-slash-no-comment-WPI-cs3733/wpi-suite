@@ -8,11 +8,16 @@
  *******************************************************************************/
 package taskManager.controller;
 
-import java.awt.Component;
+
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -28,18 +33,17 @@ import taskManager.view.EditTaskView;
  * @author Stefan Alexander
  *
  */
-public class TaskInputController implements KeyListener, MouseListener,
-		PopupMenuListener, ListSelectionListener {
+
+public class TaskInputController implements KeyListener, FocusListener,
+		PopupMenuListener, ListSelectionListener, PropertyChangeListener,
+		ItemListener {
+
 
 	private final EditTaskView etv;
 	private boolean addUsersSelected = false;
 	private boolean removeUsersSelected = false;
-	private Component fieldWithFocus;
+	
 
-	boolean titleValid = true;
-	boolean descriptionValid = true;
-	boolean estEffortValid = true;
-	boolean actEffortValid = true;
 
 	/**
 	 * The controller to validate input when editing a task
@@ -49,7 +53,7 @@ public class TaskInputController implements KeyListener, MouseListener,
 	 */
 	public TaskInputController(EditTaskView etv) {
 		this.etv = etv;
-		fieldWithFocus = null;
+		checkFields();
 	}
 
 	/**
@@ -63,10 +67,10 @@ public class TaskInputController implements KeyListener, MouseListener,
 		addUsersSelected = !etv.getProjectUsersList().isSelectionEmpty();
 		removeUsersSelected = !etv.getUsersList().isSelectionEmpty();
 
-		titleValid = true;
-		descriptionValid = true;
-		estEffortValid = true;
-		actEffortValid = true;
+		boolean titleValid = true;
+		boolean descriptionValid = true;
+		boolean estEffortValid = true;
+		boolean actEffortValid = true;
 		// checks each required field and determines if it meets the
 		// requirements for that field
 
@@ -112,32 +116,8 @@ public class TaskInputController implements KeyListener, MouseListener,
 				&& actEffortValid;
 	}
 
-	/**
-	 * determines if a field that can be validated has been clicked If it has,
-	 * set the fieldWithFocus variable to that field If something else has been
-	 * clicked, set the fieldWithFocus variable to null
-	 * 
-	 * @param e
-	 *            the mouse event
-	 */
-	private void checkFocus(MouseEvent e) {
-		setAllErrorsInvisible();
-		if (e.getComponent() != null && e.getComponent().getName() != null) {
-			System.out.println(e.getComponent().getName() + " was clicked");
-			if (e.getComponent().getName().equals(EditTaskView.TITLE)
-					|| e.getComponent().getName().equals(EditTaskView.DESCRIP)
-					|| e.getComponent().getName()
-							.equals(EditTaskView.ACT_EFFORT)
-					|| e.getComponent().getName()
-							.equals(EditTaskView.EST_EFFORT)) {
-				fieldWithFocus = e.getComponent();
-			} else {
-				fieldWithFocus = null;
-			}
-		} else {
-			fieldWithFocus = null;
-		}
-	}
+
+
 
 	/**
 	 * sets all 4 error bubbles to invisible
@@ -170,32 +150,19 @@ public class TaskInputController implements KeyListener, MouseListener,
 	 * validate the inputs
 	 */
 	public void validate() {
-
-		if (!this.checkFields() && fieldWithFocus != null) {
-			switch (fieldWithFocus.getName()) {
-			case EditTaskView.TITLE:
-				etv.setTitleErrorVisible(!titleValid);
-				break;
-			case EditTaskView.DESCRIP:
-				etv.setDescriptionErrorVisible(!descriptionValid);
-				break;
-			case EditTaskView.EST_EFFORT:
-				etv.setEstEffortErrorVisible(!estEffortValid);
-				break;
-			case EditTaskView.ACT_EFFORT:
-				etv.setActualEffortErrorVisible(!actEffortValid);
-				break;
-			}
-		} else {
-			setAllErrorsInvisible();
-		}
-
-		etv.repaint();
-		// enable or disable the appropriate buttons
-		etv.setSaveEnabled(this.checkFields());
+		etv.setSaveEnabled(this.checkFields() && isEdited());
 		etv.setAddUserEnabled(addUsersSelected);
 		etv.setRemoveUserEnabled(removeUsersSelected);
 		etv.setCommentSubmitEnabled(this.checkSaveComment());
+	}
+
+	/**
+	 * Whether the view has been changed since the last save.
+	 *
+	 * @return true if the user has edited the form
+	 */
+	private boolean isEdited() {
+		return etv.getController().isEdited();
 	}
 
 	@Override
@@ -234,35 +201,29 @@ public class TaskInputController implements KeyListener, MouseListener,
 
 	}
 
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		checkFocus(e);
-		validate();
-	}
+	
 
 	@Override
-	public void mousePressed(MouseEvent e) {
-		checkFocus(e);
+	public void propertyChange(PropertyChangeEvent evt) {
 		validate();
 
 	}
 
 	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-
+	public void itemStateChanged(ItemEvent e) {
+		validate();
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent e) {
+	public void focusGained(FocusEvent arg0) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
-	public void mouseExited(MouseEvent e) {
+	public void focusLost(FocusEvent e) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 }

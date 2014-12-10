@@ -9,6 +9,7 @@
 package taskManager.draganddrop;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.awt.Dimension;
 import java.awt.Point;
@@ -17,19 +18,25 @@ import java.util.Date;
 
 import javax.swing.JFrame;
 
+import org.fest.swing.core.MouseButton;
 import org.fest.swing.fixture.FrameFixture;
 import org.fest.swing.fixture.JPanelFixture;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import taskManager.ClientDataStore;
 import taskManager.JanewayModule;
+import taskManager.MockNetwork;
 import taskManager.controller.WorkflowController;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 
 import com.db4o.ext.DatabaseClosedException;
 
+import edu.wpi.cs.wpisuitetng.network.Network;
 import edu.wpi.cs.wpisuitetng.network.Request;
 
 /**
@@ -41,16 +48,23 @@ public class TestDropAreaPanel {
 
 	private FrameFixture fixture;
 	private TaskModel task;
+	private StageModel sm;
+	WorkflowController wfc;
 	private boolean shouldFail = false;
+
+	@BeforeClass
+	public static void netSetup() {
+		Network.setInstance(new MockNetwork());
+	}
 
 	@Before
 	public void setup() {
 
 		JanewayModule.reset();
 
-		WorkflowController wfc = WorkflowController.getInstance();
+		wfc = WorkflowController.getInstance();
 
-		StageModel sm = new StageModel("TestStage");
+		sm = new StageModel("TestStage");
 
 		// add a task to the workflow
 		task = new TaskModel("test", sm);
@@ -68,6 +82,49 @@ public class TestDropAreaPanel {
 		fixture = new FrameFixture(frame);
 
 		fixture.show();
+	}
+
+	@Test
+	public void dragTask() {
+		StageModel sm2 = new StageModel("TestStage2");
+
+		TaskModel tm1 = new TaskModel("task21", sm2);
+		tm1.setDueDate(new Date(0));
+		TaskModel tm2 = new TaskModel("task22", sm2);
+		tm2.setDueDate(new Date(0));
+
+		wfc.reloadData();
+
+		assertTrue(sm.containsTask(task));
+
+		// JPanelFixture taskFixture = fixture.panel("test");
+
+		fixture.robot.settings().delayBetweenEvents(10);
+
+		Point location = fixture.panel("test").target.getLocationOnScreen();
+		location.x += 10;
+		location.y += 10;
+
+		Point goal = fixture.panel("task22").target.getLocationOnScreen();
+		goal.x += 10;
+		goal.y += 10;
+
+		fixture.robot.pressMouse(location, MouseButton.LEFT_BUTTON);
+		while (!location.equals(goal)) {
+			int movex = Integer.min(Integer.max(goal.x - location.x, -3), 3);
+			int movey = Integer.min(Integer.max(goal.y - location.y, -3), 3);
+			location.x += movex;
+			location.y += movey;
+			fixture.robot.moveMouse(location);
+		}
+		fixture.robot.settings().delayBetweenEvents(60);
+		fixture.robot.settings().idleTimeout(100);
+
+		fixture.robot.releaseMouseButtons();
+
+		fixture.robot.waitForIdle();
+		assertTrue(sm2.containsTask(task));
+
 	}
 
 	@Test
@@ -116,5 +173,10 @@ public class TestDropAreaPanel {
 	@After
 	public void cleanup() {
 		fixture.cleanUp();
+	}
+
+	@AfterClass
+	public static void netTeardown() {
+		ClientDataStore.deleteDataStore();
 	}
 }
