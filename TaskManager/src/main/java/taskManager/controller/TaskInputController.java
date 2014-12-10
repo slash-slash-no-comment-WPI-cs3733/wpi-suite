@@ -38,6 +38,12 @@ public class TaskInputController implements KeyListener, FocusListener,
 	private boolean addUsersSelected = false;
 	private boolean removeUsersSelected = false;
 
+	/**
+	 * The controller to validate input when editing a task
+	 *
+	 * @param etv
+	 *            The edit task view being edited
+	 */
 	public TaskInputController(EditTaskView etv) {
 		this.etv = etv;
 		checkFields();
@@ -46,6 +52,8 @@ public class TaskInputController implements KeyListener, FocusListener,
 	/**
 	 * checks to see if the edit task fields aren't empty and meet the
 	 * requirements. If a field doesn't meet the requirements, display an error
+	 * 
+	 * @return true if all the fields are valid
 	 */
 	public boolean checkFields() {
 
@@ -110,12 +118,30 @@ public class TaskInputController implements KeyListener, FocusListener,
 	}
 
 	/**
+	 * checks if comments are valid
+	 * 
+	 * @param commentValid
+	 *            true if comment is valid
+	 * @return commentValid
+	 *
+	 */
+	public boolean checkSaveComment() {
+		boolean commentValid = true;
+		if (etv.getCommentsFieldText().trim().isEmpty()) {
+			// Comments Pane
+			commentValid = false;
+		}
+		return commentValid;
+	}
+
+	/**
 	 * validate the inputs
 	 */
 	public void validate() {
 		etv.setSaveEnabled(this.checkFields());
 		etv.setAddUserEnabled(addUsersSelected);
 		etv.setRemoveUserEnabled(removeUsersSelected);
+		etv.setCommentSubmitEnabled(this.checkSaveComment());
 	}
 
 	@Override
