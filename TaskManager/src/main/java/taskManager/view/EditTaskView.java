@@ -139,6 +139,7 @@ public class EditTaskView extends JScrollPane {
 	public EditTaskView(Mode mode) {
 		// TODO: User Mode to switch between create and edit views
 		// When Task added make EditTask take in a Task called currTask
+		this.setName("edit task view");
 		this.mode = mode;
 		JPanel center = new JPanel();
 		center.setLayout(new MigLayout("center"));
@@ -445,6 +446,13 @@ public class EditTaskView extends JScrollPane {
 		requirements.addPopupMenuListener(fieldC);
 		dateField.addPropertyChangeListener(fieldC);
 		archive.addItemListener(fieldC);
+
+		this.addMouseListener(fieldC);
+		window.addMouseListener(fieldC);
+		titleField.addMouseListener(fieldC);
+		descripArea.addMouseListener(fieldC);
+		actEffortField.addMouseListener(fieldC);
+		estEffortField.addMouseListener(fieldC);
 	}
 
 	/**

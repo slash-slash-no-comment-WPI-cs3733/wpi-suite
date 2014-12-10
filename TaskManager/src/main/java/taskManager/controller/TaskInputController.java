@@ -8,12 +8,12 @@
  *******************************************************************************/
 package taskManager.controller;
 
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
@@ -32,13 +32,20 @@ import taskManager.view.EditTaskView;
  *
  */
 
-public class TaskInputController implements KeyListener, FocusListener,
+public class TaskInputController implements KeyListener, MouseListener,
 		PopupMenuListener, ListSelectionListener, PropertyChangeListener,
 		ItemListener {
 
 	private final EditTaskView etv;
 	private boolean addUsersSelected = false;
 	private boolean removeUsersSelected = false;
+
+	private boolean titleValid;
+	private boolean descriptionValid;
+	private boolean actEffortValid;
+	private boolean estEffortValid;
+
+	private String fieldWithFocus = null;
 
 	/**
 	 * The controller to validate input when editing a task
@@ -62,10 +69,10 @@ public class TaskInputController implements KeyListener, FocusListener,
 		addUsersSelected = !etv.getProjectUsersList().isSelectionEmpty();
 		removeUsersSelected = !etv.getUsersList().isSelectionEmpty();
 
-		boolean titleValid = true;
-		boolean descriptionValid = true;
-		boolean estEffortValid = true;
-		boolean actEffortValid = true;
+		titleValid = true;
+		descriptionValid = true;
+		estEffortValid = true;
+		actEffortValid = true;
 		// checks each required field and determines if it meets the
 		// requirements for that field
 
@@ -102,13 +109,9 @@ public class TaskInputController implements KeyListener, FocusListener,
 			}
 		}
 
-		etv.setTitleErrorVisible(!titleValid);
 		etv.setTitleFieldRed(!titleValid);
-		etv.setDescriptionErrorVisible(!descriptionValid);
 		etv.setDescriptionFieldRed(!descriptionValid);
-		etv.setEstEffortErrorVisible(!estEffortValid);
 		etv.setEstEffortFieldRed(!estEffortValid);
-		etv.setActualEffortErrorVisible(!actEffortValid);
 		etv.setActEffortFieldRed(!actEffortValid);
 
 		return titleValid && descriptionValid && estEffortValid
@@ -123,6 +126,33 @@ public class TaskInputController implements KeyListener, FocusListener,
 		etv.setEstEffortErrorVisible(false);
 		etv.setDescriptionErrorVisible(false);
 		etv.setTitleErrorVisible(false);
+	}
+
+	/**
+	 * figures out which field the cursor is in
+	 */
+	public void checkFocus(MouseEvent e) {
+		if (e.getComponent().getName() != null) {
+			String name = e.getComponent().getName();
+
+			if (!name.equals(fieldWithFocus)) {
+				if (e.getComponent().getName().equals(EditTaskView.TITLE)
+						|| e.getComponent().getName()
+								.equals(EditTaskView.DESCRIP)
+						|| e.getComponent().getName()
+								.equals(EditTaskView.ACT_EFFORT)
+						|| e.getComponent().getName()
+								.equals(EditTaskView.EST_EFFORT)) {
+					fieldWithFocus = e.getComponent().getName();
+				} else {
+					fieldWithFocus = null;
+				}
+			}
+
+		} else {
+			fieldWithFocus = null;
+
+		}
 	}
 
 	/**
@@ -146,6 +176,23 @@ public class TaskInputController implements KeyListener, FocusListener,
 	 * validate the inputs
 	 */
 	public void validate() {
+		setAllErrorsInvisible();
+		if (fieldWithFocus != null && !checkFields()) {
+			switch (fieldWithFocus) {
+			case EditTaskView.TITLE:
+				etv.setTitleErrorVisible(!titleValid);
+				break;
+			case EditTaskView.DESCRIP:
+				etv.setDescriptionErrorVisible(!descriptionValid);
+				break;
+			case EditTaskView.ACT_EFFORT:
+				etv.setActualEffortErrorVisible(!actEffortValid);
+				break;
+			case EditTaskView.EST_EFFORT:
+				etv.setEstEffortErrorVisible(!estEffortValid);
+				break;
+			}
+		}
 		etv.setSaveEnabled(this.checkFields() && isEdited());
 		etv.setAddUserEnabled(addUsersSelected);
 		etv.setRemoveUserEnabled(removeUsersSelected);
@@ -209,13 +256,32 @@ public class TaskInputController implements KeyListener, FocusListener,
 	}
 
 	@Override
-	public void focusGained(FocusEvent arg0) {
+	public void mouseClicked(MouseEvent e) {
+		checkFocus(e);
+		validate();
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void focusLost(FocusEvent e) {
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 
 	}
