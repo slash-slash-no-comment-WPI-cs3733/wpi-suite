@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -93,7 +92,7 @@ public class ReportsManager implements ActionListener, ChangeListener,
 	private Instant start;
 	private Instant end;
 	private DefaultCategoryDataset dataset;
-	private Set<UserData> data;
+	private List<UserData> data;
 	private final WorkflowModel workflow;
 
 	/**
@@ -158,7 +157,7 @@ public class ReportsManager implements ActionListener, ChangeListener,
 		if (!workflow.getStages().contains(stage)) {
 			throw new IllegalArgumentException("Invalid stage");
 		}
-		data = new TreeSet<UserData>();
+		data = new ArrayList<UserData>();
 		for (TaskModel task : stage.getTasks()) {
 			Instant completed = null;
 			boolean foundMoveEvent = false;
@@ -241,6 +240,8 @@ public class ReportsManager implements ActionListener, ChangeListener,
 			dataset.addValue(0, dummyUsername, intervalName + (seriesNum + 1));
 			seriesNum++;
 		}
+
+		System.out.println("Data size: " + data.size());
 
 		// Iterate through each userdata.
 		for (UserData userData : data) {
