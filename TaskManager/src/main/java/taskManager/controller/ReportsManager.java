@@ -472,13 +472,11 @@ public class ReportsManager implements ActionListener, ChangeListener,
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		// TODO Auto-generated method stub
-
+		// TODO: Add all users to assigned when All is checked.
 	}
 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
-		// TODO Auto-generated method stub
 		Boolean addUsersSelected = !rtv.getProjectUsersList()
 				.isSelectionEmpty();
 		Boolean removeUsersSelected = !rtv.getUsersList().isSelectionEmpty();

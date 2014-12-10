@@ -201,28 +201,6 @@ public class ReportsToolbarView extends JPanel {
 		workTypePanel.setMinimumSize(workTypeDimension);
 		workTypePanel.setMaximumSize(workTypeDimension);
 
-		/*
-		 * / Distributionremoved for initial release distributionPanel = new
-		 * JPanel(); distributionPanel.setLayout(new GridBagLayout());
-		 * totaledDist = new JRadioButton("Totaled Distribution");
-		 * totaledDist.setName(TOTALED_DIST); dividedDist = new
-		 * JRadioButton("Divided Distribution");
-		 * dividedDist.setName(DIVIDED_DIST); distributionGroup = new
-		 * ButtonGroup(); distributionGroup.add(totaledDist);
-		 * distributionGroup.add(dividedDist); reportsGridBag.anchor =
-		 * GridBagConstraints.FIRST_LINE_START; reportsGridBag.gridx = 0;
-		 * reportsGridBag.gridy = 0;
-		 * distributionPanel.setBorder(BorderFactory.createTitledBorder
-		 * ("Distribution")); distributionPanel.add(totaledDist,
-		 * reportsGridBag); reportsGridBag.gridy = 1;
-		 * distributionPanel.add(dividedDist, reportsGridBag); Dimension
-		 * distributionDimension = getPreferredSize();
-		 * distributionDimension.width = 175; distributionDimension.height = 75;
-		 * distributionPanel.setPreferredSize(distributionDimension);
-		 * distributionPanel.setMinimumSize(distributionDimension);
-		 * distributionPanel.setMaximumSize(distributionDimension);
-		 */
-
 		// Combined or Compared graph
 		workModePanel = new JPanel();
 		workModePanel.setLayout(new GridBagLayout());
@@ -257,11 +235,11 @@ public class ReportsToolbarView extends JPanel {
 		projectUsersList = new ScrollList("Project Users");
 		projectUsersList.setBackground(this.getBackground());
 		// Add user to list
-		addUser = new JButton("<<");
+		addUser = new JButton(">>");
 		addUser.setName(ADD_USER);
 		this.setAddUserEnabled(false);
 		// remove user from list
-		removeUser = new JButton(">>");
+		removeUser = new JButton("<<");
 		removeUser.setName(REMOVE_USER);
 		this.setRemoveUserEnabled(false);
 		reportsGridBag.anchor = GridBagConstraints.WEST;
@@ -272,14 +250,14 @@ public class ReportsToolbarView extends JPanel {
 		JPanel usersListPanel = new JPanel(new MigLayout());
 		JPanel projectUsersListPanel = new JPanel(new MigLayout());
 		JPanel addRemoveButtons = new JPanel(new MigLayout());
-		usersPanel.add(allUsers, reportsGridBag);
+		// usersPanel.add(allUsers, reportsGridBag);
 		usersListPanel.add(currUsersList);
 		projectUsersListPanel.add(projectUsersList);
 		addRemoveButtons.add(addUser, "wrap");
 		addRemoveButtons.add(removeUser);
-		usersPanel.add(usersListPanel, "w 100!, gapleft 15px");
+		usersPanel.add(projectUsersListPanel, "w 100!, gapleft 15px");
 		usersPanel.add(addRemoveButtons);
-		usersPanel.add(projectUsersListPanel, "w 100!");
+		usersPanel.add(usersListPanel, "w 100!");
 
 		// Generate Graph
 		generateGraph = new JButton("Generate");
