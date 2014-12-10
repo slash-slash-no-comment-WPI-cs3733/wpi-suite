@@ -385,6 +385,9 @@ public class EditTaskView extends JPanel {
 		usersList.setController(fieldC);
 		projectUsersList.setController(fieldC);
 		commentsField.addKeyListener(fieldC);
+		requirements.addPopupMenuListener(fieldC);
+		dateField.addPropertyChangeListener(fieldC);
+		archive.addItemListener(fieldC);
 	}
 
 	/**
@@ -758,7 +761,13 @@ public class EditTaskView extends JPanel {
 			case COMMENT:
 				activityPane.setMessage(current + "User: "
 						+ act.getDescription() + "\n");
+			case ARCHIVE:
+				activityPane.setMessage(current + act.getDescription() + "\n");
 				break;
+			default:
+				System.out.println("Unknown activity type");
+				// dispaly it anyway
+				activityPane.setMessage(current + act.getDescription() + "\n");
 			}
 		}
 	}

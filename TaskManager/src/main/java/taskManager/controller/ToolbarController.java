@@ -15,14 +15,18 @@ import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.model.StageModel;
@@ -31,6 +35,7 @@ import taskManager.view.ReportsView;
 import taskManager.view.StageView;
 import taskManager.view.TaskView;
 import taskManager.view.ToolbarView;
+import edu.wpi.cs.wpisuitetng.janeway.config.ConfigManager;
 
 /**
  * A controller for the toolbar view
@@ -39,7 +44,7 @@ import taskManager.view.ToolbarView;
  * @author Sam Khalandovsky
  */
 public class ToolbarController extends DropTargetAdapter implements
-		ActionListener, ItemListener {
+		ActionListener, ItemListener, ComponentListener {
 
 	private ToolbarView view;
 
@@ -79,12 +84,77 @@ public class ToolbarController extends DropTargetAdapter implements
 	}
 
 	/**
-	 * Set's the visible title in the toolbar
+	 * Sets the visible title in the toolbar, hyphenating if necessary
 	 *
-	 * @param title
+	 * @param name
+	 *            The project name
 	 */
-	public void setProjectTitle(String title) {
-		view.setTitle(title);
+	public void setProjectName(String name) {
+		view.setProjectName(hyphenateProjectName(name));
+	}
+
+	/**
+	 * Hyphenates the project name to fit in the toolbar if necessary.
+	 * 
+	 * @param name
+	 *            The project name
+	 * @return The project name, hyphenated if necessary
+	 */
+	private String hyphenateProjectName(String name) {
+		int toolbarWidth = view.getWidth();
+		// If the toolbar width is zero, the toolbar is not visible, so do not
+		// attempt to hyphenate
+		if (toolbarWidth == 0) {
+			return name;
+		}
+
+		// Find the sum of the width of the children panels to see if it
+		// overflows
+		int otherChildrenWidth = 0;
+		for (Component c : view.getComponents()) {
+			otherChildrenWidth += c.getWidth();
+		}
+		otherChildrenWidth -= view.getProjectName().getWidth();
+		int goalWidth = toolbarWidth - otherChildrenWidth;
+
+		// Because of the word wrap, if there there is an overflow there will be
+		// some section with no whitespace that causes the overflow, so find it
+		// and hyphenate it
+		String[] chunks = name.split(" ");
+		List<String> newChunks = new ArrayList<String>();
+		// For each string, hyphenate it if it exceeds the goal width
+		for (String s : chunks) {
+			int stringWidth = SwingUtilities.computeStringWidth(
+					view.getProjectName().getFontMetrics(
+							view.getProjectName().getFont()), s);
+			if (stringWidth > goalWidth) {
+				String hyphenatedStart = s + "-";
+				String hyphenatedEnd = "";
+				// Reduce the width of the string with hyphenation until it
+				// fits
+				while (SwingUtilities.computeStringWidth(view.getProjectName()
+						.getFontMetrics(view.getProjectName().getFont()),
+						hyphenatedStart) > goalWidth) {
+					hyphenatedEnd += hyphenatedStart.charAt(hyphenatedStart
+							.length() - 2);
+					hyphenatedStart = hyphenatedStart.substring(0,
+							hyphenatedStart.length() - 2) + "-";
+				}
+				newChunks.add(hyphenatedStart);
+				newChunks.add(hyphenatedEnd);
+			} else {
+				newChunks.add(s);
+			}
+		}
+
+		// When done concatenate all the chunks
+		String newName = "";
+		for (String s : newChunks) {
+			newName += s + " ";
+		}
+		// Remove the trailing space
+		newName.substring(0, newName.length() - 1);
+		return newName;
 	}
 
 	/**
@@ -262,5 +332,27 @@ public class ToolbarController extends DropTargetAdapter implements
 		view.setArchiveEnabled(false);
 		view.setDeleteEnabled(false);
 		view.setArchiveIcon(ToolbarView.ARCHIVE);
+	}
+
+	@Override
+	public void componentResized(ComponentEvent e) {
+		// Reset the project name so that it will get hyphenated if necessary
+		setProjectName(ConfigManager.getConfig().getProjectName());
+	}
+
+	@Override
+	public void componentMoved(ComponentEvent e) {
+		// Do nothing
+	}
+
+	@Override
+	public void componentShown(ComponentEvent e) {
+		// Reset the project name so that it will get hyphenated if necessary
+		// setProjectName(ConfigManager.getConfig().getProjectName());
+	}
+
+	@Override
+	public void componentHidden(ComponentEvent e) {
+		// Do nothing
 	}
 }
