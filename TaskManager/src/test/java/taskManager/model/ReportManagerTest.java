@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * Copyright (c) 2012-2014 -- WPI Suite
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
 package taskManager.model;
 
 import static org.junit.Assert.assertEquals;
@@ -6,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import taskManager.JanewayModule;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 public class ReportManagerTest {
@@ -18,11 +27,11 @@ public class ReportManagerTest {
 
 	@Before
 	public void setUp() {
+		JanewayModule.reset();
+
 		rm = new ReportManager();
 		user = new User("Name", "userName", "password", 42);
 
-		workflow = WorkflowModel.getInstance();
-		workflow.makeIdenticalTo(new WorkflowModel("Workflow"));
 		stage = new StageModel("Stage");
 		task1 = new TaskModel("task1", stage);
 		task2 = new TaskModel("task2", stage);

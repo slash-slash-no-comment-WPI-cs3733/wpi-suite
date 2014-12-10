@@ -24,7 +24,7 @@ public abstract class AbstractJsonableModel<T> extends AbstractModel {
 	// Subclasses should make sure this stays unique
 	private String id;
 
-	private static GenericRequestObserver observer = new GenericRequestObserver();
+	private static final GenericRequestObserver observer = new GenericRequestObserver();
 
 	/**
 	 * Main constructor: should be called by all constructors with a valid ID
@@ -53,7 +53,7 @@ public abstract class AbstractJsonableModel<T> extends AbstractModel {
 	 *
 	 * @return observer object
 	 */
-	public GenericRequestObserver getObserver() {
+	public static GenericRequestObserver getObserver() {
 		return observer;
 	}
 

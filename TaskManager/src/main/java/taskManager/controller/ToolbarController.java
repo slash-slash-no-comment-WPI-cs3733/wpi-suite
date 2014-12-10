@@ -22,12 +22,10 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-import taskManager.JanewayModule;
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
-import taskManager.view.TabPaneView;
 import taskManager.view.TaskView;
 import taskManager.view.ToolbarView;
 
@@ -40,17 +38,50 @@ import taskManager.view.ToolbarView;
 public class ToolbarController extends DropTargetAdapter implements
 		ActionListener, ItemListener {
 
-	private final TabPaneView tabPaneV;
-	private final TabPaneController tabPaneC;
+	private ToolbarView view;
+
+	private static ToolbarController instance;
 
 	/**
-	 *
-	 * @param tabV
-	 *            tabView used to add tabs to the tab-bar
+	 * Hide Singleton constructor
 	 */
-	public ToolbarController(TabPaneView tabV) {
-		this.tabPaneV = tabV;
-		this.tabPaneC = JanewayModule.tabPaneC;
+	private ToolbarController() {
+		reset();
+	}
+
+	public void reset() {
+		view = new ToolbarView(this);
+	}
+
+	/**
+	 * Returns the singleton instance of ToolbarController. Creates one if
+	 * needed.
+	 * 
+	 * @return the ToolbarController singleton
+	 */
+	public static ToolbarController getInstance() {
+		if (instance == null) {
+			instance = new ToolbarController();
+		}
+		return instance;
+	}
+
+	/**
+	 * Returns the associated ToolbarView.
+	 * 
+	 * @return The associated ToolbarView
+	 */
+	public ToolbarView getView() {
+		return view;
+	}
+
+	/**
+	 * Set's the visible title in the toolbar
+	 *
+	 * @param title
+	 */
+	public void setProjectTitle(String title) {
+		view.setTitle(title);
 	}
 
 	/**
@@ -58,14 +89,14 @@ public class ToolbarController extends DropTargetAdapter implements
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Object button = e.getSource();
+		final Object button = e.getSource();
 		if (button instanceof JButton) {
-			String name = ((JButton) button).getName();
+			final String name = ((JButton) button).getName();
 			// close the task preview pane
 			WorkflowController.getInstance().removeTaskInfos(true);
 			switch (name) {
 			case ToolbarView.CREATE_TASK:
-				this.tabPaneC.addCreateTaskTab();
+				TabPaneController.getInstance().addCreateTaskTab();
 				break;
 			case ToolbarView.CREATE_STAGE:
 				// add a new stage from workflow controller
@@ -83,13 +114,13 @@ public class ToolbarController extends DropTargetAdapter implements
 	 */
 	@Override
 	public void drop(DropTargetDropEvent e) {
-		Component target = e.getDropTargetContext().getComponent();
+		final Component target = e.getDropTargetContext().getComponent();
 		if (target instanceof JLabel) {
-			String name = ((JLabel) target).getName();
+			final String name = ((JLabel) target).getName();
 
-			Transferable trans = e.getTransferable();
+			final Transferable trans = e.getTransferable();
 			if (trans.isDataFlavorSupported(DDTransferHandler.getTaskFlavor())) {
-				TaskView taskV;
+				final TaskView taskV;
 				try {
 					taskV = (TaskView) trans.getTransferData(DDTransferHandler
 							.getTaskFlavor());
@@ -119,10 +150,10 @@ public class ToolbarController extends DropTargetAdapter implements
 					WorkflowModel.getInstance().save();
 					DDTransferHandler.dragSaved = true;
 					break;
-				}
+				} // end switch
 			} else if (trans.isDataFlavorSupported(DDTransferHandler
 					.getStageFlavor())) {
-				StageView stageV;
+				final StageView stageV;
 				try {
 					stageV = (StageView) trans
 							.getTransferData(DDTransferHandler.getStageFlavor());
@@ -130,20 +161,21 @@ public class ToolbarController extends DropTargetAdapter implements
 					System.out.println(ex.getStackTrace());
 					return;
 				}
-				StageController stageC = stageV.getController();
-				WorkflowModel model = WorkflowModel.getInstance();
-				List<StageModel> stages = model.getStages();
+				final StageController stageC = stageV.getController();
+				final WorkflowModel model = WorkflowModel.getInstance();
+				final List<StageModel> stages = model.getStages();
 
-				if (name == ToolbarView.DELETE) {
+				if (ToolbarView.DELETE.equals(name)) {
 					// Delete only when there are 2 or more stages.
 					if (stages.size() >= 2) {
 						// If the stage has tasks, show a confirmation dialog,
 						// else
 						// just delete the stage.
 						if (!stageC.isEmpty()) {
-							Integer choice = JOptionPane
+							final Integer choice = JOptionPane
 									.showConfirmDialog(
-											tabPaneV,
+											TabPaneController.getInstance()
+													.getView(),
 											"The "
 													+ stageV.getName()
 													+ " stage contains tasks. Are you sure you want to delete this stage?",
@@ -158,13 +190,14 @@ public class ToolbarController extends DropTargetAdapter implements
 						model.save();
 						WorkflowController.getInstance().reloadData();
 					} else {
-						JOptionPane.showConfirmDialog(tabPaneC.getTabView(),
+						JOptionPane.showConfirmDialog(TabPaneController
+								.getInstance().getView(),
 								"You cannot delete the last stage.",
 								"Warning - Invalid stage deletion",
 								JOptionPane.CLOSED_OPTION);
 					}
 				}
-			} // End switch
+			}
 		} // End instanceof
 	}
 

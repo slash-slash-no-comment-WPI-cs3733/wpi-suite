@@ -15,6 +15,7 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.JFrame;
 
@@ -55,8 +56,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 
 	@Before
 	public void setup() {
-		// create a new workflow model
-		wfm.makeIdenticalTo(new WorkflowModel());
+		JanewayModule.reset();
 
 		// give it some stages
 		for (String name : stageNames) {
@@ -68,7 +68,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 
 		frame = new JFrame();
 		// frame.setLayout(new FlowLayout());
-		frame.add(JanewayModule.tabPaneC.getTabView());
+		frame.add(TabPaneController.getInstance().getView());
 		fixture = new FrameFixture(frame);
 
 		fixture.show();
@@ -78,7 +78,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	public void testAddTask() {
 
 		// create a new edit task tab
-		JanewayModule.tabPaneC.addEditTaskTab(etv);
+		TabPaneController.getInstance().addEditTaskTab(etv);
 		frame.pack();
 
 		// enter information for a new task
@@ -99,7 +99,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	public void testInvalidTask() {
 
 		// create a new edit task tab
-		JanewayModule.tabPaneC.addEditTaskTab(etv);
+		TabPaneController.getInstance().addEditTaskTab(etv);
 		frame.pack();
 
 		getTitleBoxFixture().enterText("name");
@@ -242,11 +242,11 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		fixture.button(EditTaskView.SAVE).click();
 
 		// check to make sure users were added to model
-		ArrayList<String> users = new ArrayList<String>();
+		List<String> users = new ArrayList<String>();
 		for (String user : task.getAssigned()) {
 			users.add(user);
 		}
-		ArrayList<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<String>();
 		result.add("testUser");
 		result.add("name2");
 		result.add("name1");
@@ -268,11 +268,11 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		fixture.button(EditTaskView.SAVE).click();
 
 		// check that the user has been removed from the task model
-		ArrayList<String> users = new ArrayList<String>();
+		List<String> users = new ArrayList<String>();
 		for (String user : task.getAssigned()) {
 			users.add(user);
 		}
-		ArrayList<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<String>();
 		assertEquals(result, users);
 	}
 
@@ -280,10 +280,12 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	public void cleanup() {
 		fixture.cleanUp();
 		etv = null;
-		// remove tab
-		Component[] tabs = JanewayModule.tabPaneC.getTabView().getComponents();
-		JanewayModule.tabPaneC.removeTabByComponent(tabs[tabs.length - 1]);
 
+		// remove tab
+		Component[] tabs = TabPaneController.getInstance().getView()
+				.getComponents();
+		TabPaneController.getInstance().removeTabByComponent(
+				tabs[tabs.length - 1]);
 	}
 
 	/**
@@ -307,7 +309,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		TaskController tc = new TaskController(new TaskView("Task", new Date(),
 				0), task);
 		tc.editTask();
-		Component c = JanewayModule.tabPaneC.getTabView()
+		Component c = TabPaneController.getInstance().getView()
 				.getSelectedComponent();
 		if (c instanceof EditTaskView) {
 			etv = (EditTaskView) c;
