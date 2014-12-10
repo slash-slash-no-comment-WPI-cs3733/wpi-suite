@@ -80,9 +80,10 @@ public class TaskView extends JPanel implements Transferable {
 		title.setTitlePosition(TitledBorder.LEFT);
 		this.setBorder(title);
 
-		this.setMinimumSize(new Dimension(200, 55));
-		this.setPreferredSize(new Dimension(200, 55));
-		this.setMaximumSize(new Dimension(200, 55));
+		this.setMinimumSize(new Dimension(215, 60));
+		this.setPreferredSize(new Dimension(215, 60));
+		this.setMaximumSize(new Dimension(215, 60));
+		this.setSize(new Dimension(215, 60));
 		this.setName(name);
 
 		// convert Date object to Calendar object to avoid using deprecated
@@ -99,7 +100,7 @@ public class TaskView extends JPanel implements Transferable {
 		JLabel dueLabel = new JLabel("Due: " + (date.get(Calendar.MONTH) + 1)
 				+ "/" + date.get(Calendar.DATE) + "/"
 				+ (date.get(Calendar.YEAR)));
-		dueLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 4));
+		// dueLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 3));
 		lower.add(dueLabel);
 		JPanel icons = new JPanel(new FlowLayout());
 		icons.setOpaque(false);
@@ -112,7 +113,7 @@ public class TaskView extends JPanel implements Transferable {
 		} else {
 			userNumber = new JLabel(uNum.toString());
 		}
-		userNumber.setPreferredSize(new Dimension(25, 12));
+		userNumber.setPreferredSize(new Dimension(22, 12));
 		// formats the comment number
 		Integer cNum = new Integer(comments);
 		if (comments > 99) {
@@ -120,7 +121,7 @@ public class TaskView extends JPanel implements Transferable {
 		} else {
 			commentNumber = new JLabel(cNum.toString());
 		}
-		commentNumber.setPreferredSize(new Dimension(25, 12));
+		commentNumber.setPreferredSize(new Dimension(22, 12));
 
 		// icons from:
 		// <div>Icon made by <a href="http://catalinfertu.com"
