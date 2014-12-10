@@ -601,8 +601,7 @@ public class EditTaskController implements ActionListener {
 	 */
 	public boolean checkUsers(TaskModel task) {
 		boolean edited = false;
-		Set<String> taskAssigned = new HashSet<String>();
-		taskAssigned = task.getAssigned();
+		Set<String> taskAssigned = task.getAssigned();
 		final Set<String> usersAssigned = new HashSet<String>();
 		usersAssigned.addAll(etv.getUsersList().getAllValues());
 		if (!usersAssigned.equals(taskAssigned)) {

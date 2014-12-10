@@ -19,7 +19,8 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.event.ListSelectionListener;
+
+import taskManager.controller.TaskInputController;
 
 /**
  * A component that has a scroll pane containing a list of strings
@@ -225,8 +226,9 @@ public class ScrollList extends JPanel {
 	 * @param listener
 	 *            the listener to be added to the list
 	 */
-	public void setController(ListSelectionListener listener) {
+	public void setController(TaskInputController listener) {
 		jl.addListSelectionListener(listener);
+		jl.addPropertyChangeListener(listener);
 	}
 
 }
