@@ -158,7 +158,7 @@ public class ToolbarView extends JToolBar {
 		buttons.add(Box.createHorizontalGlue());
 		buttons.add(createTask);
 		buttons.add(createStage);
-		buttons.add(statistics);
+		// buttons.add(statistics);
 		buttons.add(archiveCheckBox);
 		buttons.add(Box.createHorizontalGlue());
 
