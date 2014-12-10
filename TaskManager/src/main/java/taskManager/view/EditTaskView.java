@@ -12,6 +12,8 @@ package taskManager.view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -740,35 +742,13 @@ public class EditTaskView extends JPanel {
 		final List<ActivityModel> tskActivitiesCopy = new ArrayList<ActivityModel>(
 				activities);
 		activityPane.setMessage("");
+		DateFormat dateF = new SimpleDateFormat("MM/dd/yyyy kk:mm");
 		for (ActivityModel act : tskActivitiesCopy) {
 			String current = activityPane.getMessage().getText();
-			switch (act.getType()) {
-			case CREATION:
-				activityPane.setMessage(current + act.getDescription() + "\n");
-				break;
-			case MOVE:
-				activityPane.setMessage(current + act.getDescription() + "\n");
-				break;
-			case COMPLETION:
-				activityPane.setMessage(current + act.getDescription() + "\n");
-				break;
-			case USER_ADD:
-				activityPane.setMessage(current + act.getDescription() + "\n");
-				break;
-			case USER_REMOVE:
-				activityPane.setMessage(current + act.getDescription() + "\n");
-				break;
-			case COMMENT:
-				activityPane.setMessage(current + "User: "
-						+ act.getDescription() + "\n");
-			case ARCHIVE:
-				activityPane.setMessage(current + act.getDescription() + "\n");
-				break;
-			default:
-				System.out.println("Unknown activity type");
-				// dispaly it anyway
-				activityPane.setMessage(current + act.getDescription() + "\n");
-			}
+			activityPane.setMessage(current + act.getActor() + " ["
+					+ dateF.format(act.getDateCreated()) + "]: "
+					+ act.getDescription() + "\n");
+
 		}
 	}
 
