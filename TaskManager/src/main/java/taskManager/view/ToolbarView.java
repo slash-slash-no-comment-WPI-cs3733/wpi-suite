@@ -70,12 +70,12 @@ public class ToolbarView extends JToolBar {
 
 		// Construct and set up the buttons and title panels
 		final JPanel buttons = new JPanel();
-		final JPanel title = new JPanel();
+		final JPanel name = new JPanel();
 		final JPanel targets = new JPanel();
 		buttons.setLayout(new BoxLayout(buttons, BoxLayout.LINE_AXIS));
 		buttons.setOpaque(false);
-		title.setLayout(new BoxLayout(title, BoxLayout.LINE_AXIS));
-		title.setOpaque(false);
+		name.setLayout(new BoxLayout(name, BoxLayout.LINE_AXIS));
+		name.setOpaque(false);
 		targets.setLayout(new BoxLayout(targets, BoxLayout.LINE_AXIS));
 		targets.setOpaque(false);
 		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
@@ -151,8 +151,8 @@ public class ToolbarView extends JToolBar {
 		projectName.setFont(new Font("TextField.font", Font.BOLD, 20));
 
 		// Add title to the title panel
-		title.add(Box.createHorizontalStrut(10));
-		title.add(projectName);
+		name.add(Box.createHorizontalStrut(10));
+		name.add(projectName);
 
 		// Add buttons with to the button panel
 		buttons.add(Box.createHorizontalGlue());
@@ -170,14 +170,17 @@ public class ToolbarView extends JToolBar {
 		targets.add(Box.createHorizontalStrut(10));
 
 		// Set vertical alignments of panels to be centered.
-		title.setAlignmentY(CENTER_ALIGNMENT);
+		name.setAlignmentY(CENTER_ALIGNMENT);
 		buttons.setAlignmentY(CENTER_ALIGNMENT);
 		targets.setAlignmentY(CENTER_ALIGNMENT);
 
 		// Add panels to the toolbar
-		this.add(title);
+		this.add(name);
 		this.add(buttons);
 		this.add(targets);
+
+		// Add resize listener to fix title
+		this.addComponentListener(controller);
 	}
 
 	@Override
@@ -191,7 +194,7 @@ public class ToolbarView extends JToolBar {
 	 * @param name
 	 *            the name of the project
 	 */
-	public void setTitle(String name) {
+	public void setProjectName(String name) {
 		projectName.setText("<html>" + name + "</html>");
 	}
 
@@ -248,5 +251,14 @@ public class ToolbarView extends JToolBar {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Returns the project name component
+	 * 
+	 * @return The project name component
+	 */
+	public JLabel getProjectName() {
+		return projectName;
 	}
 }
