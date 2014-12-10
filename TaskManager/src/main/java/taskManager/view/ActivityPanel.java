@@ -47,6 +47,5 @@ public class ActivityPanel extends JPanel {
 		}
 		JScrollPane activityScroll = new JScrollPane(activities);
 		add(activityScroll);
-
 	}
 }

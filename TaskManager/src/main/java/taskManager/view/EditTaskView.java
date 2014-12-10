@@ -11,8 +11,6 @@ package taskManager.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -49,7 +47,7 @@ import taskManager.model.ActivityModel;
  * @author Tyler Jaskoviak
  */
 
-public class EditTaskView extends JPanel implements ComponentListener {
+public class EditTaskView extends JPanel {
 
 	public static final String STAGES = "stages";
 	public static final String REQUIREMENTS = "requirements";
@@ -117,7 +115,6 @@ public class EditTaskView extends JPanel implements ComponentListener {
 		// TODO: User Mode to switch between create and edit views
 		// When Task added make EditTask take in a Task called currTask
 		this.mode = mode;
-		this.addComponentListener(this);
 
 		fields = new JPanel(new MigLayout());
 
@@ -739,29 +736,5 @@ public class EditTaskView extends JPanel implements ComponentListener {
 	 */
 	public String getCommentsFieldText() {
 		return commentsField.getText();
-	}
-
-	@Override
-	public void componentResized(ComponentEvent e) {
-		this.getLayout().layoutContainer(this.getParent());
-
-	}
-
-	@Override
-	public void componentMoved(ComponentEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void componentShown(ComponentEvent e) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void componentHidden(ComponentEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 }
