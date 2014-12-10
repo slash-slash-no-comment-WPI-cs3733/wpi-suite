@@ -528,11 +528,7 @@ public class EditTaskController implements ActionListener {
 
 		// Compare the task info with the filled in info.
 		if (model == null) { // If we're creating a task
-			if (!allFieldsEmpty()) {
-				edited = true;
-			} else {
-				edited = false;
-			}
+			edited = true;
 		}
 		// Title.
 		else if (!model.getName().equals(etv.getTitle().getText())) {
@@ -727,16 +723,4 @@ public class EditTaskController implements ActionListener {
 		return etv;
 	}
 
-	/**
-	 * returns whether or not the fields are empty
-	 * 
-	 * @return true if all fields are empty and stages is set to default stage
-	 */
-	private boolean allFieldsEmpty() {
-
-		return etv.getTitle().getText().equals("")
-				&& etv.getDescription().getText().equals("")
-				&& etv.getEstEffort().getText().equals("")
-				&& etv.getActEffort().getText().equals("");
-	}
 }

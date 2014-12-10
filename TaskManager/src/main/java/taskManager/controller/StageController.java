@@ -87,10 +87,6 @@ public class StageController implements DropAreaSaveListener,
 							comments++;
 						}
 					}
-					int users = task.getAssigned().size();
-					if (users > 99) {
-
-					}
 
 					TaskView tkv = new TaskView(task.getName(),
 							task.getDueDate(), task.getAssigned().size(),
