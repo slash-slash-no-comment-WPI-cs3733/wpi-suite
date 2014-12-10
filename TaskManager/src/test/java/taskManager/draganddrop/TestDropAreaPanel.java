@@ -27,6 +27,9 @@ import taskManager.JanewayModule;
 import taskManager.controller.WorkflowController;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
+
+import com.db4o.ext.DatabaseClosedException;
+
 import edu.wpi.cs.wpisuitetng.network.Request;
 
 /**
@@ -76,8 +79,9 @@ public class TestDropAreaPanel {
 			public void uncaughtException(Thread th, Throwable ex) {
 				// ignore networking stuff
 				StackTraceElement[] x = ex.getStackTrace();
-				if (!x[0].getClassName().equals(Request.class.getName())) {
-					ex.printStackTrace();
+				if (!x[0].getClassName().equals(Request.class.getName())
+						&& !(ex instanceof DatabaseClosedException)) {
+
 					shouldFail = true;
 				}
 			}

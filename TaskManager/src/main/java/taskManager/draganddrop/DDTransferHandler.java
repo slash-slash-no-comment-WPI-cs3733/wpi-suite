@@ -23,7 +23,6 @@ import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
 import taskManager.view.TaskView;
-import taskManager.view.ToolbarView;
 
 /**
  * 
@@ -133,6 +132,9 @@ public class DDTransferHandler extends TransferHandler {
 			// Create placeholder
 			DropAreaPanel.generatePlaceholder(comp.getSize());
 
+			// Set toolbar icon state
+			ToolbarController.getInstance().setIconState(comp);
+
 			// Initiate the drag
 			super.exportAsDrag(comp, e, action);
 		}
@@ -160,12 +162,7 @@ public class DDTransferHandler extends TransferHandler {
 		// Show the component
 		comp.setVisible(true);
 
-		// Set icons disabled.
-		ToolbarController.getInstance().getView().setArchiveEnabled(false);
-		ToolbarController.getInstance().getView().setDeleteEnabled(false);
-		// Set icon back to the archive icon.
-		ToolbarController.getInstance().getView()
-				.setArchiveIcon(ToolbarView.ARCHIVE);
+		// Reset icons
+		ToolbarController.getInstance().resetIconState();
 	}
-
 }
