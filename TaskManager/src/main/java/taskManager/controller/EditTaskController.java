@@ -153,7 +153,7 @@ public class EditTaskController implements ActionListener {
 		}
 		etv.getUsersList().addAllToList(assignedUserNames);
 
-		// Enable save button when editing a task.
+		// Disable save button until user starts making edits.
 		etv.setSaveEnabled(false);
 
 		// Clear the activities list.

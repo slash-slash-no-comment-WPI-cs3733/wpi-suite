@@ -93,7 +93,7 @@ public class ToolbarView extends JToolBar {
 		createStage.setMaximumSize(new Dimension(160, 58));
 		createStage.addActionListener(controller);
 
-		statistics = new JButton("<html>Statistics</html>");
+		statistics = new JButton("<html>Reports</html>");
 		statistics.setName(REPORT);
 		statistics.setMaximumSize(new Dimension(160, 58));
 		statistics.addActionListener(controller);
@@ -158,7 +158,7 @@ public class ToolbarView extends JToolBar {
 		buttons.add(Box.createHorizontalGlue());
 		buttons.add(createTask);
 		buttons.add(createStage);
-		// buttons.add(statistics);
+		buttons.add(statistics);
 		buttons.add(archiveCheckBox);
 		buttons.add(Box.createHorizontalGlue());
 

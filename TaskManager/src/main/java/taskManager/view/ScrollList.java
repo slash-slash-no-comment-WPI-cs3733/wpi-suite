@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
+import taskManager.controller.ReportsManager;
 import taskManager.controller.TaskInputController;
 
 /**
@@ -227,6 +228,17 @@ public class ScrollList extends JPanel {
 	 *            the listener to be added to the list
 	 */
 	public void setController(TaskInputController listener) {
+		jl.addListSelectionListener(listener);
+		jl.addPropertyChangeListener(listener);
+	}
+
+	/**
+	 * sets the listener for the JList
+	 * 
+	 * @param listener
+	 *            the listener to be added to the list
+	 */
+	public void setController(ReportsManager listener) {
 		jl.addListSelectionListener(listener);
 		jl.addPropertyChangeListener(listener);
 	}
