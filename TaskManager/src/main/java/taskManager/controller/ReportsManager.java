@@ -49,7 +49,7 @@ import taskManager.view.ReportsToolbarView;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
- * Code extended from BarChartDemo1.java
+ * Code extended from BarChartDemo1.java at www.jfree.org/jfreechart
  *
  * @author Joseph Blackman
  * @version Nov 29, 2014
@@ -58,6 +58,7 @@ public class ReportsManager implements ActionListener, ChangeListener,
 		ListSelectionListener {
 
 	private ReportsToolbarView rtv;
+	//
 	private ArrayList<String> toRemove = new ArrayList<String>();
 
 	/**
@@ -82,7 +83,7 @@ public class ReportsManager implements ActionListener, ChangeListener,
 		 *
 		 * @param o
 		 *            comparison object
-		 * 
+		 *
 		 * @return int compare value
 		 */
 		@Override
@@ -155,11 +156,12 @@ public class ReportsManager implements ActionListener, ChangeListener,
 	 * @param stage
 	 *            The stage to consider as the completion stage
 	 */
-	public void findVelocityData(Set<String> users, Instant start2,
-			Instant end2, boolean averageCredit, StageModel stage) {
+	public void findVelocityData(Set<String> users, Instant _start,
+			Instant _end, boolean averageCredit, StageModel stage) {
 		// adjust for EST.
-		start = start2.minusSeconds(18000);
-		end = end2.minusSeconds(18000);
+		// Try using Instant.atOffset(ZoneOffset) instead.
+		start = _start.minusSeconds(18000);
+		end = _end.minusSeconds(18000);
 
 		if (!workflow.getStages().contains(stage)) {
 			throw new IllegalArgumentException("Invalid stage");
@@ -179,12 +181,6 @@ public class ReportsManager implements ActionListener, ChangeListener,
 
 					completed = Instant.ofEpochMilli(setToEST(
 							activity.getDateCreated()).getTime());
-
-					if (completed.compareTo(start) < 0
-							|| completed.compareTo(end) > 0) {
-						completed = null;
-						// Pretend as if we didn't find the completion event.
-					}
 				}
 				if (foundMoveEvent) {
 					break;
@@ -194,10 +190,11 @@ public class ReportsManager implements ActionListener, ChangeListener,
 				// If the task has no move events, then it was created in the
 				// completion stage. This is likely a retroactive completion, so
 				// we'll assume that the task was completed on its due date.
+				// Try using Instant.atOffset(ZoneOffset) instead.
 				completed = Instant.ofEpochMilli(setToEST(task.getDueDate())
 						.getTime());
 			}
-			if (completed != null) {
+			if (completed != null && completed.isAfter(start) && completed.isBefore(end)) {
 				for (String username : task.getAssigned()) {
 					if (users.contains(username)) {
 						Double effort = (double) task.getEstimatedEffort();
@@ -209,12 +206,12 @@ public class ReportsManager implements ActionListener, ChangeListener,
 								+ completed + " effort: " + effort);
 					}
 				}
-			} // End if inDateRange
-		} // End for TaskModel
+			} // End if (inDateRange)
+		} // End for (TaskModel)
 	}
 
 	/**
-	 * 
+	 *
 	 * Convert the given date to EST assuming we are 5 hours behind.
 	 *
 	 * @param original
@@ -222,6 +219,7 @@ public class ReportsManager implements ActionListener, ChangeListener,
 	 * @return the converted Date object.
 	 */
 	public Date setToEST(Date original) {
+  	// Try using Instant.atOffset(ZoneOffset) instead.
 		Calendar cal = Calendar.getInstance();
 		Date created = original;
 		cal.setTime(created);
@@ -242,7 +240,7 @@ public class ReportsManager implements ActionListener, ChangeListener,
 	 *            The interval to group the data by.
 	 */
 	public void generateDataset(boolean teamData, Period interval) {
-		if (data == null) {
+		if (data == null || data.isEmpty()) {
 			throw new IllegalStateException(
 					"Tried to generate a dataset without getting any data first!");
 		}
@@ -256,31 +254,25 @@ public class ReportsManager implements ActionListener, ChangeListener,
 			intervalName = "Month ";
 		}
 		int seriesNum = 0;
-		// We get this user to add some 0s to, rather than creating a "" user.
-		String dummyUsername = "User";
-		if (!data.isEmpty()) {
-			dummyUsername = data.iterator().next().username;
-		}
-		// Populate the buckets with names before-hand.
-		for (Instant i = start; i.compareTo(end) < 0; i = i.plus(interval)) {
+		// We get this user to add some 0s to, rather than creating a "" user, which would appear.
+		// This is run in case one of the intervals has no data, we still want it to appear in the chart.
+		String dummyUsername = data.iterator().next().username;
+		for (Instant i = start; i.isBefore(end); i = i.plus(interval)) {
 			dataset.addValue(0, dummyUsername, intervalName + (seriesNum + 1));
 			seriesNum++;
 		}
-
 		System.out.println("Data size: " + data.size());
 
-		// Iterate through each userdata.
+    // Since the data is sorted, we'll update the boundary and series number as we iterate through the data.
+    seriesNum = 0;
+    Instant boundary = start.plus(interval);
 		for (UserData userData : data) {
-			Instant boundary = start.plus(interval);
-			seriesNum = 0;
-
-			// continue until we find the seriesNum and boundary.
-			do {
-				boundary = boundary.plus(interval);
-				seriesNum++;
-			} while ((boundary.getEpochSecond() - userData.completion
-					.getEpochSecond()) < 86400); // while the difference is less
-													// than a full day.
+  		// If this piece of data is not within the current interval, move to the next interval.
+  		if (userData.completion.isAfter(boundary)) {
+    		userData.completion.plus(interval);
+    		seriesNum++;
+    		continue;
+    	}
 
 			// set the name depending on the teamData value.
 			String keyname = "Team";
@@ -288,26 +280,12 @@ public class ReportsManager implements ActionListener, ChangeListener,
 				keyname = userData.username;
 			}
 
-			// either add or increment the effort value.
-			boolean hasKey = true;
-			try {
-				dataset.getValue(keyname, intervalName + (seriesNum));
-			} catch (UnknownKeyException e) {
-				hasKey = false;
-			}
-
-			if (hasKey) {
-				dataset.incrementValue(userData.effort, keyname, intervalName
-						+ (seriesNum));
-				System.out.println("Increment: +" + userData.effort + " name: "
-						+ keyname + " interval: " + seriesNum);
-				System.out.println("Boundary: " + boundary);
-			} else {
-				dataset.addValue(userData.effort, keyname, intervalName
-						+ (seriesNum));
-				System.out.println("Add: +" + userData.effort + " name: "
-						+ keyname + " interval: " + seriesNum);
-				System.out.println("Boundary: " + boundary);
+      // It's safe to use incrementValue here, since we've already created all of the buckets.
+			dataset.incrementValue(userData.effort, keyname, intervalName
+					+ (seriesNum));
+			System.out.println("Increment: +" + userData.effort + " name: "
+					+ keyname + " interval: " + seriesNum);
+			System.out.println("Boundary: " + boundary);
 			}
 		}
 		if (dataset == null) {
@@ -324,7 +302,7 @@ public class ReportsManager implements ActionListener, ChangeListener,
 	 *            The label for the x axis
 	 * @param ylabel
 	 *            The label for the y axis
-	 * 
+	 *
 	 * @return a JPanel containing the chart
 	 */
 	public JPanel createChart(String title, String xlabel, String ylabel) {
@@ -363,7 +341,7 @@ public class ReportsManager implements ActionListener, ChangeListener,
 	}
 
 	/**
-	 * 
+	 *
 	 * Update the stages dropdown for the view.
 	 *
 	 */
@@ -378,7 +356,7 @@ public class ReportsManager implements ActionListener, ChangeListener,
 	}
 
 	/**
-	 * 
+	 *
 	 * Update the users view.
 	 *
 	 */
@@ -395,9 +373,9 @@ public class ReportsManager implements ActionListener, ChangeListener,
 	}
 
 	/**
-	 * 
+	 *
 	 * copied from edittaskcontroller.
-	 * 
+	 *
 	 * adds selected usernames to the assigned users list and removes them from
 	 * the project user list.
 	 */
@@ -426,9 +404,9 @@ public class ReportsManager implements ActionListener, ChangeListener,
 	}
 
 	/**
-	 * 
+	 *
 	 * copied from edittaskcontroller.
-	 * 
+	 *
 	 * removes selected usernames from the assigned users list and adds them to
 	 * the project user list. marks selected usernames to be removed from the
 	 * model
