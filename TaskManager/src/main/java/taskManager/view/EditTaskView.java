@@ -142,8 +142,8 @@ public class EditTaskView extends JPanel {
 		this.mode = mode;
 		window = new JPanel(new MigLayout());
 
-		this.setLayout(new FlowLayout());
-
+		//this.setLayout(new FlowLayout());
+		this.setLayout(new MigLayout("center"));
 		final Dimension panelSize = getPreferredSize();
 		panelSize.width = 1300; // TODO
 		panelSize.height = 650; // Decide size
@@ -374,6 +374,7 @@ public class EditTaskView extends JPanel {
 
 		EditSaveCancel.add(save);
 		EditSaveCancel.add(cancel);
+		
 		if (this.mode == Mode.EDIT) {
 			EditSaveCancel.add(delete);
 			EditSaveCancel.add(archive);
