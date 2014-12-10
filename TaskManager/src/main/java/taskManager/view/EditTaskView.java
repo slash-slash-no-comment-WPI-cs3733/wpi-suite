@@ -381,7 +381,7 @@ public class EditTaskView extends JPanel {
 		window.add(Spacer, "dock north");
 		window.add(BasicInfo, "h 80%, w 30%");
 		window.add(Users, "h 80%, w 30%, gapleft 10px");
-		window.add(Activities, "h 80%, w 25%, gapleft 10px");
+		//window.add(Activities, "h 80%, w 25%, gapleft 10px");
 		window.add(EditSaveCancel, "dock south, h 10%");
 		
 		//Add the window to EditTaskView
