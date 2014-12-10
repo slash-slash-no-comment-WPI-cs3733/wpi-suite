@@ -94,17 +94,12 @@ public class EditTaskController implements ActionListener {
 	 */
 	public EditTaskController(TaskModel model) {
 		etv = new EditTaskView(Mode.EDIT);
+		etv.setName(model.getName());
 		this.model = model;
 		this.taskID = model.getID();
 
 		etv.setController(this);
 		etv.setFieldController(new TaskInputController(etv));
-
-		// uses the title field to hold the unique id
-		etv.getTitle().setName(this.model.getID());
-
-		// uses description field to hold the name of the stage
-		etv.getDescription().setName(this.model.getStage().getName());
 
 		// populate editable fields with this tasks info
 		etv.setTitle(model.getName());

@@ -8,10 +8,11 @@
  *******************************************************************************/
 package taskManager.controller;
 
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -27,12 +28,18 @@ import taskManager.view.EditTaskView;
  * @author Stefan Alexander
  *
  */
-public class TaskInputController implements KeyListener, FocusListener,
+public class TaskInputController implements KeyListener, MouseListener,
 		PopupMenuListener, ListSelectionListener {
 
 	private final EditTaskView etv;
 	private boolean addUsersSelected = false;
 	private boolean removeUsersSelected = false;
+	private Component fieldWithFocus;
+
+	boolean titleValid = true;
+	boolean descriptionValid = true;
+	boolean estEffortValid = true;
+	boolean actEffortValid = true;
 
 	/**
 	 * The controller to validate input when editing a task
@@ -42,7 +49,7 @@ public class TaskInputController implements KeyListener, FocusListener,
 	 */
 	public TaskInputController(EditTaskView etv) {
 		this.etv = etv;
-		checkFields();
+		fieldWithFocus = null;
 	}
 
 	/**
@@ -56,10 +63,10 @@ public class TaskInputController implements KeyListener, FocusListener,
 		addUsersSelected = !etv.getProjectUsersList().isSelectionEmpty();
 		removeUsersSelected = !etv.getUsersList().isSelectionEmpty();
 
-		boolean titleValid = true;
-		boolean descriptionValid = true;
-		boolean estEffortValid = true;
-		boolean actEffortValid = true;
+		titleValid = true;
+		descriptionValid = true;
+		estEffortValid = true;
+		actEffortValid = true;
 		// checks each required field and determines if it meets the
 		// requirements for that field
 
@@ -74,43 +81,70 @@ public class TaskInputController implements KeyListener, FocusListener,
 		// Estimated Effort
 		if (!etv.getEstEffort().getText().isEmpty()) {
 			try {
-
-				if (Integer.parseInt(etv.getEstEffort().getText()) <= 0) {
+				if (Integer.parseInt(etv.getEstEffort().getText()) <= 0
+						|| Integer.parseInt(etv.getEstEffort().getText()) > 9999) {
 					estEffortValid = false;
-					etv.setEstEffortErrorText("Must be a positive integer");
-				} else if (Integer.parseInt(etv.getEstEffort().getText()) > 9999) {
-					estEffortValid = false;
-					etv.setEstEffortErrorText("Must be between 1 and 9999");
 				}
 			} catch (NumberFormatException e) {
 				estEffortValid = false;
-				etv.setEstEffortErrorText("Must be a positive integer");
 			}
 		}
 		if (!etv.getActEffort().getText().isEmpty()) {
 			// Actual Effort
 			try {
-				if (Integer.parseInt(etv.getActEffort().getText()) < 0) {
+				if (Integer.parseInt(etv.getActEffort().getText()) < 0
+						|| Integer.parseInt(etv.getActEffort().getText()) > 9999) {
 					actEffortValid = false;
-					etv.setActualEffortErrorText("Can not be less than zero");
-				} else if (Integer.parseInt(etv.getActEffort().getText()) > 9999) {
-					actEffortValid = false;
-					etv.setActualEffortErrorText("Must be between 0 and 9999");
 				}
 			} catch (NumberFormatException e) {
 				actEffortValid = false;
-				etv.setActualEffortErrorText("Must be a non negative integer");
 			}
 		}
 
-		// display the errors
-		etv.setTitleErrorVisible(!titleValid);
-		etv.setDescriptionErrorVisible(!descriptionValid);
-		etv.setEstEffortErrorVisible(!estEffortValid);
-		etv.setActualEffortErrorVisible(!actEffortValid);
+		etv.setTitleFieldRed(!titleValid);
+		etv.setDescriptionFieldRed(!descriptionValid);
+		etv.setEstEffortFieldRed(!estEffortValid);
+		etv.setActEffortFieldRed(!actEffortValid);
 
 		return titleValid && descriptionValid && estEffortValid
 				&& actEffortValid;
+	}
+
+	/**
+	 * determines if a field that can be validated has been clicked If it has,
+	 * set the fieldWithFocus variable to that field If something else has been
+	 * clicked, set the fieldWithFocus variable to null
+	 * 
+	 * @param e
+	 *            the mouse event
+	 */
+	private void checkFocus(MouseEvent e) {
+		setAllErrorsInvisible();
+		if (e.getComponent() != null && e.getComponent().getName() != null) {
+			System.out.println(e.getComponent().getName() + " was clicked");
+			if (e.getComponent().getName().equals(EditTaskView.TITLE)
+					|| e.getComponent().getName().equals(EditTaskView.DESCRIP)
+					|| e.getComponent().getName()
+							.equals(EditTaskView.ACT_EFFORT)
+					|| e.getComponent().getName()
+							.equals(EditTaskView.EST_EFFORT)) {
+				fieldWithFocus = e.getComponent();
+			} else {
+				fieldWithFocus = null;
+			}
+		} else {
+			fieldWithFocus = null;
+		}
+	}
+
+	/**
+	 * sets all 4 error bubbles to invisible
+	 */
+	private void setAllErrorsInvisible() {
+		etv.setActualEffortErrorVisible(false);
+		etv.setEstEffortErrorVisible(false);
+		etv.setDescriptionErrorVisible(false);
+		etv.setTitleErrorVisible(false);
 	}
 
 	/**
@@ -134,6 +168,27 @@ public class TaskInputController implements KeyListener, FocusListener,
 	 * validate the inputs
 	 */
 	public void validate() {
+
+		if (!this.checkFields() && fieldWithFocus != null) {
+			switch (fieldWithFocus.getName()) {
+			case EditTaskView.TITLE:
+				etv.setTitleErrorVisible(!titleValid);
+				break;
+			case EditTaskView.DESCRIP:
+				etv.setDescriptionErrorVisible(!descriptionValid);
+				break;
+			case EditTaskView.EST_EFFORT:
+				etv.setEstEffortErrorVisible(!estEffortValid);
+				break;
+			case EditTaskView.ACT_EFFORT:
+				etv.setActualEffortErrorVisible(!actEffortValid);
+				break;
+			}
+		} else {
+			setAllErrorsInvisible();
+		}
+
+		// enable or disable the appropriate buttons
 		etv.setSaveEnabled(this.checkFields());
 		etv.setAddUserEnabled(addUsersSelected);
 		etv.setRemoveUserEnabled(removeUsersSelected);
@@ -142,26 +197,16 @@ public class TaskInputController implements KeyListener, FocusListener,
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-
+		validate();
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
+		validate();
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		validate();
-	}
-
-	@Override
-	public void focusGained(FocusEvent e) {
-		validate();
-	}
-
-	@Override
-	public void focusLost(FocusEvent e) {
 		validate();
 	}
 
@@ -183,6 +228,37 @@ public class TaskInputController implements KeyListener, FocusListener,
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		validate();
+
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		checkFocus(e);
+		validate();
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		checkFocus(e);
+		validate();
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
 
 	}
 
