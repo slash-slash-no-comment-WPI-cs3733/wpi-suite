@@ -25,6 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import taskManager.JanewayModule;
+import taskManager.controller.ToolbarController;
 import taskManager.controller.WorkflowController;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
@@ -58,7 +59,7 @@ public class TestTaskPreview {
 		frame = new JFrame();
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		panel.add(JanewayModule.getToolV());
+		panel.add(ToolbarController.getInstance().getView());
 		panel.add(WorkflowController.getInstance().getView());
 		frame.add(panel);
 
