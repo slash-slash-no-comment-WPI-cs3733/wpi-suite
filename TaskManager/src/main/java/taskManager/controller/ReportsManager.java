@@ -481,7 +481,7 @@ public class ReportsManager implements ActionListener, ChangeListener,
 						stageStr);
 				findVelocityData(users, startCal, endCal, false, stage);
 				generateDataset(false, Period.ofDays(1));
-				JPanel chart = createChart("Test", "Time", "Effort");
+				JPanel chart = createChart("Effort per Day", "Time", "Effort");
 				TabPaneController.getInstance().addTab("Graph", chart, true);
 				TabPaneController.getInstance().getView()
 						.setSelectedComponent(chart);
