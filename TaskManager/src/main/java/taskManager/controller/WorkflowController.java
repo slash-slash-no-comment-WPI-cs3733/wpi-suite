@@ -131,11 +131,15 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 *
 	 */
 	public void fetch() {
-		model.update();
+		WorkflowModel.update();
 	}
 
+	/**
+	 * Requests the list of users from the server
+	 *
+	 */
 	public void fetchUsers() {
-		model.updateUsers();
+		WorkflowModel.updateUsers();
 	}
 
 	/**
@@ -147,12 +151,15 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 			WorkflowController.reloadInformation = false;
 
 			hasNewStageView = true;
-			StageView newStageV = new StageView("");
+			final StageView newStageV = new StageView("");
 			newStageV.setController(new StageController(newStageV, null, true));
 			newStageV.enableTitleEditing(true);
 			PromptSupport
 					.setPrompt("New Stage Name", newStageV.getLabelField());
 			view.addStageView(newStageV);
+
+			removeTaskInfos(false);
+
 			view.revalidate();
 			view.repaint();
 		}
@@ -174,8 +181,8 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		if (!(panel instanceof StageView)) {
 			return;
 		}
-		StageController tc = ((StageView) panel).getController();
-		boolean changed = tc.moveStageToIndex(index);
+		final StageController tc = ((StageView) panel).getController();
+		final boolean changed = tc.moveStageToIndex(index);
 
 		if (changed) {
 			model.save();

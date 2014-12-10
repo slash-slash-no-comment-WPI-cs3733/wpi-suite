@@ -54,7 +54,7 @@ public class TestStageController {
 		Dimension size = new Dimension(1500, 1000);
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		panel.add(JanewayModule.getToolV());
+		panel.add(ToolbarController.getInstance().getView());
 		panel.add(WorkflowController.getInstance().getView());
 		panel.setSize(size);
 		panel.setPreferredSize(size);

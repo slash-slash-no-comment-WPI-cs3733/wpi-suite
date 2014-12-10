@@ -13,11 +13,12 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
+import taskManager.controller.StageController;
 import taskManager.controller.TabPaneController;
 import taskManager.controller.ToolbarController;
 import taskManager.controller.WorkflowController;
+import taskManager.draganddrop.DDTransferHandler;
 import taskManager.model.StageModel;
-import taskManager.view.ToolbarView;
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
 import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
@@ -33,9 +34,7 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 public class JanewayModule implements IJanewayModule {
 
 	// The tabs used by this module
-
-	private final ArrayList<JanewayTabModel> tabs;
-	private static ToolbarView toolV;
+	private final List<JanewayTabModel> tabs;
 	public static User[] users = {};
 	public static String currentUser = null; // the username of the current user
 
@@ -43,13 +42,11 @@ public class JanewayModule implements IJanewayModule {
 	 * Construct a blank tab
 	 */
 	public JanewayModule() {
-		toolV = new ToolbarView();
-		toolV.setController(new ToolbarController());
 
 		tabs = new ArrayList<JanewayTabModel>();
-		JanewayTabModel tab = new JanewayTabModel("Task Manager",
-				new ImageIcon(), getToolV(), TabPaneController.getInstance()
-						.getView());
+		final JanewayTabModel tab = new JanewayTabModel("Task Manager",
+				new ImageIcon(), ToolbarController.getInstance().getView(),
+				TabPaneController.getInstance().getView());
 		tabs.add(tab);
 
 		// Add default stages
@@ -66,10 +63,13 @@ public class JanewayModule implements IJanewayModule {
 	 *
 	 */
 	public static void reset() {
-		toolV = new ToolbarView();
-		toolV.setController(new ToolbarController());
+
+		StageController.anyChangeTitleOut = false;
+		DDTransferHandler.dragSaved = false;
+		WorkflowController.reloadInformation = true;
 
 		// Reset singletons
+		ToolbarController.getInstance().reset();
 		TabPaneController.getInstance().reset();
 		WorkflowController.getInstance().reset();
 	}
@@ -90,13 +90,13 @@ public class JanewayModule implements IJanewayModule {
 		return tabs;
 	}
 
-	/**
-	 * @return the toolV
+	/*
+	 * If we're on OS X
+	 * 
+	 * @return If we're using a mac.
 	 */
-	public static ToolbarView getToolV() {
-		if (toolV == null) {
-			throw new IllegalStateException("JanewayModule not initialized");
-		}
-		return toolV;
+	public static boolean isOnMac() {
+		final String osName = System.getProperty("os.name").toLowerCase();
+		return osName.startsWith("mac os x");
 	}
 }

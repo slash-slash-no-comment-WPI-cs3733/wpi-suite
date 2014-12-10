@@ -43,10 +43,8 @@ public class TabPaneView extends JTabbedPane {
 		this.setSize(new Dimension(500, 500));
 
 		// Add the scrollable workflow
-		JScrollPane scroll = new JScrollPane(WorkflowController.getInstance()
-				.getView());
-		scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-		scroll.setBorder(BorderFactory.createLineBorder(Color.black));
+		final JScrollPane scroll = new JScrollPane(WorkflowController
+				.getInstance().getView());
 
 		this.addTab("Workflow", new ImageIcon(), scroll, "Workflow");
 	}

@@ -40,7 +40,7 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 	 *            If the connection should be kept
 	 */
 	public FetchWorkflowObserver(boolean keepOpen) {
-		this.model = WorkflowModel.getInstance();
+		model = WorkflowModel.getInstance();
 		this.keepOpen = keepOpen;
 	}
 
@@ -54,7 +54,7 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 		String body = response.getBody();
 		System.out.println("Response:" + body);
 
-		WorkflowModel[] workflows = AbstractJsonableModel.fromJson(body,
+		final WorkflowModel[] workflows = AbstractJsonableModel.fromJson(body,
 				WorkflowModel[].class);
 		if (workflows == null) {
 			System.out.println("Workflow not found on server");
@@ -63,7 +63,7 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 			return;
 		}
 
-		WorkflowModel workflow = workflows[0];
+		final WorkflowModel workflow = workflows[0];
 		model.makeIdenticalTo(workflow);
 		model.rebuildAllRefs();
 
@@ -103,7 +103,7 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 	 */
 	private void restartConnection() {
 		if (WorkflowModel.alive && keepOpen) {
-			WorkflowModel.getInstance().update();
+			WorkflowModel.update();
 		}
 	}
 

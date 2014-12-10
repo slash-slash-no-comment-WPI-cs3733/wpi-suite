@@ -28,8 +28,4 @@ public class Colors {
 	public static final Color SHADOW_COLOR = Color.BLACK;
 	public static final Color STAGE = Color.decode("#C8DDF1");
 
-	public Colors() {
-
-	}
-
 }
