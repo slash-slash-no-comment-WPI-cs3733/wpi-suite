@@ -23,15 +23,21 @@ import taskManager.view.TaskInfoPreviewView;
  * @version Nov 21, 2014
  */
 public class TaskInfoPreviewController implements ActionListener {
-	private TaskController taskC;
+	private final TaskController taskC;
 
+	/**
+	 * Constructor for the controller for the task preview view
+	 *
+	 * @param taskC
+	 *            the controller for the task
+	 */
 	public TaskInfoPreviewController(TaskController taskC) {
 		this.taskC = taskC;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Object button = e.getSource();
+		final Object button = e.getSource();
 		if (button instanceof JButton) {
 			switch (((JButton) button).getName()) {
 			case TaskInfoPreviewView.EDIT:

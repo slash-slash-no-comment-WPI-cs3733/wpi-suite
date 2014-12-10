@@ -13,8 +13,6 @@ import java.util.List;
 
 import edu.wpi.cs.wpisuitetng.Session;
 import edu.wpi.cs.wpisuitetng.database.Data;
-import edu.wpi.cs.wpisuitetng.exceptions.BadRequestException;
-import edu.wpi.cs.wpisuitetng.exceptions.ConflictException;
 import edu.wpi.cs.wpisuitetng.exceptions.NotFoundException;
 import edu.wpi.cs.wpisuitetng.exceptions.WPISuiteException;
 import edu.wpi.cs.wpisuitetng.modules.EntityManager;
@@ -55,8 +53,7 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 	 *      java.lang.String)
 	 */
 	@Override
-	public T makeEntity(Session s, String content) throws BadRequestException,
-			ConflictException, WPISuiteException {
+	public T makeEntity(Session s, String content) {
 		final T newModel = AbstractJsonableModel.fromJson(content, type);
 		db.save(newModel, s.getProject());
 
@@ -77,7 +74,7 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 		final T[] tasks = response.toArray((T[]) Array.newInstance(type, 0));
 
 		if (tasks.length < 1 || tasks[0] == null) {
-  			throw new NotFoundException("Entity not found");
+			throw new NotFoundException("Entity not found");
 		}
 		return tasks;
 	}
@@ -88,7 +85,7 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 	 * .Session)
 	 */
 	@Override
-	public T[] getAll(Session s) throws WPISuiteException {
+	public T[] getAll(Session s) {
 		final List<Model> tasks;
 		try {
 			tasks = db.retrieveAll(type.newInstance(), s.getProject());
@@ -116,7 +113,7 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 		if (existingModels.size() < 1 || existingModels.get(0) == null) {
 			save(s, newModel); // if it doesn't exist, save it
 		} else {
-			T existingModel = (T) existingModels.get(0);
+			final T existingModel = (T) existingModels.get(0);
 			existingModel.makeIdenticalTo(newModel);
 			save(s, existingModel);
 		}
@@ -129,7 +126,7 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 	 * .Session, edu.wpi.cs.wpisuitetng.modules.Model)
 	 */
 	@Override
-	public void save(Session s, T model) throws WPISuiteException {
+	public void save(Session s, T model) {
 		db.save(model, s.getProject());
 
 	}
@@ -150,8 +147,7 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 	 * wpisuitetng.Session, java.lang.String[])
 	 */
 	@Override
-	public String advancedGet(Session s, String[] args)
-			throws WPISuiteException {
+	public String advancedGet(Session s, String[] args) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -162,7 +158,7 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 	 * .Session)
 	 */
 	@Override
-	public void deleteAll(Session s) throws WPISuiteException {
+	public void deleteAll(Session s) {
 		// TODO Auto-generated method stub
 
 	}
@@ -171,7 +167,7 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 	 * @see edu.wpi.cs.wpisuitetng.modules.EntityManager#Count()
 	 */
 	@Override
-	public int Count() throws WPISuiteException {
+	public int Count() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
@@ -181,8 +177,7 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 	 * wpisuitetng.Session, java.lang.String[], java.lang.String)
 	 */
 	@Override
-	public String advancedPut(Session s, String[] args, String content)
-			throws WPISuiteException {
+	public String advancedPut(Session s, String[] args, String content) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -193,8 +188,7 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 	 * wpisuitetng.Session, java.lang.String, java.lang.String)
 	 */
 	@Override
-	public String advancedPost(Session s, String string, String content)
-			throws WPISuiteException {
+	public String advancedPost(Session s, String string, String content) {
 		// TODO Auto-generated method stub
 		return null;
 	}

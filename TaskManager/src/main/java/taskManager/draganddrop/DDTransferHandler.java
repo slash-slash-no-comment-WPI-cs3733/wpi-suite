@@ -18,7 +18,7 @@ import java.awt.image.BufferedImage;
 import javax.swing.JComponent;
 import javax.swing.TransferHandler;
 
-import taskManager.JanewayModule;
+import taskManager.controller.ToolbarController;
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
@@ -37,10 +37,10 @@ public class DDTransferHandler extends TransferHandler {
 	private static final long serialVersionUID = -7859524821673270515L;
 
 	// DataFlavor representing a TaskView being dragged
-	private static DataFlavor taskFlavor;
+	private static DataFlavor taskFlavor = null;
 
 	// DataFlavor representing a StageView being dragged
-	private static DataFlavor stageFlavor;
+	private static DataFlavor stageFlavor = null;
 
 	public static boolean dragSaved = false;
 
@@ -123,8 +123,8 @@ public class DDTransferHandler extends TransferHandler {
 		if (!FetchWorkflowObserver.ignoreAllResponses) {
 			FetchWorkflowObserver.ignoreAllResponses = true;
 			// Create drag image
-			Image image = new BufferedImage(comp.getWidth(), comp.getHeight(),
-					BufferedImage.TYPE_INT_ARGB);
+			final Image image = new BufferedImage(comp.getWidth(),
+					comp.getHeight(), BufferedImage.TYPE_INT_ARGB);
 			Graphics g = image.getGraphics();
 			g = g.create();
 			comp.paint(g);
@@ -149,11 +149,11 @@ public class DDTransferHandler extends TransferHandler {
 		// Resume updating from the server
 		FetchWorkflowObserver.ignoreAllResponses = false;
 
-		if (DDTransferHandler.dragSaved == false) {
+		if (!DDTransferHandler.dragSaved) {
 			// update now in case we missed anything while dragging
 			// (if the drag saved, our changes overwrite anything we may have
 			// missed)
-			WorkflowModel.getInstance().updateNow();
+			WorkflowModel.updateNow();
 		}
 		DDTransferHandler.dragSaved = false;
 
@@ -161,10 +161,11 @@ public class DDTransferHandler extends TransferHandler {
 		comp.setVisible(true);
 
 		// Set icons disabled.
-		JanewayModule.getToolV().setArchiveEnabled(false);
-		JanewayModule.getToolV().setDeleteEnabled(false);
+		ToolbarController.getInstance().getView().setArchiveEnabled(false);
+		ToolbarController.getInstance().getView().setDeleteEnabled(false);
 		// Set icon back to the archive icon.
-		JanewayModule.getToolV().setArchiveIcon(ToolbarView.ARCHIVE);
+		ToolbarController.getInstance().getView()
+				.setArchiveIcon(ToolbarView.ARCHIVE);
 	}
 
 }
