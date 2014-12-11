@@ -103,6 +103,10 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 *
 	 */
 	public synchronized void reloadData() {
+		reloadData(new TaskFilter());
+	}
+
+	public synchronized void reloadData(TaskFilter filter) {
 		// clear the stages previously on the view
 		this.removeChangeTitles();
 		hasNewStageView = false;
