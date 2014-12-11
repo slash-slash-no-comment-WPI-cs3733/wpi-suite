@@ -31,6 +31,7 @@ import taskManager.view.EditTaskView;
  * @author Stefan Alexander
  *
  */
+
 public class TaskInputController implements KeyListener, FocusListener,
 		PopupMenuListener, ListSelectionListener, PropertyChangeListener,
 		ItemListener {
@@ -69,53 +70,59 @@ public class TaskInputController implements KeyListener, FocusListener,
 		// requirements for that field
 
 		// Title
-		if (etv.getTitle().getText().isEmpty()) {
+		if (etv.getTitle().getText().trim().isEmpty()) {
 			titleValid = false;
 		}
 		// Description
-		if (etv.getDescription().getText().isEmpty()) {
+		if (etv.getDescription().getText().trim().isEmpty()) {
 			descriptionValid = false;
 		}
 		// Estimated Effort
 		if (!etv.getEstEffort().getText().isEmpty()) {
 			try {
-
-				if (Integer.parseInt(etv.getEstEffort().getText()) <= 0) {
+				if (Integer.parseInt(etv.getEstEffort().getText().trim()) <= 0
+						|| Integer
+								.parseInt(etv.getEstEffort().getText().trim()) > 9999) {
 					estEffortValid = false;
-					etv.setEstEffortErrorText("Must be a positive integer");
-				} else if (Integer.parseInt(etv.getEstEffort().getText()) > 9999) {
-					estEffortValid = false;
-					etv.setEstEffortErrorText("Must be between 1 and 9999");
 				}
 			} catch (NumberFormatException e) {
 				estEffortValid = false;
-				etv.setEstEffortErrorText("Must be a positive integer");
 			}
 		}
-		if (!etv.getActEffort().getText().isEmpty()) {
+		if (!etv.getActEffort().getText().trim().isEmpty()) {
 			// Actual Effort
 			try {
-				if (Integer.parseInt(etv.getActEffort().getText()) < 0) {
+				if (Integer.parseInt(etv.getActEffort().getText().trim()) < 0
+						|| Integer
+								.parseInt(etv.getActEffort().getText().trim()) > 9999) {
 					actEffortValid = false;
-					etv.setActualEffortErrorText("Can not be less than zero");
-				} else if (Integer.parseInt(etv.getActEffort().getText()) > 9999) {
-					actEffortValid = false;
-					etv.setActualEffortErrorText("Must be between 0 and 9999");
 				}
 			} catch (NumberFormatException e) {
 				actEffortValid = false;
-				etv.setActualEffortErrorText("Must be a non negative integer");
 			}
 		}
 
-		// display the errors
 		etv.setTitleErrorVisible(!titleValid);
+		etv.setTitleFieldRed(!titleValid);
 		etv.setDescriptionErrorVisible(!descriptionValid);
+		etv.setDescriptionFieldRed(!descriptionValid);
 		etv.setEstEffortErrorVisible(!estEffortValid);
+		etv.setEstEffortFieldRed(!estEffortValid);
 		etv.setActualEffortErrorVisible(!actEffortValid);
+		etv.setActEffortFieldRed(!actEffortValid);
 
 		return titleValid && descriptionValid && estEffortValid
 				&& actEffortValid;
+	}
+
+	/**
+	 * sets all 4 error bubbles to invisible
+	 */
+	private void setAllErrorsInvisible() {
+		etv.setActualEffortErrorVisible(false);
+		etv.setEstEffortErrorVisible(false);
+		etv.setDescriptionErrorVisible(false);
+		etv.setTitleErrorVisible(false);
 	}
 
 	/**
@@ -156,26 +163,16 @@ public class TaskInputController implements KeyListener, FocusListener,
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-
+		validate();
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
+		validate();
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		validate();
-	}
-
-	@Override
-	public void focusGained(FocusEvent e) {
-		validate();
-	}
-
-	@Override
-	public void focusLost(FocusEvent e) {
 		validate();
 	}
 
@@ -209,6 +206,18 @@ public class TaskInputController implements KeyListener, FocusListener,
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		validate();
+	}
+
+	@Override
+	public void focusGained(FocusEvent arg0) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void focusLost(FocusEvent e) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

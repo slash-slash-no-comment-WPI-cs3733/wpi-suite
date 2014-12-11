@@ -49,7 +49,7 @@ public class ActivityView extends JPanel {
 		date.setName(MESSAGE_DATE);
 
 		// Content of the activity
-		message = new JTextArea(14, 22);
+		message = new JTextArea(12, 24);
 		message.setName(MESSAGE_BODY);
 		message.setLineWrap(true);
 		message.setWrapStyleWord(true);
@@ -58,7 +58,7 @@ public class ActivityView extends JPanel {
 		messageScrollPane
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		messageScrollPane
-				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 
 		setLayout(new GridBagLayout());
 

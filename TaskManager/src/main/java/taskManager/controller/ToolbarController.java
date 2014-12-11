@@ -32,6 +32,7 @@ import taskManager.draganddrop.DDTransferHandler;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
+import taskManager.view.ReportsView;
 import taskManager.view.StageView;
 import taskManager.view.TaskView;
 import taskManager.view.ToolbarView;
@@ -174,9 +175,11 @@ public class ToolbarController extends DropTargetAdapter implements
 			case ToolbarView.CREATE_STAGE:
 				// add a new stage from workflow controller
 				WorkflowController.getInstance().addStageToView();
-
 				break;
 			case ToolbarView.REPORT:
+				ReportsView rtv = new ReportsView();
+				rtv.setController(new ReportsManager(rtv));
+				TabPaneController.getInstance().addReportsTab(rtv);
 				break;
 			}
 		}
