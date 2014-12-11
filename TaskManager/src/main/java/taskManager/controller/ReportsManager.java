@@ -334,9 +334,8 @@ public class ReportsManager implements ActionListener, ChangeListener,
 				);
 
 		final ChartPanel chartPanel = new ChartPanel(chart, false);
-		chartPanel.setMaximumDrawWidth(2880);
+		chartPanel.setMaximumDrawHeight(2880);
 		chartPanel.setMaximumDrawWidth(5120);
-		// chartPanel.setPreferredSize(new Dimension(500, 270));
 
 		final CategoryPlot plot = (CategoryPlot) chart.getPlot();
 
