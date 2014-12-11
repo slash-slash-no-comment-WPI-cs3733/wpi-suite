@@ -13,7 +13,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -23,6 +22,7 @@ import javax.swing.JPanel;
 
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DropAreaSaveListener;
+import taskManager.model.ActivityModel;
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
@@ -38,8 +38,8 @@ import taskManager.view.TaskView;
  * @version November 9, 2014
  */
 
-public class StageController implements DropAreaSaveListener,
-		MouseMotionListener, MouseListener, ActionListener {
+public class StageController implements DropAreaSaveListener, MouseListener,
+		ActionListener {
 
 	private final StageView view;
 	private StageModel model;
@@ -75,8 +75,16 @@ public class StageController implements DropAreaSaveListener,
 				// archive shown is set to true.
 				if (!task.isArchived() || showArchive) {
 					// create stage view and controller.
+					int comments = 0;
+					for (ActivityModel a : task.getActivities()) {
+						if (a.getType() == ActivityModel.activityModelType.COMMENT) {
+							comments++;
+						}
+					}
+
 					TaskView tkv = new TaskView(task.getName(),
-							task.getDueDate(), task.getEstimatedEffort());
+							task.getDueDate(), task.getAssigned().size(),
+							comments);
 					tkv.setController(new TaskController(tkv, task));
 					this.view.addTaskView(tkv);
 				}
@@ -214,17 +222,6 @@ public class StageController implements DropAreaSaveListener,
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// Do nothing
-
-	}
-
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		ToolbarController.getInstance().getView().setDeleteEnabled(true);
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 

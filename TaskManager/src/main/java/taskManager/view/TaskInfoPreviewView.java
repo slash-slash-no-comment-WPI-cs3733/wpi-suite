@@ -10,17 +10,25 @@ package taskManager.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.util.Calendar;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Set;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
 import net.miginfocom.swing.MigLayout;
@@ -91,24 +99,29 @@ public class TaskInfoPreviewView extends JPanel {
 		this.setBorder(compound);
 
 		// This panel will contain all of the task information
-		final JPanel info = new JPanel();
-		info.setSize(new Dimension(this.getWidth(), 345));
-		info.setPreferredSize(new Dimension(this.getWidth(), 345));
-		info.setMinimumSize(new Dimension(this.getWidth(), 345));
-		info.setMaximumSize(new Dimension(this.getWidth(), 345));
+		JPanel info = new JPanel();
+		Dimension infoSize = new Dimension(this.getWidth(), 345);
+		info.setSize(infoSize);
+		info.setPreferredSize(infoSize);
+		info.setMinimumSize(infoSize);
+		info.setMaximumSize(infoSize);
 		info.setLayout(new MigLayout("wrap 1"));
 		info.setOpaque(false);
 
 		// The task's titleBar contains the title and the 'x' button
-		final JPanel titleBar = new JPanel();
-		titleBar.setLayout(new MigLayout("", "5[]:push[]"));
-		titleBar.setSize(new Dimension(this.getWidth(), 30));
-		final JLabel title = new JLabel(taskM.getName());
+
+		JPanel titleBar = new JPanel();
+		titleBar.setLayout(new MigLayout("wrap 2", "5[]:push[]", "[]0[center]"));
+		Dimension titleBarSize = new Dimension(this.getWidth(), 30);
+		titleBar.setSize(titleBarSize);
+		JLabel title = new JLabel(this.taskM.getName());
+		Dimension titleSize = new Dimension(190,
+				title.getPreferredSize().height + 10);
+
 		title.setFont(title.getFont().deriveFont(15.0f));
-		title.setPreferredSize(new Dimension(190,
-				title.getPreferredSize().height));
-		title.setSize(new Dimension(190, title.getPreferredSize().height));
-		title.setMaximumSize(new Dimension(190, title.getPreferredSize().height));
+		title.setPreferredSize(titleSize);
+		title.setSize(titleSize);
+		title.setMaximumSize(titleSize);
 		titleBar.add(title);
 		// Closable 'x' button
 		final JButton closeButton = new JButton("\u2716");
@@ -123,74 +136,135 @@ public class TaskInfoPreviewView extends JPanel {
 			titleBar.setBackground(Colors.TASK_CLICKED);
 		}
 
+		// if the task is archived, say so.
+		if (taskC.isArchived()) {
+			JLabel archived = new JLabel(
+					"<html><font size=\"3\"><i>Archived</i></font></html>",
+					SwingConstants.CENTER);
+			archived.setFont(archived.getFont().deriveFont(Font.PLAIN));
+			Dimension archivedSize = new Dimension(this.getWidth() - 40, 5);
+			archived.setSize(archivedSize);
+			archived.setPreferredSize(archivedSize);
+			titleBar.add(archived, "span");
+		}
 		info.add(titleBar);
 
 		// The task's description
-		final JTextArea description = new JTextArea();
-		description.setText(ellipsize(taskM.getDescription(), 175));
-		description.setSize(new Dimension(this.getWidth() - 45, 80));
-		description.setMaximumSize(new Dimension(this.getWidth() - 45, 80));
-		description.setMinimumSize(new Dimension(this.getWidth() - 45, 80));
-		description.setPreferredSize(new Dimension(this.getWidth() - 45, 80));
+
+		JTextArea description = new JTextArea();
+		description.setText(this.taskM.getDescription());
+
 		description.setAlignmentX(CENTER_ALIGNMENT);
 		description.setEditable(false);
 		description.setLineWrap(true);
 		description.setWrapStyleWord(true);
 		description.setBackground(Colors.TASK);
-		info.add(description);
+		description.setCaretPosition(0);
+		JScrollPane descScroll = new JScrollPane(description);
+		Dimension descScrollSize = new Dimension(this.getWidth() - 30, 80);
+		descScroll.setSize(descScrollSize);
+		descScroll.setMaximumSize(descScrollSize);
+		descScroll.setMinimumSize(descScrollSize);
+		descScroll.setPreferredSize(descScrollSize);
+		descScroll.setBorder(BorderFactory.createEmptyBorder());
+		// These remove the border around the JScrollPane. Might be wanted later
+		// Border border = BorderFactory.createEmptyBorder(0, 0, 0, 0);
+		// descScroll.setViewportBorder(border);
+		// descScroll.setBorder(border);
+		info.add(descScroll);
+
+		JPanel spacer = new JPanel();
+		Dimension spacerSize = new Dimension(50, 5);
+		spacer.setSize(spacerSize);
+		spacer.setPreferredSize(spacerSize);
+		spacer.setMaximumSize(spacerSize);
+		spacer.setMinimumSize(spacerSize);
+		spacer.setBackground(Colors.TASK);
+		info.add(spacer);
 
 		// The task's due date
-		final JLabel due = new JLabel("Due:");
-		final Calendar calDate = Calendar.getInstance();
-		calDate.setTime(taskM.getDueDate());
-		final JLabel date = new JLabel("  " + (calDate.get(Calendar.MONTH) + 1)
-				+ "/" + calDate.get(Calendar.DATE) + "/"
-				+ (calDate.get(Calendar.YEAR)));
-		date.setMaximumSize(new Dimension(this.getWidth(), 20));
-		info.add(due);
-		info.add(date);
+		// final Calendar calDate = Calendar.getInstance();
+		// calDate.setTime();
+		// The task's due date
+		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+		JLabel dueDate = new JLabel("<html><b><i>Due:</i></b> "
+				+ df.format(this.taskM.getDueDate()) + "</html>");
+
+		dueDate.setFont(dueDate.getFont().deriveFont(Font.PLAIN));
+		dueDate.setMaximumSize(new Dimension(this.getWidth(), 20));
+		info.add(dueDate);
 
 		// The task's effort
-		final JLabel estE = new JLabel("Est Effort: "
-				+ taskM.getEstimatedEffort());
-		final JLabel actE = new JLabel("Act Effort: " + taskM.getActualEffort());
+		JLabel estE = new JLabel("<html><b><i>Est Effort: </i></b>"
+				+ this.taskM.getEstimatedEffort() + "</html>");
+		estE.setFont(estE.getFont().deriveFont(Font.PLAIN));
+		JLabel actE = new JLabel("<html><b><i>Act Effort: </i></b>"
+				+ this.taskM.getActualEffort() + "</html>");
+		actE.setFont(actE.getFont().deriveFont(Font.PLAIN));
 		info.add(estE);
 		info.add(actE);
 
-		// The task's users
-		final ScrollList users = new ScrollList("Users");
-		final Set<String> userList = taskM.getAssigned();
-		if (userList.size() > 0) {
+		Set<String> userList = taskM.getAssigned();
+		// if there are users, add a scrollList to show them. Else just print
+		// '[None]'
+		if (!userList.isEmpty()) {
+			// The task's users
+			ScrollList users = new ScrollList("<html><i>Users:</i></html>");
+			Dimension usersSize = new Dimension(this.getWidth() - 30, 70);
+			users.setSize(usersSize);
+			users.setPreferredSize(usersSize);
+			users.setMaximumSize(usersSize);
+			users.setMinimumSize(usersSize);
+
 			for (String u : userList) {
 				if (!users.contains(u)) {
 					users.addToList(u);
 				}
 			}
+			users.setEnabled(false);
+			info.add(users);
+		} else {
+			JLabel users = new JLabel(
+					"<html><b><i>Users:</i></b> [None]</html>");
+			users.setFont(users.getFont().deriveFont(Font.PLAIN));
+			info.add(users);
 		}
-		info.add(users);
 
 		// The task's requirement
 		JLabel req;
-		if (taskM.getReq() == null) {
-			req = new JLabel("Requirement: [None]");
+		if (this.taskM.getReq() == null) {
+			req = new JLabel("<html><b><i>Requirement:</i></b> [None]</html>");
+			req.setFont(req.getFont().deriveFont(Font.PLAIN));
 			info.add(req);
 		} else {
-			req = new JLabel("Requirement:");
+			req = new JLabel("<html><b><i>Requirement:</i></b></html>");
+			req.setFont(req.getFont().deriveFont(Font.PLAIN));
 			info.add(req);
 			final JLabel name = new JLabel("  " + taskM.getReq());
-			name.setSize(new Dimension(this.getWidth(), 20));
-			name.setMinimumSize(new Dimension(this.getWidth(), 20));
-			name.setMaximumSize(new Dimension(this.getWidth(), 20));
-			name.setPreferredSize(new Dimension(this.getWidth(), 20));
+			name.setFont(name.getFont().deriveFont(Font.PLAIN));
+			Dimension nameSize = new Dimension(this.getWidth() - 30, 20);
+			name.setSize(nameSize);
+			name.setMinimumSize(nameSize);
+			name.setMaximumSize(nameSize);
+			name.setPreferredSize(nameSize);
 			info.add(name);
 		}
 
 		// This panel contains the edit button
-		final JPanel buttonPanel = new JPanel(new MigLayout("", "[center]"));
-		final JButton edit = new JButton("edit");
+		final JPanel buttonPanel = new JPanel();
+		final JButton edit = new JButton("Edit");
 		edit.setName(EDIT);
-		edit.setMargin(new Insets(5, 87, 5, 87));
+		edit.setMargin(new Insets(5, 77, 5, 77));
 		edit.addActionListener(this.controller);
+		// Add the pencil image to the edit button
+		try {
+			Image img = ImageIO.read(this.getClass().getResourceAsStream(
+					"edit.png"));
+			edit.setIcon(new ImageIcon(img));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		buttonPanel.add(edit, "");
 		buttonPanel.setSize(new Dimension(this.getWidth(), 80));
 		buttonPanel.setBackground(Colors.TASK);
@@ -215,6 +289,7 @@ public class TaskInfoPreviewView extends JPanel {
 	 *            The height of the view
 	 */
 	private void setBoundsWithoutClipping(Point loc, int width, int height) {
+
 		final Rectangle paneBounds = TabPaneController.getInstance().getView()
 				.getBounds();
 		final int x = (loc.x + StageView.STAGE_WIDTH + width > (paneBounds
@@ -222,6 +297,7 @@ public class TaskInfoPreviewView extends JPanel {
 		final int y = (loc.y + height > (paneBounds.getHeight() - 35)) ? (int) paneBounds
 				.getHeight() - 35 - height
 				: loc.y;
+
 		this.setBounds(x, y, width, height);
 	}
 
@@ -233,30 +309,5 @@ public class TaskInfoPreviewView extends JPanel {
 	 */
 	public TaskController getTaskController() {
 		return taskC;
-	}
-
-	/**
-	 * 
-	 * Takes a String and if its length is greater than max, it truncates and
-	 * adds '...'. This example is modified from:
-	 * http://stackoverflow.com/questions
-	 * /3597550/ideal-method-to-truncate-a-string-with-ellipsis
-	 *
-	 * @param text
-	 *            The string to add '...' to
-	 * @param max
-	 *            The max number of characters allowed
-	 * @return
-	 */
-	private static String ellipsize(String text, int max) {
-
-		if (text.length() <= max) {
-			return text;
-		}
-
-		// Start by chopping off at the word before max
-		// the 3 is to account for '...'
-		final int end = text.lastIndexOf(' ', max - 3);
-		return text.substring(0, end) + "...";
 	}
 }

@@ -305,7 +305,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	public void addAssigned(User user) {
 		final ActivityModel addUser = new ActivityModel("User "
 				+ user.getName() + " added to task",
-				ActivityModel.activityModelType.USER_ADD, user);
+				ActivityModel.activityModelType.USER_ADD);
 		final String q = user.getUsername();
 		assigned.add(q);
 		addActivity(addUser);
@@ -328,7 +328,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		assigned.remove(user.getUsername());
 		final ActivityModel delUser = new ActivityModel("Removed user "
 				+ user.getName() + " from task " + name + ".",
-				ActivityModel.activityModelType.USER_ADD, user);
+				ActivityModel.activityModelType.USER_ADD);
 		addActivity(delUser);
 		logger.log(Level.FINER, "Removed user " + user.getName()
 				+ " from task " + name + ".");
@@ -360,7 +360,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 */
 	public void addComment(String comment, User user) {
 		final ActivityModel commentActivity = new ActivityModel(comment,
-				ActivityModel.activityModelType.COMMENT, user);
+				ActivityModel.activityModelType.COMMENT);
 		addActivity(commentActivity);
 	}
 
@@ -395,6 +395,12 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 *            The boolean to set the task's isArchived field.
 	 */
 	public void setArchived(boolean bool) {
+		if (bool != isArchived) {
+			final ActivityModel archive = new ActivityModel((bool ? "Archived"
+					: "Unarchived") + " task",
+					ActivityModel.activityModelType.ARCHIVE);
+			addActivity(archive);
+		}
 		isArchived = bool;
 	}
 

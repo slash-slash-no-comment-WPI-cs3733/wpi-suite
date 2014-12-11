@@ -227,7 +227,7 @@ public class TaskController implements MouseListener, MouseMotionListener,
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		setToHoverColor();
+		changeToHoverColor();
 	}
 
 	@Override
@@ -295,5 +295,4 @@ public class TaskController implements MouseListener, MouseMotionListener,
 	public void setThisTaskInfoOut(Boolean thisTaskInfoOut) {
 		this.thisTaskInfoOut = thisTaskInfoOut;
 	}
-
 }
