@@ -122,7 +122,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		for (StageModel stage : stages) {
 			// create stage view and controller.
 			StageView stv = new StageView(stage.getName());
-			stv.setController(new StageController(stv, stage));
+			stv.setController(new StageController(stv, stage, filter));
 
 			// add stage view to workflow
 			view.addStageView(stv);

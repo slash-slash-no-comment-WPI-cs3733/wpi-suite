@@ -80,6 +80,8 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	// Boolean for whether the tasked is archived or not.
 	private boolean isArchived = false;
 
+	private TaskCategory category;
+
 	/**
 	 * Constructor assigns name, task id, and stage.
 	 *
@@ -291,6 +293,21 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		} else {
 			reqID = null;
 		}
+	}
+
+	/**
+	 * @param category
+	 *            the category to set
+	 */
+	public void setCategory(TaskCategory category) {
+		this.category = category;
+	}
+
+	/**
+	 * @return the category
+	 */
+	public TaskCategory getCategory() {
+		return category;
 	}
 
 	/**

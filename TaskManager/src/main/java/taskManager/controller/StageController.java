@@ -47,6 +47,10 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 	public static Boolean anyChangeTitleOut = false;
 	private Boolean thisChangeTitleOut = false;
 
+	public StageController(StageView view, StageModel model) {
+		this(view, model, new TaskFilter());
+	}
+
 	/**
 	 * Constructor for the StageController gets all the tasks from the
 	 * StageModel, creates the corresponding TaskView and TaskControllers for
@@ -57,23 +61,16 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 	 * @param model
 	 *            the corresponding StageModel object
 	 */
-	public StageController(StageView view, StageModel model) {
+	public StageController(StageView view, StageModel model, TaskFilter filter) {
 		this.view = view;
 		this.model = model;
 
-		// Get all the tasks associated with this Stage.
-
-		// Get state of archive shown check box.
-		final boolean showArchive = ToolbarController.getInstance().getView()
-				.isArchiveShown();
-
-		// Add the tasks.
+		// Get all the tasks associated with this Stage and add them
 		if (model != null) {
 			final List<TaskModel> tasks = this.model.getTasks();
 			for (TaskModel task : tasks) {
-				// Add only if task is not archived or when task is archived and
-				// archive shown is set to true.
-				if (!task.isArchived() || showArchive) {
+				// Only add task if it passes the filter
+				if (filter.check(task)) {
 					// create stage view and controller.
 					int comments = 0;
 					for (ActivityModel a : task.getActivities()) {
