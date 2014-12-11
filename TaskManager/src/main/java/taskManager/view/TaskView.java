@@ -274,7 +274,8 @@ public class TaskView extends JPanel implements Transferable {
 		if (rotationView.isPainting()) {
 			super.paintChildren(g);
 		} else {
-			// do nothing
+			g.setColor(Color.cyan);
+			g.fillRect(0, 0, getWidth(), getHeight());
 		}
 	}
 

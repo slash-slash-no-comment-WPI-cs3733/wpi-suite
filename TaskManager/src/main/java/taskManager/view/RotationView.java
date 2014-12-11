@@ -49,6 +49,7 @@ public class RotationView extends JPanel {
 		setMinimumSize(d);
 		controller = new RotationController(this);
 		addMouseListener(controller);
+		addMouseMotionListener(controller);
 	}
 
 	public void setListener(MouseListener listener) {
@@ -63,7 +64,7 @@ public class RotationView extends JPanel {
 		panel.paint(image.getGraphics());
 		painting = false;
 		g.setColor(Color.cyan);
-		g.fillRect(0, 0, panel.getWidth(), panel.getHeight());
+		g.fillRect(0, 0, getWidth(), getHeight());
 		((Graphics2D) g).rotate(angle);
 		g.drawImage(image, 0, 0, panel.getWidth(), panel.getHeight(), this);
 	}

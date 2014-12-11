@@ -11,6 +11,7 @@ package taskManager.controller;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
@@ -22,7 +23,7 @@ import taskManager.view.RotationView;
  *
  * @author Jon Sorrells
  */
-public class RotationController implements MouseListener {
+public class RotationController implements MouseListener, MouseMotionListener {
 
 	private RotationView view;
 	private MouseListener listener = null;
@@ -44,16 +45,12 @@ public class RotationController implements MouseListener {
 
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
-		if (listener != null && checkBounds(arg0)) {
-			listener.mouseEntered(arg0);
-		}
+		// do nothing
 	}
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		if (listener != null && checkBounds(arg0)) {
-			listener.mouseExited(arg0);
-		}
+		// do nothing
 	}
 
 	@Override
@@ -87,5 +84,19 @@ public class RotationController implements MouseListener {
 			return true;
 		}
 		return false;
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent arg0) {
+		// do nothing
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent arg0) {
+		if (checkBounds(arg0)) {
+			listener.mouseEntered(arg0);
+		} else {
+			listener.mouseExited(arg0);
+		}
 	}
 }
