@@ -43,7 +43,8 @@ import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
  * @author Stefan Alexander
  * @version November 9, 2014
  */
-public class TaskController implements MouseListener, MouseMotionListener, ActionListener{
+public class TaskController implements MouseListener, MouseMotionListener,
+		ActionListener {
 
 	private final TaskView view;
 	private final TaskModel model;
@@ -147,7 +148,6 @@ public class TaskController implements MouseListener, MouseMotionListener, Actio
 		}
 	}
 
-
 	/**
 	 * Called when the user clicks the view with the left mouse button.
 	 */
@@ -182,8 +182,7 @@ public class TaskController implements MouseListener, MouseMotionListener, Actio
 				view.setBackground(Colors.TASK_CLICKED);
 			}
 		}
-}
-
+	}
 
 	/**
 	 * Called when the user clicks the view with the middle mouse button.
@@ -269,7 +268,17 @@ public class TaskController implements MouseListener, MouseMotionListener, Actio
 			leftMouseClick();
 		if (((JMenuItem) e.getSource()).getText().equals("New Task"))
 			leftMouseClick();
-		System.out.println(((JMenuItem)e.getSource()).getText());
+		if (((JMenuItem) e.getSource()).getName().equals("Move To")) {
+			int i = 0;
+			while (i < WorkflowModel.getInstance().getStages().size()) {
+				StageModel a = WorkflowModel.getInstance().getStages().get(i);
+				if (a.getName().equals(((JMenuItem) e.getSource()).getText()))
+					moveToStage(a, 0);
+				i++;
+			}
+
+		}
+		System.out.println(((JMenuItem) e.getSource()).getText());
 	}
 
 	/**
