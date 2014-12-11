@@ -196,22 +196,6 @@ public class EditTaskController implements ActionListener {
 				}
 				break;
 
-			case EditTaskView.ARCHIVE:
-
-				// archive this task
-				boolean isArchived = model.isArchived();
-
-				etv.checkArchive(isArchived);
-				etv.setDeleteEnabled(!isArchived);
-
-				// Save and reload the workflow.
-				WorkflowController.getInstance().reloadData();
-
-				WorkflowModel.getInstance().save(); // TODO switch to
-													// appropriate save method
-
-				break;
-
 			case EditTaskView.DELETE:
 				final Integer choice = JOptionPane.showConfirmDialog(etv,
 						"Are you sure you want to delete this task?",

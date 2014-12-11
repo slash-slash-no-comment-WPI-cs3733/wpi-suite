@@ -820,14 +820,14 @@ public class EditTaskView extends JScrollPane {
 	}
 
 	/**
-	 * <<<<<<< HEAD ======= disables the archive button
+	 * disables the archive button
 	 */
 	public void disableArchive() {
 		archive.setEnabled(false);
 	}
 
 	/**
-	 * >>>>>>> dev-gradle enables the archive button
+	 * enables the archive button
 	 */
 	public void enableArchive() {
 		archive.setEnabled(true);
