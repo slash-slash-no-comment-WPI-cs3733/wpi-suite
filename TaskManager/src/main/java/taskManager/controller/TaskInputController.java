@@ -15,7 +15,6 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import javax.swing.JButton;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
@@ -151,14 +150,12 @@ public class TaskInputController implements KeyListener, FocusListener,
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// If Enter key pressed on a non-button, save the task.
+		// If Enter key pressed on the comment field, submit the comment.
 		if (e.getKeyChar() == KeyEvent.VK_ENTER) {
 			Component focusOwner = KeyboardFocusManager
 					.getCurrentKeyboardFocusManager().getFocusOwner();
-			if (focusOwner instanceof JButton) {
-				return;
-			} else {
-				etv.getController().saveTask();
+			if (focusOwner.getName().equals(EditTaskView.COMMENTS)) {
+				etv.getController().addComment();
 			}
 		}
 	}

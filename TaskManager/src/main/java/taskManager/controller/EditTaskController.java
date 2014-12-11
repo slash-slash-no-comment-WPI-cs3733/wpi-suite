@@ -203,7 +203,28 @@ public class EditTaskController implements ActionListener {
 			switch (name) {
 
 			case EditTaskView.SAVE:
-				saveTask();
+				if (etv.getFieldController().checkFields()) {
+					// if editing
+					if (isEditingTask()) {
+						save();
+					}
+					// if creating a new task
+					else {
+						// grabs the stage from the dropdown box
+						StageModel desiredStage = WorkflowModel.getInstance()
+								.findStageByName(
+										(String) etv.getStages()
+												.getSelectedItem());
+
+						// creates a new task model
+						model = new TaskModel(etv.getTitle().getText(),
+								desiredStage);
+						save();
+					}
+
+				} else {
+					etv.setSaveEnabled(false);
+				}
 
 				break;
 
@@ -287,10 +308,7 @@ public class EditTaskController implements ActionListener {
 				break;
 
 			case EditTaskView.SUBMIT_COMMENT:
-				// adds a comment.
-				ActivityModel comment = etv.addComment();
-				// add immediately to the model.
-				model.addActivity(comment);
+				addComment();
 				break;
 			}
 		}
@@ -339,6 +357,18 @@ public class EditTaskController implements ActionListener {
 	private void returnToWorkflowView() {
 		TabPaneController.getInstance().removeTabByComponent(etv);
 		WorkflowController.getInstance().reloadData();
+	}
+
+	/**
+	 * 
+	 * Adds a comment to both the view and model.
+	 *
+	 */
+	public void addComment() {
+		// add comment to the view.
+		ActivityModel comment = etv.addComment();
+		// add comment activity to model.
+		model.addActivity(comment);
 	}
 
 	/**
@@ -689,34 +719,6 @@ public class EditTaskController implements ActionListener {
 	private boolean isEditingTask() {
 		// Sadly isn't equivalent to model == null;
 		return Mode.EDIT.equals(etv.getMode());
-	}
-
-	/**
-	 * 
-	 * Saves the task, called when user clicks the save button or presses Enter.
-	 *
-	 */
-	public void saveTask() {
-		if (etv.getFieldController().checkFields()) {
-			// if editing
-			if (isEditingTask()) {
-				save();
-			}
-			// if creating a new task
-			else {
-				// grabs the stage from the dropdown box
-				StageModel desiredStage = WorkflowModel.getInstance()
-						.findStageByName(
-								(String) etv.getStages().getSelectedItem());
-
-				// creates a new task model
-				model = new TaskModel(etv.getTitle().getText(), desiredStage);
-				save();
-			}
-
-		} else {
-			etv.setSaveEnabled(false);
-		}
 	}
 
 	/**
