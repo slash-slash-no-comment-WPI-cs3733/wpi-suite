@@ -955,8 +955,7 @@ public class EditTaskView extends JScrollPane {
 	}
 
 	/**
-	 * 
-	 <<<<<<< HEAD ======= Adds an activity.
+	 * Adds an activity.
 	 *
 	 * @param act
 	 *            the activity.
@@ -966,8 +965,7 @@ public class EditTaskView extends JScrollPane {
 	}
 
 	/**
-	 * 
-	 >>>>>>> dev-gradle Set the delete button to enabled/disabled.
+	 * Set the delete button to enabled/disabled.
 	 *
 	 * @param bool
 	 *            boolean to set the button to.
