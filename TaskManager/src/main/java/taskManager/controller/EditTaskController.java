@@ -182,9 +182,9 @@ public class EditTaskController implements ActionListener {
 					// if creating a new task
 					else {
 						// grabs the stage from the dropdown box
-						StageModel desiredStage = WorkflowModel.getInstance()
-								.findStageByName(
-										(String) etv.getSelectedStage());
+						final StageModel desiredStage = WorkflowModel
+								.getInstance().findStageByName(
+										etv.getSelectedStage());
 
 						// creates a new task model
 						model = new TaskModel(etv.getTitleText(), desiredStage);
@@ -237,8 +237,7 @@ public class EditTaskController implements ActionListener {
 				// view requirement in requirement manager
 
 				final Requirement requirement = RequirementModel.getInstance()
-						.getRequirementByName(
-								(String) etv.getSelectedRequirement());
+						.getRequirementByName(etv.getSelectedRequirement());
 
 				// This button should be disabled when [None] selected
 				// but that may not happen
@@ -274,7 +273,7 @@ public class EditTaskController implements ActionListener {
 
 			case EditTaskView.SUBMIT_COMMENT:
 				// adds a comment.
-				ActivityModel comment = etv.addComment();
+				final ActivityModel comment = etv.addComment();
 				// add immediately to the model.
 				model.addActivity(comment);
 				break;
@@ -287,7 +286,7 @@ public class EditTaskController implements ActionListener {
 	 */
 	public void reloadData() {
 
-		List<String> stageNames = new LinkedList<String>();
+		final List<String> stageNames = new LinkedList<String>();
 
 		for (StageModel stage : WorkflowModel.getInstance().getStages()) {
 			stageNames.add(stage.getName());
@@ -296,7 +295,7 @@ public class EditTaskController implements ActionListener {
 
 		final List<Requirement> reqs = RequirementModel.getInstance()
 				.getRequirements();
-		List<String> reqNames = new LinkedList<String>();
+		final List<String> reqNames = new LinkedList<String>();
 
 		for (Requirement req : reqs) {
 			reqNames.add(req.getName());
@@ -332,9 +331,9 @@ public class EditTaskController implements ActionListener {
 		// grabs the stage from the dropdown box
 
 		final StageModel s = WorkflowModel.getInstance().findStageByName(
-				(String) etv.getSelectedStage());
+				etv.getSelectedStage());
 		final Requirement r = RequirementModel.getInstance()
-				.getRequirementByName((String) etv.getSelectedRequirement());
+				.getRequirementByName(etv.getSelectedRequirement());
 
 		// Try to set the effort values.
 		try {
@@ -520,9 +519,8 @@ public class EditTaskController implements ActionListener {
 		// if the task had a due date, check if it changed
 		final Date dueDate = task.getDueDate();
 
-		Calendar cal1 = Calendar.getInstance();
-
-		Calendar cal2 = Calendar.getInstance();
+		final Calendar cal1 = Calendar.getInstance();
+		final Calendar cal2 = Calendar.getInstance();
 
 		cal1.setTime(dueDate);
 		if (isEditingTask() && dueDate != null) {
@@ -547,9 +545,9 @@ public class EditTaskController implements ActionListener {
 	 *            The task to check with.
 	 * @return true if there are edits.
 	 */
-	public boolean checkUsers(TaskModel task) {
+	private boolean checkUsers(TaskModel task) {
 		boolean edited = false;
-		Set<String> taskAssigned = task.getAssigned();
+		final Set<String> taskAssigned = task.getAssigned();
 		final Set<String> usersAssigned = new HashSet<String>();
 		usersAssigned.addAll(etv.getUsersList().getAllValues());
 		if (!usersAssigned.equals(taskAssigned)) {
@@ -570,7 +568,7 @@ public class EditTaskController implements ActionListener {
 	 *            The task to check if.
 	 * @return true if there are edits.
 	 */
-	public boolean checkEstEffort(TaskModel task) {
+	private boolean checkEstEffort(TaskModel task) {
 		boolean edited = false;
 		if (task.getEstimatedEffort() == 0) {
 			if (etv.getEstEffort().isEmpty()) {
@@ -602,7 +600,7 @@ public class EditTaskController implements ActionListener {
 	 *            The task to check if.
 	 * @return true if there are edits.
 	 */
-	public boolean checkActEffort(TaskModel task) {
+	private boolean checkActEffort(TaskModel task) {
 		boolean edited = false;
 		if (task.getActualEffort() == 0) {
 			if (etv.getActEffort().isEmpty()) {
@@ -634,7 +632,7 @@ public class EditTaskController implements ActionListener {
 	 *            The task to check if.
 	 * @return true if there are edits.
 	 */
-	public boolean checkReq(TaskModel task) {
+	private boolean checkReq(TaskModel task) {
 		boolean edited = false;
 		if (task.getReq() == null) {
 			if (etv.getSelectedRequirement() == null) {

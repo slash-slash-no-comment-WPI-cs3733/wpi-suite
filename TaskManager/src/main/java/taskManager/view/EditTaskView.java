@@ -487,7 +487,7 @@ public class EditTaskView extends JScrollPane {
 	 *
 	 * @return true if selected.
 	 */
-	public Boolean isArchived() {
+	public boolean isArchived() {
 		return archive.isSelected();
 	}
 
@@ -544,7 +544,7 @@ public class EditTaskView extends JScrollPane {
 	 *            The list of stageNames to set as options.
 	 */
 	public void setStages(List<String> stageNames) {
-		String selectedStage = (String) getSelectedStage();
+		final String selectedStage = getSelectedStage();
 
 		stages.removeAllItems();
 		for (String stageName : stageNames) {
@@ -566,7 +566,7 @@ public class EditTaskView extends JScrollPane {
 	 *            The list of requirement names to set as options.
 	 */
 	public void setRequirements(List<String> reqNames) {
-		String selectedReq = getSelectedRequirement();
+		final String selectedReq = getSelectedRequirement();
 
 		requirements.removeAllItems();
 		requirements.addItem(NO_REQ);
@@ -597,7 +597,8 @@ public class EditTaskView extends JScrollPane {
 	/**
 	 * Sets the selected requirement. Use null to select no requirement.
 	 *
-	 * @return The requirement's name
+	 * @param requirementName
+	 *            The requirement's name we're selecting.
 	 */
 	public void setSelectedRequirement(String requirementName) {
 		if (requirementName == null) {
@@ -714,16 +715,15 @@ public class EditTaskView extends JScrollPane {
 	/**
 	 * Sets the title field border red
 	 * 
-	 * @param boolean turns the red border on and off
+	 * @param red
+	 *            turns the red border on and off
 	 */
 
 	public void setTitleFieldRed(boolean red) {
 		if (red) {
-			this.titleField
-					.setBorder(BorderFactory.createLineBorder(Color.red));
+			titleField.setBorder(BorderFactory.createLineBorder(Color.red));
 		} else {
-			this.titleField.setBorder(BorderFactory
-					.createLineBorder(Color.black));
+			titleField.setBorder(BorderFactory.createLineBorder(Color.black));
 		}
 	}
 
@@ -748,16 +748,16 @@ public class EditTaskView extends JScrollPane {
 	/**
 	 * Sets the description field border red
 	 * 
-	 * @param boolean turns the red border on and off
+	 * @param red
+	 *            turns the red border on and off
 	 */
 
 	public void setDescriptionFieldRed(boolean red) {
 		if (red) {
-			this.descripArea.setBorder(BorderFactory
-					.createLineBorder(Color.red));
+			descripArea.setBorder(BorderFactory.createLineBorder(Color.red));
 		} else {
-			this.descripArea.setBorder(BorderFactory.createLineBorder(
-					Color.gray, 1));
+			descripArea
+					.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
 		}
 	}
 
@@ -781,7 +781,8 @@ public class EditTaskView extends JScrollPane {
 	/**
 	 * Sets the estimated effort field border red
 	 * 
-	 * @param boolean turns the red border on and off
+	 * @param red
+	 *            turns the red border on and off
 	 */
 
 	public void setEstEffortFieldRed(boolean red) {
@@ -796,7 +797,7 @@ public class EditTaskView extends JScrollPane {
 	/**
 	 * Sets the actual effort field border red
 	 * 
-	 * @param boolean turns the red border on and off
+	 * @red boolean turns the red border on and off
 	 */
 
 	public void setActEffortFieldRed(boolean red) {
@@ -883,7 +884,7 @@ public class EditTaskView extends JScrollPane {
 	 *            true is enabled false is disabled
 	 */
 	public void setCommentSubmitEnabled(boolean e) {
-		this.submitComment.setEnabled(e);
+		submitComment.setEnabled(e);
 	}
 
 	/**
@@ -912,7 +913,7 @@ public class EditTaskView extends JScrollPane {
 		final List<ActivityModel> tskActivitiesCopy = new ArrayList<ActivityModel>(
 				activities);
 		activityPane.setMessage("");
-		DateFormat dateF = new SimpleDateFormat("MM/dd/yyyy kk:mm");
+		final DateFormat dateF = new SimpleDateFormat("MM/dd/yyyy kk:mm");
 		for (ActivityModel act : tskActivitiesCopy) {
 			String current = activityPane.getMessage().getText();
 			activityPane.setMessage(current + act.getActor() + " ["
@@ -1016,8 +1017,8 @@ public class EditTaskView extends JScrollPane {
 	/**
 	 * Sets if the view requirement button is enabled/disabled
 	 *
-	 * @param should
-	 *            the button be enabled?
+	 * @param bool
+	 *            should the button be enabled?
 	 */
 	public void setViewRequirementEnabled(boolean bool) {
 		viewReq.setEnabled(bool);
