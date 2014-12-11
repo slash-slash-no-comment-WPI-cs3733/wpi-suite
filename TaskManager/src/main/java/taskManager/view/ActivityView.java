@@ -54,6 +54,7 @@ public class ActivityView extends JPanel {
 		message.setLineWrap(true);
 		message.setWrapStyleWord(true);
 		message.setEditable(false);
+		message.setFocusable(false);
 		final JScrollPane messageScrollPane = new JScrollPane(message);
 		messageScrollPane
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -146,6 +147,6 @@ public class ActivityView extends JPanel {
 	 *            the text in the message field
 	 */
 	public void setMessage(String content) {
-			message.setText(content);
+		message.setText(content);
 	}
 }

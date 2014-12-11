@@ -10,8 +10,6 @@ package taskManager.controller;
 
 import java.awt.Component;
 import java.awt.KeyboardFocusManager;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -24,7 +22,6 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
-import taskManager.view.ActivityView;
 import taskManager.view.EditTaskView;
 
 /**
@@ -35,9 +32,8 @@ import taskManager.view.EditTaskView;
  *
  */
 
-public class TaskInputController implements KeyListener, FocusListener,
-		PopupMenuListener, ListSelectionListener, PropertyChangeListener,
-		ItemListener {
+public class TaskInputController implements KeyListener, PopupMenuListener,
+		ListSelectionListener, PropertyChangeListener, ItemListener {
 
 	private final EditTaskView etv;
 	private boolean addUsersSelected = false;
@@ -175,7 +171,8 @@ public class TaskInputController implements KeyListener, FocusListener,
 		if (e.getKeyChar() == KeyEvent.VK_ENTER) {
 			Component focusOwner = KeyboardFocusManager
 					.getCurrentKeyboardFocusManager().getFocusOwner();
-			if (focusOwner.getName().equals(EditTaskView.COMMENTS)) {
+			if (focusOwner.getName().equals(EditTaskView.COMMENTS)
+					&& checkSaveComment()) {
 				etv.getController().addComment();
 			}
 		}
@@ -218,35 +215,4 @@ public class TaskInputController implements KeyListener, FocusListener,
 	public void itemStateChanged(ItemEvent e) {
 		validate();
 	}
-
-	@Override
-	public void focusGained(FocusEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void focusLost(FocusEvent e) {
-		// The component name.
-		String compName = e.getComponent().getName();
-
-		// When losing focus from stages dropdown, if the next component is null
-		// go directly to the comments field.
-		if (compName.equals(EditTaskView.STAGES)) {
-			Component comp = e.getOppositeComponent();
-			if (comp.getName() == null) {
-				etv.setFocusToComments();
-			}
-		}
-
-		// When losing focus from comments field, if the next component is the
-		// ActivityView, go directly to the stages dropdown.
-		else if (compName.equals(EditTaskView.COMMENTS)) {
-			Component comp = e.getOppositeComponent();
-			if (comp.getName().equals(ActivityView.MESSAGE_BODY)) {
-				etv.setFocusToStages();
-			}
-		}
-	}
-
 }

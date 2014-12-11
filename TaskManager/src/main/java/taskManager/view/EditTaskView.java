@@ -248,6 +248,8 @@ public class EditTaskView extends JScrollPane {
 
 		// Comment Pane
 		activityPane = new ActivityView();
+		activityPane.setFocusable(false);
+
 		// Requirement Pane
 		requirements = new JComboBox<String>();
 		requirements.setName(REQUIREMENTS);
@@ -423,20 +425,30 @@ public class EditTaskView extends JScrollPane {
 
 	/**
 	 * 
-	 * Sets the focus to the comments field.
+	 * Sets the focus to the requirements dropdown.
 	 *
 	 */
-	public void setFocusToComments() {
-		commentsField.requestFocus();
+	public void focusOnRequirements() {
+		requirements.requestFocus();
+
 	}
 
 	/**
 	 * 
-	 * Sets the focus to the stages dropdown.
+	 * Sets the focus to the view requirements button.
 	 *
 	 */
-	public void setFocusToStages() {
-		stages.requestFocus();
+	public void focusOnViewRequirements() {
+		addReq.requestFocus();
+	}
+
+	/**
+	 * 
+	 * Sets the focus to the view requirements button.
+	 *
+	 */
+	public void focusOnComments() {
+		commentsField.requestFocus();
 	}
 
 	/**
@@ -476,9 +488,6 @@ public class EditTaskView extends JScrollPane {
 		requirements.addPopupMenuListener(fieldC);
 		dateField.addPropertyChangeListener(fieldC);
 		archive.addItemListener(fieldC);
-		// Currently used only for skipping over unnecessary fields.
-		stages.addFocusListener(fieldC);
-		commentsField.addFocusListener(fieldC);
 	}
 
 	/**
