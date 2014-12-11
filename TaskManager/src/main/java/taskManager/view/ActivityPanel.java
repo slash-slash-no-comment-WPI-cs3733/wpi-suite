@@ -11,7 +11,6 @@ package taskManager.view;
 import java.awt.Dimension;
 import java.util.List;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -43,7 +42,9 @@ public class ActivityPanel extends JPanel {
 	}
 
 	public ActivityPanel(Type type, List<ActivityModel> activityList) {
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		// this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		this.setLayout(new MigLayout("wrap 1", "[grow, fill]",
+				"[grow, fill][][]"));
 
 		// Create list of activities
 		JPanel activities = new JPanel();
@@ -63,15 +64,18 @@ public class ActivityPanel extends JPanel {
 		activityScroll = new JScrollPane(activities,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
 		// Comment textbox
 		JTextArea commentBox = new JTextArea();
+		commentBox.setRows(5);
 		commentBox.setWrapStyleWord(true);
 		commentBox.setLineWrap(true);
-		commentScroll = new JScrollPane(commentBox);
-		commentScroll.setMaximumSize(new Dimension(10000, 100));
+
+		commentScroll = new JScrollPane(commentBox,
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		commentScroll.setMinimumSize(new Dimension(20, 100));
-		commentScroll
-				.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
 		// Buttons
 		buttons = new JPanel();
 		JButton submit = new JButton("Submit");
@@ -80,6 +84,7 @@ public class ActivityPanel extends JPanel {
 		submit.setName(CANCEL);
 		buttons.add(submit);
 		buttons.add(cancel);
+		buttons.setMaximumSize(new Dimension(10000, 40));
 
 		add(activityScroll);
 		add(commentScroll);
