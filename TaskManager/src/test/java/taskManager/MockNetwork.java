@@ -21,14 +21,29 @@ import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
  */
 public class MockNetwork extends Network {
 
+	// Sets whether requests will actually save or just pretend to
+	private boolean trueSave;
+
 	/**
 	 * Reset MockData when creating a new MockNetwork
-	 *
+	 * 
+	 * @param trueSave
+	 *            perform a save when requests are sent
+	 */
+	public MockNetwork(boolean trueSave) {
+		super();
+		this.trueSave = trueSave;
+		ClientDataStore.deleteDataStore();
+		if (trueSave) {
+			ClientDataStore.getDataStore();
+		}
+	}
+
+	/**
+	 * Default constructor that only fakes saving
 	 */
 	public MockNetwork() {
-		super();
-		ClientDataStore.deleteDataStore();
-		ClientDataStore.getDataStore();
+		this(false);
 	}
 
 	/**
@@ -53,6 +68,7 @@ public class MockNetwork extends Network {
 					"http://wpisuitetng");
 		}
 
-		return new MockRequest(defaultNetworkConfiguration, path, requestMethod);
+		return new MockRequest(defaultNetworkConfiguration, path,
+				requestMethod, trueSave);
 	}
 }

@@ -24,14 +24,17 @@ import org.fest.swing.fixture.FrameFixture;
 import org.fest.swing.fixture.JLabelFixture;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import taskManager.JanewayModule;
+import taskManager.MockNetwork;
 import taskManager.ScreenshotOnFail;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
 import taskManager.view.ToolbarView;
+import edu.wpi.cs.wpisuitetng.network.Network;
 
 /**
  * Tests for the stage controller
@@ -43,6 +46,11 @@ public class TestStageController extends ScreenshotOnFail {
 	private FrameFixture fixture;
 	private JFrame frame;
 	private WorkflowModel wfm = WorkflowModel.getInstance();
+
+	@BeforeClass
+	public static void netSetup() {
+		Network.setInstance(new MockNetwork());
+	}
 
 	@Before
 	public void setup() {

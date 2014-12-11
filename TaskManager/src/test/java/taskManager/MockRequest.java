@@ -44,6 +44,9 @@ public class MockRequest extends Request {
 	private String id;
 	private EntityManager mgr;
 
+	// Sets whether requests will actually save or just pretend to
+	private boolean trueSave;
+
 	/**
 	 * Constructor for MockRequest
 	 * 
@@ -52,14 +55,17 @@ public class MockRequest extends Request {
 	 * @param requestMethod
 	 */
 	public MockRequest(NetworkConfiguration networkConfiguration, String path,
-			HttpMethod requestMethod) {
+			HttpMethod requestMethod, boolean trueSave) {
 		super(networkConfiguration, path, requestMethod);
 
-		String delims = "[/]+";
-		String[] pathPieces = path.split(delims);
-		this.mgr = getEntityManager(pathPieces[0] + pathPieces[1]);
-		if (pathPieces.length > 2) {
-			this.id = pathPieces[2];
+		this.trueSave = trueSave;
+		if (trueSave) {
+			String delims = "[/]+";
+			String[] pathPieces = path.split(delims);
+			this.mgr = getEntityManager(pathPieces[0] + pathPieces[1]);
+			if (pathPieces.length > 2) {
+				this.id = pathPieces[2];
+			}
 		}
 	}
 
@@ -71,6 +77,12 @@ public class MockRequest extends Request {
 	 */
 	@Override
 	public void send() throws IllegalStateException {
+		// If trueSave is false, don't save anything
+		if (!trueSave) {
+			System.out.println("Save faked");
+			return;
+		}
+
 		String response = null;
 		Model[] m;
 		try {
