@@ -204,6 +204,8 @@ public class TaskView extends JPanel implements Transferable {
 	public void setController(TaskController controller) {
 		this.controller = controller;
 		rotationView.setListener(controller);
+		addMouseListener(rotationView.getController());
+		addMouseMotionListener(rotationView.getController());
 	}
 
 	@Override
@@ -263,7 +265,7 @@ public class TaskView extends JPanel implements Transferable {
 		if (rotationView.isPainting()) {
 			super.paintComponent(g);
 		} else {
-			g.setColor(Color.cyan);
+			g.setColor(Color.lightGray);
 			g.fillRect(0, 0, getWidth(), getHeight());
 			rotationView.repaint();
 		}
@@ -274,7 +276,7 @@ public class TaskView extends JPanel implements Transferable {
 		if (rotationView.isPainting()) {
 			super.paintChildren(g);
 		} else {
-			g.setColor(Color.cyan);
+			g.setColor(Color.lightGray);
 			g.fillRect(0, 0, getWidth(), getHeight());
 		}
 	}

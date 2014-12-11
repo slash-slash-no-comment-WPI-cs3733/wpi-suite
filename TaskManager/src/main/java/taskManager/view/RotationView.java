@@ -63,7 +63,7 @@ public class RotationView extends JPanel {
 		painting = true;
 		panel.paint(image.getGraphics());
 		painting = false;
-		g.setColor(Color.cyan);
+		g.setColor(Color.lightGray);
 		g.fillRect(0, 0, getWidth(), getHeight());
 		((Graphics2D) g).rotate(angle);
 		g.drawImage(image, 0, 0, panel.getWidth(), panel.getHeight(), this);
@@ -79,5 +79,9 @@ public class RotationView extends JPanel {
 
 	public JPanel getPanel() {
 		return panel;
+	}
+
+	public RotationController getController() {
+		return controller;
 	}
 }
