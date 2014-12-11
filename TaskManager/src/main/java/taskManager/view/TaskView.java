@@ -8,6 +8,7 @@
  *******************************************************************************/
 package taskManager.view;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -202,7 +203,7 @@ public class TaskView extends JPanel implements Transferable {
 	 */
 	public void setController(TaskController controller) {
 		this.controller = controller;
-		this.addMouseListener(controller);
+		rotationView.setListener(controller);
 	}
 
 	@Override
@@ -259,8 +260,22 @@ public class TaskView extends JPanel implements Transferable {
 
 	@Override
 	public void paintComponent(Graphics g) {
-		g = rotationView.prepareRotation(g);
-		super.paintComponent(g);
+		if (rotationView.isPainting()) {
+			super.paintComponent(g);
+		} else {
+			g.setColor(Color.cyan);
+			g.fillRect(0, 0, getWidth(), getHeight());
+			rotationView.repaint();
+		}
+	}
+
+	@Override
+	public void paintChildren(Graphics g) {
+		if (rotationView.isPainting()) {
+			super.paintChildren(g);
+		} else {
+			// do nothing
+		}
 	}
 
 	public JPanel getRotationPane() {
