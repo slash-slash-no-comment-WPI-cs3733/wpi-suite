@@ -162,20 +162,21 @@ public class TaskInputController implements KeyListener, PopupMenuListener,
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		validate();
-	}
-
-	@Override
-	public void keyPressed(KeyEvent e) {
 		// If Enter key pressed on the comment field, submit the comment.
 		if (e.getKeyChar() == KeyEvent.VK_ENTER) {
 			Component focusOwner = KeyboardFocusManager
 					.getCurrentKeyboardFocusManager().getFocusOwner();
 			if (focusOwner.getName().equals(EditTaskView.COMMENTS)
 					&& checkSaveComment()) {
+				etv.removeLastCharFromComments();
 				etv.getController().addComment();
 			}
 		}
+		validate();
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
 		validate();
 	}
 

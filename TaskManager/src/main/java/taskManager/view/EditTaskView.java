@@ -858,6 +858,18 @@ public class EditTaskView extends JScrollPane {
 
 	/**
 	 * 
+	 * Remove the last character of the comments field, used to remove the
+	 * newline character being added when submitting a comment using the enter
+	 * button.
+	 *
+	 */
+	public void removeLastCharFromComments() {
+		commentsField.setText(commentsField.getText().substring(0,
+				commentsField.getText().length() - 1));
+	}
+
+	/**
+	 * 
 	 * Sets the activies panel according to the activities list.
 	 *
 	 * @param activities
