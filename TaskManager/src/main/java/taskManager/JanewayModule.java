@@ -37,7 +37,9 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 public class JanewayModule implements IJanewayModule {
 
 	// The tabs used by this module
+
 	private final List<JanewayTabModel> tabs;
+
 	public static User[] users = {};
 	public static String currentUser = null; // the username of the current user
 

@@ -116,7 +116,7 @@ public class TaskInfoPreviewView extends JPanel {
 		titleBar.setSize(titleBarSize);
 		JLabel title = new JLabel(this.taskM.getName());
 		Dimension titleSize = new Dimension(190,
-				title.getPreferredSize().height);
+				title.getPreferredSize().height + 10);
 
 		title.setFont(title.getFont().deriveFont(15.0f));
 		title.setPreferredSize(titleSize);
@@ -166,6 +166,7 @@ public class TaskInfoPreviewView extends JPanel {
 		descScroll.setMaximumSize(descScrollSize);
 		descScroll.setMinimumSize(descScrollSize);
 		descScroll.setPreferredSize(descScrollSize);
+		descScroll.setBorder(BorderFactory.createEmptyBorder());
 		// These remove the border around the JScrollPane. Might be wanted later
 		// Border border = BorderFactory.createEmptyBorder(0, 0, 0, 0);
 		// descScroll.setViewportBorder(border);
@@ -288,6 +289,7 @@ public class TaskInfoPreviewView extends JPanel {
 	 *            The height of the view
 	 */
 	private void setBoundsWithoutClipping(Point loc, int width, int height) {
+
 		final Rectangle paneBounds = TabPaneController.getInstance().getView()
 				.getBounds();
 		final int x = (loc.x + StageView.STAGE_WIDTH + width > (paneBounds
@@ -295,6 +297,7 @@ public class TaskInfoPreviewView extends JPanel {
 		final int y = (loc.y + height > (paneBounds.getHeight() - 35)) ? (int) paneBounds
 				.getHeight() - 35 - height
 				: loc.y;
+
 		this.setBounds(x, y, width, height);
 	}
 

@@ -19,7 +19,9 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.event.ListSelectionListener;
+
+import taskManager.controller.ReportsManager;
+import taskManager.controller.TaskInputController;
 
 /**
  * A component that has a scroll pane containing a list of strings
@@ -43,18 +45,18 @@ public class ScrollList extends JPanel {
 	 */
 	public ScrollList(String t) {
 		setLayout(new BorderLayout());
-		this.setMinimumSize(new Dimension(200, 75));
-		this.setMaximumSize(new Dimension(200, 75));
-		this.setPreferredSize(new Dimension(200, 75));
-		this.setSize(new Dimension(200, 75));
+		this.setMinimumSize(new Dimension(140, 290));
+		this.setMaximumSize(new Dimension(140, 290));
+		this.setPreferredSize(new Dimension(140, 290));
+		this.setSize(new Dimension(140, 290));
 		lm = new DefaultListModel<String>();
 		jl = new JList<String>(lm);
 		jl.setVisibleRowCount(3);
 		listScroller = new JScrollPane(jl);
-		listScroller.setMinimumSize(new Dimension(200, 75));
-		listScroller.setMaximumSize(new Dimension(200, 75));
-		listScroller.setPreferredSize(new Dimension(200, 75));
-		listScroller.setSize(new Dimension(200, 75));
+		listScroller.setMinimumSize(new Dimension(200, 175));
+		listScroller.setMaximumSize(new Dimension(200, 175));
+		listScroller.setPreferredSize(new Dimension(200, 175));
+		listScroller.setSize(new Dimension(200, 175));
 		listScroller
 				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 		listScroller
@@ -225,8 +227,20 @@ public class ScrollList extends JPanel {
 	 * @param listener
 	 *            the listener to be added to the list
 	 */
-	public void setController(ListSelectionListener listener) {
+	public void setController(TaskInputController listener) {
 		jl.addListSelectionListener(listener);
+		jl.addPropertyChangeListener(listener);
+	}
+
+	/**
+	 * sets the listener for the JList
+	 * 
+	 * @param listener
+	 *            the listener to be added to the list
+	 */
+	public void setController(ReportsManager listener) {
+		jl.addListSelectionListener(listener);
+		jl.addPropertyChangeListener(listener);
 	}
 
 }

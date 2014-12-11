@@ -219,8 +219,8 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 						.setThisTaskInfoOut(false);
 				((TaskInfoPreviewView) c).getTaskController().resetBackground();
 			}
-			TaskController.anyTaskInfoOut = false;
 		}
+		TaskController.anyTaskInfoOut = false;
 		if (repaint) {
 			// display without reloading
 			this.repaintView();

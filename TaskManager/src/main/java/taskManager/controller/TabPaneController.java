@@ -12,6 +12,7 @@ package taskManager.controller;
 import java.awt.Component;
 
 import taskManager.view.EditTaskView;
+import taskManager.view.ReportsView;
 import taskManager.view.TabPaneView;
 import taskManager.view.TabView;
 import taskManager.view.WorkflowView;
@@ -73,9 +74,7 @@ public class TabPaneController {
 			if (c instanceof EditTaskView) {
 				etv2 = (EditTaskView) c;
 
-				if (etv2.getTitle().getName() != null
-						&& etv2.getTitle().getName()
-								.equals(etv.getTitle().getName())) {
+				if (etv2.getController().isDuplicate(etv.getController())) {
 					exists = true;
 					break;
 				}
@@ -86,6 +85,30 @@ public class TabPaneController {
 		} else {
 			addTab(etv.getTitle().getText(), etv, true);
 			view.setSelectedComponent(etv);
+		}
+	}
+
+	/**
+	 * 
+	 * Adds the reports view tab.
+	 *
+	 * @param rtv
+	 *            the reports view to add.
+	 */
+	public void addReportsTab(ReportsView rtv) {
+		boolean exists = false;
+		ReportsView rtv2 = null;
+		for (Component c : view.getComponents()) {
+			if (c instanceof ReportsView) {
+				rtv2 = (ReportsView) c;
+				exists = true;
+			}
+		}
+		if (exists) {
+			view.setSelectedComponent(rtv2);
+		} else {
+			addTab("Reports", rtv, true);
+			view.setSelectedComponent(rtv);
 		}
 	}
 
