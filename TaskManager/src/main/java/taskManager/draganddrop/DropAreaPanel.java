@@ -410,10 +410,12 @@ class DropAreaListener implements DropTargetListener {
 			try {
 				transferredPanel = (JPanel) trans.getTransferData(flavor);
 			} catch (Exception ex) {
+				e.rejectDrop();
 				System.out.println(ex.getStackTrace());
 				return;
 			}
 			panel.dropPanel(transferredPanel, e.getLocation());
+			e.acceptDrop(e.getDropAction());
 
 		} else { // if not supported, try to redispatch to ancestor
 			Component ancestor = panel.getParent();
@@ -425,6 +427,8 @@ class DropAreaListener implements DropTargetListener {
 			if (ancestor != null) {
 				ancestor.getDropTarget().drop(
 						DropTargetRedispatcher.convertCoords(e, ancestor));
+			} else { // valid ancestor not found
+				e.rejectDrop();
 			}
 		}
 
@@ -460,12 +464,13 @@ class DropAreaListener implements DropTargetListener {
 			try {
 				transferredPanel = (JPanel) trans.getTransferData(flavor);
 			} catch (Exception ex) {
+				e.rejectDrag();
 				System.out.println(ex.getStackTrace());
 				return;
 			}
 
 			transferredPanel.setVisible(false);
-
+			e.acceptDrag(e.getDropAction());
 			panel.drawPlaceholder(e.getLocation());
 
 		} else { // if not supported, try to redispatch to ancestor
@@ -476,8 +481,11 @@ class DropAreaListener implements DropTargetListener {
 			}
 			// Redispatch to ancestor drop target
 			if (ancestor != null) {
+				ancestor.getDropTarget();
 				ancestor.getDropTarget().dragOver(
 						DropTargetRedispatcher.convertCoords(e, ancestor));
+			} else { // valid ancestor not found
+				e.rejectDrag();
 			}
 		}
 
