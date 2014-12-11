@@ -9,6 +9,7 @@
 package taskManager.controller;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,7 +35,7 @@ public class TaskFilter {
 	}
 
 	// * Example usage:
-	// * List<TaskCategory> cats = new ArrayList<TaskCategory>();
+	// * List<TaskCategory> cats = new HashSet<TaskCategory>();
 	// * cats.add(TaskCategory.RED);
 	// * cats.add(TaskCategory.BLUE);
 	// *
@@ -50,18 +51,20 @@ public class TaskFilter {
 	private Set<StringField> stringFields;
 	private Set<ArchiveState> archiveStates;
 	private Set<TaskCategory> categories;
+	private Set<String> users;
 
 	/**
 	 * Create filter with default configuration
 	 *
 	 */
 	public TaskFilter() {
-		// null values means "allow all"
+		// null values mean "allow all"
 		filterString = null;
 		stringFields = null;
 		archiveStates = new HashSet<ArchiveState>();
 		archiveStates.add(ArchiveState.NOT_ARCHIVED);
 		categories = null;
+		users = null;
 	}
 
 	/**
@@ -89,12 +92,23 @@ public class TaskFilter {
 	}
 
 	/**
+	 * Filter single category
+	 *
+	 * @param category
+	 */
+	public void setCategory(TaskCategory category) {
+		final Set<TaskCategory> categories = new HashSet<TaskCategory>();
+		categories.add(category);
+		setCategories(categories);
+	}
+
+	/**
 	 * Categories to be included in filter
 	 *
 	 * @param categories
 	 */
-	public void setCategories(List<TaskCategory> categories) {
-		this.categories = new HashSet<TaskCategory>(categories);
+	public void setCategories(Set<TaskCategory> categories) {
+		this.categories = categories;
 	}
 
 	/**
@@ -107,6 +121,26 @@ public class TaskFilter {
 	}
 
 	/**
+	 * Filter single user
+	 *
+	 * @param username
+	 */
+	public void setUser(String username) {
+		final Set<String> users = new HashSet<String>();
+		users.add(username);
+		setUsers(users);
+	}
+
+	/**
+	 * Users to be included in filter
+	 *
+	 * @param usernames
+	 */
+	public void setUsers(Set<String> usernames) {
+		users = usernames;
+	}
+
+	/**
 	 * Check if a task passes the filter
 	 *
 	 * @param task
@@ -114,7 +148,8 @@ public class TaskFilter {
 	 * @return whether the task passes the filter
 	 */
 	public boolean check(TaskModel task) {
-		return validString(task) && validArchive(task) && validCategory(task);
+		return checkString(task) && checkArchive(task) && checkCategory(task)
+				&& checkUsers(task);
 	}
 
 	/**
@@ -123,13 +158,13 @@ public class TaskFilter {
 	 * @param task
 	 * @return whether it passes
 	 */
-	private boolean validString(TaskModel task) {
+	private boolean checkString(TaskModel task) {
 		if (filterString == null) {
 			return true;
 		}
 
 		for (StringField field : stringFields) {
-			if (validString(task, field)) {
+			if (checkString(task, field)) {
 				return true;
 			}
 		}
@@ -146,14 +181,14 @@ public class TaskFilter {
 	 *            field to search in
 	 * @return whether the task passes
 	 */
-	private boolean validString(TaskModel task, StringField field) {
+	private boolean checkString(TaskModel task, StringField field) {
 		switch (field) {
 		case NAME:
 			return task.getName().toLowerCase().contains(filterString);
 		case DESCRIPTION:
 			return task.getDescription().toLowerCase().contains(filterString);
 		case COMMENTS:
-			List<ActivityModel> activities = task.getActivities();
+			final List<ActivityModel> activities = task.getActivities();
 			for (ActivityModel activity : activities) {
 				if (activity.getType().equals(activityModelType.COMMENT)
 						&& activity.getDescription().toLowerCase()
@@ -173,7 +208,7 @@ public class TaskFilter {
 	 * @param task
 	 * @return whether it passes
 	 */
-	private boolean validArchive(TaskModel task) {
+	private boolean checkArchive(TaskModel task) {
 		if (archiveStates == null) {
 			return true;
 		}
@@ -191,11 +226,26 @@ public class TaskFilter {
 	 * @param task
 	 * @return whether it passes
 	 */
-	private boolean validCategory(TaskModel task) {
+	private boolean checkCategory(TaskModel task) {
 		if (categories == null) {
 			return true;
 		}
 
 		return categories.contains(task.getCategory());
+	}
+
+	/**
+	 * Check if task passes user filter
+	 *
+	 * @param task
+	 * @return whether it passes
+	 */
+	private boolean checkUsers(TaskModel task) {
+		if (users == null) {
+			return true;
+		}
+
+		// true if there is any intersection of between sets
+		return !Collections.disjoint(task.getAssigned(), users);
 	}
 }
