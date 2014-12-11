@@ -516,7 +516,16 @@ public class EditTaskController implements ActionListener {
 
 		// Compare the task info with the filled in info.
 		if (model == null) { // If we're creating a task
-			edited = true;
+			if (etv.getTitle().getText().isEmpty()
+					&& etv.getDescription().getText().isEmpty()
+					&& checkDate(null)
+					// && etv.getSelectedStage() ????
+					&& checkUsers(null)
+					&& etv.getEstEffort().getText().isEmpty()
+					&& etv.getActEffort().getText().isEmpty()
+					// && etv.getRequirements().getSelectedItem()
+					&& etv.isArchived())
+				edited = true;
 		}
 		// Title.
 		else if (!model.getName().equals(etv.getTitle().getText())) {

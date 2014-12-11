@@ -27,6 +27,7 @@ import org.fest.swing.exception.WaitTimedOutError;
 import org.fest.swing.fixture.FrameFixture;
 import org.fest.swing.fixture.JOptionPaneFixture;
 import org.fest.swing.fixture.JTextComponentFixture;
+import org.fest.swing.timing.Pause;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -360,6 +361,39 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		fixture.optionPane().yesButton().click();
 		assertEquals(task.getName(), name);
 
+	}
+
+	@Test
+	public void testCloseCreateTask() {
+		// Close task opened in setup
+		fixture.button(TabView.X).click();
+		fixture.optionPane().noButton().click();
+		// If warning comes up, hit yes
+		try {
+			fixture.optionPane().yesButton().click();
+		} catch (ComponentLookupException | WaitTimedOutError e) {
+		}
+		Pause.pause(1000);
+		// load the Create task view
+		TabPaneController.getInstance().addCreateTaskTab();
+
+		Component c = TabPaneController.getInstance().getView()
+				.getSelectedComponent();
+		if (c instanceof EditTaskView) {
+			etv = (EditTaskView) c;
+		} else {
+			fail("oh god what's going on");
+		}
+		frame.pack();
+
+		Pause.pause(10000);
+
+		fixture.button(TabView.X).click();
+		try { // dialog shouldn't come up if no changes made
+			fixture.optionPane();
+			fail("New task threw up popup");
+		} catch (ComponentLookupException | WaitTimedOutError e) {
+		}
 	}
 
 	@After
