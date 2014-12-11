@@ -63,7 +63,8 @@ public class TaskView extends JPanel implements Transferable {
 	 * @param comments
 	 *            the number of comments on the task
 	 */
-	public TaskView(String name, Date duedate, int users, int comments) {
+	public TaskView(String name, Date duedate, int users, int comments,
+			int stageWidth) {
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		this.setAlignmentX(LEFT_ALIGNMENT);
 
@@ -83,10 +84,10 @@ public class TaskView extends JPanel implements Transferable {
 		title.setTitlePosition(TitledBorder.LEFT);
 		this.setBorder(title);
 
-		this.setMinimumSize(new Dimension(215, 62));
-		this.setPreferredSize(new Dimension(215, 62));
-		this.setMaximumSize(new Dimension(215, 62));
-		this.setSize(new Dimension(215, 62));
+		this.setMinimumSize(new Dimension(stageWidth - 10, 62));
+		this.setPreferredSize(new Dimension(stageWidth - 10, 62));
+		this.setMaximumSize(new Dimension(stageWidth - 10, 62));
+		this.setSize(new Dimension(stageWidth - 10, 62));
 		this.setName(name);
 
 		// convert Date object to Calendar object to avoid using deprecated

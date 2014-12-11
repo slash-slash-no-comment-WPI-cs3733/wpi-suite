@@ -84,7 +84,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 
 					TaskView tkv = new TaskView(task.getName(),
 							task.getDueDate(), task.getAssigned().size(),
-							comments);
+							comments, this.view.getPreferredSize().width);
 					tkv.setController(new TaskController(tkv, task));
 					this.view.addTaskView(tkv);
 				}
