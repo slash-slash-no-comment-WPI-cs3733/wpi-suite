@@ -104,17 +104,7 @@ public class TaskView extends JPanel implements Transferable {
 		contextMenu = new ContextMenu(this);
 		contextMenu.add(addTask);
 		contextMenu.add(editTask);
-		// Creates sub Menu that contains the names of all of the other stages.
-		moveTo = new JMenu("Move To");
-		int i = 0;
-		while (i < WorkflowModel.getInstance().getStages().size()) {
-			JMenuItem jm = new JMenuItem(WorkflowModel.getInstance()
-					.getStages().get(i).getName());
-			moveTo.add(jm);
-			jm.addActionListener(controller);
-			i++;
-		}
-		contextMenu.add(moveTo);
+
 		// Finished with sub menu
 		contextMenu.add(delete);
 		// finished with context menu
@@ -236,7 +226,20 @@ public class TaskView extends JPanel implements Transferable {
 		this.editTask.addActionListener(controller);
 		this.archive.addActionListener(controller);
 		
+		moveTo = new JMenu("Move To");
+		int i = 0;
+		while (i < WorkflowModel.getInstance().getStages().size()) {
+			JMenuItem jm = new JMenuItem(WorkflowModel.getInstance()
+					.getStages().get(i).getName());
+			jm.setName("Move To");
+			moveTo.add(jm);
+			jm.addActionListener(controller);
+			i++;
+		}
+		contextMenu.add(moveTo);
+	
 		this.addMouseListener(controller);
+
 	}
 
 	@Override

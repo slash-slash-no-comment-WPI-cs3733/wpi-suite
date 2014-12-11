@@ -227,7 +227,7 @@ public class TaskController implements MouseListener, MouseMotionListener,
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		changeToHoverColor();
+		setToHoverColor();
 	}
 
 	@Override
@@ -272,11 +272,14 @@ public class TaskController implements MouseListener, MouseMotionListener,
 			int i = 0;
 			while (i < WorkflowModel.getInstance().getStages().size()) {
 				StageModel a = WorkflowModel.getInstance().getStages().get(i);
-				if (a.getName().equals(((JMenuItem) e.getSource()).getText()))
+				if (a.getName().equals(((JMenuItem) e.getSource()).getText())) {
 					moveToStage(a, 0);
+					WorkflowModel.getInstance().save();
+					WorkflowController.getInstance().reloadData();
+					
+				}
 				i++;
 			}
-
 		}
 		System.out.println(((JMenuItem) e.getSource()).getText());
 	}
