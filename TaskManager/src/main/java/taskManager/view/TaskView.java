@@ -11,6 +11,7 @@ package taskManager.view;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -97,7 +98,7 @@ public class TaskView extends JPanel implements Transferable {
 
 		// formats the lower section containing date and icons
 		JPanel lower = new JPanel();
-		lower.setLayout(new BoxLayout(lower, BoxLayout.X_AXIS));
+		lower.setLayout(new GridLayout(1, 2));
 		lower.setAlignmentX(LEFT_ALIGNMENT);
 		lower.setOpaque(false);
 
