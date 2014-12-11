@@ -10,7 +10,7 @@ package taskManager.model;
 
 import java.util.Date;
 
-import edu.wpi.cs.wpisuitetng.modules.core.models.User;
+import taskManager.JanewayModule;
 
 /**
  * Description Activities represent changes to a Task and comments users have
@@ -25,7 +25,7 @@ public class ActivityModel {
 	/**
 	 */
 	public enum activityModelType {
-		CREATION, MOVE, COMPLETION, USER_ADD, USER_REMOVE, COMMENT
+		CREATION, MOVE, COMPLETION, USER_ADD, USER_REMOVE, COMMENT, ARCHIVE
 	};
 
 	// Actual type of this model
@@ -38,7 +38,7 @@ public class ActivityModel {
 	private String description;
 
 	// Name of user who took the action; null for system activities
-	private String actor;
+	private final String actor;
 
 	/**
 	 * Constructor for activities with no user actor/unknown user actor
@@ -49,27 +49,9 @@ public class ActivityModel {
 	 *            The type of activity
 	 */
 	public ActivityModel(String description, activityModelType type) {
-		this(description, type, null);
-	}
-
-	/**
-	 * Constructor for activities with user actor
-	 *
-	 * @param description
-	 *            The activity description
-	 * @param type
-	 *            The type of activity
-	 * @param actor
-	 *            The user who is doing the activity
-	 */
-	public ActivityModel(String description, activityModelType type, User actor) {
+		actor = JanewayModule.currentUser;
 		this.description = description;
 		modelType = type;
-		if (actor != null) {
-			this.actor = actor.getUsername();
-		} else {
-			this.actor = null;
-		}
 		dateCreated = new Date(); // set date to time ActivityModel was
 									// instantiated
 	}

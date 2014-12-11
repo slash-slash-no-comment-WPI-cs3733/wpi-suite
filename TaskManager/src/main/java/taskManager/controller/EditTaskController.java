@@ -47,7 +47,7 @@ import edu.wpi.cs.wpisuitetng.modules.requirementmanager.view.ViewEventControlle
 public class EditTaskController implements ActionListener {
 
 	private final EditTaskView etv;
-	private ArrayList<String> toRemove = new ArrayList<String>();
+	private final List<String> toRemove = new ArrayList<String>();
 	private TaskModel model;
 
 	/**
@@ -68,7 +68,7 @@ public class EditTaskController implements ActionListener {
 		etv.resetFields();
 
 		// fills the user lists
-		ArrayList<String> projectUserNames = new ArrayList<String>();
+		final List<String> projectUserNames = new ArrayList<String>();
 		for (User u : JanewayModule.users) {
 			String name = u.getUsername();
 			if (!projectUserNames.contains(name)) {
@@ -91,6 +91,7 @@ public class EditTaskController implements ActionListener {
 	 */
 	public EditTaskController(TaskModel model) {
 		etv = new EditTaskView(Mode.EDIT);
+		etv.setName(model.getName());
 		this.model = model;
 
 		etv.setController(this);
@@ -114,7 +115,7 @@ public class EditTaskController implements ActionListener {
 		etv.setSelectedStage(model.getStage().getName());
 
 		// populates the project users list
-		ArrayList<String> projectUserNames = new ArrayList<String>();
+		final List<String> projectUserNames = new ArrayList<String>();
 		for (User u : JanewayModule.users) {
 			String name = u.getUsername();
 			if (!projectUserNames.contains(name)
@@ -125,7 +126,7 @@ public class EditTaskController implements ActionListener {
 		etv.getProjectUsersList().addAllToList(projectUserNames);
 
 		// populates the assigned users panel
-		ArrayList<String> assignedUserNames = new ArrayList<String>();
+		final List<String> assignedUserNames = new ArrayList<String>();
 		for (String u : model.getAssigned()) {
 			if (!assignedUserNames.contains(u)) {
 				assignedUserNames.add(u);
@@ -133,14 +134,14 @@ public class EditTaskController implements ActionListener {
 		}
 		etv.getUsersList().addAllToList(assignedUserNames);
 
-		// Enable save button when editing a task.
-		etv.setSaveEnabled(true);
+		// Disable save button until user starts making edits.
+		etv.setSaveEnabled(false);
 
 		// Clear the activities list.
 		etv.clearActivities();
 
 		// set activities pane
-		List<ActivityModel> tskActivities = model.getActivities();
+		final List<ActivityModel> tskActivities = model.getActivities();
 		etv.setActivities(tskActivities);
 		etv.setActivitiesPanel(tskActivities);
 
@@ -154,12 +155,8 @@ public class EditTaskController implements ActionListener {
 		// makes the archive button clickable
 		etv.enableArchive();
 
-		// Set text for archive button.
-		if (model.isArchived()) {
-			etv.setArchiveButtonText("Unarchive");
-		} else {
-			etv.setArchiveButtonText("Archive");
-		}
+		etv.checkArchive(model.isArchived());
+
 		etv.setDeleteEnabled(model.isArchived());
 
 		this.reloadData();
@@ -168,9 +165,9 @@ public class EditTaskController implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Object button = e.getSource();
+		final Object button = e.getSource();
 		if (button instanceof JButton) {
-			String name = ((JButton) button).getName();
+			final String name = ((JButton) button).getName();
 
 			switch (name) {
 
@@ -203,12 +200,8 @@ public class EditTaskController implements ActionListener {
 
 				// archive this task
 				boolean isArchived = model.isArchived();
-				if (isArchived) {
-					etv.setArchiveButtonText("Archive");
-				} else {
-					etv.setArchiveButtonText("Unarchive");
-				}
-				model.setArchived(!isArchived);
+
+				etv.checkArchive(isArchived);
 				etv.setDeleteEnabled(!isArchived);
 
 				// Save and reload the workflow.
@@ -220,7 +213,7 @@ public class EditTaskController implements ActionListener {
 				break;
 
 			case EditTaskView.DELETE:
-				Integer choice = JOptionPane.showConfirmDialog(etv,
+				final Integer choice = JOptionPane.showConfirmDialog(etv,
 						"Are you sure you want to delete this task?",
 						"Warning - Deleting a task", JOptionPane.YES_NO_OPTION);
 				if (choice.equals(JOptionPane.YES_OPTION)) {
@@ -235,7 +228,6 @@ public class EditTaskController implements ActionListener {
 								break;
 							}
 						}
-						currentStage.findTaskByID(model.getID());
 						currentStage.getTasks().remove(model);
 						etv.resetFields();
 
@@ -243,6 +235,7 @@ public class EditTaskController implements ActionListener {
 						WorkflowModel.getInstance().save();
 						// TODO don't save entire workflow
 					}
+
 					returnToWorkflowView();
 				}
 				break;
@@ -259,8 +252,9 @@ public class EditTaskController implements ActionListener {
 			case EditTaskView.VIEW_REQ:
 				// view requirement in requirement manager
 
-				Requirement requirement = RequirementModel.getInstance()
-						.getRequirementByName(etv.getSelectedRequirement());
+				final Requirement requirement = RequirementModel.getInstance()
+						.getRequirementByName(
+								(String) etv.getSelectedRequirement());
 
 				// This button should be disabled when [None] selected
 				// but that may not happen
@@ -276,7 +270,7 @@ public class EditTaskController implements ActionListener {
 					}
 					c = c.getParent();
 				}
-				JTabbedPane tabPane = (JTabbedPane) c;
+				final JTabbedPane tabPane = (JTabbedPane) c;
 
 				// switch to the requirement manager tab
 				tabPane.setSelectedIndex(tabPane.indexOfTab(RequirementManager
@@ -295,8 +289,10 @@ public class EditTaskController implements ActionListener {
 				break;
 
 			case EditTaskView.SUBMIT_COMMENT:
-				// adds a comment activity
-				etv.addComment();
+				// adds a comment.
+				ActivityModel comment = etv.addComment();
+				// add immediately to the model.
+				model.addActivity(comment);
 				break;
 			}
 		}
@@ -308,14 +304,16 @@ public class EditTaskController implements ActionListener {
 	public void reloadData() {
 
 		List<String> stageNames = new LinkedList<String>();
+
 		for (StageModel stage : WorkflowModel.getInstance().getStages()) {
 			stageNames.add(stage.getName());
 		}
 		etv.setStages(stageNames);
 
-		List<Requirement> reqs = RequirementModel.getInstance()
+		final List<Requirement> reqs = RequirementModel.getInstance()
 				.getRequirements();
 		List<String> reqNames = new LinkedList<String>();
+
 		for (Requirement req : reqs) {
 			reqNames.add(req.getName());
 		}
@@ -326,7 +324,9 @@ public class EditTaskController implements ActionListener {
 	 * switches back to workflow view
 	 */
 	private void returnToWorkflowView() {
+
 		TabPaneController.getInstance().removeTabByComponent(etv);
+		WorkflowController.getInstance().removeTaskInfos(false);
 		WorkflowController.getInstance().reloadData();
 	}
 
@@ -346,10 +346,11 @@ public class EditTaskController implements ActionListener {
 		model.setDescription(etv.getDescription());
 
 		// grabs the stage from the dropdown box
-		StageModel s = WorkflowModel.getInstance().findStageByName(
+
+		final StageModel s = WorkflowModel.getInstance().findStageByName(
 				(String) etv.getSelectedStage());
-		Requirement r = RequirementModel.getInstance().getRequirementByName(
-				(String) etv.getSelectedRequirement());
+		final Requirement r = RequirementModel.getInstance()
+				.getRequirementByName((String) etv.getSelectedRequirement());
 
 		// Try to set the effort values.
 		try {
@@ -377,20 +378,15 @@ public class EditTaskController implements ActionListener {
 				model.addAssigned(findUserByName(name));
 			}
 		}
-		for (String n : this.toRemove) {
+		for (String n : toRemove) {
 			if (model.getAssigned().contains(n)) {
 				model.removeAssigned(findUserByName(n));
 			}
 		}
 		model.setReq(r);
-		WorkflowModel.getInstance().save(); // TODO make this call an
-											// appropriate save method.
 
-		// Add the newly added activities.
-		List<ActivityModel> newActivities = etv.getNewActivities();
-		for (ActivityModel act : newActivities) {
-			model.addActivity(act);
-		}
+		// Set archived to checkbox value.
+		model.setArchived(etv.isArchived());
 
 		// exit the edit view, this refreshes the workflow
 		this.returnToWorkflowView();
@@ -410,7 +406,7 @@ public class EditTaskController implements ActionListener {
 	 *            the name of the user to find
 	 * @return the user with the given name
 	 */
-	private User findUserByName(String name) {
+	private static User findUserByName(String name) {
 		for (User u : JanewayModule.users) {
 			if (u.getUsername().equals(name)) {
 				return u;
@@ -425,8 +421,8 @@ public class EditTaskController implements ActionListener {
 	 * the project user list.
 	 */
 	public void addUsersToList() {
-		int[] toAdd = etv.getProjectUsersList().getSelectedIndices();
-		ArrayList<String> namesToAdd = new ArrayList<String>();
+		final int[] toAdd = etv.getProjectUsersList().getSelectedIndices();
+		final List<String> namesToAdd = new ArrayList<String>();
 
 		for (int ind : toAdd) {
 			namesToAdd.add(etv.getProjectUsersList().getValueAtIndex(ind));
@@ -440,8 +436,8 @@ public class EditTaskController implements ActionListener {
 				etv.getProjectUsersList().removeFromList(n1);
 				// if this user was to be removed take it out of the
 				// list
-				if (this.toRemove.contains(n1)) {
-					this.toRemove.remove(n1);
+				if (toRemove.contains(n1)) {
+					toRemove.remove(n1);
 				}
 
 			}
@@ -456,8 +452,8 @@ public class EditTaskController implements ActionListener {
 	public void removeUsersFromList() {
 		// grab all of the indices of the usernames selected in
 		// assigned users and grab the associated strings
-		int[] usersToRemove = etv.getUsersList().getSelectedIndices();
-		ArrayList<String> namesToRemove = new ArrayList<String>();
+		final int[] usersToRemove = etv.getUsersList().getSelectedIndices();
+		final List<String> namesToRemove = new ArrayList<String>();
 		for (int ind : usersToRemove) {
 			namesToRemove.add(etv.getUsersList().getValueAtIndex(ind));
 		}
@@ -469,8 +465,8 @@ public class EditTaskController implements ActionListener {
 			if (!etv.getProjectUsersList().contains(n2)) {
 				etv.getProjectUsersList().addToList(n2);
 				etv.getUsersList().removeFromList(n2);
-				if (!this.toRemove.contains(n2)) {
-					this.toRemove.add(n2);
+				if (!toRemove.contains(n2)) {
+					toRemove.add(n2);
 				}
 			}
 
@@ -522,31 +518,40 @@ public class EditTaskController implements ActionListener {
 		else if (checkReq(model)) {
 			edited = true;
 		}
+		// Archived.
+		else if (model.isArchived() != etv.isArchived()) {
+			edited = true;
+		}
 		return edited;
 	}
 
-	public boolean checkDate(TaskModel task) {
-		Date dueDate = task.getDueDate();
-
+	/**
+	 * Checks if the date in the view and on the task are the same
+	 *
+	 * @param task
+	 *            The task to check against
+	 * @return true if there are edits
+	 */
+	public Boolean checkDate(TaskModel task) {
 		// if the task had a due date, check if it changed
-		if (dueDate != null && dueDate.equals(etv.getDate())) {
-			return false;
+		final Date dueDate = task.getDueDate();
+
+		Calendar cal1 = Calendar.getInstance();
+
+		Calendar cal2 = Calendar.getInstance();
+
+		cal1.setTime(dueDate);
+		if (isEditingTask() && dueDate != null) {
+			cal2.setTime(etv.getDate());
 		} else {
 			// check if it has the default date (today)
-			Calendar cal1 = Calendar.getInstance();
-			Calendar cal2 = Calendar.getInstance();
-			cal1.setTime(etv.getDate());
 			cal2.setTime(Calendar.getInstance().getTime());
-
-			// check if the two dates are the same day
-			if (cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
-					&& cal1.get(Calendar.DAY_OF_YEAR) == cal2
-							.get(Calendar.DAY_OF_YEAR)) {
-				return false;
-			} else {
-				return true;
-			}
 		}
+		boolean sameDay = cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
+				&& cal1.get(Calendar.DAY_OF_YEAR) == cal2
+						.get(Calendar.DAY_OF_YEAR);
+
+		return !sameDay;
 	}
 
 	/**
@@ -554,15 +559,14 @@ public class EditTaskController implements ActionListener {
 	 * Checks whether the users in the view and the users stored in the task are
 	 * the same.
 	 *
-	 * @param The
-	 *            task to check with.
+	 * @param task
+	 *            The task to check with.
 	 * @return true if there are edits.
 	 */
 	public boolean checkUsers(TaskModel task) {
 		boolean edited = false;
-		Set<String> taskAssigned = new HashSet<String>();
-		taskAssigned = task.getAssigned();
-		Set<String> usersAssigned = new HashSet<String>();
+		Set<String> taskAssigned = task.getAssigned();
+		final Set<String> usersAssigned = new HashSet<String>();
 		usersAssigned.addAll(etv.getUsersList().getAllValues());
 		if (!usersAssigned.equals(taskAssigned)) {
 			edited = true;
@@ -578,8 +582,8 @@ public class EditTaskController implements ActionListener {
 	 * Checks whether the estimated effort value in the task and on the view are
 	 * equivalent.
 	 *
-	 * @param The
-	 *            task to check if.
+	 * @param task
+	 *            The task to check if.
 	 * @return true if there are edits.
 	 */
 	public boolean checkEstEffort(TaskModel task) {
@@ -591,8 +595,8 @@ public class EditTaskController implements ActionListener {
 				edited = true;
 			}
 		} else {
-			Integer taskEffort = task.getEstimatedEffort();
-			Integer etvEffort;
+			final Integer taskEffort = task.getEstimatedEffort();
+			final Integer etvEffort;
 			try {
 				etvEffort = Integer.parseInt(etv.getEstEffort());
 				if (!taskEffort.equals(etvEffort)) {
@@ -610,8 +614,8 @@ public class EditTaskController implements ActionListener {
 	 * Checks whether the actual effort value in the task and on the view are
 	 * equivalent.
 	 *
-	 * @param The
-	 *            task to check if.
+	 * @param task
+	 *            The task to check if.
 	 * @return true if there are edits.
 	 */
 	public boolean checkActEffort(TaskModel task) {
@@ -623,8 +627,8 @@ public class EditTaskController implements ActionListener {
 				edited = true;
 			}
 		} else {
-			Integer taskEffort = task.getActualEffort();
-			Integer etvEffort;
+			final Integer taskEffort = task.getActualEffort();
+			final Integer etvEffort;
 			try {
 				etvEffort = Integer.parseInt(etv.getActEffort());
 				if (!taskEffort.equals(etvEffort)) {
@@ -642,8 +646,8 @@ public class EditTaskController implements ActionListener {
 	 * Checks whether the requirement in the task and on the view are
 	 * equivalent.
 	 *
-	 * @param The
-	 *            task to check if.
+	 * @param task
+	 *            The task to check if.
 	 * @return true if there are edits.
 	 */
 	public boolean checkReq(TaskModel task) {
@@ -682,13 +686,18 @@ public class EditTaskController implements ActionListener {
 		return etv;
 	}
 
+	/**
+	 * If this controller and the other controller are duplicates (use the same
+	 * model)
+	 *
+	 * @param other
+	 * @return true if they're the same.
+	 */
 	public boolean isDuplicate(EditTaskController other) {
-		// "Create" views are never duplicates -- note: a little different from
-		// isEditingTask();
-		if (other.model == null || this.model == null) {
-			return false;
-		} else {
+		if (isEditingTask() && model != null) {
 			return model.getID().equals(other.model.getID());
 		}
+		// EditTaskControllers that are creating a task are always unique
+		return false;
 	}
 }
