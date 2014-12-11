@@ -28,6 +28,7 @@ import taskManager.JanewayModule;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
+import taskManager.view.ActivityPanel;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
@@ -55,8 +56,11 @@ public class EditTaskController implements ActionListener {
 	 *
 	 */
 	public EditTaskController() {
-		etv = new EditTaskView(Mode.CREATE, null);
+		JTabbedPane tabs = new JTabbedPane();
+		tabs.addTab("Comments", null);
+		tabs.addTab("All Activities", null);
 
+		etv = new EditTaskView(Mode.CREATE, tabs);
 		etv.setController(this);
 		etv.setFieldController(new TaskInputController(etv));
 		// Set the dropdown menu to first stage and disable the menu.
@@ -91,7 +95,13 @@ public class EditTaskController implements ActionListener {
 	 * @param model
 	 */
 	public EditTaskController(TaskModel model) {
-		etv = new EditTaskView(Mode.EDIT, model.getActivities());
+		System.out.println("adding activities");
+		JTabbedPane tabs = new JTabbedPane();
+		tabs.addTab("Comments", new ActivityPanel(ActivityPanel.Type.COMMENTS,
+				model.getActivities()));
+		tabs.addTab("All Activities", new ActivityPanel(ActivityPanel.Type.ALL,
+				model.getActivities()));
+		etv = new EditTaskView(Mode.EDIT, tabs);
 		this.model = model;
 
 		etv.setController(this);

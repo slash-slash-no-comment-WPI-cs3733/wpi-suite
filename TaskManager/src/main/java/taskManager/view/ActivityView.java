@@ -9,10 +9,16 @@
 
 package taskManager.view;
 
+import java.awt.Dimension;
+import java.awt.Font;
+
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
 
 import taskManager.model.ActivityModel;
 
@@ -31,7 +37,7 @@ public class ActivityView extends JPanel {
 
 	private JLabel info;
 
-	private JTextArea message;
+	private JLabel message;
 
 	/*
 	 * JXDatePicker nt_dueDateField = new JXDatePicker();
@@ -45,17 +51,26 @@ public class ActivityView extends JPanel {
 	 */
 	public ActivityView(ActivityModel m) {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		// Name of the user who created it
-		info = new JLabel();
+		// Border
+		final Border raisedbevel = BorderFactory
+				.createEtchedBorder(EtchedBorder.LOWERED);
+		final TitledBorder title = BorderFactory
+				.createTitledBorder(raisedbevel);
+		title.setTitlePosition(TitledBorder.LEFT);
+		this.setBorder(title);
+		info = new JLabel(m.getDateCreated() + "     " + m.getActor());
 		info.setName(INFO);
-		info.setText(m.getDescription() + "  " + m.getActor());
+		info.setMinimumSize(new Dimension(20, 20));
 
 		// Content of the activity
-		message = new JTextArea(14, 22);
-		message.setText(m.getDescription());
+		message = new JLabel("<html>" + m.getDescription() + "</html>");
 		message.setName(MESSAGE_BODY);
-		message.setLineWrap(true);
-		message.setWrapStyleWord(true);
-		message.setEditable(false);
+		message.setFont(message.getFont().deriveFont(Font.PLAIN));
+
+		add(info);
+		add(message);
+
+		// this.setMinimumSize(new Dimension(50, 20));
+		this.setPreferredSize(new Dimension(50, 20));
 	}
 }

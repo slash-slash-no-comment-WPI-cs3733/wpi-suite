@@ -8,16 +8,21 @@
  *******************************************************************************/
 package taskManager.view;
 
+import java.awt.Dimension;
 import java.util.List;
 
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
+import net.miginfocom.swing.MigLayout;
 import taskManager.model.ActivityModel;
 
 /**
- * Description
+ * This is a panel which contains a list of ActivityView's, a JTextArea, a
+ * submit button, and a cancel button.
  *
  * @author Samee Swartz
  * @version Dec 9, 2014
@@ -25,6 +30,13 @@ import taskManager.model.ActivityModel;
 public class ActivityPanel extends JPanel {
 
 	private static final long serialVersionUID = -8384336474859145673L;
+
+	private static final String SUBMIT = "submit";
+	private static final String CANCEL = "cancel";
+
+	private JPanel buttons;
+	private JScrollPane activityScroll;
+	private JScrollPane commentScroll;
 
 	public enum Type {
 		COMMENTS, ALL;
@@ -35,6 +47,7 @@ public class ActivityPanel extends JPanel {
 
 		// Create list of activities
 		JPanel activities = new JPanel();
+		activities.setLayout(new MigLayout("wrap 1", "0[grow, fill]0", "0[]"));
 		if (!(activityList == null)) {
 			for (ActivityModel a : activityList) {
 				if ((type == Type.COMMENTS)
@@ -45,7 +58,31 @@ public class ActivityPanel extends JPanel {
 				}
 			}
 		}
-		JScrollPane activityScroll = new JScrollPane(activities);
+
+		// Activities
+		activityScroll = new JScrollPane(activities,
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		// Comment textbox
+		JTextArea commentBox = new JTextArea();
+		commentBox.setWrapStyleWord(true);
+		commentBox.setLineWrap(true);
+		commentScroll = new JScrollPane(commentBox);
+		commentScroll.setMaximumSize(new Dimension(10000, 100));
+		commentScroll.setMinimumSize(new Dimension(20, 100));
+		commentScroll
+				.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		// Buttons
+		buttons = new JPanel();
+		JButton submit = new JButton("Submit");
+		submit.setName(SUBMIT);
+		JButton cancel = new JButton("Cancel");
+		submit.setName(CANCEL);
+		buttons.add(submit);
+		buttons.add(cancel);
+
 		add(activityScroll);
+		add(commentScroll);
+		add(buttons);
 	}
 }

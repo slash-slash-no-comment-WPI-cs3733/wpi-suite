@@ -13,7 +13,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -24,6 +23,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
@@ -33,9 +33,7 @@ import net.miginfocom.swing.MigLayout;
 import org.jdesktop.swingx.JXDatePicker;
 
 import taskManager.controller.EditTaskController;
-import taskManager.controller.TabPaneController;
 import taskManager.controller.TaskInputController;
-import taskManager.model.ActivityModel;
 
 /**
  *  Edit panel for a new task
@@ -59,7 +57,6 @@ public class EditTaskView extends JPanel {
 	public static final String ADD_USER = "addUser";
 	public static final String REMOVE_USER = "removeUser";
 	public static final String DELETE = "delete";
-	public static final String COMMENTS = "comments";
 	public static final String ACT_EFFORT = "act_effort";
 	public static final String EST_EFFORT = "est_effort";
 	public static final String DUE_DATE = "due_date";
@@ -74,9 +71,7 @@ public class EditTaskView extends JPanel {
 	private JButton archive;
 	private JButton delete;
 	private JButton addReq;
-	private JButton submitComment;
 
-	private JTextArea commentsField;
 	private JTextField titleField;
 	private JTextArea descripArea;
 	private JXDatePicker dateField;
@@ -111,7 +106,7 @@ public class EditTaskView extends JPanel {
 	 * task: Title Description Due Date Estimated Effort Actual Effort Adding
 	 * Comments
 	 */
-	public EditTaskView(Mode mode, List<ActivityModel> activityList) {
+	public EditTaskView(Mode mode, JTabbedPane activitiesTabs) {
 		// TODO: User Mode to switch between create and edit views
 		// When Task added make EditTask take in a Task called currTask
 		this.mode = mode;
@@ -157,22 +152,12 @@ public class EditTaskView extends JPanel {
 		descriptionScrollPane
 				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
-		commentsField = new JTextArea(2, 22);
-		JScrollPane commentScrollPane = new JScrollPane(commentsField);
-		commentScrollPane
-				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		commentScrollPane
-				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-
 		estEffortField = new JTextField(4);
 		estEffortField.setEditable(true);
 		estEffortField.setName(EST_EFFORT);
 		actEffortField = new JTextField(4);
 		actEffortField.setEditable(true);
 		actEffortField.setName(ACT_EFFORT);
-		commentsField.setEditable(true);
-		commentsField.setLineWrap(true);
-		commentsField.setName(COMMENTS);
 
 		// adds calendar
 		dateField = new JXDatePicker();
@@ -217,10 +202,6 @@ public class EditTaskView extends JPanel {
 		removeUser.setName(REMOVE_USER);
 		this.setRemoveUserEnabled(false);
 
-		// Add comment to comments
-		submitComment = new JButton("Submit Comment");
-		submitComment.setName(SUBMIT_COMMENT);
-		this.setCommentSubmitEnabled(false);
 		// add requirement
 		addReq = new JButton("View Requirement");
 		addReq.setName(VIEW_REQ);
@@ -321,8 +302,9 @@ public class EditTaskView extends JPanel {
 		JScrollPane fieldsScroll = new JScrollPane(fields);
 
 		window = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, fieldsScroll,
-				new TabPaneController(activityList).getView());
-		window.setEnabled(false);
+				activitiesTabs);
+		window.setDividerLocation(900);
+		// window.setEnabled(false);
 		window.setContinuousLayout(true);
 		window.setResizeWeight(.5);
 		this.add(window);
@@ -352,7 +334,6 @@ public class EditTaskView extends JPanel {
 		addUser.addActionListener(controller);
 		removeUser.addActionListener(controller);
 		addReq.addActionListener(controller);
-		submitComment.addActionListener(controller);
 		delete.addActionListener(controller);
 	}
 
@@ -371,7 +352,6 @@ public class EditTaskView extends JPanel {
 		stages.addPopupMenuListener(fieldC);
 		usersList.setController(fieldC);
 		projectUsersList.setController(fieldC);
-		commentsField.addKeyListener(fieldC);
 	}
 
 	/**
@@ -667,16 +647,6 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * enables or disables the comment submit button
-	 * 
-	 * @param e
-	 *            true is enabled false is disabled
-	 */
-	public void setCommentSubmitEnabled(boolean e) {
-		this.submitComment.setEnabled(e);
-	}
-
-	/**
 	 * 
 	 * Set the delete button to enabled/disabled.
 	 *
@@ -727,14 +697,5 @@ public class EditTaskView extends JPanel {
 	 */
 	public Mode getMode() {
 		return mode;
-	}
-
-	/**
-	 * Returns the comments field's text
-	 * 
-	 * @return The text the user wants to say
-	 */
-	public String getCommentsFieldText() {
-		return commentsField.getText();
 	}
 }
