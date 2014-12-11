@@ -11,6 +11,7 @@ package taskManager.view;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -46,6 +47,7 @@ public class TaskView extends JPanel implements Transferable {
 	private static final long serialVersionUID = 1L;
 
 	private TaskController controller;
+	private RotationView rotationView;
 
 	private JLabel userNumber;
 	private JLabel commentNumber;
@@ -66,6 +68,7 @@ public class TaskView extends JPanel implements Transferable {
 	public TaskView(String name, Date duedate, int users, int comments) {
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		this.setAlignmentX(LEFT_ALIGNMENT);
+		this.rotationView = new RotationView(this);
 
 		// creates an empty space around the data
 		JPanel spacer = new JPanel();
@@ -252,6 +255,16 @@ public class TaskView extends JPanel implements Transferable {
 	@Override
 	public boolean isDataFlavorSupported(DataFlavor flavor) {
 		return flavor.equals(DDTransferHandler.getTaskFlavor());
+	}
+
+	@Override
+	public void paintComponent(Graphics g) {
+		g = rotationView.prepareRotation(g);
+		super.paintComponent(g);
+	}
+
+	public JPanel getRotationPane() {
+		return rotationView;
 	}
 
 }

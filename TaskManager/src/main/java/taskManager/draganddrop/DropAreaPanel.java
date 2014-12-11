@@ -365,6 +365,7 @@ public class DropAreaPanel extends JPanel {
 			comp.setBounds(layoutBounds.get(i));
 		}
 	}
+
 }
 
 /**
