@@ -267,6 +267,12 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 
 	}
 
+	/**
+	 * 
+	 * Adds a stage to the workflow, called either when the check button is
+	 * pressed or the enter button is pressed.
+	 *
+	 */
 	private void addStage() {
 		if (WorkflowModel.getInstance().findStageByName(view.getLabelText()) != null) {
 			JOptionPane.showConfirmDialog(view,

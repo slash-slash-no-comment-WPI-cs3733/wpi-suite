@@ -206,8 +206,8 @@ public class EditTaskController implements ActionListener {
 					// if creating a new task
 					else {
 						// grabs the stage from the dropdown box
-						StageModel desiredStage = WorkflowModel.getInstance()
-								.findStageByName(
+						final StageModel desiredStage = WorkflowModel
+								.getInstance().findStageByName(
 										(String) etv.getStages()
 												.getSelectedItem());
 

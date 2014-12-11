@@ -248,7 +248,6 @@ public class EditTaskView extends JScrollPane {
 
 		// Comment Pane
 		activityPane = new ActivityView();
-		activityPane.setFocusable(false);
 
 		// Requirement Pane
 		requirements = new JComboBox<String>();
@@ -421,34 +420,6 @@ public class EditTaskView extends JScrollPane {
 	 */
 	public void focusOnTitleField() {
 		titleField.requestFocus();
-	}
-
-	/**
-	 * 
-	 * Sets the focus to the requirements dropdown.
-	 *
-	 */
-	public void focusOnRequirements() {
-		requirements.requestFocus();
-
-	}
-
-	/**
-	 * 
-	 * Sets the focus to the view requirements button.
-	 *
-	 */
-	public void focusOnViewRequirements() {
-		addReq.requestFocus();
-	}
-
-	/**
-	 * 
-	 * Sets the focus to the view requirements button.
-	 *
-	 */
-	public void focusOnComments() {
-		commentsField.requestFocus();
 	}
 
 	/**
