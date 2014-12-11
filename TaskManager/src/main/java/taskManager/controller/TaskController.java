@@ -15,27 +15,17 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
-import javax.swing.JComboBox;
 import javax.swing.JMenuItem;
 
-import taskManager.JanewayModule;
-import taskManager.model.ActivityModel;
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.Colors;
-import taskManager.view.EditTaskView;
-import taskManager.view.EditTaskView.Mode;
 import taskManager.view.TaskInfoPreviewView;
 import taskManager.view.TaskView;
 import taskManager.view.ToolbarView;
-import edu.wpi.cs.wpisuitetng.modules.core.models.User;
-import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 
 /**
  * Controller for Tasks.
@@ -265,9 +255,9 @@ public class TaskController implements MouseListener, MouseMotionListener,
 		if (((JMenuItem) e.getSource()).getText().equals("Delete Task"))
 			deleteTask();
 		if (((JMenuItem) e.getSource()).getText().equals("Edit Task"))
-			leftMouseClick();
-		if (((JMenuItem) e.getSource()).getText().equals("New Task"))
-			leftMouseClick();
+			this.editTask();
+		if (((JMenuItem) e.getSource()).getText().equals("Add Task"))
+			new EditTaskController().getView().focusOnTitleField();
 		if (((JMenuItem) e.getSource()).getName().equals("Move To")) {
 			int i = 0;
 			while (i < WorkflowModel.getInstance().getStages().size()) {
@@ -276,7 +266,7 @@ public class TaskController implements MouseListener, MouseMotionListener,
 					moveToStage(a, 0);
 					WorkflowModel.getInstance().save();
 					WorkflowController.getInstance().reloadData();
-					
+
 				}
 				i++;
 			}
