@@ -144,12 +144,15 @@ public class TaskInputController implements KeyListener, MouseListener,
 						|| e.getComponent().getName()
 								.equals(EditTaskView.EST_EFFORT)) {
 					fieldWithFocus = e.getComponent().getName();
+
 				} else {
 					fieldWithFocus = null;
 				}
 			}
 
 		} else {
+			if (fieldWithFocus != null) {
+			}
 			fieldWithFocus = null;
 
 		}

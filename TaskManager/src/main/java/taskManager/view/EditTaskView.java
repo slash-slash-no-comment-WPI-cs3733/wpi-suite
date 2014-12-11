@@ -453,6 +453,16 @@ public class EditTaskView extends JScrollPane {
 		descripArea.addMouseListener(fieldC);
 		actEffortField.addMouseListener(fieldC);
 		estEffortField.addMouseListener(fieldC);
+		addReq.addMouseListener(fieldC);
+		requirements.addMouseListener(fieldC);
+		stages.addMouseListener(fieldC);
+		projectUsersList.addMouseListener(fieldC);
+		usersList.addMouseListener(fieldC);
+		addUser.addMouseListener(fieldC);
+		removeUser.addMouseListener(fieldC);
+		submitComment.addMouseListener(fieldC);
+		activityPane.addMouseListener(fieldC);
+		dateField.addMouseListener(fieldC);
 	}
 
 	/**
