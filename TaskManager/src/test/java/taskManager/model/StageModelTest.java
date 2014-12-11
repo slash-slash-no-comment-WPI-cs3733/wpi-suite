@@ -18,7 +18,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import taskManager.JanewayModule;
+import taskManager.TaskManager;
 import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
 
 /**
@@ -32,7 +32,7 @@ public class StageModelTest {
 
 	@Before
 	public void initializeWorkflow() {
-		JanewayModule.reset();
+		TaskManager.reset();
 
 		wf = WorkflowModel.getInstance();
 
