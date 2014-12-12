@@ -136,6 +136,9 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 		if (changed) {
 			WorkflowModel.getInstance().save();
 			DDTransferHandler.dragSaved = true;
+			if (ToolbarController.getInstance().getView().isFunMode()) {
+				WorkflowController.getInstance().reloadData();
+			}
 		}
 
 	}
