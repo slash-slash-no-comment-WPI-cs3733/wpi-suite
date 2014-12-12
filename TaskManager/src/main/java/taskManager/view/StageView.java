@@ -21,6 +21,8 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DropTarget;
+import java.awt.event.ContainerAdapter;
+import java.awt.event.ContainerEvent;
 import java.awt.event.MouseAdapter;
 
 import javax.swing.BorderFactory;
@@ -132,7 +134,11 @@ public class StageView extends JPanel implements Transferable {
 		changeLabel.add(labelText);
 		changeLabel.add(done);
 		changeLabel.add(cancel);
-
+//		changeLabel.addContainerListener(new ContainerAdapter() {
+//		    
+//			public void ContainerVisible( ContainerEvent e ){
+//		        labelText.requestFocus();
+//		    }});
 		changeLabel.setVisible(false);
 
 		label.setVisible(true);
@@ -260,12 +266,19 @@ public class StageView extends JPanel implements Transferable {
 	 *            true is visible, false is not visible
 	 */
 	public void enableTitleEditing(boolean q) {
-
+		
 		changeLabel.setVisible(q);
 		label.setVisible(!q);
-
 	}
 
+	public void focusTextArea(){
+		this.labelText.requestFocus();
+		this.labelText.requestFocusInWindow();
+		this.labelText.grabFocus();
+		this.labelText.addKeyListener(controller);
+		
+	}
+	
 	/**
 	 * returns the editable label text field
 	 * 
