@@ -25,7 +25,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import taskManager.JanewayModule;
+import taskManager.TaskManager;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.view.ReportsView;
@@ -47,7 +47,7 @@ public class TestReportsManager {
 
 	@Before
 	public void setup() {
-		JanewayModule.reset();
+		TaskManager.reset();
 
 		now = ZonedDateTime.ofInstant(Instant.now(), TimeZone.getDefault()
 				.toZoneId());
