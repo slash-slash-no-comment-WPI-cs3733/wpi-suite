@@ -39,7 +39,7 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 public class TestReportsManager {
 
 	private ZonedDateTime now;
-	private ReportsManager rm;
+	private ReportsController rm;
 	private FrameFixture fixture;
 	private JFrame frame;
 	private StageModel finished;
@@ -52,7 +52,7 @@ public class TestReportsManager {
 		now = ZonedDateTime.ofInstant(Instant.now(), TimeZone.getDefault()
 				.toZoneId());
 		finished = new StageModel("Finished");
-		rm = new ReportsManager(new ReportsView());
+		rm = new ReportsController(new ReportsView());
 		TaskModel tm1 = new TaskModel("Task", new StageModel("Start"));
 		tm1.setEstimatedEffort(5);
 		u1 = new User("User 1", "User 1", null, 42);

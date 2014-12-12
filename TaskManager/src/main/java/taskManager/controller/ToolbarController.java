@@ -177,7 +177,7 @@ public class ToolbarController extends DropTargetAdapter implements
 				break;
 			case ToolbarView.REPORT:
 				ReportsView rtv = new ReportsView();
-				rtv.setController(new ReportsManager(rtv));
+				rtv.setController(new ReportsController(rtv));
 				TabPaneController.getInstance().addReportsTab(rtv);
 				break;
 			}

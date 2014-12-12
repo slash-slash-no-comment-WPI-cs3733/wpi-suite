@@ -57,7 +57,7 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.User;
  * @author Joseph Blackman
  * @version Nov 29, 2014
  */
-public class ReportsManager implements ActionListener, ChangeListener,
+public class ReportsController implements ActionListener, ChangeListener,
 		ListSelectionListener, PropertyChangeListener {
 
 	private ReportsView rtv;
@@ -103,7 +103,7 @@ public class ReportsManager implements ActionListener, ChangeListener,
 	/**
 	 * Constructor for ReportsManager.
 	 */
-	public ReportsManager(ReportsView rtv) {
+	public ReportsController(ReportsView rtv) {
 		workflow = WorkflowModel.getInstance();
 		this.rtv = rtv;
 		// Populate the fields.
@@ -116,7 +116,7 @@ public class ReportsManager implements ActionListener, ChangeListener,
 	/**
 	 * Constructor for ReportsManager.
 	 */
-	public ReportsManager(ZonedDateTime start, ZonedDateTime end) {
+	public ReportsController(ZonedDateTime start, ZonedDateTime end) {
 		this.start = start;
 		this.end = end;
 		workflow = WorkflowModel.getInstance();

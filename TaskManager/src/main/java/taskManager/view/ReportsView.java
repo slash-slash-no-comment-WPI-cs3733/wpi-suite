@@ -33,7 +33,7 @@ import net.miginfocom.swing.MigLayout;
 
 import org.jdesktop.swingx.JXDatePicker;
 
-import taskManager.controller.ReportsManager;
+import taskManager.controller.ReportsController;
 import taskManager.controller.TaskInputController;
 
 //TODO import taskManager.controller.ReportsController;
@@ -103,7 +103,7 @@ public class ReportsView extends JPanel {
 	// Generate Graph Button
 	private JButton generateGraph;
 
-	private ReportsManager controller;
+	private ReportsController controller;
 
 	public ReportsView() {
 
@@ -314,7 +314,7 @@ public class ReportsView extends JPanel {
 		this.add(window);
 	}
 
-	public void setController(ReportsManager manager) {
+	public void setController(ReportsController manager) {
 		controller = manager;
 		addUser.addActionListener(manager);
 		removeUser.addActionListener(manager);
