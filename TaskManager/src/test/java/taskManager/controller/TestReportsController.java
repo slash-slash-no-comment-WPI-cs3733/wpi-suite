@@ -13,6 +13,7 @@ import java.time.Instant;
 import java.time.Period;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.TimeZone;
 
@@ -32,11 +33,11 @@ import taskManager.view.ReportsView;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
- * Tests for the edit task controller
+ * Tests for the reports controller
  *
  * @author Jon Sorrells
  */
-public class TestReportsManager {
+public class TestReportsController {
 
 	private ZonedDateTime now;
 	private ReportsController rm;
@@ -75,10 +76,10 @@ public class TestReportsManager {
 	public void simpleTest() throws InterruptedException {
 		Set<String> users = new HashSet<String>();
 		users.add("User 1");
-		rm.findVelocityData(users, now, now.plusSeconds(60 * 60 * 24 * 7),
-				false, finished);
-		rm.generateDataset(false, Period.ofDays(1));
-		final JPanel chart = rm.createChart("Title", "Time", "Effort");
+		List<ReportsController.UserData> data = rm.findVelocityData(users, now,
+				now.plusSeconds(60 * 60 * 24 * 7), false, finished);
+		rm.generateVelocityDataset(data, false, Period.ofDays(1));
+		final JPanel chart = rm.createBarChart("Title", "Time", "Effort");
 		frame.add(chart);
 		frame.revalidate();
 		Pause.pause(1000);
@@ -96,10 +97,10 @@ public class TestReportsManager {
 	public void testSingleUser() throws InterruptedException {
 		Set<String> users = new HashSet<String>();
 		users.add("User 1");
-		rm.findVelocityData(users, now, now.plusSeconds(60 * 60 * 24 * 7),
-				false, finished);
-		rm.generateDataset(false, Period.ofDays(1));
-		final JPanel chart = rm.createChart("Title", "Time", "Effort");
+		List<ReportsController.UserData> data = rm.findVelocityData(users, now,
+				now.plusSeconds(60 * 60 * 24 * 7), false, finished);
+		rm.generateVelocityDataset(data, false, Period.ofDays(1));
+		final JPanel chart = rm.createBarChart("Title", "Time", "Effort");
 		frame.add(chart);
 		frame.revalidate();
 		Pause.pause(1000);

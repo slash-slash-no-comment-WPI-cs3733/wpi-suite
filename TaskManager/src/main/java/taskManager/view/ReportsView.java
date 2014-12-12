@@ -103,9 +103,16 @@ public class ReportsView extends JPanel {
 	// Generate Graph Button
 	private JButton generateGraph;
 
+	public enum Mode {
+		VELOCITY, DISTRIBUTION
+	}
+
+	private Mode mode;
+
 	private ReportsController controller;
 
 	public ReportsView() {
+		setMode(Mode.VELOCITY);
 
 		Dimension nt_panelSize = getPreferredSize();
 		nt_panelSize.width = 1000;
@@ -595,5 +602,24 @@ public class ReportsView extends JPanel {
 	 */
 	public ScrollList getUsersList() {
 		return currUsersList;
+	}
+
+	/**
+	 * Returns the current report mode.
+	 * 
+	 * @return the current report mode
+	 */
+	public Mode getMode() {
+		return mode;
+	}
+
+	/**
+	 * Sets the report mode.
+	 * 
+	 * @param mode
+	 *            The desired mode
+	 */
+	public void setMode(Mode mode) {
+		this.mode = mode;
 	}
 }

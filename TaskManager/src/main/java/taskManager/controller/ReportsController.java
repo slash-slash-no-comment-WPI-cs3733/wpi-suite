@@ -55,7 +55,8 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.User;
  * Code extended from BarChartDemo1.java at www.jfree.org/jfreechart
  *
  * @author Joseph Blackman
- * @version Nov 29, 2014
+ * @author Clark Jacobsohn
+ * @version Dec 12, 2014
  */
 public class ReportsController implements ActionListener, ChangeListener,
 		ListSelectionListener, PropertyChangeListener {
@@ -68,7 +69,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 	 *
 	 * @author Joseph Blackman
 	 */
-	private class UserData implements Comparable<UserData> {
+	public class UserData implements Comparable<UserData> {
 		private UserData(String username, ZonedDateTime completion,
 				Double effort) {
 			this.username = username;
@@ -97,7 +98,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 	private ZonedDateTime start;
 	private ZonedDateTime end;
 	private DefaultCategoryDataset dataset;
-	private List<UserData> data;
+	// private List<UserData> data;
 	private final WorkflowModel workflow;
 
 	/**
@@ -157,9 +158,12 @@ public class ReportsController implements ActionListener, ChangeListener,
 	 *
 	 * @param stage
 	 *            The stage to consider as the completion stage
+	 * 
+	 * @return The list of UserData that matches the given criteria
 	 */
-	public void findVelocityData(Set<String> users, ZonedDateTime _start,
-			ZonedDateTime _end, boolean averageCredit, StageModel stage) {
+	public List<UserData> findVelocityData(Set<String> users,
+			ZonedDateTime _start, ZonedDateTime _end, boolean averageCredit,
+			StageModel stage) {
 
 		start = _start;
 		end = _end;
@@ -167,7 +171,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 		if (!workflow.getStages().contains(stage)) {
 			throw new IllegalArgumentException("Invalid stage");
 		}
-		data = new ArrayList<UserData>();
+		List<UserData> data = new ArrayList<UserData>();
 		// Iterate through all tasks for the specified stage.
 		for (TaskModel task : stage.getTasks()) {
 			ZonedDateTime completed = null;
@@ -216,6 +220,8 @@ public class ReportsController implements ActionListener, ChangeListener,
 				}
 			} // End if (inDateRange)
 		} // End if (TaskModel)
+
+		return data;
 	}
 
 	/**
@@ -230,7 +236,8 @@ public class ReportsController implements ActionListener, ChangeListener,
 	 * @param interval
 	 *            The interval to group the data by.
 	 */
-	public void generateDataset(boolean teamData, Period interval) {
+	public void generateVelocityDataset(List<UserData> data, boolean teamData,
+			Period interval) {
 		if (data == null) {
 			throw new IllegalStateException(
 					"Tried to generate a dataset without getting any data first!");
@@ -313,7 +320,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 	 * 
 	 * @return a JPanel containing the chart
 	 */
-	public JPanel createChart(String title, String xlabel, String ylabel) {
+	public JPanel createBarChart(String title, String xlabel, String ylabel) {
 		if (dataset == null) {
 			throw new IllegalStateException(
 					"Tried to generate a chart without creating a dataset first!");
@@ -438,6 +445,77 @@ public class ReportsController implements ActionListener, ChangeListener,
 		}
 	}
 
+	/**
+	 * Creates a velocity report and makes it visible.
+	 */
+	private void createVelocityReport() {
+		// Get the starting/ending dates from the view.
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeZone(TimeZone.getDefault());
+
+		Date startdate = rtv.getStartDate().getDate();
+		cal.setTime(startdate);
+		startdate = cal.getTime();
+
+		Date enddate = rtv.getEndDate().getDate();
+		cal.setTime(enddate);
+		cal.add(Calendar.DATE, 1); // Set end date to +1 assuming user
+									// will choose same start/end date
+									// for reports for that
+									// day/month/year
+		enddate = cal.getTime();
+
+		// TODO: Do validation for the calendars rather than showing
+		// JOptionPanes.
+		Date now = new Date();
+		if (startdate.after(now)) {
+			JOptionPane.showMessageDialog(rtv,
+					"Start Date cannot be in the future.");
+			return;
+		}
+		if (enddate.before(startdate)) {
+			JOptionPane.showMessageDialog(rtv,
+					"End Date must be after the Start Date.");
+			return;
+		}
+
+		// Get all of the selected users from the view and store to a
+		// set.
+		Set<String> users = new HashSet<String>();
+		for (String u : rtv.getCurrUsersList().getAllValues()) {
+			users.add(u);
+		}
+
+		// Get the selected stage from the view and store as a
+		// StageModel.
+		String stageStr = rtv.getSelectedStage();
+		StageModel stage = WorkflowModel.getInstance()
+				.findStageByName(stageStr);
+
+		// Set the dates as ZonedDateTimes that have timezone
+		// information.
+		ZonedDateTime startZone = ZonedDateTime.ofInstant(
+				startdate.toInstant(), TimeZone.getDefault().toZoneId());
+		ZonedDateTime endZone = ZonedDateTime.ofInstant(enddate.toInstant(),
+				TimeZone.getDefault().toZoneId());
+
+		// Compute velocity (amount of effort/time) and store to data,
+		// unsorted.
+		List<UserData> data = findVelocityData(users, startZone, endZone,
+				false, stage);
+
+		// Generate the dataset required to draw the graph, with a given
+		// interval.
+		generateVelocityDataset(data, false, Period.ofDays(1));
+
+		// Create the chart with the Title, Label names.
+		JPanel chart = createBarChart("Effort per Day", "Time", "Effort");
+
+		// Open a new tab with the given chart.
+		TabPaneController.getInstance().addTab("Graph", chart, true);
+		TabPaneController.getInstance().getView().setSelectedComponent(chart);
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object button = e.getSource();
@@ -455,73 +533,9 @@ public class ReportsController implements ActionListener, ChangeListener,
 				// TODO: Add functionality for adding all users to selected.
 				// Generate Reports pressed.
 			} else {
-
-				// Get the starting/ending dates from the view.
-				Calendar cal = Calendar.getInstance();
-				cal.setTimeZone(TimeZone.getDefault());
-
-				Date startdate = rtv.getStartDate().getDate();
-				cal.setTime(startdate);
-				startdate = cal.getTime();
-
-				Date enddate = rtv.getEndDate().getDate();
-				cal.setTime(enddate);
-				cal.add(Calendar.DATE, 1); // Set end date to +1 assuming user
-											// will choose same start/end date
-											// for reports for that
-											// day/month/year
-				enddate = cal.getTime();
-
-				// TODO: Do validation for the calendars rather than showing
-				// JOptionPanes.
-				Date now = new Date();
-				if (startdate.after(now)) {
-					JOptionPane.showMessageDialog(rtv,
-							"Start Date cannot be in the future.");
-					return;
+				if (rtv.getMode() == ReportsView.Mode.VELOCITY) {
+					createVelocityReport();
 				}
-				if (enddate.before(startdate)) {
-					JOptionPane.showMessageDialog(rtv,
-							"End Date must be after the Start Date.");
-					return;
-				}
-
-				// Get all of the selected users from the view and store to a
-				// set.
-				Set<String> users = new HashSet<String>();
-				for (String u : rtv.getCurrUsersList().getAllValues()) {
-					users.add(u);
-				}
-
-				// Get the selected stage from the view and store as a
-				// StageModel.
-				String stageStr = rtv.getSelectedStage();
-				StageModel stage = WorkflowModel.getInstance().findStageByName(
-						stageStr);
-
-				// Set the dates as ZonedDateTimes that have timezone
-				// information.
-				ZonedDateTime startZone = ZonedDateTime
-						.ofInstant(startdate.toInstant(), TimeZone.getDefault()
-								.toZoneId());
-				ZonedDateTime endZone = ZonedDateTime.ofInstant(
-						enddate.toInstant(), TimeZone.getDefault().toZoneId());
-
-				// Compute velocity (amount of effort/time) and store to data,
-				// unsorted.
-				findVelocityData(users, startZone, endZone, false, stage);
-
-				// Generate the dataset required to draw the graph, with a given
-				// interval.
-				generateDataset(false, Period.ofDays(1));
-
-				// Create the chart with the Title, Label names.
-				JPanel chart = createChart("Effort per Day", "Time", "Effort");
-
-				// Open a new tab with the given chart.
-				TabPaneController.getInstance().addTab("Graph", chart, true);
-				TabPaneController.getInstance().getView()
-						.setSelectedComponent(chart);
 			}
 
 		}
