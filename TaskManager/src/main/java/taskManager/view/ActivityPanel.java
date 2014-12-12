@@ -71,7 +71,6 @@ public class ActivityPanel extends JPanel {
 		commentBox.setRows(5);
 		commentBox.setWrapStyleWord(true);
 		commentBox.setLineWrap(true);
-
 		JScrollPane commentScroll = new JScrollPane(commentBox,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);

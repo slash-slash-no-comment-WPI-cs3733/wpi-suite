@@ -11,7 +11,6 @@ package taskManager.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -27,8 +26,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.plaf.basic.BasicSplitPaneDivider;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -294,39 +291,14 @@ public class EditTaskView extends JPanel {
 		JPanel tabs = new JPanel();
 		tabs.setLayout(new MigLayout("", "[grow, fill]", "[grow, fill]"));
 		tabs.add(activitiesTabs);
-		tabs.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		tabs.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
 		window = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
 				fieldsScroll, tabs);
 		window.setDividerLocation(900);
 		window.setDividerSize(15);
-		window.setUI(new BasicSplitPaneUI() {
-			@Override
-			public BasicSplitPaneDivider createDefaultDivider() {
-				return new BasicSplitPaneDivider(this) {
-
-					private static final long serialVersionUID = 6473604947769495646L;
-
-					@Override
-					public void paint(Graphics g) {
-					}
-				};
-			}
-		});
-
-		BasicSplitPaneDivider divider = (BasicSplitPaneDivider) window
-				.getComponent(2);
-		// divider.setBackground(Color.BLUE);
-		// divider.setForeground(Color.BLUE);
-
-		// JLabel slider = new JLabel();
-		// slider.setBackground(Color.BLUE);
-		// divider.add(slider);
-		// divider.setLayout(new MigLayout("", "[grow, fill]"));
-		divider.setBorder(BorderFactory.createEmptyBorder(0, 4, 0, 4));
-
-		window.setContinuousLayout(true);
 		window.setResizeWeight(.5);
+
 		this.add(window);
 		this.add(EditSaveCancel);
 	}
