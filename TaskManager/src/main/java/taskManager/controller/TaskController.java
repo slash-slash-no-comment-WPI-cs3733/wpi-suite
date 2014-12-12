@@ -84,7 +84,6 @@ public class TaskController implements MouseListener, MouseMotionListener,
 	 */
 	public void deleteTask() {
 		model.getStage().removeTask(model);
-		view.setVisible(false);
 	}
 
 	/**
@@ -177,7 +176,7 @@ public class TaskController implements MouseListener, MouseMotionListener,
 	/**
 	 * Called when the user clicks the view with the middle mouse button.
 	 */
-	private void middleMouseClicked() {
+	private void middleMouseClick() {
 
 	}
 
@@ -195,7 +194,7 @@ public class TaskController implements MouseListener, MouseMotionListener,
 			leftMouseClick();
 			break;
 		case MouseEvent.BUTTON2:
-			middleMouseClicked();
+			middleMouseClick();
 			break;
 		case MouseEvent.BUTTON3:
 			rightMouseClick();
@@ -252,13 +251,20 @@ public class TaskController implements MouseListener, MouseMotionListener,
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		if (((JMenuItem) e.getSource()).getText().equals("Delete Task"))
+		JMenuItem item = (JMenuItem)e.getSource();
+		if (item.getText().equals("Delete Task")) {
 			deleteTask();
-		if (((JMenuItem) e.getSource()).getText().equals("Edit Task"))
+			WorkflowModel.getInstance().save();
+			WorkflowController.getInstance().reloadData();
+		}
+		else if (item.getText().equals("Edit Task"))
 			this.editTask();
-		if (((JMenuItem) e.getSource()).getText().equals("Add Task"))
-			new EditTaskController().getView().focusOnTitleField();
-		if (((JMenuItem) e.getSource()).getName().equals("Move To")) {
+		else if (item.getName().equals("Archive Task")) {
+			model.setArchived(!model.isArchived());
+			WorkflowModel.getInstance().save();
+			WorkflowController.getInstance().reloadData();
+		}
+		else if (item.getName().equals("Move To")) {
 			int i = 0;
 			while (i < WorkflowModel.getInstance().getStages().size()) {
 				StageModel a = WorkflowModel.getInstance().getStages().get(i);

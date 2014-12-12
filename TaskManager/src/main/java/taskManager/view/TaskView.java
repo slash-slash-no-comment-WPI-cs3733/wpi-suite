@@ -102,7 +102,8 @@ public class TaskView extends JPanel implements Transferable {
 
 		// Creates the ContextMenu.
 		contextMenu = new ContextMenu(this);
-		contextMenu.add(addTask);
+		archive.setName("Archive Task");
+		contextMenu.add(archive);
 		contextMenu.add(editTask);
 
 		// Finished with sub menu
