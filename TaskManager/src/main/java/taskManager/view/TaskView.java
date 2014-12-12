@@ -16,6 +16,7 @@ import java.awt.Image;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.MouseAdapter;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
@@ -31,7 +32,9 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import taskManager.controller.TaskController;
+import taskManager.controller.ToolbarController;
 import taskManager.draganddrop.DDTransferHandler;
+import taskManager.draganddrop.DraggablePanelListener;
 
 /**
  * @author Beth Martino
@@ -66,7 +69,6 @@ public class TaskView extends JPanel implements Transferable {
 	public TaskView(String name, Date duedate, int users, int comments) {
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		this.setAlignmentX(LEFT_ALIGNMENT);
-		this.rotationView = new RotationView(this);
 
 		// creates an empty space around the data
 		JPanel spacer = new JPanel();
@@ -173,17 +175,21 @@ public class TaskView extends JPanel implements Transferable {
 		spacer.add(lower);
 		this.add(spacer);
 
-		// -----------------------
-		// Drag and drop handling:
-		// final MouseAdapter listener = new DraggablePanelListener(this);
-		// addMouseListener(listener);
-		// addMouseMotionListener(listener);
-		//
-		// setTransferHandler(new DDTransferHandler());
+		if (ToolbarController.getInstance().getView().isFunMode()) {
+			this.rotationView = new RotationView(this);
+		} else {
+			// -----------------------
+			// Drag and drop handling:
+			final MouseAdapter listener = new DraggablePanelListener(this);
+			addMouseListener(listener);
+			addMouseMotionListener(listener);
+			setTransferHandler(new DDTransferHandler());
 
-		// setTransferHandler creates DropTarget by default; we don't want tasks
-		// to respond to drops
-		// setDropTarget(null);
+			// setTransferHandler creates DropTarget by default; we don't want
+			// tasks
+			// to respond to drops
+			setDropTarget(null);
+		}
 
 	}
 
@@ -200,9 +206,12 @@ public class TaskView extends JPanel implements Transferable {
 	 */
 	public void setController(TaskController controller) {
 		this.controller = controller;
-		rotationView.setListener(controller);
-		// addMouseListener(rotationView.getController());
-		// addMouseMotionListener(rotationView.getController());
+		if (ToolbarController.getInstance().getView().isFunMode()) {
+			rotationView.setListener(controller);
+		} else {
+			addMouseListener(controller);
+		}
+
 	}
 
 	@Override
@@ -259,22 +268,30 @@ public class TaskView extends JPanel implements Transferable {
 
 	@Override
 	public void paintComponent(Graphics g) {
-		if (rotationView.isPainting()) {
-			super.paintComponent(g);
+		if (ToolbarController.getInstance().getView().isFunMode()) {
+			if (rotationView.isPainting()) {
+				super.paintComponent(g);
+			} else {
+				g.setColor(rotationView.getParent().getBackground());
+				g.fillRect(0, 0, getWidth(), getHeight());
+				rotationView.repaint();
+			}
 		} else {
-			g.setColor(rotationView.getParent().getBackground());
-			g.fillRect(0, 0, getWidth(), getHeight());
-			rotationView.repaint();
+			super.paintComponent(g);
 		}
 	}
 
 	@Override
 	public void paintChildren(Graphics g) {
-		if (rotationView.isPainting()) {
-			super.paintChildren(g);
+		if (ToolbarController.getInstance().getView().isFunMode()) {
+			if (rotationView.isPainting()) {
+				super.paintChildren(g);
+			} else {
+				g.setColor(rotationView.getParent().getBackground());
+				g.fillRect(0, 0, getWidth(), getHeight());
+			}
 		} else {
-			g.setColor(rotationView.getParent().getBackground());
-			g.fillRect(0, 0, getWidth(), getHeight());
+			super.paintChildren(g);
 		}
 	}
 

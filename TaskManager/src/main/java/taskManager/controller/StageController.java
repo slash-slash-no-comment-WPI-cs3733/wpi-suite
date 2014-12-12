@@ -87,7 +87,11 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 							task.getDueDate(), task.getAssigned().size(),
 							comments);
 					tkv.setController(new TaskController(tkv, task));
-					this.view.addTaskView(tkv.getRotationPane());
+					if (ToolbarController.getInstance().getView().isFunMode()) {
+						this.view.addTaskView(tkv.getRotationPane());
+					} else {
+						this.view.addTaskView(tkv);
+					}
 				}
 			}
 		}

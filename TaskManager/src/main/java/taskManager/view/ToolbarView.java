@@ -44,6 +44,7 @@ public class ToolbarView extends JToolBar {
 	public static final String WORKFLOW = "workflow";
 	public static final String ARCHIVE = "archive";
 	public static final String UNARCHIVE = "unarchive";
+	public static final String SHOW_ARCHIVE = "showArchive";
 	public static final String DELETE = "delete";
 	public static final String FUN_MODE = "funMode";
 	public static final String TASK_ANGLES = "taskAngles";
@@ -124,6 +125,7 @@ public class ToolbarView extends JToolBar {
 
 		// Checkbox for toggling showing archived tasks.
 		archiveCheckBox = new JCheckBox("<html>Show archived tasks</html>");
+		archiveCheckBox.setName(SHOW_ARCHIVE);
 		archiveCheckBox.addItemListener(controller);
 		archiveCheckBox.setOpaque(false);
 
