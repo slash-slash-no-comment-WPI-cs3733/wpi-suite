@@ -64,7 +64,6 @@ public class RotationView extends JPanel implements Transferable {
 	@Override
 	public void paintChildren(Graphics g) {
 		g.setColor(getParent().getBackground());
-		// g.fillRect(0, 0, getWidth(), getHeight());
 		((Graphics2D) g).translate(0, controller.calculateYTranslation());
 		((Graphics2D) g).rotate(angle, panel.getWidth() / 2,
 				panel.getHeight() / 2);
@@ -94,6 +93,7 @@ public class RotationView extends JPanel implements Transferable {
 
 	public void setAngle(double d) {
 		angle = d;
+		controller.setAngle(d);
 	}
 
 	public JPanel getPanel() {

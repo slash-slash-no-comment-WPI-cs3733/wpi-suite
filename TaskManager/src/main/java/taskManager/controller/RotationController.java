@@ -142,4 +142,12 @@ public class RotationController implements MouseListener, MouseMotionListener {
 		return (Math.abs(panelX * Math.sin(angle)) + Math.abs(panelY
 				* Math.cos(angle)));
 	}
+
+	public void setAngle(double d) {
+		taskAngles.put(listener.getID(), d);
+	}
+
+	public static void resetAngles() {
+		taskAngles = new HashMap<String, Double>();
+	}
 }

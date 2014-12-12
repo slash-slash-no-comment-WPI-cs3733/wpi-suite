@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -32,6 +33,7 @@ import taskManager.draganddrop.DDTransferHandler;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.ReportsView;
+import taskManager.view.RotationView;
 import taskManager.view.StageView;
 import taskManager.view.TaskView;
 import taskManager.view.ToolbarView;
@@ -180,6 +182,9 @@ public class ToolbarController extends DropTargetAdapter implements
 				rtv.setController(new ReportsManager(rtv));
 				TabPaneController.getInstance().addReportsTab(rtv);
 				break;
+			case ToolbarView.TASK_ANGLES:
+				RotationController.resetAngles();
+				WorkflowController.getInstance().reloadData();
 			}
 		}
 	}
@@ -297,6 +302,17 @@ public class ToolbarController extends DropTargetAdapter implements
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
+		final Object checkBox = e.getSource();
+		if (checkBox instanceof JCheckBox) {
+			switch (((JCheckBox) checkBox).getName()) {
+			case ToolbarView.FUN_MODE:
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					view.showFunButtons();
+				} else {
+					view.hideFunButtons();
+				}
+			}
+		}
 		// Reload the workflow view.
 		WorkflowController.getInstance().reloadData();
 	}
@@ -310,6 +326,9 @@ public class ToolbarController extends DropTargetAdapter implements
 	 *            component being dragged
 	 */
 	public void setIconState(JComponent comp) {
+		if (comp instanceof RotationView) {
+			comp = ((RotationView) comp).getPanel();
+		}
 		if (comp instanceof TaskView) {
 			boolean isArchived = ((TaskView) comp).getController().isArchived();
 			if (isArchived) {
