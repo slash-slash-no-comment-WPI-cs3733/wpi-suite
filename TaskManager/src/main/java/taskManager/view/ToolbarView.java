@@ -261,19 +261,33 @@ public class ToolbarView extends JToolBar {
 		delete.setEnabled(bool);
 	}
 
+	/**
+	 * @return if the show archive checkbox is checked
+	 */
 	public boolean isArchiveShown() {
 		return archiveCheckBox.isSelected();
 	}
 
+	/**
+	 * @return if the fun mode checkbox is checked
+	 */
 	public boolean isFunMode() {
 		return funModeCheckBox.isSelected();
 	}
 
+	/**
+	 * Hides the buttons that are only applicable in fun mode
+	 *
+	 */
 	public void hideFunButtons() {
 		randomizeTaskAngles.setEnabled(false);
 		randomizeTaskAngles.setVisible(false);
 	}
 
+	/**
+	 * Shows the buttons that are only applicable in fun mode
+	 *
+	 */
 	public void showFunButtons() {
 		randomizeTaskAngles.setEnabled(true);
 		randomizeTaskAngles.setVisible(true);

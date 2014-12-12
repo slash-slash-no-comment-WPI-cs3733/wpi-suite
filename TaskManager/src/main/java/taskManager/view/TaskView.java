@@ -175,10 +175,11 @@ public class TaskView extends JPanel implements Transferable {
 		spacer.add(lower);
 		this.add(spacer);
 
+		// in fun mode, create a rotation view
 		if (ToolbarController.getInstance().getView().isFunMode()) {
 			this.rotationView = new RotationView(this);
+			// the rotation view will handle drag/drop
 		} else {
-			// -----------------------
 			// Drag and drop handling:
 			final MouseAdapter listener = new DraggablePanelListener(this);
 			addMouseListener(listener);
@@ -186,8 +187,7 @@ public class TaskView extends JPanel implements Transferable {
 			setTransferHandler(new DDTransferHandler());
 
 			// setTransferHandler creates DropTarget by default; we don't want
-			// tasks
-			// to respond to drops
+			// tasks to respond to drops
 			setDropTarget(null);
 		}
 
@@ -266,8 +266,12 @@ public class TaskView extends JPanel implements Transferable {
 		return flavor.equals(DDTransferHandler.getTaskFlavor());
 	}
 
+	/*
+	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+	 */
 	@Override
 	public void paintComponent(Graphics g) {
+		// in fun mode, use the rotation view to draw the task rotated
 		if (ToolbarController.getInstance().getView().isFunMode()) {
 			if (rotationView.isPainting()) {
 				super.paintComponent(g);
@@ -281,8 +285,12 @@ public class TaskView extends JPanel implements Transferable {
 		}
 	}
 
+	/*
+	 * @see javax.swing.JComponent#paintChildren(java.awt.Graphics)
+	 */
 	@Override
 	public void paintChildren(Graphics g) {
+		// in fun mode, use the rotation view to draw the task rotated
 		if (ToolbarController.getInstance().getView().isFunMode()) {
 			if (rotationView.isPainting()) {
 				super.paintChildren(g);

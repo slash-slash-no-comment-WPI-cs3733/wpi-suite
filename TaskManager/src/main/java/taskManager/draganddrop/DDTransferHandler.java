@@ -130,6 +130,7 @@ public class DDTransferHandler extends TransferHandler {
 			Graphics g = image.getGraphics();
 			g = g.create();
 			if (comp instanceof RotationView) {
+				// just paint the rotated task inside the rotation view
 				rotationView = (RotationView) comp;
 				rotationView.paintChildren(g);
 			} else {

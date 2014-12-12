@@ -22,7 +22,7 @@ import taskManager.controller.TaskController;
 import taskManager.draganddrop.DDTransferHandler;
 
 /**
- * Description
+ * A view to hold a rotated task view
  *
  * @author Jon Sorrells
  */
@@ -35,6 +35,12 @@ public class RotationView extends JPanel implements Transferable {
 	private boolean painting = false;
 	private RotationController controller = null;
 
+	/**
+	 * Creates a new rotation view
+	 *
+	 * @param panel
+	 *            the panel to go inside the rotation view
+	 */
 	public RotationView(JPanel panel) {
 		this.panel = panel;
 		add(panel);
@@ -53,49 +59,89 @@ public class RotationView extends JPanel implements Transferable {
 		setDropTarget(null);
 	}
 
+	/**
+	 * @param listener
+	 *            the listener this view should forward mouse events to
+	 */
 	public void setListener(TaskController listener) {
 		controller.setListener(listener);
 	}
 
+	/*
+	 * @see javax.swing.JComponent#paintChildren(java.awt.Graphics)
+	 */
 	@Override
 	public void paintChildren(Graphics g) {
+		// rotate
 		g.setColor(getParent().getBackground());
 		((Graphics2D) g).translate(0, controller.calculateYTranslation());
 		((Graphics2D) g).rotate(angle, panel.getWidth() / 2,
 				panel.getHeight() / 2);
+
+		// now paint the children on the rotated graphics
 		painting = true;
 		super.paintChildren(g);
 		painting = false;
 	}
 
+	/*
+	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+	 */
 	@Override
 	public void paintComponent(Graphics g) {
+		// figure out what height this component should be
 		int height = (int) controller.calculateHeight();
 		Dimension d = new Dimension(panel.getWidth(), height);
 		setSize(d);
 		setPreferredSize(d);
 		setMaximumSize(d);
 		setMinimumSize(d);
+
+		// now paint
 		super.paintComponent(g);
 	}
 
+	/**
+	 *
+	 * @return whether or not this view is currently painting
+	 */
 	public boolean isPainting() {
 		return painting;
 	}
 
+	/**
+	 *
+	 * @return the angle this rotation view is at
+	 */
 	public double getAngle() {
 		return angle;
 	}
 
+	/**
+	 * Set the angle for this rotation view
+	 *
+	 * @param d
+	 *            the angle to set
+	 */
 	public void setAngle(double d) {
 		angle = d;
 		controller.setAngle(d);
 	}
 
+	/**
+	 * Get the panel inside this rotation view
+	 *
+	 * @return the panel
+	 */
 	public JPanel getPanel() {
 		return panel;
 	}
 
+	/**
+	 * Get the controller for this view
+	 *
+	 * @return the controller
+	 */
 	public RotationController getController() {
 		return controller;
 	}

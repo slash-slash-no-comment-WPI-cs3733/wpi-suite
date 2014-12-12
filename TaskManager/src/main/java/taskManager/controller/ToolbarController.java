@@ -215,6 +215,7 @@ public class ToolbarController extends DropTargetAdapter implements
 					return;
 				}
 
+				// ignore rotation views
 				if (transferData instanceof RotationView) {
 					transferData = ((RotationView) transferData).getPanel();
 				}
@@ -342,9 +343,11 @@ public class ToolbarController extends DropTargetAdapter implements
 	 *            component being dragged
 	 */
 	public void setIconState(JComponent comp) {
+		// ignore rotation views
 		if (comp instanceof RotationView) {
 			comp = ((RotationView) comp).getPanel();
 		}
+
 		if (comp instanceof TaskView) {
 			boolean isArchived = ((TaskView) comp).getController().isArchived();
 			if (isArchived) {

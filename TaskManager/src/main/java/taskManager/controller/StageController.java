@@ -87,6 +87,9 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 							task.getDueDate(), task.getAssigned().size(),
 							comments);
 					tkv.setController(new TaskController(tkv, task));
+
+					// if we're in fun mode, put the rotation view in the stage
+					// view
 					if (ToolbarController.getInstance().getView().isFunMode()) {
 						this.view.addTaskView(tkv.getRotationPane());
 					} else {
@@ -105,6 +108,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 	 */
 	@Override
 	public void saveDrop(JPanel panel, int index) {
+		// ignore rotation views
 		if (panel instanceof RotationView) {
 			panel = ((RotationView) panel).getPanel();
 		}
