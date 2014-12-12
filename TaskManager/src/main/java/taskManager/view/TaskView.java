@@ -16,7 +16,6 @@ import java.awt.Image;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.MouseAdapter;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
@@ -33,7 +32,6 @@ import javax.swing.border.TitledBorder;
 
 import taskManager.controller.TaskController;
 import taskManager.draganddrop.DDTransferHandler;
-import taskManager.draganddrop.DraggablePanelListener;
 
 /**
  * @author Beth Martino
@@ -177,11 +175,11 @@ public class TaskView extends JPanel implements Transferable {
 
 		// -----------------------
 		// Drag and drop handling:
-		final MouseAdapter listener = new DraggablePanelListener(this);
-		addMouseListener(listener);
-		addMouseMotionListener(listener);
-
-		setTransferHandler(new DDTransferHandler());
+		// final MouseAdapter listener = new DraggablePanelListener(this);
+		// addMouseListener(listener);
+		// addMouseMotionListener(listener);
+		//
+		// setTransferHandler(new DDTransferHandler());
 
 		// setTransferHandler creates DropTarget by default; we don't want tasks
 		// to respond to drops

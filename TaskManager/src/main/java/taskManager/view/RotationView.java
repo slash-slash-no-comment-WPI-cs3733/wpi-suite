@@ -11,23 +11,28 @@ package taskManager.view;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
 
 import javax.swing.JPanel;
 
 import taskManager.controller.RotationController;
 import taskManager.controller.TaskController;
+import taskManager.draganddrop.DDTransferHandler;
 
 /**
  * Description
  *
  * @author Jon Sorrells
  */
-public class RotationView extends JPanel {
+public class RotationView extends JPanel implements Transferable {
 
 	private static final long serialVersionUID = 473778538723370745L;
 
 	private final JPanel panel;
-	private double angle = Math.PI / 6;
+	private double angle = Math.random() * 2 * Math.PI;
 	private boolean painting = false;
 	private RotationController controller = null;
 
@@ -44,6 +49,12 @@ public class RotationView extends JPanel {
 		controller = new RotationController(this);
 		addMouseListener(controller);
 		addMouseMotionListener(controller);
+
+		// final MouseAdapter listener = new DraggablePanelListener(this);
+		// addMouseListener(listener);
+		// addMouseMotionListener(listener);
+
+		setTransferHandler(new DDTransferHandler());
 	}
 
 	public void setListener(TaskController listener) {
@@ -91,5 +102,21 @@ public class RotationView extends JPanel {
 
 	public RotationController getController() {
 		return controller;
+	}
+
+	@Override
+	public Object getTransferData(DataFlavor arg0)
+			throws UnsupportedFlavorException, IOException {
+		return ((Transferable) panel).getTransferData(arg0);
+	}
+
+	@Override
+	public DataFlavor[] getTransferDataFlavors() {
+		return ((Transferable) panel).getTransferDataFlavors();
+	}
+
+	@Override
+	public boolean isDataFlavorSupported(DataFlavor arg0) {
+		return ((Transferable) panel).isDataFlavorSupported(arg0);
 	}
 }

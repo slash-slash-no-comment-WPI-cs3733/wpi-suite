@@ -9,6 +9,7 @@
 package taskManager.controller;
 
 import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -16,6 +17,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 
+import taskManager.draganddrop.DraggablePanelListener;
 import taskManager.view.RotationView;
 
 /**
@@ -27,14 +29,17 @@ public class RotationController implements MouseListener, MouseMotionListener {
 
 	private RotationView view;
 	private TaskController listener = null;
+	private MouseAdapter dragListener = null;
 
 	public RotationController(RotationView view) {
 		this.view = view;
+		dragListener = new DraggablePanelListener(view);
 	}
 
 	public void setListener(TaskController listener) {
 		this.listener = listener;
 		// view.setAngle(listener.getAngle());
+		// view.setAngle(Math.random() * Math.PI);
 	}
 
 	@Override
@@ -58,6 +63,7 @@ public class RotationController implements MouseListener, MouseMotionListener {
 	public void mousePressed(MouseEvent arg0) {
 		if (listener != null && checkBounds(arg0)) {
 			listener.mousePressed(arg0);
+			dragListener.mousePressed(arg0);
 		}
 	}
 
@@ -71,6 +77,17 @@ public class RotationController implements MouseListener, MouseMotionListener {
 	private boolean checkBounds(MouseEvent e) {
 		int panelX = view.getPanel().getWidth();
 		int panelY = view.getPanel().getHeight();
+		Point2D tp = getPoint(e);
+		Rectangle panelArea = new Rectangle(panelX, panelY);
+		if (panelArea.contains(tp)) {
+			return true;
+		}
+		return false;
+	}
+
+	private Point2D getPoint(MouseEvent e) {
+		int panelX = view.getPanel().getWidth();
+		int panelY = view.getPanel().getHeight();
 		AffineTransform transform = new AffineTransform();
 		transform.translate(0, calculateYTranslation());
 		transform.rotate(view.getAngle(), panelX / 2, panelY / 2);
@@ -81,18 +98,15 @@ public class RotationController implements MouseListener, MouseMotionListener {
 		} catch (NoninvertibleTransformException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
-			return false;
 		}
-		Rectangle panelArea = new Rectangle(panelX, panelY);
-		if (panelArea.contains(tp)) {
-			return true;
-		}
-		return false;
+		return tp;
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
-		// do nothing
+		if (listener != null && checkBounds(arg0)) {
+			dragListener.mouseDragged(arg0);
+		}
 	}
 
 	@Override
@@ -107,7 +121,7 @@ public class RotationController implements MouseListener, MouseMotionListener {
 	public double calculateYTranslation() {
 		// int panelX = view.getPanel().getWidth();
 		int panelY = view.getPanel().getHeight();
-		return (calculateHeight() - panelY - 10) / 2;
+		return (calculateHeight() - panelY) / 2;
 	}
 
 	public double calculateHeight() {
