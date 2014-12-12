@@ -65,6 +65,10 @@ public class DropAreaPanel extends JPanel {
 
 	private final Timer animTimer; // Timer for animating while dragging
 
+	// Region and speed of autoscroll behavior
+	private int scrollMargin = 10;
+	private int scrollSpeed = 2;
+
 	/**
 	 * Creates a DropAreaPanel and creates its handlers
 	 * 
@@ -88,6 +92,19 @@ public class DropAreaPanel extends JPanel {
 				}
 			}
 		});
+	}
+
+	public void setScrollBehavior(int margin, int speed) {
+		scrollMargin = margin;
+		scrollSpeed = speed;
+	}
+
+	public int getScrollMargin() {
+		return scrollMargin;
+	}
+
+	public int getScrollSpeed() {
+		return scrollSpeed;
 	}
 
 	/**
@@ -478,6 +495,21 @@ class DropAreaListener implements DropTargetListener {
 				ancestor.getDropTarget().dragOver(
 						DropTargetRedispatcher.convertCoords(e, ancestor));
 			}
+		}
+
+		// Scroll component in within scroll margin
+		int margin = panel.getScrollMargin();
+		int speed = panel.getScrollSpeed();
+		Point center = e.getLocation();
+
+		Rectangle rect = new Rectangle(center.x - margin, center.y - margin,
+				2 * margin, 2 * margin);
+		Rectangle visBounds = panel.getVisibleRect();
+		if (!visBounds.contains(rect)) {
+			visBounds.grow(speed, speed);
+			rect.grow(speed, speed);
+			panel.scrollRectToVisible(visBounds.intersection(rect));
+
 		}
 
 	}
