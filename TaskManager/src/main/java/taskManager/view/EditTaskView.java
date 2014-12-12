@@ -11,11 +11,11 @@ package taskManager.view;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.util.Calendar;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -27,6 +27,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.plaf.basic.BasicSplitPaneDivider;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -110,10 +112,11 @@ public class EditTaskView extends JPanel {
 		// TODO: User Mode to switch between create and edit views
 		// When Task added make EditTask take in a Task called currTask
 		this.mode = mode;
+		this.setOpaque(false);
 
 		fields = new JPanel(new MigLayout());
 
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		this.setLayout(new MigLayout("wrap 1", "[grow, fill]"));
 
 		// JLabels
 		JLabel titleLabel = new JLabel("Title ");
@@ -124,18 +127,10 @@ public class EditTaskView extends JPanel {
 		JLabel actualEffortLabel = new JLabel("Actual Effort ");
 		JLabel requirementLabel = new JLabel("Select Requirement ");
 
-		titleError = new JLabel("Cannot be empty");
-		titleError.setVisible(false);
-		titleError.setForeground(Color.RED);
-		descriptionError = new JLabel("Cannot be empty");
-		descriptionError.setVisible(false);
-		descriptionError.setForeground(Color.RED);
-		estimatedEffortError = new JLabel("*");
-		estimatedEffortError.setVisible(false);
-		estimatedEffortError.setForeground(Color.RED);
-		actualEffortError = new JLabel("*");
-		actualEffortError.setVisible(false);
-		actualEffortError.setForeground(Color.RED);
+		titleError = new JLabel();
+		descriptionError = new JLabel();
+		estimatedEffortError = new JLabel();
+		actualEffortError = new JLabel();
 
 		// JTextFields
 		// sets all text fields editable and adds them to global variables
@@ -220,6 +215,7 @@ public class EditTaskView extends JPanel {
 		stages.setName(STAGES);
 
 		fields.setLayout(new MigLayout());
+		fields.setOpaque(false);
 
 		fields.add(titleLabel);
 
@@ -229,17 +225,16 @@ public class EditTaskView extends JPanel {
 		JPanel Users = new JPanel(new MigLayout());
 		JPanel Effort = new JPanel(new MigLayout("fill"));
 		JPanel Requirements = new JPanel(new MigLayout());
-		JPanel EditSaveCancel = new JPanel(new MigLayout("", "[][][][]"));
+		JPanel EditSaveCancel = new JPanel(new MigLayout("center", "[][][][]"));
+		EditSaveCancel.setOpaque(false);
 
 		// ready to go
 		// BasicInfo Panel internal content
 		BasicInfo.setBorder(BorderFactory.createTitledBorder("Basic Info"));
 		BasicInfo.add(titleLabel, "wrap");
 		BasicInfo.add(titleField);
-		BasicInfo.add(titleError, "wrap");
 		BasicInfo.add(descriptionLabel, "wrap");
 		BasicInfo.add(descriptionScrollPane, "gapbottom 20px");
-		BasicInfo.add(descriptionError, "wrap");
 		BasicInfo.add(dueDateLabel);
 		BasicInfo.add(stageLabel, "wrap");
 		BasicInfo.add(dateField);
@@ -267,9 +262,6 @@ public class EditTaskView extends JPanel {
 		Effort.add(actualEffortLabel, "wrap");
 		Effort.add(estEffortField);
 		Effort.add(actEffortField, "wrap");
-		JPanel Errors = new JPanel(new MigLayout());
-		Errors.add(estimatedEffortError, "wrap");
-		Errors.add(actualEffortError);
 
 		// Requirements Panel internal content
 		Requirements
@@ -280,13 +272,12 @@ public class EditTaskView extends JPanel {
 
 		// EditSaveCancel Panel internal content
 
-		EditSaveCancel.add(save);
-		EditSaveCancel.add(cancel);
+		EditSaveCancel.add(save, "center, sg btn, tag ok");
+		EditSaveCancel.add(cancel, "center, sg btn, tag cancel");
 		if (this.mode == Mode.EDIT) {
-			EditSaveCancel.add(archive);
-			EditSaveCancel.add(delete);
+			EditSaveCancel.add(archive, "center, sg btn");
+			EditSaveCancel.add(delete, "center, sg btn");
 		}
-		EditSaveCancel.add(Errors);
 
 		fields.add(Spacer, "dock north");
 		fields.add(BasicInfo, "w 30%, h 50%, gapbottom 20px");
@@ -300,11 +291,40 @@ public class EditTaskView extends JPanel {
 		fields.setPreferredSize(panelSize);
 
 		JScrollPane fieldsScroll = new JScrollPane(fields);
+		JPanel tabs = new JPanel();
+		tabs.setLayout(new MigLayout("", "[grow, fill]", "[grow, fill]"));
+		tabs.add(activitiesTabs);
+		tabs.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 
-		window = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, fieldsScroll,
-				activitiesTabs);
+		window = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
+				fieldsScroll, tabs);
 		window.setDividerLocation(900);
-		// window.setEnabled(false);
+		window.setDividerSize(15);
+		window.setUI(new BasicSplitPaneUI() {
+			@Override
+			public BasicSplitPaneDivider createDefaultDivider() {
+				return new BasicSplitPaneDivider(this) {
+
+					private static final long serialVersionUID = 6473604947769495646L;
+
+					@Override
+					public void paint(Graphics g) {
+					}
+				};
+			}
+		});
+
+		BasicSplitPaneDivider divider = (BasicSplitPaneDivider) window
+				.getComponent(2);
+		// divider.setBackground(Color.BLUE);
+		// divider.setForeground(Color.BLUE);
+
+		// JLabel slider = new JLabel();
+		// slider.setBackground(Color.BLUE);
+		// divider.add(slider);
+		// divider.setLayout(new MigLayout("", "[grow, fill]"));
+		divider.setBorder(BorderFactory.createEmptyBorder(0, 4, 0, 4));
+
 		window.setContinuousLayout(true);
 		window.setResizeWeight(.5);
 		this.add(window);

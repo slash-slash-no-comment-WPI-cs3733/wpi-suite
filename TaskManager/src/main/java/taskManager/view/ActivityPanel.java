@@ -33,9 +33,9 @@ public class ActivityPanel extends JPanel {
 	private static final String SUBMIT = "submit";
 	private static final String CANCEL = "cancel";
 
-	private JPanel buttons;
-	private JScrollPane activityScroll;
-	private JScrollPane commentScroll;
+	private JTextArea commentBox;
+	private JButton submit;
+	private JButton cancel;
 
 	public enum Type {
 		COMMENTS, ALL;
@@ -45,6 +45,7 @@ public class ActivityPanel extends JPanel {
 		// this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setLayout(new MigLayout("wrap 1", "[grow, fill]",
 				"[grow, fill][][]"));
+		this.setOpaque(false);
 
 		// Create list of activities
 		JPanel activities = new JPanel();
@@ -61,33 +62,44 @@ public class ActivityPanel extends JPanel {
 		}
 
 		// Activities
-		activityScroll = new JScrollPane(activities,
+		JScrollPane activityScroll = new JScrollPane(activities,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
 		// Comment textbox
-		JTextArea commentBox = new JTextArea();
+		commentBox = new JTextArea();
 		commentBox.setRows(5);
 		commentBox.setWrapStyleWord(true);
 		commentBox.setLineWrap(true);
 
-		commentScroll = new JScrollPane(commentBox,
+		JScrollPane commentScroll = new JScrollPane(commentBox,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		commentScroll.setMinimumSize(new Dimension(20, 100));
 
 		// Buttons
-		buttons = new JPanel();
-		JButton submit = new JButton("Submit");
+		JPanel buttons = new JPanel();
+		buttons.setOpaque(false);
+		submit = new JButton("Submit");
 		submit.setName(SUBMIT);
-		JButton cancel = new JButton("Cancel");
+		cancel = new JButton("Cancel");
 		submit.setName(CANCEL);
 		buttons.add(submit);
 		buttons.add(cancel);
 		buttons.setMaximumSize(new Dimension(10000, 40));
 
+		if (type.equals(Type.ALL)) {
+			disableEditing();
+		}
+
 		add(activityScroll);
 		add(commentScroll);
 		add(buttons);
+	}
+
+	public void disableEditing() {
+		commentBox.setEnabled(false);
+		submit.setEnabled(false);
+		cancel.setEnabled(false);
 	}
 }

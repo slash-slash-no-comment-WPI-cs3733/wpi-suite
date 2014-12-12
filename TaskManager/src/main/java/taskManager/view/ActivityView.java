@@ -11,6 +11,7 @@ package taskManager.view;
 
 import java.awt.Dimension;
 import java.awt.Font;
+import java.text.DateFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -51,6 +52,7 @@ public class ActivityView extends JPanel {
 	 */
 	public ActivityView(ActivityModel m) {
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		this.setBackground(Colors.ACTIVITY);
 		// Border
 		final Border raisedbevel = BorderFactory
 				.createEtchedBorder(EtchedBorder.LOWERED);
@@ -58,7 +60,9 @@ public class ActivityView extends JPanel {
 				.createTitledBorder(raisedbevel);
 		title.setTitlePosition(TitledBorder.LEFT);
 		this.setBorder(title);
-		info = new JLabel(m.getDateCreated() + "     " + m.getActor());
+		info = new JLabel(DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
+				DateFormat.SHORT).format(m.getDateCreated())
+				+ "     " + m.getActor());
 		info.setName(INFO);
 		info.setMinimumSize(new Dimension(20, 20));
 

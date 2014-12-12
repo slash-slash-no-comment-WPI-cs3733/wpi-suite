@@ -25,6 +25,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 
 import taskManager.JanewayModule;
+import taskManager.model.ActivityModel;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
@@ -57,8 +58,13 @@ public class EditTaskController implements ActionListener {
 	 */
 	public EditTaskController() {
 		JTabbedPane tabs = new JTabbedPane();
-		tabs.addTab("Comments", null);
-		tabs.addTab("All Activities", null);
+
+		ActivityPanel comments = new ActivityPanel(ActivityPanel.Type.COMMENTS,
+				new ArrayList<ActivityModel>());
+		comments.disableEditing();
+		tabs.addTab("Comments", comments);
+		tabs.addTab("All Activities", new ActivityPanel(ActivityPanel.Type.ALL,
+				new ArrayList<ActivityModel>()));
 
 		etv = new EditTaskView(Mode.CREATE, tabs);
 		etv.setController(this);
