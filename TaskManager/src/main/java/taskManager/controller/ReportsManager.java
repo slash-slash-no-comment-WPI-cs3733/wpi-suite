@@ -9,7 +9,6 @@
 
 package taskManager.controller;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -39,6 +38,7 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.renderer.category.StandardBarPainter;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import taskManager.TaskManager;
@@ -335,7 +335,8 @@ public class ReportsManager implements ActionListener, ChangeListener,
 				);
 
 		final ChartPanel chartPanel = new ChartPanel(chart, false);
-		chartPanel.setPreferredSize(new Dimension(500, 270));
+		chartPanel.setMaximumDrawHeight(2880);
+		chartPanel.setMaximumDrawWidth(5120);
 
 		final CategoryPlot plot = (CategoryPlot) chart.getPlot();
 
@@ -349,7 +350,11 @@ public class ReportsManager implements ActionListener, ChangeListener,
 		// disable bar outlines...
 		((BarRenderer) plot.getRenderer()).setDrawBarOutline(false);
 
-		return new ChartPanel(chart, false);
+		// disable gradients
+		((BarRenderer) plot.getRenderer())
+				.setBarPainter(new StandardBarPainter());
+
+		return chartPanel;
 	}
 
 	/**
