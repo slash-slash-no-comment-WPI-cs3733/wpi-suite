@@ -27,9 +27,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import taskManager.JanewayModule;
 import taskManager.MockNetwork;
 import taskManager.ScreenshotOnFail;
+import taskManager.TaskManager;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
@@ -54,7 +54,7 @@ public class TestStageController extends ScreenshotOnFail {
 
 	@Before
 	public void setup() {
-		JanewayModule.reset();
+		TaskManager.reset();
 
 		// give it a stage
 		new StageModel("blah", false);

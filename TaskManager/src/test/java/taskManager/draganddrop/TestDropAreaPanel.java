@@ -26,8 +26,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import taskManager.JanewayModule;
 import taskManager.MockNetwork;
+import taskManager.TaskManager;
 import taskManager.controller.WorkflowController;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
@@ -58,7 +58,7 @@ public class TestDropAreaPanel {
 	@Before
 	public void setup() {
 
-		JanewayModule.reset();
+		TaskManager.reset();
 
 		wfc = WorkflowController.getInstance();
 

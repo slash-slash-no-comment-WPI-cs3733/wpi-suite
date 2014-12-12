@@ -22,7 +22,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import taskManager.ClientDataStore;
-import taskManager.JanewayModule;
+import taskManager.TaskManager;
 import taskManager.MockNetwork;
 import edu.wpi.cs.wpisuitetng.exceptions.WPISuiteException;
 import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
@@ -44,7 +44,7 @@ public class WorkflowModelTest {
 
 	@Before
 	public void setup() {
-		JanewayModule.reset();
+		TaskManager.reset();
 
 		wm = WorkflowModel.getInstance();
 		wm.reset();

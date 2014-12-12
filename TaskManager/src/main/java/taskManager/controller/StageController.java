@@ -77,7 +77,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 					// create stage view and controller.
 					int comments = 0;
 					for (ActivityModel a : task.getActivities()) {
-						if (a.getType() == ActivityModel.activityModelType.COMMENT) {
+						if (a.getType() == ActivityModel.ActivityModelType.COMMENT) {
 							comments++;
 						}
 					}

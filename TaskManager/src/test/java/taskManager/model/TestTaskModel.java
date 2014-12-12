@@ -18,8 +18,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import taskManager.JanewayModule;
 import taskManager.MockNetwork;
+import taskManager.TaskManager;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
@@ -40,7 +40,7 @@ public class TestTaskModel {
 
 	@Before
 	public void setUp() {
-		JanewayModule.reset();
+		TaskManager.reset();
 
 		StageModel stage = new StageModel("Stage");
 		task = new TaskModel("Task", stage);
@@ -53,7 +53,7 @@ public class TestTaskModel {
 		User u = new User("Name", "username", "pass", 5);
 		Date d = new Date();
 		ActivityModel a = new ActivityModel("desc",
-				ActivityModel.activityModelType.COMMENT);
+				ActivityModel.ActivityModelType.COMMENT);
 		Requirement r = new Requirement();
 		r.setId(99);
 		RequirementModel.getInstance().addRequirement(r);

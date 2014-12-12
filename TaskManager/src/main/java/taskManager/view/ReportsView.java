@@ -109,7 +109,7 @@ public class ReportsView extends JPanel {
 
 		Dimension nt_panelSize = getPreferredSize();
 		nt_panelSize.width = 1000;
-		nt_panelSize.height = 500;
+		nt_panelSize.height = 600;
 		this.setPreferredSize(nt_panelSize);
 		this.setMinimumSize(nt_panelSize);
 
@@ -171,8 +171,8 @@ public class ReportsView extends JPanel {
 		reportsGridBag.gridy = 1;
 		datePanel.add(endDate, reportsGridBag);
 		Dimension dateDimensions = getPreferredSize();
-		dateDimensions.width = 200;
-		dateDimensions.height = 75;
+		dateDimensions.width = 250;
+		dateDimensions.height = 90;
 		datePanel.setPreferredSize(dateDimensions);
 		datePanel.setMinimumSize(dateDimensions);
 		datePanel.setMaximumSize(dateDimensions);
@@ -232,7 +232,7 @@ public class ReportsView extends JPanel {
 		allUsers.setName(ALL_USERS);
 		currUsersList = new ScrollList("Users Included in Report");
 		currUsersList.setBackground(this.getBackground());
-		projectUsersList = new ScrollList("Users Not Included in Report");
+		projectUsersList = new ScrollList("Users Not Included");
 		projectUsersList.setBackground(this.getBackground());
 		// Add user to list
 		addUser = new JButton(">>");
@@ -258,6 +258,12 @@ public class ReportsView extends JPanel {
 		usersPanel.add(projectUsersListPanel, "w 100!, gapleft 15px");
 		usersPanel.add(addRemoveButtons);
 		usersPanel.add(usersListPanel, "w 100!");
+		Dimension usersPanelDimension = new Dimension();
+		usersPanelDimension.width = 500;
+		usersPanelDimension.height = 350;
+		usersPanel.setPreferredSize(usersPanelDimension);
+		usersPanel.setMinimumSize(usersPanelDimension);
+		usersPanel.setMaximumSize(usersPanelDimension);
 
 		// Generate Graph
 		generateGraph = new JButton("Generate");
