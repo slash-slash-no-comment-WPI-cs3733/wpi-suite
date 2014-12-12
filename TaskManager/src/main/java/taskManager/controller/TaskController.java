@@ -117,7 +117,10 @@ public class TaskController implements MouseListener {
 	 *
 	 */
 	public void changeToHoverColor() {
-		view.setBackground(Colors.TASK_HOVER);
+		if (!thisTaskInfoOut
+				&& !(ToolbarController.getInstance().getView().isFunMode() && anyTaskInfoOut)) {
+			view.setBackground(Colors.TASK_HOVER);
+		}
 	}
 
 	/**

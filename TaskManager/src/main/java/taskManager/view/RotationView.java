@@ -49,10 +49,6 @@ public class RotationView extends JPanel implements Transferable {
 		addMouseListener(controller);
 		addMouseMotionListener(controller);
 
-		// final MouseAdapter listener = new DraggablePanelListener(this);
-		// addMouseListener(listener);
-		// addMouseMotionListener(listener);
-
 		setTransferHandler(new DDTransferHandler());
 		setDropTarget(null);
 	}
