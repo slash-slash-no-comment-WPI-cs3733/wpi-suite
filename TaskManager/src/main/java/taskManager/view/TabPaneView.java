@@ -10,7 +10,6 @@
 package taskManager.view;
 
 import java.awt.Dimension;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -18,7 +17,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import taskManager.controller.WorkflowController;
-import taskManager.model.ActivityModel;
 
 /**
  * 
@@ -48,17 +46,5 @@ public class TabPaneView extends JTabbedPane {
 				.getInstance().getView());
 
 		this.addTab("Workflow", new ImageIcon(), scroll, "Workflow");
-	}
-
-	public TabPaneView(List<ActivityModel> activityList) {
-		setTabPlacement(TOP);
-		setTabLayoutPolicy(SCROLL_TAB_LAYOUT);
-		setBorder(BorderFactory.createEmptyBorder(5, 3, 3, 3));
-		this.setSize(new Dimension(500, 500));
-
-		this.addTab("Comments", new ImageIcon(), new ActivityPanel(
-				ActivityPanel.Type.COMMENTS, activityList), "Workflow");
-		this.addTab("All Activities", new ImageIcon(), new ActivityPanel(
-				ActivityPanel.Type.ALL, activityList), "Workflow");
 	}
 }

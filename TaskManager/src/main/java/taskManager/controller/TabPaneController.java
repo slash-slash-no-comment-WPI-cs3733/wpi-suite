@@ -10,9 +10,7 @@
 package taskManager.controller;
 
 import java.awt.Component;
-import java.util.List;
 
-import taskManager.model.ActivityModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.ReportsView;
 import taskManager.view.TabPaneView;
@@ -44,10 +42,6 @@ public class TabPaneController {
 	 */
 	public void reset() {
 		view = new TabPaneView();
-	}
-
-	public TabPaneController(List<ActivityModel> activityList) {
-		view = new TabPaneView(activityList);
 	}
 
 	/**
