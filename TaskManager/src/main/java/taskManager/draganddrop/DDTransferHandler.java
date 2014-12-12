@@ -21,6 +21,7 @@ import javax.swing.TransferHandler;
 import taskManager.controller.ToolbarController;
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.WorkflowModel;
+import taskManager.view.RotationView;
 import taskManager.view.StageView;
 import taskManager.view.TaskView;
 
@@ -126,7 +127,12 @@ public class DDTransferHandler extends TransferHandler {
 					comp.getHeight(), BufferedImage.TYPE_INT_ARGB);
 			Graphics g = image.getGraphics();
 			g = g.create();
-			comp.paint(g);
+			if (comp instanceof RotationView) {
+				System.out.println("making image");
+				((RotationView) comp).paintChildren(g);
+			} else {
+				comp.paint(g);
+			}
 			setDragImage(image);
 
 			// Create placeholder

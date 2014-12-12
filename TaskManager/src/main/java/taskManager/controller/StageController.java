@@ -27,6 +27,7 @@ import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
+import taskManager.view.RotationView;
 import taskManager.view.StageView;
 import taskManager.view.TaskView;
 
@@ -100,8 +101,13 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 	 */
 	@Override
 	public void saveDrop(JPanel panel, int index) {
+		if (panel instanceof RotationView) {
+			panel = ((RotationView) panel).getPanel();
+		}
+
 		// Make sure we cast safely
 		if (!(panel instanceof TaskView)) {
+			System.err.println("Tried to save something that isn't a TaskView");
 			return;
 		}
 		final TaskController tc = ((TaskView) panel).getController();
