@@ -26,14 +26,15 @@ import taskManager.view.RotationView;
 public class RotationController implements MouseListener, MouseMotionListener {
 
 	private RotationView view;
-	private MouseListener listener = null;
+	private TaskController listener = null;
 
 	public RotationController(RotationView view) {
 		this.view = view;
 	}
 
-	public void setListener(MouseListener listener) {
+	public void setListener(TaskController listener) {
 		this.listener = listener;
+		// view.setAngle(listener.getAngle());
 	}
 
 	@Override
@@ -50,7 +51,7 @@ public class RotationController implements MouseListener, MouseMotionListener {
 
 	@Override
 	public void mouseExited(MouseEvent arg0) {
-		// do nothing
+		listener.mouseExited(arg0);
 	}
 
 	@Override
@@ -68,8 +69,12 @@ public class RotationController implements MouseListener, MouseMotionListener {
 	}
 
 	private boolean checkBounds(MouseEvent e) {
+		int panelX = view.getPanel().getWidth();
+		int panelY = view.getPanel().getHeight();
 		AffineTransform transform = new AffineTransform();
-		transform.rotate(view.getAngle(), 0, 0);
+		transform.translate(0, calculateYTranslation());
+		transform.rotate(view.getAngle(), panelX / 2, panelY / 2);
+
 		Point2D tp = null;
 		try {
 			tp = transform.inverseTransform(e.getPoint(), null);
@@ -78,8 +83,7 @@ public class RotationController implements MouseListener, MouseMotionListener {
 			e1.printStackTrace();
 			return false;
 		}
-		Rectangle panelArea = new Rectangle(view.getPanel().getWidth(), view
-				.getPanel().getHeight());
+		Rectangle panelArea = new Rectangle(panelX, panelY);
 		if (panelArea.contains(tp)) {
 			return true;
 		}
@@ -98,5 +102,19 @@ public class RotationController implements MouseListener, MouseMotionListener {
 		} else {
 			listener.mouseExited(arg0);
 		}
+	}
+
+	public double calculateYTranslation() {
+		// int panelX = view.getPanel().getWidth();
+		int panelY = view.getPanel().getHeight();
+		return (calculateHeight() - panelY - 10) / 2;
+	}
+
+	public double calculateHeight() {
+		int panelX = view.getPanel().getWidth();
+		int panelY = view.getPanel().getHeight();
+		double angle = view.getAngle();
+		return (Math.abs(panelX * Math.sin(angle)) + Math.abs(panelY
+				* Math.cos(angle)));
 	}
 }

@@ -8,18 +8,14 @@
  *******************************************************************************/
 package taskManager.view;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.MouseListener;
-import java.awt.image.BufferedImage;
 
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
 
 import taskManager.controller.RotationController;
+import taskManager.controller.TaskController;
 
 /**
  * Description
@@ -31,18 +27,16 @@ public class RotationView extends JPanel {
 	private static final long serialVersionUID = 473778538723370745L;
 
 	private final JPanel panel;
-	private double angle = Math.PI / 4;
+	private double angle = Math.PI / 6;
 	private boolean painting = false;
 	private RotationController controller = null;
 
 	public RotationView(JPanel panel) {
 		this.panel = panel;
-		panel.setOpaque(true);
 		add(panel);
-		Border border = BorderFactory.createLineBorder(Color.black);
-		setBorder(border);
-		setBackground(Color.cyan);
-		Dimension d = new Dimension(215, 215);
+		int height = (int) (Math.abs(215 * Math.sin(angle)) + Math
+				.abs(62 * Math.cos(angle)));
+		Dimension d = new Dimension(215, height);
 		setSize(d);
 		setPreferredSize(d);
 		setMaximumSize(d);
@@ -52,21 +46,31 @@ public class RotationView extends JPanel {
 		addMouseMotionListener(controller);
 	}
 
-	public void setListener(MouseListener listener) {
+	public void setListener(TaskController listener) {
 		controller.setListener(listener);
 	}
 
 	@Override
 	public void paintChildren(Graphics g) {
-		BufferedImage image = new BufferedImage(panel.getWidth(),
-				panel.getHeight(), BufferedImage.TYPE_INT_RGB);
-		painting = true;
-		panel.paint(image.getGraphics());
-		painting = false;
-		g.setColor(Color.lightGray);
+		g.setColor(getParent().getBackground());
 		g.fillRect(0, 0, getWidth(), getHeight());
-		((Graphics2D) g).rotate(angle);
-		g.drawImage(image, 0, 0, panel.getWidth(), panel.getHeight(), this);
+		((Graphics2D) g).translate(0, controller.calculateYTranslation());
+		((Graphics2D) g).rotate(angle, panel.getWidth() / 2,
+				panel.getHeight() / 2);
+		painting = true;
+		super.paintChildren(g);
+		painting = false;
+	}
+
+	@Override
+	public void paintComponent(Graphics g) {
+		int height = (int) controller.calculateHeight();
+		Dimension d = new Dimension(panel.getWidth(), height);
+		setSize(d);
+		setPreferredSize(d);
+		setMaximumSize(d);
+		setMinimumSize(d);
+		super.paintComponent(g);
 	}
 
 	public boolean isPainting() {
@@ -75,6 +79,10 @@ public class RotationView extends JPanel {
 
 	public double getAngle() {
 		return angle;
+	}
+
+	public void setAngle(double d) {
+		angle = d;
 	}
 
 	public JPanel getPanel() {

@@ -76,6 +76,8 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	// Boolean for whether the tasked is archived or not.
 	private boolean isArchived = false;
 
+	private double angle = 0;
+
 	/**
 	 * Constructor assigns name, task id, and stage.
 	 *
@@ -402,6 +404,14 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 			addActivity(archive);
 		}
 		isArchived = bool;
+	}
+
+	public double getAngle() {
+		return angle;
+	}
+
+	public void setAngle(double d) {
+		angle = d;
 	}
 
 	/**

@@ -97,6 +97,14 @@ public class TaskController implements MouseListener {
 		model.setArchived(bool);
 	}
 
+	public double getAngle() {
+		return model.getAngle();
+	}
+
+	public void setAngle(double d) {
+		model.setAngle(d);
+	}
+
 	/**
 	 * 
 	 * Populates the EditTaskView with the information from this task.
@@ -113,7 +121,6 @@ public class TaskController implements MouseListener {
 	 *
 	 */
 	public void changeToHoverColor() {
-
 		view.setBackground(Colors.TASK_HOVER);
 	}
 
