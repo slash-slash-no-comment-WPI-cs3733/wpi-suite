@@ -167,6 +167,7 @@ public class ReportsManager implements ActionListener, ChangeListener,
 			throw new IllegalArgumentException("Invalid stage");
 		}
 		data = new ArrayList<UserData>();
+		// Iterate through all tasks for the specified stage.
 		for (TaskModel task : stage.getTasks()) {
 			ZonedDateTime completed = null;
 			boolean foundMoveEvent = false;
@@ -195,9 +196,14 @@ public class ReportsManager implements ActionListener, ChangeListener,
 						.toInstant(), TimeZone.getDefault().toZoneId());
 			}
 
+			// If the completion date is retrieved and the date is between the
+			// specified dates.
 			if (completed != null
 					&& completed.toInstant().isAfter(start.toInstant())
 					&& completed.toInstant().isBefore(end.toInstant())) {
+				// Iterate through all of the users assigned to the current
+				// task, if the user is one of the specified users, get the
+				// actual effort value from that task and add to the dataset.
 				for (String username : task.getAssigned()) {
 					if (users.contains(username)) {
 						Double effort = (double) task.getActualEffort();
@@ -230,6 +236,8 @@ public class ReportsManager implements ActionListener, ChangeListener,
 		}
 		dataset = new DefaultCategoryDataset();
 		String intervalName = "Interval";
+
+		// Set the label name according to the specified interval.
 		if (interval.equals(Period.ofDays(1))) {
 			intervalName = "Day ";
 		} else if (interval.equals(Period.ofWeeks(1))) {
@@ -252,20 +260,27 @@ public class ReportsManager implements ActionListener, ChangeListener,
 
 		// Iterate through each userdata.
 		for (UserData userData : data) {
+
+			// Boundary is the temporary enddate to use to calculate the total
+			// effort for the current completion date (e.g. if completion date
+			// is January 1, boundary is January 2).
 			ZonedDateTime boundary = ZonedDateTime.ofInstant(start.toInstant()
 					.plus(interval), TimeZone.getDefault().toZoneId());
+
+			// seriesnum is only used for the labels, e.g. the int part of Day
+			// 1, Day 2, ...
 			seriesNum = 0;
 
 			// continue until we find the seriesNum and boundary.
+			// while the difference is less than a full day.
+			// TODO: change the while condition to be relative to the interval
+			// rather than just 86400 seconds for 1 day).
 			do {
-				boundary = boundary.plus(interval);
+				boundary = boundary.plus(interval); // increment by interval
+													// (day/week/month).
 				seriesNum++;
 			} while ((boundary.toInstant().getEpochSecond() - userData.completion
-					.toInstant().getEpochSecond()) < 86400); // while the
-																// difference is
-																// less
-																// than a full
-																// day.
+					.toInstant().getEpochSecond()) < 86400);
 
 			// set the name depending on the teamData value.
 			String keyname = "Team";
@@ -282,9 +297,6 @@ public class ReportsManager implements ActionListener, ChangeListener,
 				dataset.addValue(userData.effort, keyname, intervalName
 						+ (seriesNum));
 			}
-		}
-		if (dataset == null) {
-			System.out.println(dataset);
 		}
 	}
 
@@ -425,15 +437,22 @@ public class ReportsManager implements ActionListener, ChangeListener,
 		Object button = e.getSource();
 		if (button instanceof JButton) {
 			String buttonName = ((JButton) button).getName();
+
+			// Add user to Users Selected for Reports
 			if (buttonName.equals(ReportsView.ADD_USER)) {
 				addUsersToList();
+				// Remove user
 			} else if (buttonName.equals(ReportsView.REMOVE_USER)) {
 				removeUsersFromList();
+				// All users checkbox checked
 			} else if (buttonName.equals(ReportsView.ALL_USERS)) {
-
+				// TODO: Add functionality for adding all users to selected.
+				// Generate Reports pressed.
 			} else {
+
+				// Get the starting/ending dates from the view.
 				Calendar cal = Calendar.getInstance();
-				cal.setTimeZone(TimeZone.getTimeZone("EST"));
+				cal.setTimeZone(TimeZone.getDefault());
 
 				Date startdate = rtv.getStartDate().getDate();
 				cal.setTime(startdate);
@@ -441,7 +460,10 @@ public class ReportsManager implements ActionListener, ChangeListener,
 
 				Date enddate = rtv.getEndDate().getDate();
 				cal.setTime(enddate);
-				cal.add(Calendar.DATE, 1);
+				cal.add(Calendar.DATE, 1); // Set end date to +1 assuming user
+											// will choose same start/end date
+											// for reports for that
+											// day/month/year
 				enddate = cal.getTime();
 
 				// TODO: Do validation for the calendars rather than showing
@@ -458,24 +480,39 @@ public class ReportsManager implements ActionListener, ChangeListener,
 					return;
 				}
 
+				// Get all of the selected users from the view and store to a
+				// set.
 				Set<String> users = new HashSet<String>();
 				for (String u : rtv.getCurrUsersList().getAllValues()) {
 					users.add(u);
 				}
 
+				// Get the selected stage from the view and store as a
+				// StageModel.
 				String stageStr = rtv.getSelectedStage();
 				StageModel stage = WorkflowModel.getInstance().findStageByName(
 						stageStr);
 
+				// Set the dates as ZonedDateTimes that have timezone
+				// information.
 				ZonedDateTime startZone = ZonedDateTime
 						.ofInstant(startdate.toInstant(), TimeZone.getDefault()
 								.toZoneId());
 				ZonedDateTime endZone = ZonedDateTime.ofInstant(
 						enddate.toInstant(), TimeZone.getDefault().toZoneId());
+
+				// Compute velocity (amount of effort/time) and store to data,
+				// unsorted.
 				findVelocityData(users, startZone, endZone, false, stage);
 
+				// Generate the dataset required to draw the graph, with a given
+				// interval.
 				generateDataset(false, Period.ofDays(1));
+
+				// Create the chart with the Title, Label names.
 				JPanel chart = createChart("Effort per Day", "Time", "Effort");
+
+				// Open a new tab with the given chart.
 				TabPaneController.getInstance().addTab("Graph", chart, true);
 				TabPaneController.getInstance().getView()
 						.setSelectedComponent(chart);
@@ -491,6 +528,7 @@ public class ReportsManager implements ActionListener, ChangeListener,
 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
+		// Used for selecting/unselecting users in the view.
 		Boolean addUsersSelected = !rtv.getProjectUsersList()
 				.isSelectionEmpty();
 		Boolean removeUsersSelected = !rtv.getUsersList().isSelectionEmpty();
