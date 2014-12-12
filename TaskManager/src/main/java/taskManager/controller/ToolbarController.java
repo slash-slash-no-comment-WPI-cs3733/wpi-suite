@@ -10,6 +10,7 @@ package taskManager.controller;
 
 import java.awt.Component;
 import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
@@ -19,6 +20,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -201,11 +203,25 @@ public class ToolbarController extends DropTargetAdapter implements
 			final Transferable trans = e.getTransferable();
 			if (trans.isDataFlavorSupported(DDTransferHandler.getTaskFlavor())) {
 				final TaskView taskV;
+				Object transferData = null;
 				try {
-					taskV = (TaskView) trans.getTransferData(DDTransferHandler
+					transferData = trans.getTransferData(DDTransferHandler
 							.getTaskFlavor());
-				} catch (Exception ex) {
-					System.out.println(ex.getStackTrace());
+				} catch (UnsupportedFlavorException e1) {
+					e1.printStackTrace();
+					return;
+				} catch (IOException e1) {
+					e1.printStackTrace();
+					return;
+				}
+
+				if (transferData instanceof RotationView) {
+					transferData = ((RotationView) transferData).getPanel();
+				}
+
+				if (transferData instanceof TaskView) {
+					taskV = (TaskView) transferData;
+				} else {
 					return;
 				}
 
