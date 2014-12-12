@@ -14,6 +14,7 @@ import java.util.List;
 
 import taskManager.model.ActivityModel;
 import taskManager.view.EditTaskView;
+import taskManager.view.ReportsView;
 import taskManager.view.TabPaneView;
 import taskManager.view.TabView;
 import taskManager.view.WorkflowView;
@@ -29,13 +30,19 @@ public class TabPaneController {
 
 	// singleton TabPaneView
 	private TabPaneView view;
-
 	private static TabPaneController instance = null;
 
 	/**
-	 * Constructs the TabPaneController and its associated TabPaneView
+	 * Hide Singleton constructor
 	 */
-	public TabPaneController() {
+	private TabPaneController() {
+		reset();
+	}
+
+	/**
+	 * Resets instance
+	 */
+	public void reset() {
 		view = new TabPaneView();
 	}
 
@@ -50,13 +57,13 @@ public class TabPaneController {
 	 */
 	public void addCreateTaskTab() {
 		// Each press of create a new tab should launch a new createTaskTab
-		EditTaskController etc = new EditTaskController();
+		final EditTaskController etc = new EditTaskController();
 
 		// Focuses on the new tab
-		int index = view.getTabCount() - 1;
+		final int index = view.getTabCount() - 1;
 		view.setSelectedIndex(index);
 
-		etc.getView().setTitleFieldFocus();
+		etc.getView().focusOnTitleField();
 	}
 
 	/**
@@ -73,9 +80,7 @@ public class TabPaneController {
 			if (c instanceof EditTaskView) {
 				etv2 = (EditTaskView) c;
 
-				if (etv2.getTitle().getName() != null
-						&& etv2.getTitle().getName()
-								.equals(etv.getTitle().getName())) {
+				if (etv2.getController().isDuplicate(etv.getController())) {
 					exists = true;
 					break;
 				}
@@ -86,6 +91,30 @@ public class TabPaneController {
 		} else {
 			addTab(etv.getTitle().getText(), etv, true);
 			view.setSelectedComponent(etv);
+		}
+	}
+
+	/**
+	 * 
+	 * Adds the reports view tab.
+	 *
+	 * @param rtv
+	 *            the reports view to add.
+	 */
+	public void addReportsTab(ReportsView rtv) {
+		boolean exists = false;
+		ReportsView rtv2 = null;
+		for (Component c : view.getComponents()) {
+			if (c instanceof ReportsView) {
+				rtv2 = (ReportsView) c;
+				exists = true;
+			}
+		}
+		if (exists) {
+			view.setSelectedComponent(rtv2);
+		} else {
+			addTab("Reports", rtv, true);
+			view.setSelectedComponent(rtv);
 		}
 	}
 
@@ -140,5 +169,4 @@ public class TabPaneController {
 		}
 		return instance;
 	}
-
 }

@@ -45,8 +45,8 @@ public class UserView extends JPanel {
 	public UserView(User user) {
 		// organizes the data in a vertical list
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		Border raisedbevel = BorderFactory.createRaisedBevelBorder();
-		TitledBorder title = BorderFactory.createTitledBorder(raisedbevel, "");
+		final Border raisedbevel = BorderFactory.createRaisedBevelBorder();
+		final TitledBorder title = BorderFactory.createTitledBorder(raisedbevel, "");
 		title.setTitlePosition(TitledBorder.LEFT);
 		this.setBorder(title);
 		this.setMinimumSize(new Dimension(300, 100));

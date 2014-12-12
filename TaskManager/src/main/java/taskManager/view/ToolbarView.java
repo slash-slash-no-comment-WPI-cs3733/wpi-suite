@@ -10,10 +10,8 @@
 package taskManager.view;
 
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
-import java.awt.Insets;
 import java.awt.dnd.DropTarget;
 import java.io.IOException;
 
@@ -63,40 +61,42 @@ public class ToolbarView extends JToolBar {
 	/**
 	 * Create a ToolbarView.
 	 * 
-	 * @param tabController
-	 *            The MainTabController this view should open tabs with
+	 * @param controller
+	 *            The ToolbarController associated with this view
 	 */
-	public ToolbarView() {
+	public ToolbarView(ToolbarController controller) {
+
+		this.controller = controller;
 
 		// Construct and set up the buttons and title panels
-		JPanel buttons = new JPanel();
-		JPanel title = new JPanel();
-		JPanel targets = new JPanel();
-		FlowLayout flowLayout = new FlowLayout();
-		BoxLayout toolbarLayout = new BoxLayout(this, BoxLayout.LINE_AXIS);
-		BoxLayout targetsLayout = new BoxLayout(targets, BoxLayout.LINE_AXIS);
-		buttons.setLayout(flowLayout);
+		final JPanel buttons = new JPanel();
+		final JPanel name = new JPanel();
+		final JPanel targets = new JPanel();
+		buttons.setLayout(new BoxLayout(buttons, BoxLayout.LINE_AXIS));
 		buttons.setOpaque(false);
-		title.setLayout(flowLayout);
-		title.setOpaque(false);
-		targets.setLayout(targetsLayout);
+		name.setLayout(new BoxLayout(name, BoxLayout.LINE_AXIS));
+		name.setOpaque(false);
+		targets.setLayout(new BoxLayout(targets, BoxLayout.LINE_AXIS));
 		targets.setOpaque(false);
-		this.setLayout(toolbarLayout);
-
-		Insets margins = new Insets(15, 5, 0, 5);
-		this.setMargin(margins);
+		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 
 		this.setFloatable(false);
 
 		// Construct the buttons
-		createTask = new JButton("Create Task");
+		createTask = new JButton("<html>Create Task</html>");
 		createTask.setName(CREATE_TASK);
+		createTask.setMaximumSize(new Dimension(160, 58));
+		createTask.addActionListener(controller);
 
-		createStage = new JButton("Create Stage");
+		createStage = new JButton("<html>Create Stage</html>");
 		createStage.setName(CREATE_STAGE);
+		createStage.setMaximumSize(new Dimension(160, 58));
+		createStage.addActionListener(controller);
 
-		statistics = new JButton("Statistics");
+		statistics = new JButton("<html>Reports</html>");
 		statistics.setName(REPORT);
+		statistics.setMaximumSize(new Dimension(160, 58));
+		statistics.addActionListener(controller);
 
 		// Add icons
 		Image img;
@@ -115,6 +115,11 @@ public class ToolbarView extends JToolBar {
 			e.printStackTrace();
 		}
 
+		// Checkbox for toggling showing archived tasks.
+		archiveCheckBox = new JCheckBox("<html>Show archived tasks</html>");
+		archiveCheckBox.addItemListener(controller);
+		archiveCheckBox.setOpaque(false);
+
 		// Add archive and delete drop targets
 		try {
 			img = ImageIO.read(this.getClass().getResourceAsStream(
@@ -128,57 +133,54 @@ public class ToolbarView extends JToolBar {
 		}
 		archive.setToolTipText("Drag here to archive task");
 		archive.setEnabled(false);
-
-		// Checkbox for toggling showing archived tasks.
-		archiveCheckBox = new JCheckBox("Show archived tasks");
-
 		archive.setName(ARCHIVE);
+
+		// TODO: look at this
+		archive.setTransferHandler(new DDTransferHandler());
+		archive.setDropTarget(new DropTarget(archive, controller));
+
 		delete.setToolTipText("Drag here to delete task");
 		delete.setEnabled(false);
 		delete.setName(DELETE);
+
+		delete.setTransferHandler(new DDTransferHandler());
+		delete.setDropTarget(new DropTarget(delete, controller));
 
 		// Construct the project title
 		projectName = new JLabel();
 		projectName.setFont(new Font("TextField.font", Font.BOLD, 20));
 
-		// Add buttons to the content panel
-		title.add(projectName);
+		// Add title to the title panel
+		name.add(Box.createHorizontalStrut(10));
+		name.add(projectName);
+
+		// Add buttons with to the button panel
+		buttons.add(Box.createHorizontalGlue());
 		buttons.add(createTask);
 		buttons.add(createStage);
-		// buttons.add(statistics);
+		buttons.add(statistics);
 		buttons.add(archiveCheckBox);
+		buttons.add(Box.createHorizontalGlue());
+
+		// Add targets to the target panel
 		targets.add(archive);
 		targets.add(new Box.Filler(new Dimension(5, 0), new Dimension(40, 0),
 				new Dimension(40, 0)));
 		targets.add(delete);
+		targets.add(Box.createHorizontalStrut(10));
 
-		// Title and buttons to the toolbar
-		this.add(title);
-		this.add(Box.createHorizontalGlue());
+		// Set vertical alignments of panels to be centered.
+		name.setAlignmentY(CENTER_ALIGNMENT);
+		buttons.setAlignmentY(CENTER_ALIGNMENT);
+		targets.setAlignmentY(CENTER_ALIGNMENT);
+
+		// Add panels to the toolbar
+		this.add(name);
 		this.add(buttons);
-		this.add(Box.createHorizontalGlue());
 		this.add(targets);
-		this.add(Box.createHorizontalGlue());
-	}
 
-	/**
-	 * adds the toolbar controller as the action listener for all buttons
-	 * 
-	 * @param controller
-	 *            the toolbar controller to be addded to the buttons
-	 */
-	public void setController(ToolbarController controller) {
-		this.controller = controller;
-		createTask.addActionListener(this.controller);
-		createStage.addActionListener(this.controller);
-		statistics.addActionListener(this.controller);
-
-		archiveCheckBox.addItemListener(controller);
-
-		archive.setTransferHandler(new DDTransferHandler());
-		archive.setDropTarget(new DropTarget(delete, controller));
-
-		
+		// Add resize listener to fix title
+		this.addComponentListener(controller);
 	}
 
 	@Override
@@ -186,24 +188,47 @@ public class ToolbarView extends JToolBar {
 		return super.getName();
 	}
 
+	/**
+	 * Set the displayed project name
+	 *
+	 * @param name
+	 *            the name of the project
+	 */
 	public void setProjectName(String name) {
 		projectName.setText("<html>" + name + "</html>");
 	}
 
+	public boolean isIconEnabled(String iconName) {
+		switch (iconName) {
+		case ARCHIVE:
+		case UNARCHIVE:
+			return archive.isEnabled();
+		case DELETE:
+			return delete.isEnabled();
+		default:
+			return false;
+		}
+	}
+
+	/**
+	 * Sets if the archive icon is lit up
+	 *
+	 * @param bool
+	 *            if the archive should be enabled or not
+	 */
 	public void setArchiveEnabled(boolean bool) {
 		archive.setEnabled(bool);
 	}
 
+	/**
+	 * Sets if the delete icon is lit up and whether it is currently a drop
+	 * target
+	 *
+	 * @param bool
+	 *            if the delete should be enabled or not
+	 */
 	public void setDeleteEnabled(boolean bool) {
 		delete.setEnabled(bool);
-		
-		if(bool){
-			delete.setTransferHandler(new DDTransferHandler());
-			delete.setDropTarget(new DropTarget(delete, controller));
-			return;
-		}
-		delete.setTransferHandler(null);
-		delete.setDropTarget(null);
 	}
 
 	public boolean isArchiveShown() {
@@ -230,5 +255,14 @@ public class ToolbarView extends JToolBar {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Returns the project name component
+	 * 
+	 * @return The project name component
+	 */
+	public JLabel getProjectName() {
+		return projectName;
 	}
 }

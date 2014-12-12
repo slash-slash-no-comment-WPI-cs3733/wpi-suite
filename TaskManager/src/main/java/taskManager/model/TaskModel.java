@@ -52,10 +52,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	// List of names of users assigned to this task
 	private Set<String> assigned;
 
-	// // Due date timestamp
-	// private Date dueDate;
-	// temporarily making this a string for testing
-	// TODO turn it back into a date
+	// Due date timestamp
 	private Date dueDate;
 
 	// Estimated effort required for completion
@@ -286,9 +283,9 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 */
 	public void setReq(Requirement req) {
 		if (req != null) {
-			this.reqID = req.getId();
+			reqID = req.getId();
 		} else {
-			this.reqID = null;
+			reqID = null;
 		}
 	}
 
@@ -308,8 +305,8 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	public void addAssigned(User user) {
 		final ActivityModel addUser = new ActivityModel("User "
 				+ user.getName() + " added to task",
-				ActivityModel.activityModelType.USER_ADD, user);
-		String q = user.getUsername();
+				ActivityModel.activityModelType.USER_ADD);
+		final String q = user.getUsername();
 		assigned.add(q);
 		addActivity(addUser);
 		logger.log(Level.FINER, "Added user " + user.getName() + " to task "
@@ -331,7 +328,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		assigned.remove(user.getUsername());
 		final ActivityModel delUser = new ActivityModel("Removed user "
 				+ user.getName() + " from task " + name + ".",
-				ActivityModel.activityModelType.USER_ADD, user);
+				ActivityModel.activityModelType.USER_ADD);
 		addActivity(delUser);
 		logger.log(Level.FINER, "Removed user " + user.getName()
 				+ " from task " + name + ".");
@@ -353,19 +350,32 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		activities.add(activity);
 	}
 
-	
+	/**
+	 * Adds a comment activity onto this task
+	 *
+	 * @param comment
+	 *            The comment
+	 * @param user
+	 *            The user that made the comment
+	 */
 	public void addComment(String comment, User user) {
 		final ActivityModel commentActivity = new ActivityModel(comment,
-				ActivityModel.activityModelType.COMMENT, user);
+				ActivityModel.activityModelType.COMMENT);
 		addActivity(commentActivity);
 	}
 
+	/**
+	 * Changes the text of an activity on this task
+	 *
+	 * @param index
+	 *            the index of the activity
+	 * @param newText
+	 *            the text to set the activity to
+	 */
 	public void editActivity(int index, String newText) {
 		final ActivityModel toEdit = activities.get(index);
 		toEdit.setDescription(newText);
 	}
-
-
 
 	/**
 	 * 
@@ -385,6 +395,12 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 *            The boolean to set the task's isArchived field.
 	 */
 	public void setArchived(boolean bool) {
+		if (bool != isArchived) {
+			final ActivityModel archive = new ActivityModel((bool ? "Archived"
+					: "Unarchived") + " task",
+					ActivityModel.activityModelType.ARCHIVE);
+			addActivity(archive);
+		}
 		isArchived = bool;
 	}
 
