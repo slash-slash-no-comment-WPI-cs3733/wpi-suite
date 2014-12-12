@@ -19,6 +19,7 @@ import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.Map;
 
+import taskManager.draganddrop.DraggablePanelListener;
 import taskManager.view.RotationView;
 
 /**
@@ -35,7 +36,7 @@ public class RotationController implements MouseListener, MouseMotionListener {
 
 	public RotationController(RotationView view) {
 		this.view = view;
-		// dragListener = new DraggablePanelListener(view);
+		dragListener = new DraggablePanelListener(view);
 	}
 
 	public void setListener(TaskController listener) {
@@ -67,9 +68,13 @@ public class RotationController implements MouseListener, MouseMotionListener {
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		if (listener != null && checkBounds(arg0)) {
-			listener.mousePressed(arg0);
-			// dragListener.mousePressed(arg0);
+		if (checkBounds(arg0)) {
+			if (listener != null) {
+				listener.mousePressed(arg0);
+			}
+			if (dragListener != null) {
+				dragListener.mousePressed(arg0);
+			}
 		}
 	}
 

@@ -14,14 +14,12 @@ import java.awt.Graphics2D;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.event.MouseAdapter;
 
 import javax.swing.JPanel;
 
 import taskManager.controller.RotationController;
 import taskManager.controller.TaskController;
 import taskManager.draganddrop.DDTransferHandler;
-import taskManager.draganddrop.DraggablePanelListener;
 
 /**
  * Description
@@ -51,9 +49,9 @@ public class RotationView extends JPanel implements Transferable {
 		addMouseListener(controller);
 		addMouseMotionListener(controller);
 
-		final MouseAdapter listener = new DraggablePanelListener(this);
-		addMouseListener(listener);
-		addMouseMotionListener(listener);
+		// final MouseAdapter listener = new DraggablePanelListener(this);
+		// addMouseListener(listener);
+		// addMouseMotionListener(listener);
 
 		setTransferHandler(new DDTransferHandler());
 		setDropTarget(null);
