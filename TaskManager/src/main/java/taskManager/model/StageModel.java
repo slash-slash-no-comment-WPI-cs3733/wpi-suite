@@ -282,7 +282,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 				final ActivityModel movedTask = new ActivityModel("Moved task "
 						+ task.getName() + " from stage " + oldStage.getName()
 						+ " to stage " + name + ".",
-						ActivityModel.activityModelType.MOVE);
+						ActivityModel.ActivityModelType.MOVE);
 				task.addActivity(movedTask);
 			}
 		}
