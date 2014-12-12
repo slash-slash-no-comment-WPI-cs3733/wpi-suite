@@ -29,8 +29,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import taskManager.JanewayModule;
 import taskManager.ScreenshotOnFail;
+import taskManager.TaskManager;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
@@ -51,7 +51,7 @@ public class TestRotationController extends ScreenshotOnFail {
 
 	@Before
 	public void setup() {
-		JanewayModule.reset();
+		TaskManager.reset();
 
 		// give it a stage
 		StageModel s = new StageModel("stage", false);
