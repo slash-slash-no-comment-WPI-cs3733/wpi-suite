@@ -27,10 +27,7 @@ import java.awt.Insets;
 @SuppressWarnings("serial")
 public class WorkflowLayout extends FlowLayout {
 
-	private int hgap = 5, vgap = 5;
-
-	public WorkflowLayout() {
-	}
+	private final int horizontalGap = 5, verticalGap = 5;
 
 	@Override
 	public void addLayoutComponent(final String name, final Component comp) {
@@ -44,16 +41,17 @@ public class WorkflowLayout extends FlowLayout {
 	@Override
 	public void layoutContainer(Container target) {
 		synchronized (target.getTreeLock()) {
-			Insets insets = target.getInsets();
-			int maxwidth = target.getWidth()
-					- (insets.left + insets.right + hgap * 2);
-			int nmembers = target.getComponentCount();
-			int x = 0, y = insets.top + vgap;
+			final Insets insets = target.getInsets();
+			final int maxwidth = target.getWidth()
+					- (insets.left + insets.right + horizontalGap * 2);
+			final int nmembers = target.getComponentCount();
+			int x = 0, y = insets.top + verticalGap;
 			int rowh = 0, start = 0;
 
-			boolean ltr = target.getComponentOrientation().isLeftToRight();
+			final boolean ltr = target.getComponentOrientation()
+					.isLeftToRight();
 
-			boolean useBaseline = getAlignOnBaseline();
+			final boolean useBaseline = getAlignOnBaseline();
 			int[] ascent = null;
 			int[] descent = null;
 
@@ -80,16 +78,16 @@ public class WorkflowLayout extends FlowLayout {
 					}
 					if ((x == 0) || ((x + d.width) <= maxwidth)) {
 						if (x > 0) {
-							x += hgap;
+							x += horizontalGap;
 						}
 						x += d.width;
 						rowh = Math.max(rowh, target.getHeight() - 15);
 					} else {
-						rowh = moveComponents(target, insets.left + hgap, y,
-								maxwidth - x, rowh, start, i, ltr, useBaseline,
-								ascent, descent);
+						rowh = moveComponents(target, insets.left
+								+ horizontalGap, y, maxwidth - x, rowh, start,
+								i, ltr, useBaseline, ascent, descent);
 						x = d.width;
-						y += vgap + rowh;
+						y += verticalGap + rowh;
 						rowh = target.getHeight() - 15;
 						start = i;
 					}
@@ -97,8 +95,9 @@ public class WorkflowLayout extends FlowLayout {
 					m.setBounds(m.getBounds());
 				}
 			}
-			moveComponents(target, insets.left + hgap, y, maxwidth - x, rowh,
-					start, nmembers, ltr, useBaseline, ascent, descent);
+			moveComponents(target, insets.left + horizontalGap, y,
+					maxwidth - x, rowh, start, nmembers, ltr, useBaseline,
+					ascent, descent);
 		}
 	}
 
@@ -159,7 +158,7 @@ public class WorkflowLayout extends FlowLayout {
 				} else {
 					m.setLocation(target.getWidth() - x - m.getWidth(), cy);
 				}
-				x += m.getWidth() + hgap;
+				x += m.getWidth() + horizontalGap;
 			}
 		}
 		return height;
@@ -184,9 +183,9 @@ public class WorkflowLayout extends FlowLayout {
 	@Override
 	public Dimension minimumLayoutSize(Container target) {
 		synchronized (target.getTreeLock()) {
-			boolean useBaseline = getAlignOnBaseline();
-			Dimension dim = target.getSize();
-			int nmembers = target.getComponentCount();
+			final boolean useBaseline = getAlignOnBaseline();
+			final Dimension dim = target.getSize();
+			final int nmembers = target.getComponentCount();
 			int maxAscent = 0;
 			int maxDescent = 0;
 			boolean firstVisibleComponent = true;
@@ -198,7 +197,7 @@ public class WorkflowLayout extends FlowLayout {
 					if (firstVisibleComponent) {
 						firstVisibleComponent = false;
 					} else {
-						dim.width += hgap;
+						dim.width += horizontalGap;
 					}
 					dim.width += d.width;
 					if (useBaseline) {
@@ -217,9 +216,9 @@ public class WorkflowLayout extends FlowLayout {
 				dim.height = Math.max(maxAscent + maxDescent, dim.height);
 			}
 
-			Insets insets = target.getInsets();
-			dim.width += insets.left + insets.right + hgap * 2;
-			dim.height += insets.top + insets.bottom + vgap * 2;
+			final Insets insets = target.getInsets();
+			dim.width += insets.left + insets.right + horizontalGap * 2;
+			dim.height += insets.top + insets.bottom + verticalGap * 2;
 			return dim;
 		}
 	}
@@ -243,10 +242,10 @@ public class WorkflowLayout extends FlowLayout {
 	@Override
 	public Dimension preferredLayoutSize(Container target) {
 		synchronized (target.getTreeLock()) {
-			Dimension dim = new Dimension(0, 0);
-			int nmembers = target.getComponentCount();
+			final Dimension dim = new Dimension(0, 0);
+			final int nmembers = target.getComponentCount();
 			boolean firstVisibleComponent = true;
-			boolean useBaseline = getAlignOnBaseline();
+			final boolean useBaseline = getAlignOnBaseline();
 			int maxAscent = 0;
 			int maxDescent = 0;
 
@@ -258,7 +257,7 @@ public class WorkflowLayout extends FlowLayout {
 					if (firstVisibleComponent) {
 						firstVisibleComponent = false;
 					} else {
-						dim.width += hgap;
+						dim.width += horizontalGap;
 					}
 					dim.width += d.width;
 					if (useBaseline) {
@@ -275,9 +274,9 @@ public class WorkflowLayout extends FlowLayout {
 			if (useBaseline) {
 				dim.height = Math.max(maxAscent + maxDescent, dim.height);
 			}
-			Insets insets = target.getInsets();
-			dim.width += insets.left + insets.right + hgap * 2;
-			dim.height += insets.top + insets.bottom + vgap * 2;
+			final Insets insets = target.getInsets();
+			dim.width += insets.left + insets.right + horizontalGap * 2;
+			dim.height += insets.top + insets.bottom + verticalGap * 2;
 			return dim;
 		}
 	}

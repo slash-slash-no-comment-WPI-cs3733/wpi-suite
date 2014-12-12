@@ -65,8 +65,6 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	/**
 	 * Constructor for Stage Models. Defaults to adding stage at end of list.
 	 *
-	 * @param workflow
-	 *            The workflow that the stage is a part of.
 	 * @param name
 	 *            The name of the stage.
 	 * @param removable
@@ -80,8 +78,6 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	/**
 	 * Constructor for Stage Models. Defaults to removable.
 	 *
-	 * @param workflow
-	 *            The workflow that the stage is a part of.
 	 * @param name
 	 *            The name of the stage.
 	 * @param index
@@ -94,8 +90,6 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	/**
 	 * Constructor for Stage Models. *
 	 *
-	 * @param workflow
-	 *            The workflow that the stage is a part of.
 	 * @param name
 	 *            The name of the stage.
 	 * @param index
@@ -274,7 +268,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 			return false;
 		}
 
-		StageModel oldStage = task.getStage();
+		final StageModel oldStage = task.getStage();
 		if (oldStage != null) {
 			if (oldStage.containsTask(task)) {
 				oldStage.removeTask(task); // remove from old parent, or this
@@ -288,7 +282,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 				final ActivityModel movedTask = new ActivityModel("Moved task "
 						+ task.getName() + " from stage " + oldStage.getName()
 						+ " to stage " + name + ".",
-						ActivityModel.activityModelType.MOVE);
+						ActivityModel.ActivityModelType.MOVE);
 				task.addActivity(movedTask);
 			}
 		}
@@ -360,7 +354,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 		if (workflow.findStageByName(newName) != null) {
 			throw new IllegalArgumentException("Stage name must be unique.");
 		}
-		this.name = newName;
+		name = newName;
 	}
 
 	@Override

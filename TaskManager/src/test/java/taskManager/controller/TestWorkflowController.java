@@ -15,9 +15,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import taskManager.TaskManager;
 import taskManager.ScreenshotOnFail;
 import taskManager.model.StageModel;
-import taskManager.model.WorkflowModel;
 
 /**
  * Tests for the workflow controller
@@ -32,8 +32,8 @@ public class TestWorkflowController extends ScreenshotOnFail {
 
 	@Before
 	public void setup() {
-		// create a new workflow model
-		WorkflowModel.getInstance().makeIdenticalTo(new WorkflowModel());
+		TaskManager.reset();
+
 		// give it the stages
 		for (String name : stageNames) {
 			new StageModel(name, false);

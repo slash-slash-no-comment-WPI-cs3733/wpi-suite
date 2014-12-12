@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import taskManager.TaskManager;
 import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
 
 /**
@@ -31,8 +32,10 @@ public class StageModelTest {
 
 	@Before
 	public void initializeWorkflow() {
+		TaskManager.reset();
+
 		wf = WorkflowModel.getInstance();
-		wf.makeIdenticalTo(new WorkflowModel("Workflow"));
+
 		stage = new StageModel("Stage");
 		stage2 = new StageModel("Stage2");
 	}

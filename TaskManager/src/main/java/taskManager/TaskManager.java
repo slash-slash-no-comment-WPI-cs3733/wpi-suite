@@ -13,9 +13,14 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
+import taskManager.controller.StageController;
 import taskManager.controller.TabPaneController;
+import taskManager.controller.TaskController;
 import taskManager.controller.ToolbarController;
-import taskManager.view.ToolbarView;
+import taskManager.controller.WorkflowController;
+import taskManager.draganddrop.DDTransferHandler;
+import taskManager.model.FetchWorkflowObserver;
+import taskManager.model.StageModel;
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
 import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
@@ -28,26 +33,50 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.User;
  * @author Stefan Alexander
  * @version November 9, 2014
  */
-public class JanewayModule implements IJanewayModule {
+public class TaskManager implements IJanewayModule {
 
 	// The tabs used by this module
 
-	private final ArrayList<JanewayTabModel> tabs;
-	public static final ToolbarView toolV = new ToolbarView();
+	private final List<JanewayTabModel> tabs;
+
 	public static User[] users = {};
 	public static String currentUser = null; // the username of the current user
 
 	/**
 	 * Construct a blank tab
 	 */
-	public JanewayModule() {
-		toolV.setController(new ToolbarController());
+	public TaskManager() {
 
 		tabs = new ArrayList<JanewayTabModel>();
-		JanewayTabModel tab = new JanewayTabModel("Task Manager",
-				new ImageIcon(), toolV, TabPaneController.getInstance()
-						.getView());
+		final JanewayTabModel tab = new JanewayTabModel("Task Manager",
+				new ImageIcon(), ToolbarController.getInstance().getView(),
+				TabPaneController.getInstance().getView());
 		tabs.add(tab);
+
+		// Add default stages
+		new StageModel("New");
+		new StageModel("Scheduled");
+		new StageModel("In Progress");
+		new StageModel("Complete");
+
+		WorkflowController.getInstance().reloadData();
+	}
+
+	/**
+	 * Does a full reset of the module; useful for testing
+	 *
+	 */
+	public static void reset() {
+
+		StageController.anyChangeTitleOut = false;
+		TaskController.anyTaskInfoOut = false;
+		DDTransferHandler.dragSaved = false;
+		FetchWorkflowObserver.ignoreAllResponses = false;
+
+		// Reset singletons
+		ToolbarController.getInstance().reset();
+		TabPaneController.getInstance().reset();
+		WorkflowController.getInstance().reset();
 	}
 
 	/**
@@ -64,5 +93,15 @@ public class JanewayModule implements IJanewayModule {
 	@Override
 	public List<JanewayTabModel> getTabs() {
 		return tabs;
+	}
+
+	/*
+	 * If we're on OS X
+	 * 
+	 * @return If we're using a mac.
+	 */
+	public static boolean isOnMac() {
+		final String osName = System.getProperty("os.name").toLowerCase();
+		return osName.startsWith("mac os x");
 	}
 }

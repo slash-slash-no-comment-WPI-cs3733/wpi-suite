@@ -40,7 +40,6 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 /**
@@ -61,13 +60,16 @@ public class DropAreaPanel extends JPanel {
 	private Map<Component, Point> compCenters;
 	private DropAreaSaveListener listener;
 
-	private Map<Component, Rectangle> drawnBounds; // store animated panel
-													// bounds
+	private final Map<Component, Rectangle> drawnBounds; // store animated panel
+	// bounds
 
-	private Timer animTimer; // Timer for animating while dragging
+	private final Timer animTimer; // Timer for animating while dragging
 
 	/**
 	 * Creates a DropAreaPanel and creates its handlers
+	 * 
+	 * @param flavor
+	 *            The type of data that will be dropped in this panel
 	 */
 	public DropAreaPanel(DataFlavor flavor) {
 		this.setTransferHandler(new DDTransferHandler());
@@ -99,7 +101,7 @@ public class DropAreaPanel extends JPanel {
 			placeholder.getParent().remove(placeholder);
 		}
 
-		Image image = new BufferedImage(size.width, size.height,
+		final Image image = new BufferedImage(size.width, size.height,
 				BufferedImage.TYPE_INT_ARGB);
 		placeholder = new JLabel(new ImageIcon(image));
 		// Create border with color, thickness, length, spacing, rounded
@@ -122,7 +124,7 @@ public class DropAreaPanel extends JPanel {
 
 		// If transferredPanel is lower by index in the same stage, lower the
 		// index by 1
-		int oldIndex = getComponentIndex(transferredPanel);
+		final int oldIndex = getComponentIndex(transferredPanel);
 		if (oldIndex != -1 && oldIndex < newIndex) {
 			newIndex--;
 		}
@@ -186,7 +188,6 @@ public class DropAreaPanel extends JPanel {
 	 *            Where the placeholder is to be placed.
 	 */
 	private void setPlaceholderIndex(int index) {
-		// index = Math.min(index, this.getComponentCount() - 1);
 		System.out.println("Adding placeholder at " + index);
 		this.add(placeholder, index);
 		if (index != lastIndex) {
@@ -244,7 +245,7 @@ public class DropAreaPanel extends JPanel {
 		int index = getComponentIndex(closest);
 
 		// pretend placeholder is not there when picking drop index
-		int placeholderIndex = getComponentIndex(placeholder);
+		final int placeholderIndex = getComponentIndex(placeholder);
 		if (placeholderIndex != -1 && placeholderIndex < index) {
 			index--;
 		}
@@ -253,7 +254,7 @@ public class DropAreaPanel extends JPanel {
 
 		// Determine layout axis
 		boolean vertical;
-		LayoutManager mgr = getLayout();
+		final LayoutManager mgr = getLayout();
 		if (mgr instanceof BoxLayout) {
 			vertical = ((BoxLayout) mgr).getAxis() == BoxLayout.Y_AXIS;
 		} else {
@@ -301,7 +302,7 @@ public class DropAreaPanel extends JPanel {
 
 		boolean changed = false;
 
-		List<Component> components = Arrays.asList(getComponents());
+		final List<Component> components = Arrays.asList(getComponents());
 
 		// For each component, add it to drawnBounds if it's not there and it is
 		// visible
@@ -311,7 +312,8 @@ public class DropAreaPanel extends JPanel {
 			}
 		}
 
-		Set<Component> drawnComps = new HashSet<Component>(drawnBounds.keySet());
+		final Set<Component> drawnComps = new HashSet<Component>(
+				drawnBounds.keySet());
 		// Update each drawn bound
 		for (Component comp : drawnComps) {
 			Rectangle drawn = drawnBounds.get(comp);
@@ -346,7 +348,7 @@ public class DropAreaPanel extends JPanel {
 	 */
 	@Override
 	public synchronized void paintChildren(Graphics g) {
-		List<Rectangle> layoutBounds = new ArrayList<Rectangle>();
+		final List<Rectangle> layoutBounds = new ArrayList<Rectangle>();
 		for (Component comp : getComponents()) {
 			layoutBounds.add(comp.getBounds());
 			if (drawnBounds.containsKey(comp)) {
@@ -375,9 +377,17 @@ public class DropAreaPanel extends JPanel {
  */
 class DropAreaListener implements DropTargetListener {
 
-	private DropAreaPanel panel;
-	private DataFlavor flavor;
+	private final DropAreaPanel panel;
+	private final DataFlavor flavor;
 
+	/**
+	 * Constructor for a controller for drop areas
+	 *
+	 * @param panel
+	 *            The panel where items can be dropped
+	 * @param flavor
+	 *            The flavor of data allowed to be dropped on panel
+	 */
 	DropAreaListener(DropAreaPanel panel, DataFlavor flavor) {
 		this.panel = panel;
 		this.flavor = flavor;
@@ -393,8 +403,8 @@ class DropAreaListener implements DropTargetListener {
 
 		System.out.println("Dropping");
 
-		Transferable trans = e.getTransferable();
-		JPanel transferredPanel;
+		final Transferable trans = e.getTransferable();
+		final JPanel transferredPanel;
 		if (trans.isDataFlavorSupported(flavor)) {
 			try {
 				transferredPanel = (JPanel) trans.getTransferData(flavor);
@@ -443,8 +453,8 @@ class DropAreaListener implements DropTargetListener {
 		System.out.println("Drop area drag over");
 
 		// Getting placeholder's size & making sure it's supported
-		Transferable trans = e.getTransferable();
-		JPanel transferredPanel;
+		final Transferable trans = e.getTransferable();
+		final JPanel transferredPanel;
 		if (trans.isDataFlavorSupported(flavor)) {
 			try {
 				transferredPanel = (JPanel) trans.getTransferData(flavor);
@@ -481,46 +491,5 @@ class DropAreaListener implements DropTargetListener {
 	@Override
 	public void dropActionChanged(DropTargetDragEvent e) {
 
-	}
-
-	/**
-	 * Convert DropTargetDropEvent to the coordinate system of a different
-	 * component
-	 *
-	 * @param comp
-	 *            target component to convert coordinates to
-	 * @param e
-	 *            event to convert
-	 * @return converted event
-	 */
-	public DropTargetDropEvent convertCoords(Component comp,
-			DropTargetDropEvent e) {
-		Point newPoint = SwingUtilities.convertPoint(e.getDropTargetContext()
-				.getComponent(), e.getLocation(), comp);
-		DropTargetDropEvent newE = new DropTargetDropEvent(
-				e.getDropTargetContext(), newPoint, e.getDropAction(),
-				e.getSourceActions());
-		return newE;
-	}
-
-	/**
-	 * Convert DropTargetDragEvent to the coordinate system of a different
-	 * component
-	 *
-	 * @param comp
-	 *            target component to convert coordinates to
-	 * @param e
-	 *            event to convert
-	 * @return converted event
-	 */
-	public DropTargetDragEvent convertCoords(Component comp,
-			DropTargetDragEvent e) {
-
-		Point newPoint = SwingUtilities.convertPoint(e.getDropTargetContext()
-				.getComponent(), e.getLocation(), comp);
-		DropTargetDragEvent newE = new DropTargetDragEvent(
-				e.getDropTargetContext(), newPoint, e.getDropAction(),
-				e.getSourceActions());
-		return newE;
 	}
 }

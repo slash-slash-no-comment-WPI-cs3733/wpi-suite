@@ -17,6 +17,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import net.miginfocom.swing.MigLayout;
+import taskManager.controller.ActivityController;
 import taskManager.model.ActivityModel;
 
 /**
@@ -24,36 +25,50 @@ import taskManager.model.ActivityModel;
  * submit button, and a cancel button.
  *
  * @author Samee Swartz
- * @version Dec 9, 2014
+ * @author Clark Jacobsohn
+ * @version Dec 9, 201
  */
 public class ActivityPanel extends JPanel {
 
 	private static final long serialVersionUID = -8384336474859145673L;
 
-	private static final String SUBMIT = "submit";
-	private static final String CANCEL = "cancel";
+	JPanel activities;
 
 	private JTextArea commentBox;
 	private JButton submit;
-	private JButton cancel;
 
 	public enum Type {
 		COMMENTS, ALL;
 	}
 
-	public ActivityPanel(Type type, List<ActivityModel> activityList) {
+	private Type type;
+
+	/**
+	 * Constructs an ActivityPanel with the given type, list of activities, and
+	 * activity controller.
+	 * 
+	 * @param type
+	 *            The type of the activity panel, either COMMENTS or ALL
+	 * @param activityList
+	 *            The list of activities to show in the panel
+	 * @param controller
+	 *            The ActivityController that controls this panel
+	 */
+	public ActivityPanel(Type type, List<ActivityModel> activityList,
+			ActivityController controller) {
+		this.type = type;
 		// this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setLayout(new MigLayout("wrap 1", "[grow, fill]",
 				"[grow, fill][][]"));
 		this.setOpaque(false);
 
 		// Create list of activities
-		JPanel activities = new JPanel();
+		activities = new JPanel();
 		activities.setLayout(new MigLayout("wrap 1", "0[grow, fill]0", "0[]"));
 		if (!(activityList == null)) {
 			for (ActivityModel a : activityList) {
 				if ((type == Type.COMMENTS)
-						&& (a.getType() == ActivityModel.activityModelType.COMMENT)) {
+						&& (a.getType() == ActivityModel.ActivityModelType.COMMENT)) {
 					activities.add(new ActivityView(a));
 				} else if (type == Type.ALL) {
 					activities.add(new ActivityView(a));
@@ -71,6 +86,8 @@ public class ActivityPanel extends JPanel {
 		commentBox.setRows(5);
 		commentBox.setWrapStyleWord(true);
 		commentBox.setLineWrap(true);
+		commentBox.addKeyListener(controller);
+
 		JScrollPane commentScroll = new JScrollPane(commentBox,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -80,25 +97,73 @@ public class ActivityPanel extends JPanel {
 		JPanel buttons = new JPanel();
 		buttons.setOpaque(false);
 		submit = new JButton("Submit");
-		submit.setName(SUBMIT);
-		cancel = new JButton("Cancel");
-		submit.setName(CANCEL);
+		submit.setName(ActivityController.SUBMIT);
+		submit.addActionListener(controller);
+		submit.setEnabled(false);
 		buttons.add(submit);
-		buttons.add(cancel);
 		buttons.setMaximumSize(new Dimension(10000, 40));
-
-		if (type.equals(Type.ALL)) {
-			disableEditing();
-		}
 
 		add(activityScroll);
 		add(commentScroll);
 		add(buttons);
+
+		if (type == Type.ALL) {
+			disableEditing();
+		}
 	}
 
-	public void disableEditing() {
-		commentBox.setEnabled(false);
+	/**
+	 * Reloads the activities panel with the list of activities given.
+	 * 
+	 * @param activityList
+	 *            The list of activities to show in the panel
+	 */
+	public void reloadActivities(List<ActivityModel> activityList) {
+		activities.removeAll();
+		if (!(activityList == null)) {
+			for (ActivityModel a : activityList) {
+				if ((type == Type.COMMENTS)
+						&& (a.getType() == ActivityModel.ActivityModelType.COMMENT)) {
+					activities.add(new ActivityView(a));
+				} else if (type == Type.ALL) {
+					activities.add(new ActivityView(a));
+				}
+			}
+		}
+		this.repaint();
+	}
+
+	/**
+	 * Disables editing of comments
+	 */
+	private void disableEditing() {
+		commentBox.setEditable(false);
 		submit.setEnabled(false);
-		cancel.setEnabled(false);
+	}
+
+	/**
+	 * Sets the comment submit button to be enabled or disabled.
+	 * 
+	 * @param e
+	 *            true to make the submit button enabled, false to disable it
+	 */
+	public void setCommentSubmitEnabled(boolean e) {
+		submit.setEnabled(e);
+	}
+
+	/**
+	 * Returns the text in the comments field.
+	 * 
+	 * @return The text in the comments field
+	 */
+	public String getCommentsFieldText() {
+		return commentBox.getText();
+	}
+
+	/**
+	 * Clears the text in the comments field.
+	 */
+	public void clearText() {
+		commentBox.setText("");
 	}
 }

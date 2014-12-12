@@ -22,6 +22,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import taskManager.ClientDataStore;
+import taskManager.TaskManager;
 import taskManager.MockNetwork;
 import edu.wpi.cs.wpisuitetng.exceptions.WPISuiteException;
 import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
@@ -43,8 +44,11 @@ public class WorkflowModelTest {
 
 	@Before
 	public void setup() {
+		TaskManager.reset();
+
 		wm = WorkflowModel.getInstance();
-		wm.makeIdenticalTo(new WorkflowModel("Workflow"));
+		wm.reset();
+
 		sm1 = new StageModel("Stage1");
 		sm2 = new StageModel("Stage2");
 	}
@@ -168,8 +172,7 @@ public class WorkflowModelTest {
 
 	@Test
 	public void testWorkflow() throws WPISuiteException {
-		WorkflowModel wm = WorkflowModel.getInstance();
-		wm.makeIdenticalTo(new WorkflowModel());
+
 		ClientDataStore db = ClientDataStore.getDataStore();
 
 		assertTrue(db.retrieve(WorkflowModel.class, "id", wm.getID()).isEmpty());

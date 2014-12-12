@@ -27,9 +27,6 @@ public class Colors {
 	public static Color SHADOW_COLOR = Color.BLACK;
 	public static Color STAGE = Color.decode("#C8DDF1");
 	public static Color ACTIVITY = Color.decode("#FCFCFC");
-
-	public Colors() {
-
-	}
+	public static Color INPUT_ERROR = Color.decode("#FCFCFC");
 
 }

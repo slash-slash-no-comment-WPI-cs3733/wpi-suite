@@ -14,6 +14,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import taskManager.TaskManager;
+
 /**
  * Description
  *
@@ -29,8 +31,10 @@ public class TestAbstractJsonableModel {
 	@Before
 	public void setUp() {
 
+		TaskManager.reset();
+
 		wm = WorkflowModel.getInstance();
-		wm.makeIdenticalTo(new WorkflowModel("T"));
+
 		sm1 = new StageModel("T");
 		sm2 = new StageModel("T2");
 		tm1 = new TaskModel("T", sm1);
