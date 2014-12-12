@@ -97,12 +97,8 @@ public class TaskController implements MouseListener {
 		model.setArchived(bool);
 	}
 
-	public double getAngle() {
-		return model.getAngle();
-	}
-
-	public void setAngle(double d) {
-		model.setAngle(d);
+	public String getID() {
+		return model.getID();
 	}
 
 	/**

@@ -16,6 +16,8 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
+import java.util.HashMap;
+import java.util.Map;
 
 import taskManager.view.RotationView;
 
@@ -29,6 +31,7 @@ public class RotationController implements MouseListener, MouseMotionListener {
 	private RotationView view;
 	private TaskController listener = null;
 	private MouseAdapter dragListener = null;
+	private static Map<String, Double> taskAngles = new HashMap<String, Double>();
 
 	public RotationController(RotationView view) {
 		this.view = view;
@@ -37,8 +40,12 @@ public class RotationController implements MouseListener, MouseMotionListener {
 
 	public void setListener(TaskController listener) {
 		this.listener = listener;
-		// view.setAngle(listener.getAngle());
-		// view.setAngle(Math.random() * Math.PI);
+		Double angle = taskAngles.get(listener.getID());
+		if (angle != null) {
+			view.setAngle(angle);
+		} else {
+			taskAngles.put(listener.getID(), view.getAngle());
+		}
 	}
 
 	@Override
