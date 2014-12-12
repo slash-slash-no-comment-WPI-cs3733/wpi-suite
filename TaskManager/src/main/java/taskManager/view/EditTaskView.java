@@ -44,7 +44,7 @@ import org.jdesktop.swingx.JXDatePicker;
 import taskManager.controller.EditTaskController;
 import taskManager.controller.TaskInputController;
 import taskManager.model.ActivityModel;
-import taskManager.model.ActivityModel.activityModelType;
+import taskManager.model.ActivityModel.ActivityModelType;
 
 /**
  *  Edit panel for a new task
@@ -834,7 +834,7 @@ public class EditTaskView extends JScrollPane {
 	 */
 	public ActivityModel addComment() {
 		final ActivityModel act = new ActivityModel(commentsField.getText(),
-				activityModelType.COMMENT);
+				ActivityModelType.COMMENT);
 		activities.add(act);
 		commentsField.setText("");
 		reloadActivitiesPanel();

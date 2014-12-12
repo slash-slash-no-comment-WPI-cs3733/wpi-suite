@@ -41,8 +41,9 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-import taskManager.JanewayModule;
+import taskManager.TaskManager;
 import taskManager.model.ActivityModel;
+import taskManager.model.ActivityModel.ActivityModelType;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
@@ -174,7 +175,7 @@ public class ReportsManager implements ActionListener, ChangeListener,
 			// stage, this MOVE event must actually be a completion event.
 			for (int i = task.getActivities().size() - 1; i >= 0; i--) {
 				ActivityModel activity = task.getActivities().get(i);
-				if (activity.getType() == ActivityModel.activityModelType.MOVE) {
+				if (activity.getType() == ActivityModelType.MOVE) {
 					foundMoveEvent = true;
 
 					completed = Instant.ofEpochMilli(setToEST(
@@ -373,7 +374,7 @@ public class ReportsManager implements ActionListener, ChangeListener,
 	 */
 	private void reloadUsers() {
 		ArrayList<String> projectUserNames = new ArrayList<String>();
-		for (User u : JanewayModule.users) {
+		for (User u : TaskManager.users) {
 			String name = u.getUsername();
 			if (!projectUserNames.contains(name)) {
 				projectUserNames.add(name);
