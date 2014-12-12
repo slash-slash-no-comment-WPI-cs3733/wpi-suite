@@ -17,7 +17,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.NoninvertibleTransformException;
 import java.awt.geom.Point2D;
 
-import taskManager.draganddrop.DraggablePanelListener;
 import taskManager.view.RotationView;
 
 /**
@@ -33,7 +32,7 @@ public class RotationController implements MouseListener, MouseMotionListener {
 
 	public RotationController(RotationView view) {
 		this.view = view;
-		dragListener = new DraggablePanelListener(view);
+		// dragListener = new DraggablePanelListener(view);
 	}
 
 	public void setListener(TaskController listener) {
@@ -63,7 +62,7 @@ public class RotationController implements MouseListener, MouseMotionListener {
 	public void mousePressed(MouseEvent arg0) {
 		if (listener != null && checkBounds(arg0)) {
 			listener.mousePressed(arg0);
-			dragListener.mousePressed(arg0);
+			// dragListener.mousePressed(arg0);
 		}
 	}
 
@@ -77,7 +76,7 @@ public class RotationController implements MouseListener, MouseMotionListener {
 	private boolean checkBounds(MouseEvent e) {
 		int panelX = view.getPanel().getWidth();
 		int panelY = view.getPanel().getHeight();
-		Point2D tp = getPoint(e);
+		Point2D tp = calculatePoint(e);
 		Rectangle panelArea = new Rectangle(panelX, panelY);
 		if (panelArea.contains(tp)) {
 			return true;
@@ -85,7 +84,7 @@ public class RotationController implements MouseListener, MouseMotionListener {
 		return false;
 	}
 
-	private Point2D getPoint(MouseEvent e) {
+	private Point2D calculatePoint(MouseEvent e) {
 		int panelX = view.getPanel().getWidth();
 		int panelY = view.getPanel().getHeight();
 		AffineTransform transform = new AffineTransform();
@@ -104,7 +103,7 @@ public class RotationController implements MouseListener, MouseMotionListener {
 
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
-		if (listener != null && checkBounds(arg0)) {
+		if (dragListener != null && checkBounds(arg0)) {
 			dragListener.mouseDragged(arg0);
 		}
 	}

@@ -487,6 +487,7 @@ class DropAreaListener implements DropTargetListener {
 	@Override
 	public void dragEnter(DropTargetDragEvent e) {
 		// Treat start of drag the same as the rest of the drag
+		System.out.println("starting drag");
 		dragOver(e);
 	}
 

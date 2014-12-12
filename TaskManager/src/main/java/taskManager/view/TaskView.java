@@ -183,7 +183,7 @@ public class TaskView extends JPanel implements Transferable {
 
 		// setTransferHandler creates DropTarget by default; we don't want tasks
 		// to respond to drops
-		setDropTarget(null);
+		// setDropTarget(null);
 
 	}
 
@@ -201,8 +201,8 @@ public class TaskView extends JPanel implements Transferable {
 	public void setController(TaskController controller) {
 		this.controller = controller;
 		rotationView.setListener(controller);
-		addMouseListener(rotationView.getController());
-		addMouseMotionListener(rotationView.getController());
+		// addMouseListener(rotationView.getController());
+		// addMouseMotionListener(rotationView.getController());
 	}
 
 	@Override

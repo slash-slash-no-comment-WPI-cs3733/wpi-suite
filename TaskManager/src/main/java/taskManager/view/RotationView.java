@@ -14,13 +14,14 @@ import java.awt.Graphics2D;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
+import java.awt.event.MouseAdapter;
 
 import javax.swing.JPanel;
 
 import taskManager.controller.RotationController;
 import taskManager.controller.TaskController;
 import taskManager.draganddrop.DDTransferHandler;
+import taskManager.draganddrop.DraggablePanelListener;
 
 /**
  * Description
@@ -50,11 +51,12 @@ public class RotationView extends JPanel implements Transferable {
 		addMouseListener(controller);
 		addMouseMotionListener(controller);
 
-		// final MouseAdapter listener = new DraggablePanelListener(this);
-		// addMouseListener(listener);
-		// addMouseMotionListener(listener);
+		final MouseAdapter listener = new DraggablePanelListener(this);
+		addMouseListener(listener);
+		addMouseMotionListener(listener);
 
 		setTransferHandler(new DDTransferHandler());
+		setDropTarget(null);
 	}
 
 	public void setListener(TaskController listener) {
@@ -104,19 +106,36 @@ public class RotationView extends JPanel implements Transferable {
 		return controller;
 	}
 
+	/*
+	 * @see
+	 * java.awt.datatransfer.Transferable#getTransferData(java.awt.datatransfer
+	 * .DataFlavor)
+	 */
 	@Override
-	public Object getTransferData(DataFlavor arg0)
-			throws UnsupportedFlavorException, IOException {
-		return ((Transferable) panel).getTransferData(arg0);
+	public Object getTransferData(DataFlavor flavor)
+			throws UnsupportedFlavorException {
+		if (!flavor.equals(DDTransferHandler.getTaskFlavor())) {
+			throw new UnsupportedFlavorException(flavor);
+		}
+		// return this panel as the transfer data
+		return this;
 	}
 
+	/*
+	 * @see java.awt.datatransfer.Transferable#getTransferDataFlavors()
+	 */
 	@Override
 	public DataFlavor[] getTransferDataFlavors() {
-		return ((Transferable) panel).getTransferDataFlavors();
+		final DataFlavor[] flavors = { DDTransferHandler.getTaskFlavor() };
+		return flavors;
 	}
 
+	/*
+	 * @see java.awt.datatransfer.Transferable#isDataFlavorSupported(java.awt.
+	 * datatransfer.DataFlavor)
+	 */
 	@Override
-	public boolean isDataFlavorSupported(DataFlavor arg0) {
-		return ((Transferable) panel).isDataFlavorSupported(arg0);
+	public boolean isDataFlavorSupported(DataFlavor flavor) {
+		return flavor.equals(DDTransferHandler.getTaskFlavor());
 	}
 }
