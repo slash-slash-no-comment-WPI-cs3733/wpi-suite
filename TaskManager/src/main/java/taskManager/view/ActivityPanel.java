@@ -68,7 +68,7 @@ public class ActivityPanel extends JPanel {
 		if (!(activityList == null)) {
 			for (ActivityModel a : activityList) {
 				if ((type == Type.COMMENTS)
-						&& (a.getType() == ActivityModel.activityModelType.COMMENT)) {
+						&& (a.getType() == ActivityModel.ActivityModelType.COMMENT)) {
 					activities.add(new ActivityView(a));
 				} else if (type == Type.ALL) {
 					activities.add(new ActivityView(a));
@@ -123,7 +123,7 @@ public class ActivityPanel extends JPanel {
 		if (!(activityList == null)) {
 			for (ActivityModel a : activityList) {
 				if ((type == Type.COMMENTS)
-						&& (a.getType() == ActivityModel.activityModelType.COMMENT)) {
+						&& (a.getType() == ActivityModel.ActivityModelType.COMMENT)) {
 					activities.add(new ActivityView(a));
 				} else if (type == Type.ALL) {
 					activities.add(new ActivityView(a));

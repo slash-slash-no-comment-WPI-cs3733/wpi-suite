@@ -18,7 +18,7 @@ import java.util.List;
 import javax.swing.JButton;
 
 import taskManager.model.ActivityModel;
-import taskManager.model.ActivityModel.activityModelType;
+import taskManager.model.ActivityModel.ActivityModelType;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.ActivityPanel;
@@ -137,7 +137,7 @@ public class ActivityController implements ActionListener, KeyListener {
 	public void actionPerformed(ActionEvent e) {
 		if (((JButton) e.getSource()).getName().equals(SUBMIT)) {
 			ActivityModel comment = new ActivityModel(getCommentsFieldText(),
-					activityModelType.COMMENT);
+					ActivityModelType.COMMENT);
 			// add the activity
 			addActivity(comment);
 			commentsPanel.clearText();
