@@ -30,6 +30,7 @@ import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
 import taskManager.view.TaskInfoPreviewView;
 import taskManager.view.WorkflowView;
+import taskManager.controller.TaskFilter;
 
 /**
  * A controller for the workflow view
@@ -80,7 +81,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 			@Override
 			public void ancestorMoved(AncestorEvent event) {
 			}
-
+			
 			@Override
 			public void ancestorAdded(AncestorEvent event) {
 				if (SwingUtilities.getWindowAncestor(view) != null) {
@@ -97,6 +98,11 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 			}
 		});
 	}
+	
+	public void searchTask(){
+		TaskFilter searchTaskTitle = new TaskFilter();
+		searchTaskTitle.setString(view.getSearch().toString());
+	}
 
 	/**
 	 * Reloads all the data on the view to match the data in the model
@@ -105,7 +111,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	public synchronized void reloadData() {
 		reloadData(new TaskFilter());
 	}
-
+	
 	public synchronized void reloadData(TaskFilter filter) {
 		// clear the stages previously on the view
 		this.removeChangeTitles();
@@ -176,7 +182,8 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	public WorkflowModel getModel() {
 		return model;
 	}
-
+	
+	
 	@Override
 	public void saveDrop(JPanel panel, int index) {
 		// Make sure we cast safely
