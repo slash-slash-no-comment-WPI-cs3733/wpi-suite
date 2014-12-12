@@ -164,6 +164,7 @@ public class ToolbarView extends JToolBar {
 		funModeCheckBox.setName(FUN_MODE);
 		funModeCheckBox.addItemListener(controller);
 		funModeCheckBox.setOpaque(false);
+		funModeCheckBox.setToolTipText("Fun things are fun");
 
 		randomizeTaskAngles = new JButton("<html>Randomize Task Angles</html>");
 		randomizeTaskAngles.setName(TASK_ANGLES);

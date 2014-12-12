@@ -73,6 +73,7 @@ public class TestStageController extends ScreenshotOnFail {
 		fixture.button(ToolbarView.CREATE_STAGE).click();
 		fixture.textBox(StageView.TEXT_LABEL).enterText("test");
 		fixture.button(StageView.CHECK).click();
+		fixture.robot.waitForIdle();
 
 		// make sure the stage got added
 		assertNotNull(WorkflowModel.getInstance().findStageByName("test"));

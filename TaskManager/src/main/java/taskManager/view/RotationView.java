@@ -43,6 +43,7 @@ public class RotationView extends JPanel implements Transferable {
 	 */
 	public RotationView(JPanel panel) {
 		this.panel = panel;
+		setName("rotation - " + panel.getName());
 		add(panel);
 		int height = (int) (Math.abs(215 * Math.sin(angle)) + Math
 				.abs(62 * Math.cos(angle)));
