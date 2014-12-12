@@ -8,7 +8,7 @@
  *******************************************************************************/
 package taskManager.model;
 
-import taskManager.JanewayModule;
+import taskManager.TaskManager;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.network.models.IRequest;
 import edu.wpi.cs.wpisuitetng.network.models.ResponseModel;
@@ -29,7 +29,7 @@ public class GetUsersObserver extends GenericRequestObserver {
 		final String body = response.getBody();
 		System.out.println("Response:" + body);
 
-		JanewayModule.users = AbstractJsonableModel
+		TaskManager.users = AbstractJsonableModel
 				.fromJson(body, User[].class);
 
 		// restart the connection
