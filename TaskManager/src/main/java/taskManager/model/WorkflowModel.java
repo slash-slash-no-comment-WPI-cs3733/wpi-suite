@@ -261,9 +261,38 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 * @param workflow
 	 *            The workflow to copy
 	 */
-	public void makeIdenticalTo(WorkflowModel workflow) {
-		setID(workflow.getID());
-		stageList = workflow.getStages();
+	public void makeIdenticalTo(WorkflowModel incomingWorkflow) {
+		setID(incomingWorkflow.getID());
+		final List<StageModel> localStages = stageList;
+		final List<StageModel> incomingStages = incomingWorkflow.getStages();
+		boolean stageWasUsed[] = new boolean[localStages.size()];
+		List<StageModel> toSaveStages = new ArrayList<StageModel>();
+		for (StageModel incomingStage : incomingStages) {
+			StageModel toSaveStage = this.findStageByName(incomingStage
+					.getName());
+			if (toSaveStage != null) {
+				toSaveStages.add(toSaveStage);
+				stageWasUsed[localStages.indexOf(toSaveStage)] = true;
+			} else {
+				toSaveStages.add(incomingStage);
+			}
+		}
+		stageList = toSaveStages; // This does not change localStages
+		for (int i = localStages.size() - 1; i >= 0; i--) {
+			if (!stageWasUsed[i]) {
+				// Delete any stages that are no longer in the stage list.
+				try {
+					localStages.get(i).delete();
+				} catch (NullPointerException e) {
+					// TODO: This gets thrown during tests fairly often.
+					if (!e.getMessage().equals(
+							"The networkConfiguration must not be null.")) {
+						throw new NullPointerException(e.getMessage());
+					}
+				}
+			}
+		}
+		System.out.println(stageList.size());
 	}
 
 	/**

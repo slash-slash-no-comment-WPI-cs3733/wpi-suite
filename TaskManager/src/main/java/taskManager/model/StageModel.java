@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import taskManager.model.ActivityModel.ActivityModelType;
 import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
 import edu.wpi.cs.wpisuitetng.network.Network;
 import edu.wpi.cs.wpisuitetng.network.Request;
@@ -259,7 +260,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 * @return whether the stage changed as a result
 	 */
 	public boolean addTask(TaskModel task, int index) {
-		if (index == -1 || index > taskList.size()) {// add to end of list
+		if (index == -1 || index > taskList.size()) { // add to end of list
 			index = taskList.size();
 		}
 
@@ -281,12 +282,10 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 				// since this is a move, add relevant activity
 				final ActivityModel movedTask = new ActivityModel("Moved task "
 						+ task.getName() + " from stage " + oldStage.getName()
-						+ " to stage " + name + ".",
-						ActivityModel.ActivityModelType.MOVE);
+						+ " to stage " + name + ".", ActivityModelType.MOVE);
 				task.addActivity(movedTask);
 			}
 		}
-
 		taskList.add(index, task);
 		task.setStage(this);
 
@@ -311,14 +310,43 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 
 	/**
 	 * Changes this stagemodel to be identical to the inputted stage model,
-	 * while maintaining the pointer
+	 * while maintaining the pointer. Note: If a task is moved, we will delete
+	 * it from one stage and create it in the other. This simplifies
+	 * workflow-task interaction.
 	 *
 	 * @param stage
 	 *            The stage to copy
 	 */
-	public void makeIdenticalTo(StageModel stage) {
-		setID(stage.getID());
-		name = stage.getName();
+	public void makeIdenticalTo(StageModel incomingStage) {
+		setID(incomingStage.getID());
+		final List<TaskModel> localTasks = taskList;
+		final List<TaskModel> incomingTasks = incomingStage.getTasks();
+		boolean taskWasUsed[] = new boolean[localTasks.size()];
+		List<TaskModel> toSaveTasks = new ArrayList<TaskModel>();
+		for (TaskModel incomingTask : incomingTasks) {
+			TaskModel toSaveTask = this.findTaskByID(incomingTask.getID());
+			if (toSaveTask != null) {
+				toSaveTasks.add(toSaveTask);
+				taskWasUsed[localTasks.indexOf(toSaveTask)] = true;
+			} else {
+				toSaveTasks.add(incomingTask);
+			}
+		}
+		taskList = toSaveTasks; // This does not change localTasks
+		for (int i = taskWasUsed.length - 1; i >= 0; i--) {
+			if (!taskWasUsed[i]) {
+				// Delete any tasks that are no longer in the task list.
+				try {
+					localTasks.get(i).delete();
+				} catch (NullPointerException e) {
+					// TODO: This gets thrown during tests fairly often.
+					if (!e.getMessage().equals(
+							"The networkConfiguration must not be null.")) {
+						throw new NullPointerException(e.getMessage());
+					}
+				}
+			}
+		}
 	}
 
 	@Override
