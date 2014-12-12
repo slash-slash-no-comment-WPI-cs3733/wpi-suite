@@ -409,8 +409,9 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 *
 	 * @param task
 	 *            The task to copy
+	 * @return
 	 */
-	public void makeIdenticalTo(TaskModel task) {
+	public Set<Object> makeIdenticalTo(TaskModel task) {
 		setID(task.getID());
 		name = task.getName();
 		isArchived = task.isArchived();
@@ -422,6 +423,8 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		actualEffort = task.getActualEffort();
 		activities = task.getActivities();
 		reqID = task.getReqID();
+
+		return new HashSet<Object>();
 	}
 
 	@Override

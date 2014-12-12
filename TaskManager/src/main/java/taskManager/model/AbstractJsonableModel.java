@@ -8,6 +8,8 @@
  *******************************************************************************/
 package taskManager.model;
 
+import java.util.Set;
+
 import com.google.gson.Gson;
 
 import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
@@ -72,8 +74,9 @@ public abstract class AbstractJsonableModel<T> extends AbstractModel {
 	 * Sets fields to match passed model Should call setID(model.getID());
 	 *
 	 * @param model
+	 * @return set of objects that can be safely deleted
 	 */
-	protected abstract void makeIdenticalTo(T model);
+	protected abstract Set<Object> makeIdenticalTo(T model);
 
 	/**
 	 * Static method for handling all json deserialization

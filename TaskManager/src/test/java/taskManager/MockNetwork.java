@@ -8,6 +8,19 @@
  *******************************************************************************/
 package taskManager;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import taskManager.model.GenericEntityManager;
+import taskManager.model.StageModel;
+import taskManager.model.TaskModel;
+import taskManager.model.WorkflowModel;
+import edu.wpi.cs.wpisuitetng.Session;
+import edu.wpi.cs.wpisuitetng.modules.EntityManager;
+import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
+import edu.wpi.cs.wpisuitetng.modules.core.models.User;
+import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementEntityManager;
+import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.iterations.IterationEntityManager;
 import edu.wpi.cs.wpisuitetng.network.Network;
 import edu.wpi.cs.wpisuitetng.network.Request;
 import edu.wpi.cs.wpisuitetng.network.configuration.NetworkConfiguration;
@@ -21,14 +34,41 @@ import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
  */
 public class MockNetwork extends Network {
 
+	public static Map<String, EntityManager> entityManagers;
+	public static Session session;
+
 	/**
 	 * Reset MockData when creating a new MockNetwork
 	 *
 	 */
 	public MockNetwork() {
 		super();
+		// Clean and init database
 		ClientDataStore.deleteDataStore();
-		ClientDataStore.getDataStore();
+		ClientDataStore data = ClientDataStore.getDataStore();
+
+		// setup EntityManager map
+		entityManagers = new HashMap<String, EntityManager>();
+		entityManagers.put("taskmanager" + "task",
+				new GenericEntityManager<TaskModel>(data, TaskModel.class));
+		entityManagers.put("taskmanager" + "stage",
+				new GenericEntityManager<StageModel>(data, StageModel.class));
+		entityManagers.put("taskmanager" + "workflow",
+				new GenericEntityManager<WorkflowModel>(data,
+						WorkflowModel.class));
+		entityManagers.put("requirementmanager" + "iteration",
+				new IterationEntityManager(data));
+		entityManagers.put("requirementmanager" + "requirement",
+				new RequirementEntityManager(data));
+
+		data.enableRecursiveDelete(WorkflowModel.class);
+		data.enableRecursiveDelete(StageModel.class);
+		data.enableRecursiveDelete(TaskModel.class);
+
+		// Init session
+		User user = new User("MockUser", "mockuser", "MockPassword", 99);
+		Project project = new Project("MockProject", "MockProjectID");
+		session = new Session(user, project, "MockSSID");
 	}
 
 	/**

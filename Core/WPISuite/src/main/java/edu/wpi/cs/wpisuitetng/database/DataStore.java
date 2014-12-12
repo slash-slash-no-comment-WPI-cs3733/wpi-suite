@@ -84,6 +84,15 @@ public class DataStore implements Data {
 	}
 
 	/**
+	 * Specify a class to enable recursive deletion on
+	 *
+	 * @param cls
+	 */
+	public <T> void enableRecursiveDelete(Class<T> cls) {
+		theDB.ext().configure().objectClass(cls).cascadeOnDelete(true);
+	}
+
+	/**
 	 * Saves a Model into the database
 	 *
 	 * @param Model
@@ -380,14 +389,14 @@ public class DataStore implements Data {
 						new JdkReflector(Thread.currentThread()
 								.getContextClassLoader()));
 
-		logger.log(Level.FINE, "Database Delete Attempt...");
+		logger.log(Level.WARNING, "Database Delete Attempt...");
 		// ObjectContainer client = server.openClient();
 		ObjectSet<T> result = theDB.queryByExample(aTNG);
 		T found = (T) result.next();
 		theDB.delete(found);
 		theDB.commit();
 
-		logger.log(Level.FINE, "Database Delete Success!");
+		logger.log(Level.WARNING, "Database Delete Success!");
 		// return "Deleted "+aTNG;
 		return found;
 	}

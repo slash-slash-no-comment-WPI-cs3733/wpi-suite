@@ -10,7 +10,9 @@
 package taskManager.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -261,9 +263,13 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 * @param workflow
 	 *            The workflow to copy
 	 */
-	public void makeIdenticalTo(WorkflowModel workflow) {
+	public Set<Object> makeIdenticalTo(WorkflowModel workflow) {
 		setID(workflow.getID());
+
+		Set<Object> toDelete = new HashSet<Object>(stageList);
 		stageList = workflow.getStages();
+
+		return toDelete;
 	}
 
 	/**
