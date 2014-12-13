@@ -439,7 +439,7 @@ public class ReportsManager implements ActionListener, ChangeListener,
 
 			} else {
 				Calendar cal = Calendar.getInstance();
-				cal.setTimeZone(TimeZone.getTimeZone("EST"));
+				cal.setTimeZone(TimeZone.getDefault());
 
 				Date startdate = rtv.getStartDate().getDate();
 				cal.setTime(startdate);
