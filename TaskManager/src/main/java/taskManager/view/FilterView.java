@@ -8,19 +8,18 @@
  *******************************************************************************/
 package taskManager.view;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.util.ArrayList;
 
-import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 
 import taskManager.controller.FilterController;
-import taskManager.model.TaskModel.TaskCategory;
 
 /**
  * the view containing the elements used for filtering tasks
@@ -30,23 +29,33 @@ import taskManager.model.TaskModel.TaskCategory;
  */
 public class FilterView extends JPanel {
 
+	private static final long serialVersionUID = 1L;
+
 	public static final Color[] CATEGORIES = new Color[] { Color.red,
-			Color.green, Color.blue, Color.yellow };
+			Color.green, Color.blue, Color.yellow, Color.decode("#FFFFFF") };
+	public static final String[] CATEGORY_NAMES = new String[] { "red",
+			"green", "blue", "yellow", "purple" };
+
+	private final String CHECK = "\u2713";
 
 	private FilterController filterC;
 
 	private JCheckBox archiveCheckBox;
 	private JCheckBox myTasksCheckBox;
-	private JLabel catLabel;
-	private JPopupMenu categories;
+	private JPanel categories;
+	private ArrayList<JLabel> labels;
+
+	private static final Dimension SIZE = new Dimension(200, 60);
 
 	public FilterView() {
 		filterC = new FilterController(this);
 
 		// adds a panel for this
 		this.setLayout(new GridLayout(2, 1));
-		this.setMaximumSize(new Dimension(180, 60));
-		this.setMinimumSize(new Dimension(180, 60));
+		this.setMaximumSize(SIZE);
+		// this.setMinimumSize(SIZE);
+		this.setPreferredSize(SIZE);
+		// this.setSize(SIZE);
 		this.setOpaque(false);
 
 		// adds a panel for the checks and the category picker
@@ -56,7 +65,8 @@ public class FilterView extends JPanel {
 		// adds a panel for my tasks and archived check boxes
 		JPanel checks = new JPanel();
 		checks.setLayout(new GridLayout(2, 1));
-		checks.setMaximumSize(new Dimension(90, 30));
+		// checks.setMaximumSize(new Dimension(90, 30));
+		checks.setMinimumSize(new Dimension(90, 30));
 		// Checkbox for toggling showing archived tasks.
 		archiveCheckBox = new JCheckBox("<html>Show archived tasks</html>");
 		archiveCheckBox.setOpaque(false);
@@ -68,50 +78,146 @@ public class FilterView extends JPanel {
 		checks.add(myTasksCheckBox);
 
 		// adds the category dropdown
-		JPanel catBox = new JPanel();
-		catLabel = new JLabel("Filter categories");
-		catLabel.setBorder(BorderFactory.createLineBorder(Color.black));
-		catLabel.addMouseListener(filterC);
-		categories = new JPopupMenu("Categories");
+		categories = new JPanel();
+		categories.setLayout(new FlowLayout());
+		labels = new ArrayList<JLabel>();
 		for (int i = 0; i < CATEGORIES.length; i++) {
-			JCheckBoxMenuItem c = new JCheckBoxMenuItem();
-			c.setName(TaskCategory.values()[i].toString());
-			c.setBackground(CATEGORIES[i]);
-			c.addItemListener(filterC);
-			categories.add(c);
+			JPanel catBox = new JPanel();
+			catBox.setLayout(new BorderLayout());
+			JLabel c = new JLabel("");
+			catBox.add(c, BorderLayout.CENTER);
+			labels.add(c);
+			catBox.setSize(20, 20);
+			catBox.setPreferredSize(new Dimension(20, 20));
+			catBox.setMinimumSize(new Dimension(20, 20));
+			catBox.setMaximumSize(new Dimension(20, 20));
+			catBox.setName(CATEGORY_NAMES[i]);
+			catBox.setBackground(CATEGORIES[i]);
+			catBox.addMouseListener(filterC);
+			categories.add(catBox);
 		}
-		categories.setSize(90, 120);
-		categories.setVisible(false);
-		catBox.add(catLabel);
-		catBox.add(categories);
+		// categories.setSize(100, 30);
+		categories.setMaximumSize(new Dimension(100, 30));
 
 		lower.add(checks);
-		lower.add(catBox);
+		lower.add(categories);
 		this.add(lower);
 	}
 
+	/**
+	 * return whether or not the "archive" checkbox is checked
+	 * 
+	 * @return true if the box is checked, false if it is not
+	 */
 	public boolean isArchiveShown() {
 		return archiveCheckBox.isSelected();
 	}
 
+	/**
+	 * return whether or not the "show my tasks" checkbox is checked
+	 * 
+	 * @return true if the box is checked, false if it is not
+	 */
 	public boolean isMyTasksShown() {
 		return myTasksCheckBox.isSelected();
 	}
 
-	public JPopupMenu getCategories() {
+	/**
+	 * get the category menu component
+	 * 
+	 * @return the category menu component
+	 */
+	public JPanel getCategories() {
 		return this.categories;
 	}
 
-	public JLabel getCategoryLabel() {
-		return this.catLabel;
+	/**
+	 * returns the category color box of the given color name
+	 * 
+	 * @param name
+	 *            the name of the color
+	 * @return the category box of the given color name
+	 */
+	public JPanel getCatBox(String name) {
+		JPanel label = new JPanel();
+		for (int i = 0; i < this.getCategories().getComponents().length; i++) {
+			if (name.equals(getCategories().getComponents()[i])) {
+				label = (JPanel) getCategories().getComponents()[i];
+			}
+		}
+		return label;
 	}
 
+	/**
+	 * returns the category color box of the given color name
+	 * 
+	 * @param name
+	 *            the name of the color
+	 * @return the category box of the given color name
+	 */
+	public boolean catBoxIsChecked(String name) {
+		for (int i = 0; i < this.getCategories().getComponents().length; i++) {
+			if (name.equals(getCategories().getComponents()[i].getName())) {
+				JPanel catBox = (JPanel) getCategories().getComponents()[i];
+				JLabel label = (JLabel) catBox.getComponent(0);
+				if (label.getText().equals(CHECK)) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * set the given color box to either have a check or not
+	 * 
+	 * @param checked
+	 *            whether or not it should be checked
+	 * @param name
+	 *            the name of color of the desired color box
+	 */
+	public void checkCatBox(boolean checked, String name) {
+		JLabel label = new JLabel();
+		for (int i = 0; i < CATEGORIES.length; i++) {
+			if (name.equals(CATEGORY_NAMES[i])) {
+				label = labels.get(i);
+			}
+		}
+		if (checked) {
+			label.setText(CHECK);
+		} else {
+			label.setText("");
+		}
+		categories.repaint();
+	}
+
+	/**
+	 * get the "show archive tasks" checkbox component
+	 * 
+	 * @return the "show archive tasks" checkbox component
+	 */
 	public JCheckBox getArchiveCheckBox() {
 		return this.archiveCheckBox;
 	}
 
+	/**
+	 * get the "show my tasks" checkbox component
+	 * 
+	 * @return the "show my tasks" checkbox component
+	 */
 	public JCheckBox getMyTasksCheckBox() {
 		return this.myTasksCheckBox;
+	}
+
+	/**
+	 * returns the controller attached to this view
+	 * 
+	 * @return the controller attached to this view
+	 */
+	public FilterController getController() {
+		return this.filterC;
 	}
 
 }

@@ -76,6 +76,7 @@ public class EditTaskView extends JScrollPane {
 	public static final String REFRESH = "refresh";
 	public static final String TITLE = "title";
 	public static final String DESCRIP = "description";
+	public static final String CATEGORIES = "description";
 
 	private static final String TITLE_ERROR = "Title cannot be empty";
 	private static final String DESCRIPTION_ERROR = "Description cannot be empty";
@@ -117,6 +118,8 @@ public class EditTaskView extends JScrollPane {
 
 	private final JComboBox<String> stages;
 	private final JComboBox<String> requirements;
+	private final JComboBox<String> categories;
+	// TODO make categories be jpanels with the cat boxes on them
 
 	private EditTaskController controller;
 	private final ActivityView activityPane;
@@ -162,6 +165,8 @@ public class EditTaskView extends JScrollPane {
 		dueDateLabel.setFont(bigFont);
 		JLabel stageLabel = new JLabel("Stage");
 		stageLabel.setFont(bigFont);
+		JLabel categoryLabel = new JLabel("Category");
+		categoryLabel.setFont(bigFont);
 		JLabel estimatedEffortLabel = new JLabel("Estimated Effort");
 		estimatedEffortLabel.setFont(bigFont);
 		JLabel actualEffortLabel = new JLabel("Actual Effort");
@@ -279,6 +284,10 @@ public class EditTaskView extends JScrollPane {
 		stages = new JComboBox<String>();
 		stages.setName(STAGES);
 
+		// Combo Box for Category
+		categories = new JComboBox<String>();
+		categories.setName(CATEGORIES);
+
 		window.setLayout(new MigLayout());
 
 		window.add(titleLabel);
@@ -304,7 +313,9 @@ public class EditTaskView extends JScrollPane {
 		dateAndStage.add(dueDateLabel, "wrap");
 		dateAndStage.add(dateField, "wrap");
 		dateAndStage.add(stageLabel, "gaptop 10px, wrap");
-		dateAndStage.add(stages);
+		dateAndStage.add(stages, "wrap");
+		dateAndStage.add(categoryLabel, "gaptop 10px, wrap");
+		dateAndStage.add(categories);
 
 		// EffortDateStage internal content
 		EffortDateStage.add(dateAndStage);
@@ -439,6 +450,7 @@ public class EditTaskView extends JScrollPane {
 		estEffortField.addKeyListener(fieldC);
 		actEffortField.addKeyListener(fieldC);
 		stages.addPopupMenuListener(fieldC);
+		categories.addPopupMenuListener(fieldC);
 		usersList.setController(fieldC);
 		projectUsersList.setController(fieldC);
 		commentsField.addKeyListener(fieldC);
@@ -542,6 +554,20 @@ public class EditTaskView extends JScrollPane {
 		return stages;
 	}
 
+	/**
+	 * gets the dropdown box in the view that contains all the categories
+	 * 
+	 * @return the categories dropdown box
+	 */
+	public JComboBox<String> getCategories() {
+		return categories;
+	}
+
+	/**
+	 * gets the dropdown box in the view that contains all the requirements
+	 * 
+	 * @return the requirements dropdown box
+	 */
 	public JComboBox<String> getRequirements() {
 		return requirements;
 	}

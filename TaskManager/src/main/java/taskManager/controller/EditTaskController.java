@@ -28,9 +28,11 @@ import taskManager.TaskManager;
 import taskManager.model.ActivityModel;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
+import taskManager.model.TaskModel.TaskCategory;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
+import taskManager.view.FilterView;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.RequirementManager;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
@@ -116,16 +118,6 @@ public class EditTaskController implements ActionListener {
 
 		TabPaneController.getInstance().addEditTaskTab(etv);
 
-		// figures out the index of the stage, then sets the drop down to the
-		// stage at that index
-		final JComboBox<String> stages = etv.getStages();
-		for (int i = 0; i < stages.getItemCount(); i++) {
-			if (etv.getStages().getItemAt(i).equals(model.getStage().getName())) {
-				etv.setStageDropdown(i);
-				break;
-			}
-		}
-
 		etv.getStages().setSelectedItem(model.getStage().getName());
 
 		// populates the project users list
@@ -158,13 +150,6 @@ public class EditTaskController implements ActionListener {
 		final List<ActivityModel> tskActivities = model.getActivities();
 		etv.setActivities(tskActivities);
 		etv.setActivitiesPanel(tskActivities);
-
-		// set the requirement dropdown
-		if (model.getReq() != null) {
-			etv.getRequirements().setSelectedItem(model.getReq().getName());
-		} else {
-			etv.getRequirements().setSelectedItem(EditTaskView.NO_REQ);
-		}
 
 		// makes the archive button clickable
 		etv.enableArchive();
@@ -333,6 +318,23 @@ public class EditTaskController implements ActionListener {
 			stages.setSelectedItem(selectedStage);
 		}
 
+		// readds categories
+		final JComboBox<String> cats = etv.getCategories();
+		cats.removeAll();
+		cats.addItem("Select Category");
+		cats.setSelectedIndex(0);
+		for (String cat : FilterView.CATEGORY_NAMES) {
+			cats.addItem(cat);
+		}
+		// sets the drop down to the category of the model
+		if (model != null) {
+			for (int i = 0; i < FilterView.CATEGORY_NAMES.length; i++) {
+				if (model.getCategory().equals(TaskCategory.values()[i])) {
+					cats.setSelectedIndex(i + 1);
+				}
+			}
+		}
+
 		final List<Requirement> reqs = RequirementModel.getInstance()
 				.getRequirements();
 		final JComboBox<String> requirements = etv.getRequirements();
@@ -382,6 +384,14 @@ public class EditTaskController implements ActionListener {
 		final Requirement r = RequirementModel.getInstance()
 				.getRequirementByName(
 						(String) etv.getRequirements().getSelectedItem());
+
+		// sets the category
+		for (int i = 0; i < FilterView.CATEGORIES.length; i++) {
+			if (etv.getCategories().getSelectedItem()
+					.equals(FilterView.CATEGORY_NAMES[i])) {
+				model.setCategory(TaskCategory.values()[i]);
+			}
+		}
 
 		// Try to set the effort values.
 		try {

@@ -49,6 +49,7 @@ public class ToolbarView extends JToolBar {
 	private JButton createTask;
 	private JButton createStage;
 	private JButton statistics;
+	private FilterView filters;
 	private JLabel archive;
 	private JLabel delete;
 
@@ -109,7 +110,7 @@ public class ToolbarView extends JToolBar {
 			e.printStackTrace();
 		}
 
-		FilterView filters = new FilterView();
+		filters = new FilterView();
 
 		// Add archive and delete drop targets
 		try {
@@ -251,6 +252,15 @@ public class ToolbarView extends JToolBar {
 	 */
 	public JLabel getProjectName() {
 		return projectName;
+	}
+
+	/**
+	 * return the filters panel
+	 * 
+	 * @return the filter panel
+	 */
+	public FilterView getFilterView() {
+		return this.filters;
 	}
 
 }

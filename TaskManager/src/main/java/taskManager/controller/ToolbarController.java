@@ -45,24 +45,20 @@ public class ToolbarController extends DropTargetAdapter implements
 		ActionListener, ComponentListener {
 
 	private ToolbarView view;
+	private FilterController filterC;
 
 	private static ToolbarController instance;
-	public FilterController filterC;
 
 	/**
 	 * Hide Singleton constructor
 	 */
 	private ToolbarController() {
-		filterC = new FilterController();
 		reset();
-		// TODO move to filter view
-		view.getCategoryLabel().addMouseListener(filterC);
-		view.getArchiveCheckBox().addItemListener(filterC);
-		view.getMyTasksCheckBox().addItemListener(filterC);
 	}
 
 	public void reset() {
 		view = new ToolbarView(this);
+		filterC = view.getFilterView().getController();
 	}
 
 	/**
@@ -86,6 +82,15 @@ public class ToolbarController extends DropTargetAdapter implements
 	public ToolbarView getView() {
 		return view;
 	}
+
+	/**
+	 * return the filter controller
+	 * 
+	 * @return filter controller
+	 */
+	public FilterController getFilterController() {
+		return this.filterC;
+	};
 
 	/**
 	 * Sets the visible title in the toolbar, hyphenating if necessary

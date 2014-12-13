@@ -16,21 +16,27 @@ import java.awt.event.MouseListener;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.swing.JCheckBox;
+import javax.swing.JPanel;
 
 import taskManager.TaskManager;
 import taskManager.controller.TaskFilter.ArchiveState;
 import taskManager.model.TaskModel.TaskCategory;
 import taskManager.view.FilterView;
 
+/**
+ * A controller for the filter view in toolbar. When you click filter options,
+ * this controller adds a new filter to the workflow according to the optons
+ * selected
+ * 
+ * @author Beth Martino
+ *
+ */
 public class FilterController implements ItemListener, MouseListener {
 
-	private boolean popupVisible;
 	private final FilterView view;
 
 	public FilterController(FilterView view) {
 		this.view = view;
-		popupVisible = false;
 	}
 
 	/**
@@ -51,13 +57,12 @@ public class FilterController implements ItemListener, MouseListener {
 		Component[] cats = view.getCategories().getComponents();
 		Set<TaskCategory> selected = new HashSet<TaskCategory>();
 		for (int i = 0; i < cats.length; i++) {
-			if (cats[1] instanceof JCheckBox) {
-				JCheckBox item = (JCheckBox) cats[i];
-				if (item.isSelected()) {
+			if (cats[1] instanceof JPanel) {
+				String name = cats[i].getName();
+				if (view.catBoxIsChecked(name)) {
 					selected.add(TaskCategory.values()[i]);
 				}
 			}
-
 		}
 		return selected;
 	}
@@ -68,7 +73,7 @@ public class FilterController implements ItemListener, MouseListener {
 	 * @return true if the show my tasks box is checked
 	 */
 	private boolean myTasksChecked() {
-		return ToolbarController.getInstance().getView().isMyTasksShown();
+		return view.isMyTasksShown();
 	}
 
 	/**
@@ -77,7 +82,7 @@ public class FilterController implements ItemListener, MouseListener {
 	 * @return true if the show archived tasks box is checked
 	 */
 	private boolean archiveChecked() {
-		return ToolbarController.getInstance().getView().isArchiveShown();
+		return view.isArchiveShown();
 	}
 
 	/**
@@ -110,7 +115,14 @@ public class FilterController implements ItemListener, MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		view.getCategories().setVisible(!view.getCategories().isVisible());
+		for (String name : FilterView.CATEGORY_NAMES) {
+			if (e.getComponent().getName().equals(name)) {
+				view.checkCatBox(!view.catBoxIsChecked(name), name);
+				System.out.println("Cat box " + name + " checked is "
+						+ view.catBoxIsChecked(name));
+			}
+		}
+		filter();
 	}
 
 	@Override
