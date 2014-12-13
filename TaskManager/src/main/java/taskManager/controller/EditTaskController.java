@@ -328,7 +328,7 @@ public class EditTaskController implements ActionListener {
 		}
 		// sets the drop down to the category of the model
 		if (model != null && model.getCategory() != null) {
-			for (int i = 0; i < FilterView.CATEGORY_NAMES.length; i++) {
+			for (int i = 0; i < TaskCategory.values().length; i++) {
 				if (model.getCategory().equals(TaskCategory.values()[i])) {
 					cats.setSelectedIndex(i + 1);
 				}
@@ -389,7 +389,7 @@ public class EditTaskController implements ActionListener {
 		if (etv.getCategories().getSelectedIndex() == 0) {
 			model.setCategory(null);
 		}
-		for (int i = 1; i < FilterView.CATEGORIES.length; i++) {
+		for (int i = 1; i < TaskCategory.values().length; i++) {
 			if (etv.getCategories().getSelectedItem()
 					.equals(FilterView.CATEGORY_NAMES[i])) {
 				model.setCategory(TaskCategory.values()[i]);
