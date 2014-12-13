@@ -27,5 +27,6 @@ public class Colors {
 	public static Color SHADOW_COLOR = Color.BLACK;
 	public static Color STAGE = Color.decode("#C8DDF1");
 	public static Color INPUT_ERROR = Color.decode("#FCFCFC");
-
+	// The default grey color of a JLabel
+	public static Color STUPID_GRAY = Color.decode("#EAEAEA");
 }
