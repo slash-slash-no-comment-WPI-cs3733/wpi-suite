@@ -185,7 +185,7 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 			Localizer.setLanguage(language);
 			languageSelector.addItem(Localizer.getString("LanguageName"));
 		}
-
+		Localizer.setLanguage(Localizer.defaultLanguage);
 		languageSelector.addActionListener(controller);
 
 		// Add title to the title panel

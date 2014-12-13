@@ -10,9 +10,12 @@ package taskManager.localization;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+
+import javax.swing.UIManager;
 
 /**
  * Description
@@ -21,13 +24,13 @@ import java.util.ResourceBundle;
  */
 public class Localizer {
 
-	// TODO: rename language files
+	public static final String defaultLanguage = "english";
 
 	// the current language, default to english
-	private static String currentLanguage = "english";
+	private static String currentLanguage = defaultLanguage;
 
 	private static final ResourceBundle defaultRB = ResourceBundle
-			.getBundle("taskManager.localization." + "english");
+			.getBundle("taskManager.localization." + defaultLanguage);
 
 	// the current resource bundle object
 	private static ResourceBundle rb = ResourceBundle
@@ -69,11 +72,16 @@ public class Localizer {
 		rb = ResourceBundle.getBundle("taskManager.localization."
 				+ currentLanguage);
 
+		UIManager.put("OptionPane.yesButtonText", rb.getString("Yes"));
+		UIManager.put("OptionPane.noButtonText", rb.getString("No"));
+		UIManager.put("OptionPane.cancelButtonText", rb.getString("Cancel"));
+
 		// tell all of the listeners that the locale changed
-		for (WeakReference<LocaleChangeListener> l : listeners) {
-			LocaleChangeListener listener = l.get();
+		Iterator<WeakReference<LocaleChangeListener>> it = listeners.iterator();
+		while (it.hasNext()) {
+			LocaleChangeListener listener = it.next().get();
 			if (listener == null) {
-				listeners.remove(l);
+				it.remove();
 			} else {
 				listener.onLocaleChange();
 			}

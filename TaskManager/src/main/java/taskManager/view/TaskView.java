@@ -267,7 +267,7 @@ public class TaskView extends JPanel implements Transferable,
 	public void onLocaleChange() {
 		final Calendar date = Calendar.getInstance();
 		DateFormat df = new SimpleDateFormat(Localizer.getString("DateFormat"));
-		dueLabel.setText(Localizer.getString("Due") + df.format(dueDate));
+		dueLabel.setText(Localizer.getString("Due") + " " + df.format(dueDate));
 	}
 
 }
