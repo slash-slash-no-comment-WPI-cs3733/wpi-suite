@@ -277,12 +277,23 @@ public class ToolbarView extends JToolBar {
 	}
 
 	/**
+	 * @param fun
+	 *            if fun mode should be enabled
+	 */
+	public void setFunMode(boolean fun) {
+		if (fun != isFunMode()) {
+			funModeCheckBox.doClick();
+		}
+	}
+
+	/**
 	 * Hides the buttons that are only applicable in fun mode
 	 *
 	 */
 	public void hideFunButtons() {
 		randomizeTaskAngles.setEnabled(false);
 		randomizeTaskAngles.setVisible(false);
+		funModeCheckBox.setVisible(false);
 	}
 
 	/**
@@ -292,6 +303,7 @@ public class ToolbarView extends JToolBar {
 	public void showFunButtons() {
 		randomizeTaskAngles.setEnabled(true);
 		randomizeTaskAngles.setVisible(true);
+		funModeCheckBox.setVisible(true);
 	}
 
 	/**

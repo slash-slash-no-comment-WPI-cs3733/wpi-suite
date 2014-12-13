@@ -15,6 +15,7 @@ import static org.junit.Assert.fail;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.event.KeyEvent;
 import java.util.Date;
 
 import javax.swing.BoxLayout;
@@ -48,9 +49,15 @@ public class TestRotationController extends ScreenshotOnFail {
 	private FrameFixture fixture;
 	private JFrame frame;
 	private TaskModel t = null;
+	private static final int[] code = { KeyEvent.VK_UP, KeyEvent.VK_UP,
+			KeyEvent.VK_DOWN, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT,
+			KeyEvent.VK_RIGHT, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT,
+			KeyEvent.VK_B, KeyEvent.VK_A, KeyEvent.VK_ENTER };
 
 	@Before
 	public void setup() {
+		TaskManager.reset();
+		new TaskManager();
 		TaskManager.reset();
 
 		// give it a stage
@@ -76,7 +83,9 @@ public class TestRotationController extends ScreenshotOnFail {
 		fixture.show();
 
 		// enter fun mode
-		fixture.checkBox(ToolbarView.FUN_MODE).check();
+		for (int c : code) {
+			fixture.robot.pressKey(c);
+		}
 	}
 
 	@Test
@@ -93,7 +102,9 @@ public class TestRotationController extends ScreenshotOnFail {
 		}
 
 		// enter fun mode
-		fixture.checkBox(ToolbarView.FUN_MODE).check();
+		for (int c : code) {
+			fixture.robot.pressKey(c);
+		}
 
 		// make sure fun buttons are visible now
 		fixture.button(ToolbarView.TASK_ANGLES).requireVisible();
