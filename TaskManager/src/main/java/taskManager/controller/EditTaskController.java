@@ -386,7 +386,7 @@ public class EditTaskController implements ActionListener {
 						(String) etv.getRequirements().getSelectedItem());
 
 		// sets the category
-		if (etv.getCategories().getSelectedIndex() == 1) {
+		if (etv.getCategories().getSelectedIndex() == 0) {
 			model.setCategory(null);
 		}
 		for (int i = 1; i < FilterView.CATEGORIES.length; i++) {

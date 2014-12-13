@@ -129,6 +129,12 @@ public class TaskController implements MouseListener {
 		}
 	}
 
+	/**
+	 * get the color corresponding the models category. If there is no color,
+	 * return the TASK or ARCHIVE color
+	 * 
+	 * @return the color corresponding to the category of the task
+	 */
 	public Color getCategoryColor() {
 		Color catColor = Colors.TASK;
 		if (isArchived()) {
@@ -162,15 +168,6 @@ public class TaskController implements MouseListener {
 	@Override
 	public void mouseClicked(MouseEvent e) {
 
-		Color catColor = Colors.TASK_CLICKED;
-		if (model.getCategory() != null) {
-			for (int i = 0; i < TaskCategory.values().length; i++) {
-				if (TaskCategory.values()[i].equals(model.getCategory())) {
-					catColor = Colors.CAT_COLORS[i];
-				}
-			}
-		}
-
 		// Create the taskinfo bubble
 		final Point stageLoc = view.getParent().getParent().getParent()
 				.getParent().getLocation();
@@ -179,7 +176,8 @@ public class TaskController implements MouseListener {
 		final Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
 				view.getLocation().y);
 		WorkflowController.getInstance().setTaskInfo(
-				new TaskInfoPreviewView(model, this, infoLoc, catColor));
+				new TaskInfoPreviewView(model, this, infoLoc,
+						getCategoryColor()));
 
 		// Set the correct flags
 		thisTaskInfoOut = true;
@@ -189,11 +187,8 @@ public class TaskController implements MouseListener {
 		if (model.getCategory() == null) {
 			view.setBackground(Colors.TASK_CLICKED);
 			view.setCategoryColor(view.getBackground());
-		}
-		for (int i = 0; i < TaskCategory.values().length; i++) {
-			if (TaskCategory.values()[i].equals(model.getCategory())) {
-				view.setBackground(Colors.CAT_COLORS[i]);
-			}
+		} else {
+			view.setBackground(getCategoryColor());
 		}
 	}
 

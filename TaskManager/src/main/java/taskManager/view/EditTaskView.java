@@ -76,7 +76,7 @@ public class EditTaskView extends JScrollPane {
 	public static final String REFRESH = "refresh";
 	public static final String TITLE = "title";
 	public static final String DESCRIP = "description";
-	public static final String CATEGORIES = "description";
+	public static final String CATEGORIES = "categories";
 
 	private static final String TITLE_ERROR = "Title cannot be empty";
 	private static final String DESCRIPTION_ERROR = "Description cannot be empty";
@@ -119,7 +119,6 @@ public class EditTaskView extends JScrollPane {
 	private final JComboBox<String> stages;
 	private final JComboBox<String> requirements;
 	private final JComboBox<String> categories;
-	// TODO make categories be jpanels with the cat boxes on them
 
 	private EditTaskController controller;
 	private final ActivityView activityPane;
@@ -151,8 +150,8 @@ public class EditTaskView extends JScrollPane {
 		this.getVerticalScrollBar().setUnitIncrement(12);
 		this.getHorizontalScrollBar().setUnitIncrement(12);
 		final Dimension panelSize = getPreferredSize();
-		panelSize.width = 1300; // TODO
-		panelSize.height = 650; // Decide size
+		panelSize.width = 1300; // TODO Decide size
+		panelSize.height = 650;
 		center.setPreferredSize(panelSize);
 		window.setPreferredSize(panelSize);
 
@@ -233,8 +232,6 @@ public class EditTaskView extends JScrollPane {
 						java.awt.Image.SCALE_SMOOTH)));
 
 		// JTextArea
-		// TODO
-		// Get to add users
 		usersList = new ScrollList("");
 		usersList.setBackground(this.getBackground());
 		projectUsersList = new ScrollList("");
@@ -287,6 +284,8 @@ public class EditTaskView extends JScrollPane {
 		stages.setName(STAGES);
 
 		// Combo Box for Category
+		// TODO make this take JPanels with little color labels instead of
+		// strings
 		categories = new JComboBox<String>();
 		categories.setName(CATEGORIES);
 
@@ -312,6 +311,7 @@ public class EditTaskView extends JScrollPane {
 		Effort.add(actEffortField);
 
 		// dateAndStage internal content
+		// TODO fix this, adding categories looks dumb
 		dateAndStage.add(dueDateLabel, "wrap");
 		dateAndStage.add(dateField, "wrap");
 		dateAndStage.add(stageLabel, "gaptop 10px, wrap");
