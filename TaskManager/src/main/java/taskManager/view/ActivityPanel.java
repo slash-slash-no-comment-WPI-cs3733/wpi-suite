@@ -84,6 +84,7 @@ public class ActivityPanel extends JPanel {
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		// Scrolls to the bottom of the window where the most recent things are.
 		scrollActivitiesToBottom();
+		activityScroll.getVerticalScrollBar().setUnitIncrement(12);
 
 		// Comment textbox
 		commentBox = new JTextArea();

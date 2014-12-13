@@ -181,8 +181,9 @@ public class TaskInputController implements KeyListener, FocusListener,
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		validate();
-
+		if (evt.getPropertyName().equals("date")) {
+			validate();
+		}
 	}
 
 	@Override

@@ -334,7 +334,6 @@ public class EditTaskView extends JPanel {
 		window.add(BasicInfo, "h 80%, w 30%");
 		window.add(Users, "h 80%, w 30%, gapleft 10px");
 		window.add(SpacerBtm, "dock south");
-		// window.add(EditSaveCancel, "dock south, h 10%");
 
 		BalloonTipStyle errorStyle = new RoundedBalloonStyle(5, 5,
 				Colors.INPUT_ERROR, Color.red);
@@ -367,6 +366,8 @@ public class EditTaskView extends JPanel {
 		window.setPreferredSize(panelSize);
 
 		JScrollPane windowScroll = new JScrollPane(window);
+		windowScroll.getVerticalScrollBar().setUnitIncrement(12);
+		windowScroll.getHorizontalScrollBar().setUnitIncrement(12);
 		JPanel tabs = new JPanel();
 		tabs.setLayout(new MigLayout("", "[grow, fill]", "[grow, fill]"));
 		tabs.add(activitiesTabs);
