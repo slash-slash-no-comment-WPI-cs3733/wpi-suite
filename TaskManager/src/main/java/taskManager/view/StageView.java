@@ -287,6 +287,20 @@ public class StageView extends JPanel implements Transferable {
 		return labelText;
 	}
 
+	/**
+	 *
+	 * Changes which title is visible, the label or the textbox. If editable is
+	 * true, the textbox is visible.
+	 *
+	 * @param editable
+	 *            true to make the textbox visible, false to make the label
+	 *            visible
+	 */
+	public void switchTitles(boolean editable) {
+		label.setVisible(!editable);
+		changeLabel.setVisible(editable);
+	}
+
 	// ----------------------------
 	// Drag-and-drop transferable implementation
 

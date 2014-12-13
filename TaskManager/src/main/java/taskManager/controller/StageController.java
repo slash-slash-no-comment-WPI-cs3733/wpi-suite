@@ -8,7 +8,6 @@
  *******************************************************************************/
 package taskManager.controller;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -182,14 +181,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 	 *            visible
 	 */
 	public void switchTitle(Boolean editable) {
-		for (Component c : view.getComponents()) {
-			if (StageView.TITLE.equals(c.getName())) {
-				c.setVisible(!editable);
-			} else if (StageView.CHANGE_TITLE.equals(c.getName())) {
-				c.setVisible(editable);
-				view.focusTextArea();
-			}
-		}
+		view.switchTitles(editable);
 	}
 
 	/**

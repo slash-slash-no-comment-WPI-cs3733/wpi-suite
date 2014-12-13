@@ -72,10 +72,6 @@ public class WorkflowView extends JLayeredPane {
 					stages, DDTransferHandler.getStageFlavor())));
 		}
 		stages.add(stv);
-		// If this is a new stage, open the textbox
-		if (stv.getName() == "") {
-			stv.getController().switchTitle(true);
-		}
 	}
 
 	/**

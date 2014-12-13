@@ -150,6 +150,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		if (!hasNewStageView) {
 			hasNewStageView = true;
 			final StageView newStageV = new StageController().getView();
+			newStageV.getController().switchTitle(true);
 
 			PromptSupport
 					.setPrompt("New Stage Name", newStageV.getLabelField());
