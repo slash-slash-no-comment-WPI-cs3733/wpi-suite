@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.MessageFormat;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -237,10 +238,9 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 						view.getLabelText()) != null) {
 					JOptionPane.showConfirmDialog(
 							view,
-							Localizer.getString("DuplicateStage") + " "
-									+ view.getLabelText() + ". "
-									+ Localizer.getString("DuplicateStage2")
-									+ ".",
+							MessageFormat.format(
+									Localizer.getString("DuplicateStage"),
+									view.getLabelText()),
 							Localizer.getString("DuplicateWarning"),
 							JOptionPane.CLOSED_OPTION);
 				} else {
