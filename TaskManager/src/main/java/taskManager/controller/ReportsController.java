@@ -40,7 +40,9 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.chart.renderer.category.StandardBarPainter;
+import org.jfree.data.category.CategoryToPieDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.util.TableOrder;
 
 import taskManager.TaskManager;
 import taskManager.model.ActivityModel;
@@ -63,22 +65,26 @@ public class ReportsController implements ActionListener, ChangeListener,
 
 	private ReportsView rtv;
 
+	private enum DistributionType {
+		USER, STAGE;
+	}
+
 	/**
 	 * An internal data structure for building the bar chart. Sortable and
 	 * small.
 	 *
 	 * @author Joseph Blackman
 	 */
-	public class UserData implements Comparable<UserData> {
-		private UserData(String username, ZonedDateTime completion,
+	public class ReportDatum implements Comparable<ReportDatum> {
+		private ReportDatum(String category, ZonedDateTime timeStamp,
 				Double effort) {
-			this.username = username;
-			this.completion = completion;
+			this.category = category;
+			this.timeStamp = timeStamp;
 			this.effort = effort;
 		}
 
-		private String username;
-		private ZonedDateTime completion;
+		private String category;
+		private ZonedDateTime timeStamp;
 		private Double effort;
 
 		/**
@@ -90,8 +96,8 @@ public class ReportsController implements ActionListener, ChangeListener,
 		 * @return int compare value
 		 */
 		@Override
-		public int compareTo(UserData o) {
-			return completion.compareTo(o.completion);
+		public int compareTo(ReportDatum o) {
+			return timeStamp.compareTo(o.timeStamp);
 		}
 	}
 
@@ -130,21 +136,22 @@ public class ReportsController implements ActionListener, ChangeListener,
 	 * @param start
 	 * @param end
 	 * @param averageCredit
+	 * @return The list of ReportDatum that matches the given criteria
 	 */
-	public void findVelocityData(Set<String> users, ZonedDateTime start,
-			ZonedDateTime end, boolean averageCredit) {
+	public List<ReportDatum> findVelocityData(Set<String> users,
+			ZonedDateTime start, ZonedDateTime end, boolean averageCredit) {
 		// Assume the completion stage is the final stage
 		this.start = start;
 		this.end = end;
 		final List<StageModel> stageList = workflow.getStages();
 		final StageModel finalStage = stageList.get(stageList.size() - 1);
-		findVelocityData(users, start, end, averageCredit, finalStage);
+		return findVelocityData(users, start, end, averageCredit, finalStage);
 	}
 
 	/**
 	 * Return data to allow the calculation of "Velocity", i.e. amount of effort
 	 * completed/time. Will get data as a list of data points, unsorted. The
-	 * user should call generateDataSet() next.
+	 * user should call generateVelocityDataset() next.
 	 *
 	 * @param users
 	 *            The set of usernames to get data about
@@ -159,9 +166,9 @@ public class ReportsController implements ActionListener, ChangeListener,
 	 * @param stage
 	 *            The stage to consider as the completion stage
 	 * 
-	 * @return The list of UserData that matches the given criteria
+	 * @return The list of ReportDatum that matches the given criteria
 	 */
-	public List<UserData> findVelocityData(Set<String> users,
+	public List<ReportDatum> findVelocityData(Set<String> users,
 			ZonedDateTime _start, ZonedDateTime _end, boolean averageCredit,
 			StageModel stage) {
 
@@ -171,7 +178,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 		if (!workflow.getStages().contains(stage)) {
 			throw new IllegalArgumentException("Invalid stage");
 		}
-		List<UserData> data = new ArrayList<UserData>();
+		List<ReportDatum> data = new ArrayList<ReportDatum>();
 		// Iterate through all tasks for the specified stage.
 		for (TaskModel task : stage.getTasks()) {
 			ZonedDateTime completed = null;
@@ -215,7 +222,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 						if (averageCredit) {
 							effort /= task.getAssigned().size();
 						}
-						data.add(new UserData(username, completed, effort));
+						data.add(new ReportDatum(username, completed, effort));
 					}
 				}
 			} // End if (inDateRange)
@@ -236,8 +243,8 @@ public class ReportsController implements ActionListener, ChangeListener,
 	 * @param interval
 	 *            The interval to group the data by.
 	 */
-	public void generateVelocityDataset(List<UserData> data, boolean teamData,
-			Period interval) {
+	public void generateVelocityDataset(List<ReportDatum> data,
+			boolean teamData, Period interval) {
 		if (data == null) {
 			throw new IllegalStateException(
 					"Tried to generate a dataset without getting any data first!");
@@ -257,7 +264,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 		// We get this user to add some 0s to, rather than creating a "" user.
 		String dummyUsername = "User";
 		if (!data.isEmpty()) {
-			dummyUsername = data.iterator().next().username;
+			dummyUsername = data.iterator().next().category;
 		}
 		// Populate the buckets with names before-hand.
 		for (ZonedDateTime i = start; i.compareTo(end) < 0; i = i
@@ -267,7 +274,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 		}
 
 		// Iterate through each userdata.
-		for (UserData userData : data) {
+		for (ReportDatum userData : data) {
 
 			// Boundary is the temporary enddate to use to calculate the total
 			// effort for the current completion date (e.g. if completion date
@@ -287,13 +294,13 @@ public class ReportsController implements ActionListener, ChangeListener,
 				boundary = boundary.plus(interval); // increment by interval
 													// (day/week/month).
 				seriesNum++;
-			} while ((boundary.toInstant().getEpochSecond() - userData.completion
+			} while ((boundary.toInstant().getEpochSecond() - userData.timeStamp
 					.toInstant().getEpochSecond()) < 86400);
 
 			// set the name depending on the teamData value.
 			String keyname = "Team";
 			if (!teamData) {
-				keyname = userData.username;
+				keyname = userData.category;
 			}
 
 			// If the dataset contains the keyname, increment the effort value.
@@ -309,7 +316,119 @@ public class ReportsController implements ActionListener, ChangeListener,
 	}
 
 	/**
-	 * Creates a chart from the given input
+	 * Return data to allow the calculation of "Distribution", i.e. amount of
+	 * tasks/effort per stage/user. Will get data as a list of data points,
+	 * unsorted. The user should call generateDistributionDataSet() next.
+	 * 
+	 * @param type
+	 *            The type of distribution to generate data for, either STAGE or
+	 *            USER
+	 * @param users
+	 *            The set of users used to select tasks. Only data for tasks
+	 *            with the selected users assigned will be calculated. If the
+	 *            distribution type is USER, multiple data points will be made
+	 *            for tasks with more than one matching assigned user.
+	 * @param stages
+	 *            The set of stages used to select tasks. Only data for tasks
+	 *            from the selected stages will be calculated.
+	 * @param _start
+	 *            The start time to use as a boundary for data. This date will
+	 *            be compared with the tasks' due date.
+	 * @param _end
+	 *            The end time to use as a boundary for data. This date will be
+	 *            compared with the tasks' due date.
+	 * @return The list of ReportDatum that matches the given criteria
+	 */
+	public List<ReportDatum> findDistributionData(DistributionType type,
+			Set<String> users, Set<StageModel> stages, ZonedDateTime _start,
+			ZonedDateTime _end) {
+		List<ReportDatum> data = new ArrayList<ReportDatum>();
+
+		start = _start;
+		end = _end;
+
+		// Iterate through the given stages
+		for (StageModel stage : stages) {
+			// Iterate through the tasks
+			for (TaskModel task : stage.getTasks()) {
+				// If we're making a stage distribution, check that at least one
+				// of the set of users we're looking at is assigned to it.
+				if (type == DistributionType.STAGE) {
+					boolean taskAdded = false;
+					for (String user : task.getAssigned()) {
+						if (!taskAdded && users.contains(user)) {
+							// Use the due date for the timestamp
+							ZonedDateTime dueDate = ZonedDateTime.ofInstant(
+									task.getDueDate().toInstant(), TimeZone
+											.getDefault().toZoneId());
+							// Check if it is in the time span
+							if (dueDate.compareTo(start) >= 0
+									&& dueDate.compareTo(end) <= 0) {
+								data.add(new ReportDatum(stage.getName(),
+										dueDate, (double) task
+												.getActualEffort()));
+							}
+						}
+					}
+				}
+				// If we're making a user distribution, then add a data point
+				// for each user assigned to the task if they're part of the set
+				// we're looking at.
+				else if (type == DistributionType.USER) {
+					for (String user : task.getAssigned()) {
+						if (users.contains(user)) {
+							// Use the due date for the timestamp
+							ZonedDateTime dueDate = ZonedDateTime.ofInstant(
+									task.getDueDate().toInstant(), TimeZone
+											.getDefault().toZoneId());
+							// Check if it is in the time span
+							if (dueDate.compareTo(start) >= 0
+									&& dueDate.compareTo(end) <= 0) {
+								data.add(new ReportDatum(user, dueDate,
+										(double) task.getActualEffort()));
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return data;
+	}
+
+	/**
+	 * This method will format the data into separate categories, such as days,
+	 * weeks, or months. It merges them down into a dataset object, which it
+	 * saves. The user should then call createBarChart() or createPieChart().
+	 *
+	 * @param data
+	 *            The list of ReportDatum with which to construct the dataset
+	 * @param useEffort
+	 *            Whether or not to use actual effort for value. True will use
+	 *            effort to calculate quantity, false will use number of tasks
+	 *            to calculate quantity.
+	 * 
+	 */
+	public void generateDistributionDataset(List<ReportDatum> data,
+			boolean useEffort) {
+		if (data == null) {
+			throw new IllegalStateException(
+					"Tried to generate a dataset without getting any data first!");
+		}
+		dataset = new DefaultCategoryDataset();
+
+		// Iterate through each userdata.
+		for (ReportDatum datum : data) {
+			if (useEffort) {
+				dataset.addValue(datum.effort, "Team", datum.category);
+			} else {
+				dataset.addValue(1, "Team", datum.category);
+			}
+		}
+	}
+
+	/**
+	 * Creates a bar chart from the given input
 	 *
 	 * @param title
 	 *            The title of the chart
@@ -318,7 +437,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 	 * @param ylabel
 	 *            The label for the y axis
 	 * 
-	 * @return a JPanel containing the chart
+	 * @return a JPanel containing the bar chart
 	 */
 	public JPanel createBarChart(String title, String xlabel, String ylabel) {
 		if (dataset == null) {
@@ -356,6 +475,71 @@ public class ReportsController implements ActionListener, ChangeListener,
 		// disable gradients
 		((BarRenderer) plot.getRenderer())
 				.setBarPainter(new StandardBarPainter());
+
+		return chartPanel;
+	}
+
+	/**
+	 * Creates a line graph from the given input
+	 *
+	 * @param title
+	 *            The title of the graph
+	 * @param xlabel
+	 *            The label for the x axis
+	 * @param ylabel
+	 *            The label for the y axis
+	 * 
+	 * @return a JPanel containing the graph
+	 */
+	public JPanel createLineGraph(String title, String xlabel, String ylabel) {
+		if (dataset == null) {
+			throw new IllegalStateException(
+					"Tried to generate a chart without creating a dataset first!");
+		}
+
+		final JFreeChart chart = ChartFactory.createLineChart(title, // chart
+																		// title
+				xlabel, // domain axis label
+				ylabel, // range axis label
+				dataset, // data
+				PlotOrientation.VERTICAL, // orientation
+				true, // include legend
+				true, // tooltips?
+				false // URLs?
+				);
+
+		final ChartPanel chartPanel = new ChartPanel(chart, false);
+		chartPanel.setMaximumDrawHeight(2880);
+		chartPanel.setMaximumDrawWidth(5120);
+
+		return chartPanel;
+	}
+
+	/**
+	 * Creates a pie chart from the given input
+	 *
+	 * @param title
+	 *            The title of the chart
+	 * 
+	 * @return a JPanel containing the chart
+	 */
+	public JPanel createPieChart(String title) {
+		if (dataset == null) {
+			throw new IllegalStateException(
+					"Tried to generate a chart without creating a dataset first!");
+		}
+
+		final JFreeChart chart = ChartFactory.createPieChart(title, // chart
+																	// title
+				new CategoryToPieDataset(dataset, TableOrder.BY_COLUMN, 0), // data
+				true, // include legend
+				true, // tooltips
+				false // urls
+				);
+
+		final ChartPanel chartPanel = new ChartPanel(chart, false);
+		chartPanel.setMaximumDrawHeight(2880);
+		chartPanel.setMaximumDrawWidth(5120);
 
 		return chartPanel;
 	}
@@ -501,7 +685,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 
 		// Compute velocity (amount of effort/time) and store to data,
 		// unsorted.
-		List<UserData> data = findVelocityData(users, startZone, endZone,
+		List<ReportDatum> data = findVelocityData(users, startZone, endZone,
 				false, stage);
 
 		// Generate the dataset required to draw the graph, with a given
@@ -514,6 +698,14 @@ public class ReportsController implements ActionListener, ChangeListener,
 		// Open a new tab with the given chart.
 		TabPaneController.getInstance().addTab("Graph", chart, true);
 		TabPaneController.getInstance().getView().setSelectedComponent(chart);
+	}
+
+	/**
+	 * Creates a distribution report and makes it visible.
+	 */
+	private void createDistributionReport() {
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
@@ -535,6 +727,8 @@ public class ReportsController implements ActionListener, ChangeListener,
 			} else {
 				if (rtv.getMode() == ReportsView.Mode.VELOCITY) {
 					createVelocityReport();
+				} else if (rtv.getMode() == ReportsView.Mode.DISTRIBUTION) {
+					createDistributionReport();
 				}
 			}
 
