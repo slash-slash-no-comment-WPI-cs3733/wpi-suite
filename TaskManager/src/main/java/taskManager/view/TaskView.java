@@ -234,11 +234,10 @@ public class TaskView extends JPanel implements Transferable {
 			return this;
 
 		} else if (flavor.equals(DataFlavor.stringFlavor)) {
-			return controller.getString();
+			return controller.getExportString();
 		} else {
 			throw new UnsupportedFlavorException(flavor);
 		}
-
 	}
 
 	/*

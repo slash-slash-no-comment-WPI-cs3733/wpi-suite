@@ -194,10 +194,23 @@ public class TaskController implements MouseListener {
 		this.thisTaskInfoOut = thisTaskInfoOut;
 	}
 
-	public String getString() {
-		String s = "Name: " + model.getName() + "\nDescription: "
-				+ model.getDescription() + "\nDue Date: "
-				+ new SimpleDateFormat("MM/dd/yy").format(model.getDueDate());
-		return s;
+	/**
+	 * Generate string for table export (Excel format)
+	 *
+	 * @return export string
+	 */
+	public String getExportString() {
+		String fields[] = { "Name", "Description", "Due Date",
+				"Assigned Users", "Estimated Effort", "Actual Effort" };
+		String values[] = { model.getName(), model.getDescription(),
+				new SimpleDateFormat("MM/dd/yy").format(model.getDueDate()),
+				String.join(",", model.getAssigned()),
+				Integer.toString(model.getEstimatedEffort()),
+				Integer.toString(model.getActualEffort()) };
+		String export = "";
+		for (int i = 0; i < fields.length; i++) {
+			export += fields[i] + "\t" + values[i] + "\n";
+		}
+		return export;
 	}
 }
