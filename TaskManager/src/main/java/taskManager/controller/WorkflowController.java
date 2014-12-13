@@ -9,10 +9,12 @@
 package taskManager.controller;
 
 import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -103,6 +105,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 *
 	 */
 	public synchronized void reloadData() {
+
 		// clear the stages previously on the view
 		this.removeChangeTitles();
 		hasNewStageView = false;
@@ -114,6 +117,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 
 		// get all the stages in this workflow
 		final List<StageModel> stages = model.getStages();
+
 		// and add them all to the view
 		for (StageModel stage : stages) {
 			// create stage view and controller.
@@ -123,7 +127,26 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 			// add stage view to workflow
 			view.addStageView(stv);
 		}
+		Point mousePos = view.getMousePosition();
+		if (!(mousePos == null)) {
+			Component mouseC = view.findComponentAt(mousePos);
+			checkMouseHover(mouseC,mousePos);
+		}
 		view.revalidate();
+	}
+
+	/**
+	 * finds component the mouse is at, checks for listeners, and then passes
+	 * them an mouse entered even to start the hover sequence over again
+	 */
+	public void checkMouseHover(Component c, Point p) {
+		if (!Arrays.asList(c.getMouseListeners()).isEmpty()) {
+			for (MouseListener m : c.getMouseListeners()) {
+				m.mouseEntered(new MouseEvent(c, MouseEvent.MOUSE_ENTERED, System.currentTimeMillis(),
+						0, p.x, p.y, 0, false));
+				System.out.println("mouse reset");
+			}
+		}
 	}
 
 	/**
