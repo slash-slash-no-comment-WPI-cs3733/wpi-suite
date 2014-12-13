@@ -202,10 +202,10 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 			WorkflowController.getInstance().removeTaskInfos(false);
 			WorkflowController.getInstance().reloadData();
 			WorkflowController.getInstance().repaintView();
-		}else{
+		} else {
 			XButton();
 		}
-		
+
 	}
 
 	@Override
@@ -232,6 +232,9 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 
 	}
 
+	/**
+	 * Called when the check button is pressed while editing stage name.
+	 */
 	private void checkButton() {
 		if (WorkflowModel.getInstance().findStageByName(view.getLabelText()) != null) {
 			JOptionPane.showConfirmDialog(view,
@@ -255,6 +258,9 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 		}
 	}
 
+	/**
+	 * called when the X button is pressed for the edit stage name
+	 */
 	private void XButton() {
 		if (model == null) {
 			// ask the user if they want to cancel the new stage
