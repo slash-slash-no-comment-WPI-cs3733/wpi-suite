@@ -29,7 +29,6 @@ import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
 import taskManager.view.TaskView;
-import taskManager.controller.TaskFilter;
 
 /**
  * Controller for stages.
@@ -47,7 +46,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 
 	public static Boolean anyChangeTitleOut = false;
 	private Boolean thisChangeTitleOut = false;
-	
+
 	public StageController(StageView view, StageModel model) {
 		this(view, model, new TaskFilter());
 	}
@@ -72,7 +71,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 			for (TaskModel task : tasks) {
 				// Only add task if it passes the filter
 				if (filter.check(task)) {
-					// create stage view and controller.
+					// create task view and controller.
 					int comments = 0;
 					for (ActivityModel a : task.getActivities()) {
 						if (a.getType() == ActivityModel.activityModelType.COMMENT) {

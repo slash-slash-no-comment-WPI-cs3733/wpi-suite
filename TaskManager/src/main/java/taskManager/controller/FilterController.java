@@ -90,7 +90,7 @@ public class FilterController implements ItemListener, PopupMenuListener {
 	private void checkForFilter() {
 		if (hasFilter()) {
 			TaskFilter filter = new TaskFilter();
-			// WorkflowController.setCurrentFilter(filter);
+			WorkflowController.getInstance().setCurrentFilter(filter);
 			if (archiveChecked()) {
 				filter.setArchive(ArchiveState.ARCHIVED);
 			}
@@ -101,8 +101,9 @@ public class FilterController implements ItemListener, PopupMenuListener {
 				filter.setCategories(categoriesSelected());
 			}
 		} else {
-			WorkflowController.getInstance().reloadData();
+			WorkflowController.getInstance().setCurrentFilter(new TaskFilter());
 		}
+		WorkflowController.getInstance().reloadData();
 	}
 
 	@Override

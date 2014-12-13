@@ -230,7 +230,6 @@ public class TaskFilter {
 		if (categories == null) {
 			return true;
 		}
-
 		return categories.contains(task.getCategory());
 	}
 

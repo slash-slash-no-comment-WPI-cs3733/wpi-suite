@@ -30,7 +30,6 @@ import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
 import taskManager.view.TaskInfoPreviewView;
 import taskManager.view.WorkflowView;
-import taskManager.controller.TaskFilter;
 
 /**
  * A controller for the workflow view
@@ -45,6 +44,8 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	private WorkflowView view;
 	private WorkflowModel model;
 	private boolean hasNewStageView;
+
+	private TaskFilter currentFilter;
 
 	private static WorkflowController instance;
 
@@ -69,6 +70,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		model.reset();
 
 		hasNewStageView = false;
+		currentFilter = new TaskFilter();
 
 		reloadData();
 
@@ -81,7 +83,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 			@Override
 			public void ancestorMoved(AncestorEvent event) {
 			}
-			
+
 			@Override
 			public void ancestorAdded(AncestorEvent event) {
 				if (SwingUtilities.getWindowAncestor(view) != null) {
@@ -98,8 +100,8 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 			}
 		});
 	}
-	
-	public void searchTask(){
+
+	public void searchTask() {
 		TaskFilter searchTaskTitle = new TaskFilter();
 		searchTaskTitle.setString(view.getSearch().toString());
 	}
@@ -109,13 +111,15 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 *
 	 */
 	public synchronized void reloadData() {
-		reloadData(new TaskFilter());
+		reloadData(currentFilter);
 	}
-	
+
 	public synchronized void reloadData(TaskFilter filter) {
 		// clear the stages previously on the view
+		currentFilter = filter;
 		this.removeChangeTitles();
 		hasNewStageView = false;
+
 		for (Component c : view.getComponents()) {
 			if (!(c instanceof TaskInfoPreviewView)) {
 				view.remove(c);
@@ -134,6 +138,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 			view.addStageView(stv);
 		}
 		view.revalidate();
+		view.repaint();
 	}
 
 	/**
@@ -174,6 +179,16 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	}
 
 	/**
+	 * saves the the filter that is currently being applied
+	 * 
+	 * @param filter
+	 *            the filter to be applied
+	 */
+	public void setCurrentFilter(TaskFilter filter) {
+		this.currentFilter = filter;
+	}
+
+	/**
 	 * 
 	 * Returns the workflow model.
 	 *
@@ -182,8 +197,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	public WorkflowModel getModel() {
 		return model;
 	}
-	
-	
+
 	@Override
 	public void saveDrop(JPanel panel, int index) {
 		// Make sure we cast safely

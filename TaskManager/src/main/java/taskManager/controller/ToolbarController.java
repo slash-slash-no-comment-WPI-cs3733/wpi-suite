@@ -17,8 +17,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,21 +42,22 @@ import edu.wpi.cs.wpisuitetng.janeway.config.ConfigManager;
  * @author Sam Khalandovsky
  */
 public class ToolbarController extends DropTargetAdapter implements
-		ActionListener, ItemListener, ComponentListener {
+		ActionListener, ComponentListener {
 
 	private ToolbarView view;
 
 	private static ToolbarController instance;
+	private FilterController filterC;
 
 	/**
 	 * Hide Singleton constructor
 	 */
 	private ToolbarController() {
-		FilterController c = new FilterController();
+		filterC = new FilterController();
 		reset();
-		view.getCategories().addPopupMenuListener(c);
-		view.getArchiveCheckBox().addItemListener(c);
-		view.getMyTasksCheckBox().addItemListener(c);
+		view.getCategories().addPopupMenuListener(filterC);
+		view.getArchiveCheckBox().addItemListener(filterC);
+		view.getMyTasksCheckBox().addItemListener(filterC);
 	}
 
 	public void reset() {
@@ -297,12 +296,6 @@ public class ToolbarController extends DropTargetAdapter implements
 			dtde.rejectDrag();
 		}
 
-	}
-
-	@Override
-	public void itemStateChanged(ItemEvent e) {
-		// Reload the workflow view.
-		WorkflowController.getInstance().reloadData();
 	}
 
 	/**

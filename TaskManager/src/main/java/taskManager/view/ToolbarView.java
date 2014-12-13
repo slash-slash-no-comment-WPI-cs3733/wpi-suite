@@ -142,10 +142,8 @@ public class ToolbarView extends JToolBar {
 		checks.setMaximumSize(new Dimension(90, 30));
 		// Checkbox for toggling showing archived tasks.
 		archiveCheckBox = new JCheckBox("<html>Show archived tasks</html>");
-		archiveCheckBox.addItemListener(controller);
 		archiveCheckBox.setOpaque(false);
 		myTasksCheckBox = new JCheckBox("<html>Show only my tasks</html>");
-		myTasksCheckBox.addItemListener(controller);
 		myTasksCheckBox.setOpaque(false);
 		checks.add(archiveCheckBox);
 		checks.add(myTasksCheckBox);
