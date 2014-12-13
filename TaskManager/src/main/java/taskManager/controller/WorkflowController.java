@@ -153,8 +153,11 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 
 			PromptSupport
 					.setPrompt("New Stage Name", newStageV.getLabelField());
-			view.addStageView(newStageV);
+			PromptSupport.setFocusBehavior(
+					PromptSupport.FocusBehavior.SHOW_PROMPT,
+					newStageV.getLabelField());
 
+			view.addStageView(newStageV);
 			removeTaskInfos(false);
 
 			view.revalidate();
