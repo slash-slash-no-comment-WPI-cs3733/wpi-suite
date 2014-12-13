@@ -145,6 +145,8 @@ public class EditTaskView extends JScrollPane {
 		window = new JPanel(new MigLayout());
 		this.setViewportView(center);
 		this.setLayout(new ScrollPaneLayout());
+		this.getVerticalScrollBar().setUnitIncrement(12);
+		this.getHorizontalScrollBar().setUnitIncrement(12);
 		final Dimension panelSize = getPreferredSize();
 		panelSize.width = 1300; // TODO
 		panelSize.height = 650; // Decide size

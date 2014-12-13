@@ -19,13 +19,13 @@ import java.awt.Color;
  */
 public class Colors {
 
-	public static Color TASK = Color.decode("#FCFCFC");
-	public static Color TASK_HOVER = Color.LIGHT_GRAY;
-	public static Color TASK_CLICKED = Color.decode("#5CF643");
-	public static Color ARCHIVE = Color.decode("#FFCF33");
-	public static Color ARCHIVE_CLICKED = Color.decode("#FFD263");
-	public static Color SHADOW_COLOR = Color.BLACK;
-	public static Color STAGE = Color.decode("#C8DDF1");
-	public static Color INPUT_ERROR = Color.decode("#FCFCFC");
-
+	public static final Color TASK = Color.decode("#FCFCFC");
+	public static final Color TASK_HOVER = Color.LIGHT_GRAY;
+	public static final Color TASK_CLICKED = Color.decode("#5CF643");
+	public static final Color ARCHIVE = Color.decode("#FFCF33");
+	public static final Color ARCHIVE_CLICKED = Color.decode("#FFDB66");
+	public static final Color ARCHIVE_HOVER = Color.decode("#E6B000");
+	public static final Color SHADOW_COLOR = Color.BLACK;
+	public static final Color STAGE = Color.decode("#C8DDF1");
+	public static final Color INPUT_ERROR = Color.decode("#FCFCFC");
 }
