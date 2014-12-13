@@ -389,10 +389,10 @@ public class EditTaskController implements ActionListener {
 		if (etv.getCategories().getSelectedIndex() == 0) {
 			model.setCategory(null);
 		}
-		for (int i = 1; i < TaskCategory.values().length; i++) {
+		for (int i = 1; i <= TaskCategory.values().length; i++) {
 			if (etv.getCategories().getSelectedItem()
-					.equals(FilterView.CATEGORY_NAMES[i])) {
-				model.setCategory(TaskCategory.values()[i]);
+					.equals(FilterView.CATEGORY_NAMES[i - 1])) {
+				model.setCategory(TaskCategory.values()[i - 1]);
 			}
 		}
 

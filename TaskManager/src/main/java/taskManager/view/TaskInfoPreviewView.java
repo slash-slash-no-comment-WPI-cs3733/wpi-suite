@@ -118,11 +118,13 @@ public class TaskInfoPreviewView extends JPanel {
 		Dimension titleSize = new Dimension(190,
 				title.getPreferredSize().height + 10);
 
-		title.setFont(title.getFont().deriveFont(15.0f));
+		title.setFont(new Font("Default", Font.BOLD, 15));
+		title.setForeground(Color.white);
 		title.setPreferredSize(titleSize);
 		title.setSize(titleSize);
 		title.setMaximumSize(titleSize);
 		titleBar.add(title);
+
 		// Closable 'x' button
 		final JButton closeButton = new JButton("\u2716");
 		closeButton.setName(X);
@@ -130,11 +132,6 @@ public class TaskInfoPreviewView extends JPanel {
 		closeButton.setMargin(new Insets(0, 0, 0, 0));
 		closeButton.addActionListener(this.controller);
 		titleBar.add(closeButton);
-		// if (model.isArchived()) {
-		// titleBar.setBackground(Colors.ARCHIVE_CLICKED);
-		// } else {
-		// titleBar.setBackground(Colors.TASK_CLICKED);
-		// }
 		titleBar.setBackground(titleColor);
 
 		// if the task is archived, say so.
@@ -151,7 +148,6 @@ public class TaskInfoPreviewView extends JPanel {
 		info.add(titleBar);
 
 		// The task's description
-
 		JTextArea description = new JTextArea();
 		description.setText(this.taskM.getDescription());
 
@@ -168,10 +164,6 @@ public class TaskInfoPreviewView extends JPanel {
 		descScroll.setMinimumSize(descScrollSize);
 		descScroll.setPreferredSize(descScrollSize);
 		descScroll.setBorder(BorderFactory.createEmptyBorder());
-		// These remove the border around the JScrollPane. Might be wanted later
-		// Border border = BorderFactory.createEmptyBorder(0, 0, 0, 0);
-		// descScroll.setViewportBorder(border);
-		// descScroll.setBorder(border);
 		info.add(descScroll);
 
 		JPanel spacer = new JPanel();
@@ -183,9 +175,6 @@ public class TaskInfoPreviewView extends JPanel {
 		spacer.setBackground(Colors.TASK);
 		info.add(spacer);
 
-		// The task's due date
-		// final Calendar calDate = Calendar.getInstance();
-		// calDate.setTime();
 		// The task's due date
 		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		JLabel dueDate = new JLabel("<html><b><i>Due:</i></b> "

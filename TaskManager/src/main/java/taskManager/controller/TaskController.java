@@ -35,6 +35,8 @@ public class TaskController implements MouseListener {
 	public static Boolean anyTaskInfoOut = false;
 	private Boolean thisTaskInfoOut = false;
 
+	private boolean isHovered;
+
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
 	 * view and model parameters.
@@ -49,11 +51,8 @@ public class TaskController implements MouseListener {
 		this.model = model;
 
 		// Set the background to orange if the task is archived.
-		if (model.isArchived()) {
-			view.setBackground(Colors.ARCHIVE);
-		} else {
-			view.setBackground(Colors.TASK);
-		}
+
+		view.setBackground(Colors.TASK);
 
 		if (model.getDueDate().before(new Date())) {
 			view.setDateColor(Color.RED);
@@ -119,14 +118,22 @@ public class TaskController implements MouseListener {
 	 *
 	 */
 	public void changeToHoverColor() {
-		if (isArchived() && !thisTaskInfoOut) {
-			view.setBackground(Colors.ARCHIVE_HOVER);
-		} else if (!thisTaskInfoOut) {
+		if (!thisTaskInfoOut) {
 			view.setBackground(Colors.TASK_HOVER);
 		}
 		if (model.getCategory() == null) {
-			view.setCategoryColor(view.getBackground());
+			view.setCategoryColor(view.getBackground(), false);
 		}
+		isHovered = true;
+	}
+
+	/**
+	 * return whether or not the hover effect is on
+	 * 
+	 * @return true if the hover effect is activated, false if it isn't
+	 */
+	public boolean isHovered() {
+		return isHovered;
 	}
 
 	/**
@@ -136,10 +143,9 @@ public class TaskController implements MouseListener {
 	 * @return the color corresponding to the category of the task
 	 */
 	public Color getCategoryColor() {
+
 		Color catColor = Colors.TASK;
-		if (isArchived()) {
-			catColor = Colors.ARCHIVE;
-		}
+
 		for (int i = 0; i < TaskCategory.values().length; i++) {
 			if (TaskCategory.values()[i].equals(model.getCategory())) {
 				catColor = Colors.CAT_COLORS[i];
@@ -154,15 +160,17 @@ public class TaskController implements MouseListener {
 	 *
 	 */
 	public void resetBackground() {
-		if (thisTaskInfoOut) {
+		if (thisTaskInfoOut && !isArchived()) {
 			view.setBackground(getCategoryColor());
-		} else if (isArchived()) {
-			view.setBackground(Colors.ARCHIVE);
-
 		} else {
 			view.setBackground(Colors.TASK);
 		}
-		view.setCategoryColor(getCategoryColor());
+		if (model.getCategory() == null) {
+			view.setCategoryColor(Colors.TASK, false);
+		} else {
+			view.setCategoryColor(getCategoryColor(), true);
+		}
+		isHovered = false;
 	}
 
 	@Override
@@ -184,10 +192,10 @@ public class TaskController implements MouseListener {
 		TaskController.anyTaskInfoOut = true;
 
 		// set the correct background color
-		if (model.getCategory() == null) {
+		if (model.getCategory() == null && !isArchived()) {
 			view.setBackground(Colors.TASK_CLICKED);
-			view.setCategoryColor(view.getBackground());
-		} else {
+			view.setCategoryColor(view.getBackground(), false);
+		} else if (!isArchived()) {
 			view.setBackground(getCategoryColor());
 		}
 	}

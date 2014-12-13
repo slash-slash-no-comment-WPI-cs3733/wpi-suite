@@ -20,15 +20,14 @@ import java.awt.Color;
 public class Colors {
 
 	public static final Color TASK = Color.decode("#FCFCFC");
-	public static final Color TASK_HOVER = Color.LIGHT_GRAY;
-	public static final Color TASK_CLICKED = Color.decode("#5CF643");
-	public static final Color ARCHIVE = Color.decode("#FFCF33");
-	public static final Color ARCHIVE_CLICKED = Color.decode("#FFDB66");
-	public static final Color ARCHIVE_HOVER = Color.decode("#E6B000");
+	public static final Color TASK_HOVER = Color.decode("#EEEEEE");
+	public static final Color TASK_CLICKED = Color.LIGHT_GRAY;
 	public static final Color SHADOW_COLOR = Color.BLACK;
 	public static final Color STAGE = Color.decode("#C8DDF1");
 	public static final Color INPUT_ERROR = Color.decode("#FCFCFC");
 
-	public static final Color[] CAT_COLORS = new Color[] { Color.red,
-			Color.green, Color.blue, Color.yellow, Color.decode("#800080") };
+	public static final Color[] CAT_COLORS = new Color[] {
+			Color.decode("#EF5350"), Color.decode("#4CAF50"),
+			Color.decode("#2196F3"), Color.decode("#FFEB3B"),
+			Color.decode("#7E57C2") };
 }

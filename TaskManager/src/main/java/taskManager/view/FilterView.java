@@ -8,12 +8,13 @@
  *******************************************************************************/
 package taskManager.view;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 
+import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -43,22 +44,20 @@ public class FilterView extends JPanel {
 	private JPanel categories;
 	private ArrayList<JLabel> labels;
 
-	private static final Dimension SIZE = new Dimension(300, 60);
+	private static final Dimension SIZE = new Dimension(150, 90);
 
 	public FilterView() {
 		filterC = new FilterController(this);
 
 		// adds a panel for this
-		this.setLayout(new GridLayout(2, 1));
+		this.setLayout(new GridLayout(3, 1));
 		this.setMaximumSize(SIZE);
-		// this.setMinimumSize(SIZE);
 		this.setPreferredSize(SIZE);
-		// this.setSize(SIZE);
 		this.setOpaque(false);
 
-		// adds a panel for the checks and the category picker
-		JPanel lower = new JPanel();
-		lower.setLayout(new GridLayout(1, 2));
+		// // adds a panel for the checks and the category picker
+		// JPanel lower = new JPanel();
+		// lower.setLayout(new GridLayout(1, 2));
 
 		// adds a panel for my tasks and archived check boxes
 		JPanel checks = new JPanel();
@@ -75,21 +74,27 @@ public class FilterView extends JPanel {
 		myTasksCheckBox.setMinimumSize(checks.getMinimumSize());
 		checks.add(archiveCheckBox);
 		checks.add(myTasksCheckBox);
+		checks.setOpaque(false);
 
 		// adds the category dropdown
 		categories = new JPanel();
 		categories.setLayout(new FlowLayout());
+		categories.setOpaque(false);
 		labels = new ArrayList<JLabel>();
 		for (int i = 0; i < TaskCategory.values().length; i++) {
 			JPanel catBox = new JPanel();
-			catBox.setLayout(new BorderLayout());
-			JLabel c = new JLabel("");
-			catBox.add(c, BorderLayout.CENTER);
-			labels.add(c);
 			catBox.setSize(20, 20);
 			catBox.setPreferredSize(new Dimension(20, 20));
 			catBox.setMinimumSize(new Dimension(20, 20));
 			catBox.setMaximumSize(new Dimension(20, 20));
+			catBox.setLayout(new BoxLayout(catBox, BoxLayout.Y_AXIS));
+			JLabel c = new JLabel("");
+			c.setFont(new Font("Default", Font.BOLD, 14));
+			c.setMinimumSize(catBox.getPreferredSize());
+			c.setAlignmentX(CENTER_ALIGNMENT);
+			c.setAlignmentY(CENTER_ALIGNMENT);
+			catBox.add(c);
+			labels.add(c);
 			catBox.setName(CATEGORY_NAMES[i]);
 			catBox.setBackground(Colors.CAT_COLORS[i]);
 			catBox.addMouseListener(filterC);
@@ -98,9 +103,9 @@ public class FilterView extends JPanel {
 		// categories.setSize(100, 30);
 		categories.setMaximumSize(new Dimension(100, 30));
 
-		lower.add(checks);
-		lower.add(categories);
-		this.add(lower);
+		this.add(categories);
+		this.add(checks);
+
 	}
 
 	/**

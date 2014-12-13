@@ -88,11 +88,11 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 					tkv.setController(new TaskController(tkv, task));
 					// sets the category color
 					if (task.getCategory() == null) {
-						tkv.setCategoryColor(Colors.TASK);
+						tkv.setCategoryColor(Colors.TASK, false);
 					}
 					for (int i = 0; i < TaskCategory.values().length; i++) {
 						if (TaskCategory.values()[i].equals(task.getCategory())) {
-							tkv.setCategoryColor(Colors.CAT_COLORS[i]);
+							tkv.setCategoryColor(Colors.CAT_COLORS[i], true);
 						}
 					}
 

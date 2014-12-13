@@ -151,8 +151,12 @@ public class ToolbarView extends JToolBar {
 		buttons.add(createTask);
 		buttons.add(createStage);
 		buttons.add(statistics);
+		buttons.add(new Box.Filler(new Dimension(10, 0), new Dimension(40, 0),
+				new Dimension(40, 0)));
 		buttons.add(filters);
-		buttons.add(Box.createHorizontalGlue());
+		targets.add(new Box.Filler(new Dimension(5, 0), new Dimension(40, 0),
+				new Dimension(40, 0)));
+		// buttons.add(Box.createHorizontalGlue());
 
 		// Add targets to the target panel
 		targets.add(archive);

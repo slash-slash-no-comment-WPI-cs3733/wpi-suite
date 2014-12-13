@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -53,6 +54,9 @@ public class TaskView extends JPanel implements Transferable {
 	private JLabel dueLabel;
 	private JPanel color;
 
+	private Image ARCHIVE_BG;
+	private Image ARCHIVE_HOVER;
+
 	/**
 	 * Constructor, creates a list-like view for the following information: the
 	 * name of the task, the due date and the estimated effort
@@ -67,6 +71,16 @@ public class TaskView extends JPanel implements Transferable {
 	 *            the number of comments on the task
 	 */
 	public TaskView(String name, Date duedate, int users, int comments) {
+		// read the hover pbackground picture files
+		try {
+			ARCHIVE_BG = ImageIO.read(this.getClass().getResourceAsStream(
+					"archived-background.png"));
+			ARCHIVE_HOVER = ImageIO.read(this.getClass().getResourceAsStream(
+					"archived-background-hover.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		this.setAlignmentX(LEFT_ALIGNMENT);
 
@@ -166,7 +180,8 @@ public class TaskView extends JPanel implements Transferable {
 		nameLabel.setPreferredSize(this.getSize());
 		nameLabel.setAlignmentX(LEFT_ALIGNMENT);
 		nameLabel.setText(name);
-		nameLabel.setFont(new Font("Default", Font.BOLD, 14));
+		nameLabel.setFont(new Font("Default", Font.PLAIN, 14));
+		nameLabel.setForeground(Color.black);
 		nameLabel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 
 		// this is the panel that will display the category color
@@ -219,6 +234,18 @@ public class TaskView extends JPanel implements Transferable {
 		super.setVisible(visible);
 	}
 
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		if (controller.isArchived()) {
+			if (controller.isHovered()) {
+				g.drawImage(ARCHIVE_HOVER, 0, 0, this);
+			} else {
+				g.drawImage(ARCHIVE_BG, 0, 0, this);
+			}
+		}
+	}
+
 	/**
 	 * 
 	 * Returns the TaskController.
@@ -233,10 +260,13 @@ public class TaskView extends JPanel implements Transferable {
 	 * 
 	 * Changes the color of the category panel
 	 *
-	 * @param the
-	 *            color to set the panel to
+	 * @param color
+	 *            the color to set the panel to the given color
+	 * @param opaque
+	 *            whether or not the category bar should be opaque
 	 */
-	public void setCategoryColor(Color color) {
+	public void setCategoryColor(Color color, boolean opaque) {
+		this.color.setOpaque(opaque);
 		this.color.setBackground(color);
 	}
 
