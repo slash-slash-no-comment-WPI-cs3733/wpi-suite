@@ -68,7 +68,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 
 	@BeforeClass
 	public static void netSetup() {
-		Network.setInstance(new MockNetwork());
+		Network.setInstance(new MockNetwork(true));
 	}
 
 	@Before
