@@ -48,7 +48,7 @@ public class TaskInputController implements KeyListener, FocusListener,
 	 */
 	public TaskInputController(EditTaskView etv) {
 		this.etv = etv;
-		checkFields();
+		checkEditFields();
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class TaskInputController implements KeyListener, FocusListener,
 	 * 
 	 * @return true if all the fields are valid
 	 */
-	public boolean checkFields() {
+	public boolean checkEditFields() {
 
 		addUsersSelected = !etv.getProjectUsersList().isSelectionEmpty();
 		removeUsersSelected = !etv.getUsersList().isSelectionEmpty();
@@ -116,22 +116,26 @@ public class TaskInputController implements KeyListener, FocusListener,
 	}
 
 	/**
-	 * sets all 4 error bubbles to invisible
+	 *
+	 * @return true if the comment box has a valid comment in it.
 	 */
-	private void setAllErrorsInvisible() {
-		etv.setActualEffortErrorVisible(false);
-		etv.setEstEffortErrorVisible(false);
-		etv.setDescriptionErrorVisible(false);
-		etv.setTitleErrorVisible(false);
+	public boolean checkCommentBox() {
+		if (etv.getCommentsFieldText().trim().isEmpty()) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	/**
 	 * validate the inputs
 	 */
 	public void validate() {
-		etv.setSaveEnabled(this.checkFields() && isEdited());
+		etv.setSaveEnabled(this.checkEditFields() && isEdited());
 		etv.setAddUserEnabled(addUsersSelected);
 		etv.setRemoveUserEnabled(removeUsersSelected);
+
+		etv.setSubmitCommentEnabled(this.checkCommentBox());
 	}
 
 	/**

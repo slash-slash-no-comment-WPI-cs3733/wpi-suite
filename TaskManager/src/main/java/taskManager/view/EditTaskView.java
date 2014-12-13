@@ -27,6 +27,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 
 import net.java.balloontip.BalloonTip;
@@ -85,6 +86,7 @@ public class EditTaskView extends JPanel {
 	private JButton removeUser;
 	private JButton delete;
 	private JButton addReq;
+	private JButton submitComment;
 
 	private JCheckBox archive;
 
@@ -93,6 +95,7 @@ public class EditTaskView extends JPanel {
 	private final JXDatePicker dateField;
 	private final JTextField estEffortField;
 	private final JTextField actEffortField;
+	private JTextArea commentBox;
 	private final JPanel window;
 
 	private BalloonTip titleError;
@@ -137,6 +140,7 @@ public class EditTaskView extends JPanel {
 		// TODO: User Mode to switch between create and edit views
 		// When Task added make EditTask take in a Task called currTask
 		this.mode = mode;
+		this.activityC = activityC;
 		this.setOpaque(false);
 		// Contains the splitPane and button panel
 		this.setLayout(new MigLayout("wrap 1, align center", "[grow, fill]",
@@ -257,10 +261,11 @@ public class EditTaskView extends JPanel {
 		JPanel SpacerTop = new JPanel(new MigLayout());
 		JPanel SpacerBtm = new JPanel(new MigLayout());
 		JPanel BasicInfo = new JPanel(new MigLayout());
-		JPanel Users = new JPanel(new MigLayout());
+		JPanel Users = new JPanel(new MigLayout("align center, wrap 1",
+				"[grow, fill]"));
 		JPanel Effort = new JPanel(new MigLayout());
-		JPanel Requirements = new JPanel(new MigLayout());
-		JPanel EditSaveCancel = new JPanel(new MigLayout("align center"));
+		JPanel Requirements = new JPanel(new MigLayout("center"));
+		JPanel EditSaveCancel = new JPanel(new MigLayout("center"));
 		EditSaveCancel.setOpaque(false);
 		JPanel dateAndStage = new JPanel(new MigLayout());
 		JPanel EffortDateStage = new JPanel(new MigLayout());
@@ -300,10 +305,10 @@ public class EditTaskView extends JPanel {
 		// Users Panel internal content
 
 		Users.setBorder(BorderFactory.createTitledBorder(""));
-		JPanel UserPanel = new JPanel(new MigLayout());
-		JPanel usersListPanel = new JPanel(new MigLayout());
-		JPanel projectUsersListPanel = new JPanel(new MigLayout());
-		JPanel addRemoveButtons = new JPanel(new MigLayout());
+		JPanel UserPanel = new JPanel(new MigLayout("align center"));
+		JPanel usersListPanel = new JPanel(new MigLayout("align center"));
+		JPanel projectUsersListPanel = new JPanel(new MigLayout("align center"));
+		JPanel addRemoveButtons = new JPanel(new MigLayout("align center"));
 		usersListPanel.add(assignedUsersLabel, "wrap");
 
 		usersListPanel.add(usersList);
@@ -317,8 +322,8 @@ public class EditTaskView extends JPanel {
 		UserPanel.add(addRemoveButtons);
 		UserPanel.add(usersListPanel);
 
-		Users.add(UserPanel, "h 60%, wrap, gapbottom 15px");
-		Users.add(Requirements, "h 40%, gaptop 20px, gapleft 35px");
+		Users.add(UserPanel, "h 60%");
+		Users.add(Requirements, "h 40%");
 
 		// EditSaveCancel Panel internal content
 
@@ -368,9 +373,12 @@ public class EditTaskView extends JPanel {
 		JScrollPane windowScroll = new JScrollPane(window);
 		windowScroll.getVerticalScrollBar().setUnitIncrement(12);
 		windowScroll.getHorizontalScrollBar().setUnitIncrement(12);
-		JPanel tabs = new JPanel();
-		tabs.setLayout(new MigLayout("", "[grow, fill]", "[grow, fill]"));
+
+		// The activities and comments tabs
+		JPanel tabs = new JPanel(new MigLayout("wrap 1", "[grow, fill]",
+				"[grow, fill][]"));
 		tabs.add(activitiesTabs);
+		tabs.add(initCommentBoxandBtns());
 		tabs.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
@@ -382,6 +390,40 @@ public class EditTaskView extends JPanel {
 		splitPane.setResizeWeight(.5);
 		this.add(splitPane);
 		this.add(EditSaveCancel);
+	}
+
+	private JPanel initCommentBoxandBtns() {
+		JPanel commentAndBtns = new JPanel(new MigLayout("wrap 1",
+				"[grow, fill]", "[]"));
+
+		commentBox = new JTextArea();
+		commentBox.setRows(5);
+		commentBox.setWrapStyleWord(true);
+		commentBox.setLineWrap(true);
+
+		commentBox.getInputMap()
+				.put(KeyStroke.getKeyStroke("TAB"), "doNothing");
+		commentBox.getInputMap().put(KeyStroke.getKeyStroke("ENTER"),
+				"doNothing");
+
+		JScrollPane commentScroll = new JScrollPane(commentBox,
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		commentScroll.setMinimumSize(new Dimension(20, 100));
+
+		// Buttons
+		JPanel buttons = new JPanel();
+		buttons.setOpaque(false);
+		submitComment = new JButton("Submit");
+		submitComment.setName(EditTaskView.SUBMIT_COMMENT);
+		submitComment.setEnabled(false);
+		buttons.add(submitComment);
+		buttons.setMaximumSize(new Dimension(10000, 40));
+
+		commentAndBtns.add(commentScroll);
+		commentAndBtns.add(buttons);
+
+		return commentAndBtns;
 	}
 
 	/**
@@ -408,6 +450,7 @@ public class EditTaskView extends JPanel {
 		removeUser.addActionListener(controller);
 		addReq.addActionListener(controller);
 		delete.addActionListener(controller);
+		submitComment.addActionListener(controller);
 	}
 
 	/**
@@ -428,6 +471,8 @@ public class EditTaskView extends JPanel {
 		requirements.addPopupMenuListener(fieldC);
 		dateField.addPropertyChangeListener(fieldC);
 		archive.addItemListener(fieldC);
+
+		commentBox.addKeyListener(fieldC);
 	}
 
 	/**
@@ -817,7 +862,7 @@ public class EditTaskView extends JPanel {
 		if (visible && titleField.getKeyListeners().length > 0) {
 			final TaskInputController tic = (TaskInputController) titleField
 					.getKeyListeners()[0];
-			tic.checkFields();
+			tic.checkEditFields();
 		}
 		if (visible && controller != null) {
 			controller.reloadData();
@@ -852,5 +897,32 @@ public class EditTaskView extends JPanel {
 	 */
 	public Mode getMode() {
 		return mode;
+	}
+
+	/**
+	 * Sets the comment submit button to be enabled or disabled.
+	 * 
+	 * @param e
+	 *            true to make the submit button enabled, false to disable it
+	 */
+	public void setSubmitCommentEnabled(boolean e) {
+		submitComment.setEnabled(e);
+	}
+
+	/**
+	 * Returns the text in the comments field.
+	 * 
+	 * @return The text in the comments field
+	 */
+	public String getCommentsFieldText() {
+		return commentBox.getText();
+	}
+
+	/**
+	 * Clears the text in the comments field.
+	 */
+	public void clearText() {
+		commentBox.setText("");
+		submitComment.setEnabled(false);
 	}
 }

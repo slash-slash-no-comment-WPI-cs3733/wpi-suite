@@ -26,6 +26,7 @@ import javax.swing.JTabbedPane;
 
 import taskManager.TaskManager;
 import taskManager.model.ActivityModel;
+import taskManager.model.ActivityModel.ActivityModelType;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
@@ -193,7 +194,7 @@ public class EditTaskController implements ActionListener {
 
 			case EditTaskView.SAVE:
 
-				if (etv.getFieldController().checkFields()) {
+				if (etv.getFieldController().checkEditFields()) {
 					// if editing
 					if (isEditingTask()) {
 
@@ -300,6 +301,14 @@ public class EditTaskController implements ActionListener {
 				etv.resetFields();
 				returnToWorkflowView();
 				break;
+			case EditTaskView.SUBMIT_COMMENT:
+				ActivityModel comment = new ActivityModel(
+						etv.getCommentsFieldText(), ActivityModelType.COMMENT);
+				// add the activity
+				activityC.addActivity(comment);
+				etv.clearText();
+				activityC.scrollActivitiesToBottom();
+				WorkflowModel.getInstance().save();
 			}
 		}
 	}

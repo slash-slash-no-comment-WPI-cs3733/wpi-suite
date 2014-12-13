@@ -65,7 +65,6 @@ public class ActivityView extends JPanel {
 		add(info);
 		add(message);
 
-		// this.setMinimumSize(new Dimension(50, 20));
 		this.setPreferredSize(new Dimension(50, 20));
 	}
 }

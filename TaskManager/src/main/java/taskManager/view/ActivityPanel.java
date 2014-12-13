@@ -8,15 +8,11 @@
  *******************************************************************************/
 package taskManager.view;
 
-import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.util.List;
 
-import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.KeyStroke;
 
 import net.miginfocom.swing.MigLayout;
 import taskManager.controller.ActivityController;
@@ -35,9 +31,6 @@ public class ActivityPanel extends JPanel {
 	private static final long serialVersionUID = -8384336474859145673L;
 
 	JPanel activities;
-
-	private JTextArea commentBox;
-	private JButton submit;
 
 	public enum Type {
 		COMMENTS, ALL;
@@ -60,8 +53,7 @@ public class ActivityPanel extends JPanel {
 			ActivityController controller) {
 		this.type = type;
 		// this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		this.setLayout(new MigLayout("wrap 1", "[grow, fill]",
-				"[grow, fill][][]"));
+		this.setLayout(new MigLayout("wrap 1", "[grow, fill]", "[grow, fill]"));
 		this.setOpaque(false);
 
 		// Create list of activities
@@ -86,39 +78,7 @@ public class ActivityPanel extends JPanel {
 		scrollActivitiesToBottom();
 		activityScroll.getVerticalScrollBar().setUnitIncrement(12);
 
-		// Comment textbox
-		commentBox = new JTextArea();
-		commentBox.setRows(5);
-		commentBox.setWrapStyleWord(true);
-		commentBox.setLineWrap(true);
-		commentBox.addKeyListener(controller);
-		commentBox.getInputMap().put(KeyStroke.getKeyStroke("ENTER"),
-				"doNothing");
-		commentBox.getInputMap()
-				.put(KeyStroke.getKeyStroke("TAB"), "doNothing");
-
-		JScrollPane commentScroll = new JScrollPane(commentBox,
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		commentScroll.setMinimumSize(new Dimension(20, 100));
-
-		// Buttons
-		JPanel buttons = new JPanel();
-		buttons.setOpaque(false);
-		submit = new JButton("Submit");
-		submit.setName(ActivityController.SUBMIT);
-		submit.addActionListener(controller);
-		submit.setEnabled(false);
-		buttons.add(submit);
-		buttons.setMaximumSize(new Dimension(10000, 40));
-
 		add(activityScroll);
-		add(commentScroll);
-		add(buttons);
-
-		if (type == Type.ALL) {
-			disableEditing();
-		}
 	}
 
 	/**
@@ -143,14 +103,6 @@ public class ActivityPanel extends JPanel {
 	}
 
 	/**
-	 * Disables editing of comments
-	 */
-	private void disableEditing() {
-		commentBox.setEditable(false);
-		submit.setEnabled(false);
-	}
-
-	/**
 	 * 
 	 * Makes the activitiesScroll JScrollPanel scroll to the bottom.
 	 *
@@ -159,41 +111,5 @@ public class ActivityPanel extends JPanel {
 		Rectangle rect = new Rectangle(0, (int) activities.getPreferredSize()
 				.getHeight(), 10, 10);
 		activities.scrollRectToVisible(rect);
-	}
-
-	/**
-	 * Sets the comment submit button to be enabled or disabled.
-	 * 
-	 * @param e
-	 *            true to make the submit button enabled, false to disable it
-	 */
-	public void setCommentSubmitEnabled(boolean e) {
-		submit.setEnabled(e);
-	}
-
-	/**
-	 * Returns the text in the comments field.
-	 * 
-	 * @return The text in the comments field
-	 */
-	public String getCommentsFieldText() {
-		return commentBox.getText();
-	}
-
-	/**
-	 * Clears the text in the comments field.
-	 */
-	public void clearText() {
-		commentBox.setText("");
-	}
-
-	/**
-	 * 
-	 * The submit button. Used by ActionController.
-	 *
-	 * @return the submit button
-	 */
-	public JButton getSubmitBtn() {
-		return submit;
 	}
 }

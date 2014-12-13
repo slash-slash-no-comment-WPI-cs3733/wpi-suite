@@ -8,19 +8,11 @@
  *******************************************************************************/
 package taskManager.controller;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JButton;
-
 import taskManager.model.ActivityModel;
-import taskManager.model.ActivityModel.ActivityModelType;
 import taskManager.model.TaskModel;
-import taskManager.model.WorkflowModel;
 import taskManager.view.ActivityPanel;
 
 /**
@@ -29,7 +21,7 @@ import taskManager.view.ActivityPanel;
  *
  * @author Clark Jacobsohn
  */
-public class ActivityController implements ActionListener, KeyListener {
+public class ActivityController {
 
 	public static final String SUBMIT = "submit";
 
@@ -89,16 +81,6 @@ public class ActivityController implements ActionListener, KeyListener {
 	}
 
 	/**
-	 * enables or disables the comment submit button
-	 * 
-	 * @param e
-	 *            true is enabled false is disabled
-	 */
-	public void setCommentSubmitEnabled(boolean e) {
-		commentsPanel.setCommentSubmitEnabled(e);
-	}
-
-	/**
 	 * Returns the activities panel for this task, showing all activities
 	 * 
 	 * @return the activities panel for this task
@@ -125,58 +107,8 @@ public class ActivityController implements ActionListener, KeyListener {
 		return activities;
 	}
 
-	/**
-	 * Returns the text in the comments panel text box.
-	 * 
-	 * @return The text in the comments panel text box
-	 */
-	public String getCommentsFieldText() {
-		return commentsPanel.getCommentsFieldText();
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (((JButton) e.getSource()).getName().equals(SUBMIT)) {
-			ActivityModel comment = new ActivityModel(getCommentsFieldText(),
-					ActivityModelType.COMMENT);
-			// add the activity
-			addActivity(comment);
-			commentsPanel.clearText();
-			WorkflowModel.getInstance().save();
-		}
-	}
-
-	@Override
-	public void keyTyped(KeyEvent e) {
-		validateSubmitButton();
-	}
-
-	@Override
-	public void keyPressed(KeyEvent e) {
-		if (validateSubmitButton() && e.getKeyCode() == 10) {
-			ActionEvent ae = new ActionEvent(commentsPanel.getSubmitBtn(), 0,
-					null);
-			actionPerformed(ae);
-			commentsPanel.scrollActivitiesToBottom();
-		}
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		validateSubmitButton();
-	}
-
-	/**
-	 * Checks if the comment box input is valid and sets the comment submit
-	 * button accordingly.
-	 */
-	private boolean validateSubmitButton() {
-		if (commentsPanel.getCommentsFieldText().trim().isEmpty()) {
-			commentsPanel.setCommentSubmitEnabled(false);
-			return false;
-		} else {
-			commentsPanel.setCommentSubmitEnabled(true);
-			return true;
-		}
+	public void scrollActivitiesToBottom() {
+		commentsPanel.scrollActivitiesToBottom();
+		activityPanel.scrollActivitiesToBottom();
 	}
 }
