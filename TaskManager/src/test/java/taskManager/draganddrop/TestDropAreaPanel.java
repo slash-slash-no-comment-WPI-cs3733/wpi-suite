@@ -22,14 +22,12 @@ import org.fest.swing.core.MouseButton;
 import org.fest.swing.fixture.FrameFixture;
 import org.fest.swing.fixture.JPanelFixture;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import taskManager.ClientDataStore;
-import taskManager.JanewayModule;
 import taskManager.MockNetwork;
+import taskManager.TaskManager;
 import taskManager.controller.WorkflowController;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
@@ -60,7 +58,7 @@ public class TestDropAreaPanel {
 	@Before
 	public void setup() {
 
-		JanewayModule.reset();
+		TaskManager.reset();
 
 		wfc = WorkflowController.getInstance();
 
@@ -173,10 +171,5 @@ public class TestDropAreaPanel {
 	@After
 	public void cleanup() {
 		fixture.cleanUp();
-	}
-
-	@AfterClass
-	public static void netTeardown() {
-		ClientDataStore.deleteDataStore();
 	}
 }

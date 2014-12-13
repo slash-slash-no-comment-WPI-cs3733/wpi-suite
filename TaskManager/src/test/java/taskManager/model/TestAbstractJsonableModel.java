@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import taskManager.JanewayModule;
+import taskManager.TaskManager;
 
 /**
  * Description
@@ -31,7 +31,7 @@ public class TestAbstractJsonableModel {
 	@Before
 	public void setUp() {
 
-		JanewayModule.reset();
+		TaskManager.reset();
 
 		wm = WorkflowModel.getInstance();
 
