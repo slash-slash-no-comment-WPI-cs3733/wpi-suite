@@ -12,7 +12,6 @@ package taskManager.view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -29,8 +28,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.plaf.basic.BasicSplitPaneDivider;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 import net.java.balloontip.BalloonTip;
 import net.java.balloontip.BalloonTip.AttachLocation;
@@ -141,10 +138,14 @@ public class EditTaskView extends JPanel {
 		// When Task added make EditTask take in a Task called currTask
 		this.mode = mode;
 		this.setOpaque(false);
-		this.setLayout(new MigLayout("wrap 1", "[grow, fill]"));
+		// Contains the splitPane and button panel
+		this.setLayout(new MigLayout("wrap 1, align center", "[grow, fill]",
+				"[grow, fill][]"));
 		this.activityC = activityC;
 
-		window = new JPanel(new MigLayout());
+		// the Panel holding all task editing (not activity) stuff
+		window = new JPanel(new MigLayout("center align", "[][][]",
+				"[grow, fill]"));
 
 		// JLabels
 		JLabel titleLabel = new JLabel("Title");
@@ -173,6 +174,7 @@ public class EditTaskView extends JPanel {
 		titleField.setName(TITLE);
 
 		descripArea = new JTextArea(14, 26);
+		descripArea.setMinimumSize(new Dimension(20, 100));
 		descripArea.setName(DESCRIP);
 		descripArea.setEditable(true);
 		descripArea.setLineWrap(true);
@@ -227,7 +229,6 @@ public class EditTaskView extends JPanel {
 		this.setAddUserEnabled(false);
 
 		// remove user from list
-
 		removeUser = new JButton("<<");
 		removeUser.setName(REMOVE_USER);
 		this.setRemoveUserEnabled(false);
@@ -246,13 +247,15 @@ public class EditTaskView extends JPanel {
 		cancel.setName(CANCEL);
 		archive = new JCheckBox("Archived");
 		archive.setName(ARCHIVE);
+		archive.setOpaque(false);
 
 		// Combo Box for Stage
 		stages = new JComboBox<String>();
 		stages.setName(STAGES);
 
-		// This is where the 9 primary panels are defined
-		JPanel Spacer = new JPanel(new MigLayout());
+		// This is where the 8 primary panels are defined
+		JPanel SpacerTop = new JPanel(new MigLayout());
+		JPanel SpacerBtm = new JPanel(new MigLayout());
 		JPanel BasicInfo = new JPanel(new MigLayout());
 		JPanel Users = new JPanel(new MigLayout());
 		JPanel Effort = new JPanel(new MigLayout());
@@ -281,12 +284,12 @@ public class EditTaskView extends JPanel {
 		// BasicInfo Panel internal content
 
 		BasicInfo.setBorder(BorderFactory.createTitledBorder(""));
-		BasicInfo.add(titleLabel, "gapleft 5px, wrap");
-		BasicInfo.add(titleField, "gapleft 5px, wrap");
+		BasicInfo.add(titleLabel, "gapleft 15px, wrap");
+		BasicInfo.add(titleField, "gapleft 15px, wrap");
 
-		BasicInfo.add(descriptionLabel, "gapleft 5px, wrap");
+		BasicInfo.add(descriptionLabel, "gapleft 15px, wrap");
 		BasicInfo.add(descriptionScrollPane,
-				"gapbottom 20px, gapleft 5px, wrap");
+				"gapbottom 20px, gapleft 15px, wrap");
 		BasicInfo.add(EffortDateStage, "h 25%, gapleft 5px, gaptop 20px");
 
 		// Requirements Panel internal content
@@ -327,10 +330,11 @@ public class EditTaskView extends JPanel {
 			EditSaveCancel.add(archive);
 		}
 
-		window.add(Spacer, "dock north");
+		window.add(SpacerTop, "dock north");
 		window.add(BasicInfo, "h 80%, w 30%");
 		window.add(Users, "h 80%, w 30%, gapleft 10px");
-		window.add(EditSaveCancel, "dock south, h 10%");
+		window.add(SpacerBtm, "dock south");
+		// window.add(EditSaveCancel, "dock south, h 10%");
 
 		BalloonTipStyle errorStyle = new RoundedBalloonStyle(5, 5,
 				Colors.INPUT_ERROR, Color.red);
@@ -362,40 +366,16 @@ public class EditTaskView extends JPanel {
 		panelSize.height = 500; // Decide size
 		window.setPreferredSize(panelSize);
 
-		JScrollPane fieldsScroll = new JScrollPane(window);
+		JScrollPane windowScroll = new JScrollPane(window);
 		JPanel tabs = new JPanel();
 		tabs.setLayout(new MigLayout("", "[grow, fill]", "[grow, fill]"));
 		tabs.add(activitiesTabs);
 		tabs.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
-				fieldsScroll, tabs);
+				windowScroll, tabs);
 		splitPane.setDividerLocation(900);
-		splitPane.setDividerSize(15);
-		splitPane.setUI(new BasicSplitPaneUI() {
-			@Override
-			public BasicSplitPaneDivider createDefaultDivider() {
-				return new BasicSplitPaneDivider(this) {
-
-					private static final long serialVersionUID = 6473604947769495646L;
-
-					@Override
-					public void paint(Graphics g) {
-					}
-				};
-			}
-		});
-
-		BasicSplitPaneDivider divider = (BasicSplitPaneDivider) splitPane
-				.getComponent(2);
-		// divider.setBackground(Color.BLUE);
-		// divider.setForeground(Color.BLUE);
-
-		// JLabel slider = new JLabel();
-		// slider.setBackground(Color.BLUE);
-		// divider.add(slider);
-		// divider.setLayout(new MigLayout("", "[grow, fill]"));
-		divider.setBorder(BorderFactory.createEmptyBorder(0, 4, 0, 4));
+		splitPane.setDividerSize(10);
 
 		splitPane.setContinuousLayout(true);
 		splitPane.setResizeWeight(.5);
