@@ -13,8 +13,12 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.dnd.DropTarget;
-import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
 import javax.swing.Box;
@@ -68,6 +72,7 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	 * 
 	 * @param controller
 	 *            The ToolbarController associated with this view
+	 * @throws IOException
 	 */
 	public ToolbarView(ToolbarController controller) {
 
@@ -157,16 +162,21 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 
 		// Make language selection drop down
 		languages = new JComboBox<String>();
-		File folder = new File(getClass().getResource(
-				"/taskManager/localization").getFile());
-		File[] listOfFiles = folder.listFiles();
-		for (File file : listOfFiles) {
-			String filename = file.getName();
-			if (filename.endsWith(".properties")) {
-				languages
-						.addItem(filename.substring(0, filename.length() - 11));
+
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths
+				.get(getClass().getResource("/taskManager/localization")
+						.toURI()))) {
+			for (Path entry : stream) {
+				String filename = entry.getFileName().toString();
+				if (filename.endsWith(".properties")) {
+					languages.addItem(filename.substring(0, filename.toString()
+							.length() - ".properties".length()));
+				}
 			}
+		} catch (URISyntaxException | IOException e) {
+			e.printStackTrace();
 		}
+
 		languages.addActionListener(controller);
 
 		// Add title to the title panel
