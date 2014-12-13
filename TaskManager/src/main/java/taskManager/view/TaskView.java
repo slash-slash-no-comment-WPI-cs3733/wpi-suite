@@ -8,6 +8,7 @@
  *******************************************************************************/
 package taskManager.view;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -49,6 +50,7 @@ public class TaskView extends JPanel implements Transferable {
 
 	private JLabel userNumber;
 	private JLabel commentNumber;
+	private JLabel dueLabel;
 
 	/**
 	 * Constructor, creates a list-like view for the following information: the
@@ -100,7 +102,7 @@ public class TaskView extends JPanel implements Transferable {
 		lower.setAlignmentX(LEFT_ALIGNMENT);
 		lower.setOpaque(false);
 
-		JLabel dueLabel = new JLabel("Due: " + (date.get(Calendar.MONTH) + 1)
+		dueLabel = new JLabel("Due: " + (date.get(Calendar.MONTH) + 1)
 				+ "/" + date.get(Calendar.DATE) + "/"
 				+ (date.get(Calendar.YEAR)));
 		dueLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 3));
@@ -216,6 +218,16 @@ public class TaskView extends JPanel implements Transferable {
 	 */
 	public TaskController getController() {
 		return controller;
+	}
+	
+	/**
+	 * Sets the font color of the due date
+	 * used to show red overdue dates
+	 * 
+	 * @param color to set the date to
+	 */
+	public void setDateColor(Color color){
+		dueLabel.setForeground(color);
 	}
 
 	// ----------------------------
