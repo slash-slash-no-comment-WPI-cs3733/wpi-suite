@@ -28,4 +28,7 @@ public class Colors {
 	public static final Color SHADOW_COLOR = Color.BLACK;
 	public static final Color STAGE = Color.decode("#C8DDF1");
 	public static final Color INPUT_ERROR = Color.decode("#FCFCFC");
+
+	public static final Color[] CAT_COLORS = new Color[] { Color.red,
+			Color.green, Color.blue, Color.yellow, Color.decode("#800080") };
 }

@@ -51,6 +51,7 @@ public class TaskView extends JPanel implements Transferable {
 	private JLabel userNumber;
 	private JLabel commentNumber;
 	private JLabel dueLabel;
+	private JPanel color;
 
 	/**
 	 * Constructor, creates a list-like view for the following information: the
@@ -72,7 +73,7 @@ public class TaskView extends JPanel implements Transferable {
 		// creates an empty space around the data
 		JPanel spacer = new JPanel();
 		spacer.setLayout(new BoxLayout(spacer, BoxLayout.Y_AXIS));
-		spacer.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+		spacer.setBorder(BorderFactory.createEmptyBorder(4, 2, 4, 4));
 		spacer.setOpaque(false);
 		spacer.setAlignmentX(LEFT_ALIGNMENT);
 
@@ -85,10 +86,10 @@ public class TaskView extends JPanel implements Transferable {
 		title.setTitlePosition(TitledBorder.LEFT);
 		this.setBorder(title);
 
-		this.setMinimumSize(new Dimension(215, 62));
-		this.setPreferredSize(new Dimension(215, 62));
-		this.setMaximumSize(new Dimension(215, 62));
-		this.setSize(new Dimension(215, 62));
+		this.setMinimumSize(new Dimension(225, 62));
+		this.setPreferredSize(new Dimension(225, 62));
+		this.setMaximumSize(new Dimension(225, 62));
+		this.setSize(new Dimension(225, 62));
 		this.setName(name);
 
 		// convert Date object to Calendar object to avoid using deprecated
@@ -102,9 +103,8 @@ public class TaskView extends JPanel implements Transferable {
 		lower.setAlignmentX(LEFT_ALIGNMENT);
 		lower.setOpaque(false);
 
-		dueLabel = new JLabel("Due: " + (date.get(Calendar.MONTH) + 1)
-				+ "/" + date.get(Calendar.DATE) + "/"
-				+ (date.get(Calendar.YEAR)));
+		dueLabel = new JLabel("Due: " + (date.get(Calendar.MONTH) + 1) + "/"
+				+ date.get(Calendar.DATE) + "/" + (date.get(Calendar.YEAR)));
 		dueLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 3));
 		lower.add(dueLabel);
 		JPanel icons = new JPanel(new FlowLayout());
@@ -169,9 +169,18 @@ public class TaskView extends JPanel implements Transferable {
 		nameLabel.setFont(new Font("Default", Font.BOLD, 14));
 		nameLabel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 
+		// this is the panel that will display the category color
+		color = new JPanel();
+		color.setBackground(Colors.TASK);
+		color.setSize(10, this.getHeight());
+		color.setPreferredSize(new Dimension(10, this.getHeight()));
+		color.setMaximumSize(new Dimension(10, this.getHeight()));
+		color.setMinimumSize(new Dimension(10, this.getHeight()));
+
 		// adds the title, date and icons to the task view
 		spacer.add(nameLabel);
 		spacer.add(lower);
+		this.add(color);
 		this.add(spacer);
 
 		// -----------------------
@@ -219,14 +228,25 @@ public class TaskView extends JPanel implements Transferable {
 	public TaskController getController() {
 		return controller;
 	}
-	
+
 	/**
-	 * Sets the font color of the due date
-	 * used to show red overdue dates
 	 * 
-	 * @param color to set the date to
+	 * Changes the color of the category panel
+	 *
+	 * @param the
+	 *            color to set the panel to
 	 */
-	public void setDateColor(Color color){
+	public void setCategoryColor(Color color) {
+		this.color.setBackground(color);
+	}
+
+	/**
+	 * Sets the font color of the due date used to show red overdue dates
+	 * 
+	 * @param color
+	 *            to set the date to
+	 */
+	public void setDateColor(Color color) {
 		dueLabel.setForeground(color);
 	}
 

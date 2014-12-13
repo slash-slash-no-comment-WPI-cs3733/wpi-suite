@@ -45,7 +45,7 @@ public class FilterView extends JPanel {
 	private JPanel categories;
 	private ArrayList<JLabel> labels;
 
-	private static final Dimension SIZE = new Dimension(200, 60);
+	private static final Dimension SIZE = new Dimension(300, 60);
 
 	public FilterView() {
 		filterC = new FilterController(this);
@@ -65,15 +65,16 @@ public class FilterView extends JPanel {
 		// adds a panel for my tasks and archived check boxes
 		JPanel checks = new JPanel();
 		checks.setLayout(new GridLayout(2, 1));
-		// checks.setMaximumSize(new Dimension(90, 30));
-		checks.setMinimumSize(new Dimension(90, 30));
+		checks.setMinimumSize(new Dimension(150, 30));
 		// Checkbox for toggling showing archived tasks.
 		archiveCheckBox = new JCheckBox("<html>Show archived tasks</html>");
 		archiveCheckBox.setOpaque(false);
 		archiveCheckBox.addItemListener(filterC);
+		archiveCheckBox.setMinimumSize(checks.getMinimumSize());
 		myTasksCheckBox = new JCheckBox("<html>Show only my tasks</html>");
 		myTasksCheckBox.setOpaque(false);
 		myTasksCheckBox.addItemListener(filterC);
+		myTasksCheckBox.setMinimumSize(checks.getMinimumSize());
 		checks.add(archiveCheckBox);
 		checks.add(myTasksCheckBox);
 

@@ -55,6 +55,7 @@ public class TaskInfoPreviewView extends JPanel {
 	private final TaskModel taskM;
 	private final TaskController taskC;
 	private final TaskInfoPreviewController controller;
+	private JPanel titleBar;
 	public static final String EDIT = "edit";
 	public static final String X = "x";
 	public static final int WIDTH = 220;
@@ -72,7 +73,7 @@ public class TaskInfoPreviewView extends JPanel {
 	 *            The location of the associated TaskView
 	 */
 	public TaskInfoPreviewView(TaskModel model, TaskController controller,
-			Point loc) {
+			Point loc, Color titleColor) {
 		taskM = model;
 		taskC = controller;
 		this.controller = new TaskInfoPreviewController(taskC);
@@ -109,8 +110,7 @@ public class TaskInfoPreviewView extends JPanel {
 		info.setOpaque(false);
 
 		// The task's titleBar contains the title and the 'x' button
-
-		JPanel titleBar = new JPanel();
+		titleBar = new JPanel();
 		titleBar.setLayout(new MigLayout("wrap 2", "5[]:push[]", "[]0[center]"));
 		Dimension titleBarSize = new Dimension(this.getWidth(), 30);
 		titleBar.setSize(titleBarSize);
@@ -130,11 +130,12 @@ public class TaskInfoPreviewView extends JPanel {
 		closeButton.setMargin(new Insets(0, 0, 0, 0));
 		closeButton.addActionListener(this.controller);
 		titleBar.add(closeButton);
-		if (model.isArchived()) {
-			titleBar.setBackground(Colors.ARCHIVE_CLICKED);
-		} else {
-			titleBar.setBackground(Colors.TASK_CLICKED);
-		}
+		// if (model.isArchived()) {
+		// titleBar.setBackground(Colors.ARCHIVE_CLICKED);
+		// } else {
+		// titleBar.setBackground(Colors.TASK_CLICKED);
+		// }
+		titleBar.setBackground(titleColor);
 
 		// if the task is archived, say so.
 		if (taskC.isArchived()) {
@@ -309,4 +310,5 @@ public class TaskInfoPreviewView extends JPanel {
 	public TaskController getTaskController() {
 		return taskC;
 	}
+
 }

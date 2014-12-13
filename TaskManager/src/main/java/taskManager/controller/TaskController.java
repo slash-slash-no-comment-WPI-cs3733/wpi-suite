@@ -16,6 +16,7 @@ import java.util.Date;
 
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
+import taskManager.model.TaskModel.TaskCategory;
 import taskManager.view.Colors;
 import taskManager.view.TaskInfoPreviewView;
 import taskManager.view.TaskView;
@@ -123,6 +124,22 @@ public class TaskController implements MouseListener {
 		} else if (!thisTaskInfoOut) {
 			view.setBackground(Colors.TASK_HOVER);
 		}
+		if (model.getCategory() == null) {
+			view.setCategoryColor(view.getBackground());
+		}
+	}
+
+	public Color getCategoryColor() {
+		Color catColor = Colors.TASK;
+		if (isArchived()) {
+			catColor = Colors.ARCHIVE;
+		}
+		for (int i = 0; i < TaskCategory.values().length; i++) {
+			if (TaskCategory.values()[i].equals(model.getCategory())) {
+				catColor = Colors.CAT_COLORS[i];
+			}
+		}
+		return catColor;
 	}
 
 	/**
@@ -131,19 +148,28 @@ public class TaskController implements MouseListener {
 	 *
 	 */
 	public void resetBackground() {
-		if (isArchived() && thisTaskInfoOut) {
-			view.setBackground(Colors.ARCHIVE_CLICKED);
+		if (thisTaskInfoOut) {
+			view.setBackground(getCategoryColor());
 		} else if (isArchived()) {
 			view.setBackground(Colors.ARCHIVE);
-		} else if (thisTaskInfoOut) {
-			view.setBackground(Colors.TASK_CLICKED);
+
 		} else {
 			view.setBackground(Colors.TASK);
 		}
+		view.setCategoryColor(getCategoryColor());
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+
+		Color catColor = Colors.TASK_CLICKED;
+		if (model.getCategory() != null) {
+			for (int i = 0; i < TaskCategory.values().length; i++) {
+				if (TaskCategory.values()[i].equals(model.getCategory())) {
+					catColor = Colors.CAT_COLORS[i];
+				}
+			}
+		}
 
 		// Create the taskinfo bubble
 		final Point stageLoc = view.getParent().getParent().getParent()
@@ -153,16 +179,21 @@ public class TaskController implements MouseListener {
 		final Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
 				view.getLocation().y);
 		WorkflowController.getInstance().setTaskInfo(
-				new TaskInfoPreviewView(model, this, infoLoc));
+				new TaskInfoPreviewView(model, this, infoLoc, catColor));
 
 		// Set the correct flags
 		thisTaskInfoOut = true;
 		TaskController.anyTaskInfoOut = true;
-		// make the associated task a darker color while the bubble is out
-		if (isArchived()) {
-			view.setBackground(Colors.ARCHIVE_CLICKED);
-		} else {
+
+		// set the correct background color
+		if (model.getCategory() == null) {
 			view.setBackground(Colors.TASK_CLICKED);
+			view.setCategoryColor(view.getBackground());
+		}
+		for (int i = 0; i < TaskCategory.values().length; i++) {
+			if (TaskCategory.values()[i].equals(model.getCategory())) {
+				view.setBackground(Colors.CAT_COLORS[i]);
+			}
 		}
 	}
 

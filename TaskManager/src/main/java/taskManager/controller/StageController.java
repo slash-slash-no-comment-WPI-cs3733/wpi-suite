@@ -26,7 +26,9 @@ import taskManager.model.ActivityModel;
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
+import taskManager.model.TaskModel.TaskCategory;
 import taskManager.model.WorkflowModel;
+import taskManager.view.Colors;
 import taskManager.view.StageView;
 import taskManager.view.TaskView;
 
@@ -79,10 +81,21 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 						}
 					}
 
+					// makes a new view for each task
 					TaskView tkv = new TaskView(task.getName(),
 							task.getDueDate(), task.getAssigned().size(),
 							comments);
 					tkv.setController(new TaskController(tkv, task));
+					// sets the category color
+					if (task.getCategory() == null) {
+						tkv.setCategoryColor(Colors.TASK);
+					}
+					for (int i = 0; i < TaskCategory.values().length; i++) {
+						if (TaskCategory.values()[i].equals(task.getCategory())) {
+							tkv.setCategoryColor(Colors.CAT_COLORS[i]);
+						}
+					}
+
 					this.view.addTaskView(tkv);
 				}
 			}

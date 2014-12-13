@@ -318,16 +318,16 @@ public class EditTaskController implements ActionListener {
 			stages.setSelectedItem(selectedStage);
 		}
 
-		// readds categories
+		// reads categories
 		final JComboBox<String> cats = etv.getCategories();
-		cats.removeAll();
+		cats.removeAllItems();
 		cats.addItem("Select Category");
 		cats.setSelectedIndex(0);
 		for (String cat : FilterView.CATEGORY_NAMES) {
 			cats.addItem(cat);
 		}
 		// sets the drop down to the category of the model
-		if (model != null) {
+		if (model != null && model.getCategory() != null) {
 			for (int i = 0; i < FilterView.CATEGORY_NAMES.length; i++) {
 				if (model.getCategory().equals(TaskCategory.values()[i])) {
 					cats.setSelectedIndex(i + 1);
@@ -386,7 +386,10 @@ public class EditTaskController implements ActionListener {
 						(String) etv.getRequirements().getSelectedItem());
 
 		// sets the category
-		for (int i = 0; i < FilterView.CATEGORIES.length; i++) {
+		if (etv.getCategories().getSelectedIndex() == 1) {
+			model.setCategory(null);
+		}
+		for (int i = 1; i < FilterView.CATEGORIES.length; i++) {
 			if (etv.getCategories().getSelectedItem()
 					.equals(FilterView.CATEGORY_NAMES[i])) {
 				model.setCategory(TaskCategory.values()[i]);
