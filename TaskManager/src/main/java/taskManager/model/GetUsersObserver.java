@@ -8,7 +8,7 @@
  *******************************************************************************/
 package taskManager.model;
 
-import taskManager.JanewayModule;
+import taskManager.TaskManager;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.network.models.IRequest;
 import edu.wpi.cs.wpisuitetng.network.models.ResponseModel;
@@ -25,11 +25,11 @@ public class GetUsersObserver extends GenericRequestObserver {
 	 */
 	@Override
 	public void responseSuccess(IRequest iReq) {
-		ResponseModel response = iReq.getResponse();
-		String body = response.getBody();
+		final ResponseModel response = iReq.getResponse();
+		final String body = response.getBody();
 		System.out.println("Response:" + body);
 
-		JanewayModule.users = AbstractJsonableModel
+		TaskManager.users = AbstractJsonableModel
 				.fromJson(body, User[].class);
 
 		// restart the connection
@@ -64,9 +64,9 @@ public class GetUsersObserver extends GenericRequestObserver {
 	 * connections, so we have to close and reopen the connection each time
 	 *
 	 */
-	private void restartConnection() {
+	private static void restartConnection() {
 		if (WorkflowModel.alive) {
-			WorkflowModel.getInstance().updateUsers();
+			WorkflowModel.updateUsers();
 		}
 	}
 

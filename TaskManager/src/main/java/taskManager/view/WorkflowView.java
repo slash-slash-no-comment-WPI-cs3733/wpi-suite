@@ -34,6 +34,9 @@ public class WorkflowView extends JLayeredPane {
 
 	/**
 	 * Constructor for WorkflowView.
+	 * 
+	 * @param controller
+	 *            The workflow controller for this view
 	 */
 	public WorkflowView(WorkflowController controller) {
 		this.controller = controller;

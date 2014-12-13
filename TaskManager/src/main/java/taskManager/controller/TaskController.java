@@ -12,16 +12,13 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.text.SimpleDateFormat;
 
-import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.view.Colors;
 import taskManager.view.TaskInfoPreviewView;
 import taskManager.view.TaskView;
-import taskManager.view.ToolbarView;
 
 /**
  * Controller for Tasks.
@@ -29,14 +26,14 @@ import taskManager.view.ToolbarView;
  * @author Stefan Alexander
  * @version November 9, 2014
  */
-public class TaskController implements MouseListener, MouseMotionListener {
+public class TaskController implements MouseListener {
 
 	private final TaskView view;
 	private final TaskModel model;
-	private Color background;
+	private final Color background;
 
 	public static Boolean anyTaskInfoOut = false;
-	public Boolean thisTaskInfoOut = false;
+	private Boolean thisTaskInfoOut = false;
 
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
@@ -58,7 +55,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 			view.setBackground(Colors.TASK);
 		}
 
-		this.background = view.getBackground();
+		background = view.getBackground();
 	}
 
 	/**
@@ -107,7 +104,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	 *
 	 */
 	public void editTask() {
-		new EditTaskController(model).getView().setTitleFieldFocus();
+		new EditTaskController(model).getView().focusOnTitleField();
 	}
 
 	/**
@@ -116,7 +113,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 	 * when a bubble is out for this task
 	 *
 	 */
-	public void setToHoverColor() {
+	public void changeToHoverColor() {
 
 		view.setBackground(Colors.TASK_HOVER);
 	}
@@ -134,34 +131,25 @@ public class TaskController implements MouseListener, MouseMotionListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// Show task bubble only if there are no stage title textboxes out AND
-		// the ignoreAllResponses flag has not been set OR
-		// another taskinfo bubble is already out
-		if ((!FetchWorkflowObserver.ignoreAllResponses || TaskController.anyTaskInfoOut)
-				&& !StageController.anyChangeTitleOut) {
-			// Don't reload (so the correct task can be highlighted while the
-			// bubble is up
-			FetchWorkflowObserver.ignoreAllResponses = true;
 
-			// Create the taskinfo bubble
-			Point stageLoc = view.getParent().getParent().getParent()
-					.getParent().getLocation();
-			Point stagesPanelLoc = view.getParent().getParent().getParent()
-					.getParent().getParent().getLocation();
-			Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
-					view.getLocation().y);
-			WorkflowController.getInstance().setTaskInfo(
-					new TaskInfoPreviewView(model, this, infoLoc));
+		// Create the taskinfo bubble
+		final Point stageLoc = view.getParent().getParent().getParent()
+				.getParent().getLocation();
+		final Point stagesPanelLoc = view.getParent().getParent().getParent()
+				.getParent().getParent().getLocation();
+		final Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
+				view.getLocation().y);
+		WorkflowController.getInstance().setTaskInfo(
+				new TaskInfoPreviewView(model, this, infoLoc));
 
-			// Set the correct flags
-			thisTaskInfoOut = true;
-			TaskController.anyTaskInfoOut = true;
-			// make the associated task a darker color while the bubble is out
-			if (isArchived()) {
-				view.setBackground(Colors.ARCHIVE_CLICKED);
-			} else {
-				view.setBackground(Colors.TASK_CLICKED);
-			}
+		// Set the correct flags
+		thisTaskInfoOut = true;
+		TaskController.anyTaskInfoOut = true;
+		// make the associated task a darker color while the bubble is out
+		if (isArchived()) {
+			view.setBackground(Colors.ARCHIVE_CLICKED);
+		} else {
+			view.setBackground(Colors.TASK_CLICKED);
 		}
 	}
 
@@ -179,7 +167,7 @@ public class TaskController implements MouseListener, MouseMotionListener {
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		setToHoverColor();
+		changeToHoverColor();
 	}
 
 	@Override
@@ -191,26 +179,19 @@ public class TaskController implements MouseListener, MouseMotionListener {
 		}
 	}
 
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		// Enable/disable the archive and delete icons when dragged.
-
-		boolean isArchived = model.isArchived();
-		if (isArchived) {
-			ToolbarController.getInstance().getView()
-					.setArchiveIcon(ToolbarView.UNARCHIVE);
-		} else {
-			ToolbarController.getInstance().getView()
-					.setArchiveIcon(ToolbarView.ARCHIVE);
-		}
-		ToolbarController.getInstance().getView().setArchiveEnabled(true);
-		ToolbarController.getInstance().getView().setDeleteEnabled(isArchived);
+	/**
+	 * @return the thisTaskInfoOut
+	 */
+	public Boolean getThisTaskInfoOut() {
+		return thisTaskInfoOut;
 	}
 
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		// TODO Auto-generated method stub
-
+	/**
+	 * @param thisTaskInfoOut
+	 *            the thisTaskInfoOut to set
+	 */
+	public void setThisTaskInfoOut(Boolean thisTaskInfoOut) {
+		this.thisTaskInfoOut = thisTaskInfoOut;
 	}
 
 	public String getString() {

@@ -28,16 +28,10 @@ public class ActivityView extends JPanel {
 	public static final String MESSAGE_BODY = "message_body";
 	public static final String MESSAGE_DATE = "message_date";
 
-	private JLabel userName;
-	private JLabel date;
+	private final JLabel userName;
+	private final JLabel date;
 
-	private JTextArea message;
-
-	/*
-	 * JXDatePicker nt_dueDateField = new JXDatePicker();
-	 * nt_dueDateField.setName("due_date"); this.dateField = nt_dueDateField;
-	 * dateField.setDate(Calendar.getInstance().getTime());
-	 */
+	private final JTextArea message;
 
 	/**
 	 * Creates an ActivityView panel, meant to display activity done on a task
@@ -55,20 +49,20 @@ public class ActivityView extends JPanel {
 		date.setName(MESSAGE_DATE);
 
 		// Content of the activity
-		message = new JTextArea(14, 22);
+		message = new JTextArea(12, 24);
 		message.setName(MESSAGE_BODY);
 		message.setLineWrap(true);
 		message.setWrapStyleWord(true);
 		message.setEditable(false);
-		JScrollPane messageScrollPane = new JScrollPane(message);
+		final JScrollPane messageScrollPane = new JScrollPane(message);
 		messageScrollPane
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		messageScrollPane
-				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 
 		setLayout(new GridBagLayout());
 
-		GridBagConstraints newActivityGridBag = new GridBagConstraints();
+		final GridBagConstraints newActivityGridBag = new GridBagConstraints();
 
 		// First Column ////
 

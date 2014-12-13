@@ -10,7 +10,7 @@ package taskManager.model;
 
 import java.util.Date;
 
-import edu.wpi.cs.wpisuitetng.modules.core.models.User;
+import taskManager.TaskManager;
 
 /**
  * Description Activities represent changes to a Task and comments users have
@@ -24,12 +24,12 @@ public class ActivityModel {
 	// List of possible model types
 	/**
 	 */
-	public enum activityModelType {
-		CREATION, MOVE, COMPLETION, USER_ADD, USER_REMOVE, COMMENT
+	public enum ActivityModelType {
+		CREATION, MOVE, COMPLETION, USER_ADD, USER_REMOVE, COMMENT, ARCHIVE
 	};
 
 	// Actual type of this model
-	private activityModelType modelType;
+	private ActivityModelType modelType;
 
 	// Date of creation
 	private Date dateCreated;
@@ -38,7 +38,7 @@ public class ActivityModel {
 	private String description;
 
 	// Name of user who took the action; null for system activities
-	private String actor;
+	private final String actor;
 
 	/**
 	 * Constructor for activities with no user actor/unknown user actor
@@ -48,28 +48,10 @@ public class ActivityModel {
 	 * @param type
 	 *            The type of activity
 	 */
-	public ActivityModel(String description, activityModelType type) {
-		this(description, type, null);
-	}
-
-	/**
-	 * Constructor for activities with user actor
-	 *
-	 * @param description
-	 *            The activity description
-	 * @param type
-	 *            The type of activity
-	 * @param actor
-	 *            The user who is doing the activity
-	 */
-	public ActivityModel(String description, activityModelType type, User actor) {
+	public ActivityModel(String description, ActivityModelType type) {
+		actor = TaskManager.currentUser;
 		this.description = description;
 		modelType = type;
-		if (actor != null) {
-			this.actor = actor.getUsername();
-		} else {
-			this.actor = null;
-		}
 		dateCreated = new Date(); // set date to time ActivityModel was
 									// instantiated
 	}
@@ -79,7 +61,7 @@ public class ActivityModel {
 	 *
 	 * @return the activity type
 	 */
-	public activityModelType getType() {
+	public ActivityModelType getType() {
 		return modelType;
 	}
 
@@ -104,7 +86,7 @@ public class ActivityModel {
 	 *            the new description.
 	 */
 	public void setDescription(String newDescription) {
-		if (modelType != activityModelType.COMMENT) {
+		if (modelType != ActivityModelType.COMMENT) {
 			throw new UnsupportedOperationException(
 					"You cannot change the description of non-comment activities.");
 		}

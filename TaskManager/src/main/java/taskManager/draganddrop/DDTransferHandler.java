@@ -23,7 +23,6 @@ import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
 import taskManager.view.TaskView;
-import taskManager.view.ToolbarView;
 
 /**
  * 
@@ -37,10 +36,10 @@ public class DDTransferHandler extends TransferHandler {
 	private static final long serialVersionUID = -7859524821673270515L;
 
 	// DataFlavor representing a TaskView being dragged
-	private static DataFlavor taskFlavor;
+	private static DataFlavor taskFlavor = null;
 
 	// DataFlavor representing a StageView being dragged
-	private static DataFlavor stageFlavor;
+	private static DataFlavor stageFlavor = null;
 
 	public static boolean dragSaved = false;
 
@@ -123,8 +122,8 @@ public class DDTransferHandler extends TransferHandler {
 		if (!FetchWorkflowObserver.ignoreAllResponses) {
 			FetchWorkflowObserver.ignoreAllResponses = true;
 			// Create drag image
-			Image image = new BufferedImage(comp.getWidth(), comp.getHeight(),
-					BufferedImage.TYPE_INT_ARGB);
+			final Image image = new BufferedImage(comp.getWidth(),
+					comp.getHeight(), BufferedImage.TYPE_INT_ARGB);
 			Graphics g = image.getGraphics();
 			g = g.create();
 			comp.paint(g);
@@ -132,6 +131,9 @@ public class DDTransferHandler extends TransferHandler {
 
 			// Create placeholder
 			DropAreaPanel.generatePlaceholder(comp.getSize());
+
+			// Set toolbar icon state
+			ToolbarController.getInstance().setIconState(comp);
 
 			// Initiate the drag
 			super.exportAsDrag(comp, e, action);
@@ -149,23 +151,18 @@ public class DDTransferHandler extends TransferHandler {
 		// Resume updating from the server
 		FetchWorkflowObserver.ignoreAllResponses = false;
 
-		if (DDTransferHandler.dragSaved == false) {
+		if (!DDTransferHandler.dragSaved) {
 			// update now in case we missed anything while dragging
 			// (if the drag saved, our changes overwrite anything we may have
 			// missed)
-			WorkflowModel.getInstance().updateNow();
+			WorkflowModel.updateNow();
 		}
 		DDTransferHandler.dragSaved = false;
 
 		// Show the component
 		comp.setVisible(true);
 
-		// Set icons disabled.
-		ToolbarController.getInstance().getView().setArchiveEnabled(false);
-		ToolbarController.getInstance().getView().setDeleteEnabled(false);
-		// Set icon back to the archive icon.
-		ToolbarController.getInstance().getView()
-				.setArchiveIcon(ToolbarView.ARCHIVE);
+		// Reset icons
+		ToolbarController.getInstance().resetIconState();
 	}
-
 }

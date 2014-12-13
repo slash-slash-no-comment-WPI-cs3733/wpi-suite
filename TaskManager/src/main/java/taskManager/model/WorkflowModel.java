@@ -34,7 +34,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	private static WorkflowModel instance = null;
 
 	public static boolean alive = true;
-	public static int timeout = 60000; // 1 minute
+	public static final int timeout = 60000; // 1 minute
 
 	// Generic logger
 	private static final Logger logger = Logger.getLogger(WorkflowModel.class
@@ -63,6 +63,8 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 */
 	public void reset() {
 		stageList = new ArrayList<StageModel>();
+
+		alive = true;
 	}
 
 	/**
@@ -118,7 +120,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 * Adds a stage to index items from the beginning of the WorkFlowModel Stage
 	 * is added to the end of the current list.
 	 *
-	 * @param newStage
+	 * @param stage
 	 *            Stage to be added.
 	 * @return whether the workflow changed as a result
 	 */
@@ -132,7 +134,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	/**
 	 * Adds a stage to index items from the beginning of the WorkFlowModel
 	 *
-	 * @param newStage
+	 * @param stage
 	 *            Stage to be added.
 	 * @param index
 	 *            Index in the list of stages where we are adding the new stage.
@@ -226,6 +228,13 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		return newID;
 	}
 
+	/**
+	 * Searches the workflow for a task with the given id
+	 *
+	 * @param id
+	 *            the id of the task to find
+	 * @return the TaskModel with the given id, or null if no task is found
+	 */
 	public TaskModel findTaskByID(String id) {
 		for (StageModel stage : stageList) {
 			TaskModel task = stage.findTaskByID(id);
@@ -293,7 +302,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 * respond when there is a change or the timeout happens
 	 *
 	 */
-	public void update() {
+	public static void update() {
 		final Request request = Network.getInstance().makeRequest(
 				"taskmanager/workflow", HttpMethod.GET);
 		request.addObserver(new FetchWorkflowObserver());
@@ -309,14 +318,18 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	 * Asks the server to immediately give us all the workflows
 	 *
 	 */
-	public void updateNow() {
+	public static void updateNow() {
 		final Request request = Network.getInstance().makeRequest(
 				"taskmanager/workflow", HttpMethod.GET);
 		request.addObserver(new FetchWorkflowObserver(false));
 		request.send();
 	}
 
-	public void updateUsers() {
+	/**
+	 * Request a list of users from the server
+	 *
+	 */
+	public static void updateUsers() {
 		final Request request = Network.getInstance().makeRequest("core/user",
 				HttpMethod.GET);
 		request.addObserver(new GetUsersObserver());

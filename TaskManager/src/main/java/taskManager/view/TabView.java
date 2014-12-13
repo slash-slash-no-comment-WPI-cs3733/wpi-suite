@@ -36,6 +36,8 @@ import taskManager.model.FetchWorkflowObserver;
  */
 public class TabView extends JPanel implements ActionListener {
 
+	public static final String X = "X";
+
 	private static final long serialVersionUID = -5461050356588592448L;
 	private Component component;
 	private boolean closeable;
@@ -57,14 +59,15 @@ public class TabView extends JPanel implements ActionListener {
 
 		this.component = component;
 		this.closeable = closeable;
-		this.tabPaneC = TabPaneController.getInstance();
+
+		tabPaneC = TabPaneController.getInstance();
 
 		setOpaque(false);
 
 		final JLabel label = new JLabel(title);
 		// This makes the tab's a set width and adds the ... if a task name is
 		// too long for the tab
-		JLabel temp = new JLabel();
+		final JLabel temp = new JLabel();
 		temp.setText("Tabs Name Length");
 		final Dimension size = temp.getPreferredSize();
 		label.setMaximumSize(size);
@@ -77,6 +80,7 @@ public class TabView extends JPanel implements ActionListener {
 			closeButton.setFont(closeButton.getFont().deriveFont((float) 8));
 			closeButton.setMargin(new Insets(0, 0, 0, 0));
 			closeButton.addActionListener(this);
+			closeButton.setName(X);
 			add(closeButton);
 		}
 	}
@@ -102,11 +106,11 @@ public class TabView extends JPanel implements ActionListener {
 		if (closeable) {
 			if (component instanceof EditTaskView) {
 
-				EditTaskController etc = ((EditTaskView) component)
+				final EditTaskController etc = ((EditTaskView) component)
 						.getController();
 				// If there are edits, show confirmation dialog.
 				if (etc.isEdited()) {
-					Integer choice = JOptionPane
+					final Integer choice = JOptionPane
 							.showConfirmDialog(
 									tabPaneC.getView(),
 									"You still have unsaved edits. Are you sure you want to delete this tab?",

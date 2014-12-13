@@ -117,9 +117,9 @@ public class DropTargetRedispatcher implements DropTargetListener {
 	public static DropTargetDropEvent convertCoords(DropTargetDropEvent e,
 			Component comp) {
 
-		Point newPoint = SwingUtilities.convertPoint(e.getDropTargetContext()
+		final Point newPoint = SwingUtilities.convertPoint(e.getDropTargetContext()
 				.getComponent(), e.getLocation(), comp);
-		DropTargetDropEvent newE = new DropTargetDropEvent(
+		final DropTargetDropEvent newE = new DropTargetDropEvent(
 				e.getDropTargetContext(), newPoint, e.getDropAction(),
 				e.getSourceActions());
 		return newE;
@@ -139,9 +139,9 @@ public class DropTargetRedispatcher implements DropTargetListener {
 	public static DropTargetDragEvent convertCoords(DropTargetDragEvent e,
 			Component comp) {
 
-		Point newPoint = SwingUtilities.convertPoint(e.getDropTargetContext()
+		final Point newPoint = SwingUtilities.convertPoint(e.getDropTargetContext()
 				.getComponent(), e.getLocation(), comp);
-		DropTargetDragEvent newE = new DropTargetDragEvent(
+		final DropTargetDragEvent newE = new DropTargetDragEvent(
 				e.getDropTargetContext(), newPoint, e.getDropAction(),
 				e.getSourceActions());
 		return newE;
