@@ -47,7 +47,7 @@ public class ToolbarController extends DropTargetAdapter implements
 	private ToolbarView view;
 
 	private static ToolbarController instance;
-	private FilterController filterC;
+	public FilterController filterC;
 
 	/**
 	 * Hide Singleton constructor
@@ -55,7 +55,8 @@ public class ToolbarController extends DropTargetAdapter implements
 	private ToolbarController() {
 		filterC = new FilterController();
 		reset();
-		view.getCategories().addPopupMenuListener(filterC);
+		// TODO move to filter view
+		view.getCategoryLabel().addMouseListener(filterC);
 		view.getArchiveCheckBox().addItemListener(filterC);
 		view.getMyTasksCheckBox().addItemListener(filterC);
 	}

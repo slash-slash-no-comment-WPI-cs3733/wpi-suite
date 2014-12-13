@@ -11,31 +11,26 @@ package taskManager.controller;
 import java.awt.Component;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.swing.JCheckBox;
-import javax.swing.event.PopupMenuEvent;
-import javax.swing.event.PopupMenuListener;
 
 import taskManager.TaskManager;
 import taskManager.controller.TaskFilter.ArchiveState;
 import taskManager.model.TaskModel.TaskCategory;
+import taskManager.view.FilterView;
 
-public class FilterController implements ItemListener, PopupMenuListener {
+public class FilterController implements ItemListener, MouseListener {
 
-	public FilterController() {
+	private boolean popupVisible;
+	private final FilterView view;
 
-	}
-
-	/**
-	 * returns true if any of the filters are activated
-	 * 
-	 * @return
-	 */
-	private boolean hasFilter() {
-		return archiveChecked() || myTasksChecked()
-				|| !categoriesSelected().isEmpty() || hasSearch();
+	public FilterController(FilterView view) {
+		this.view = view;
+		popupVisible = false;
 	}
 
 	/**
@@ -53,8 +48,7 @@ public class FilterController implements ItemListener, PopupMenuListener {
 	 * @return a list of the selected categories
 	 */
 	private Set<TaskCategory> categoriesSelected() {
-		Component[] cats = ToolbarController.getInstance().getView()
-				.getCategories().getComponents();
+		Component[] cats = view.getCategories().getComponents();
 		Set<TaskCategory> selected = new HashSet<TaskCategory>();
 		for (int i = 0; i < cats.length; i++) {
 			if (cats[1] instanceof JCheckBox) {
@@ -90,49 +84,56 @@ public class FilterController implements ItemListener, PopupMenuListener {
 	 * reloads the workflow with the appropriate filter applied
 	 */
 	private void filter() {
-		if (hasFilter()) {
-			TaskFilter filter = new TaskFilter();
-			WorkflowController.getInstance().setCurrentFilter(filter);
-			if (archiveChecked()) {
-				filter.setArchive(ArchiveState.ARCHIVED,
-						ArchiveState.NOT_ARCHIVED);
-			} else {
-				filter.setArchive(ArchiveState.NOT_ARCHIVED);
-			}
-			if (myTasksChecked()) {
-				filter.setUser(TaskManager.currentUser);
-			} else {
-				filter.setUsers(null);
-			}
-			if (!categoriesSelected().isEmpty()) {
-				filter.setCategories(categoriesSelected());
-			}
+		TaskFilter filter = new TaskFilter();
+		WorkflowController.getInstance().setCurrentFilter(filter);
+		if (archiveChecked()) {
+			filter.setArchive(ArchiveState.ARCHIVED, ArchiveState.NOT_ARCHIVED);
 		} else {
-			WorkflowController.getInstance().setCurrentFilter(new TaskFilter());
+			filter.setArchive(ArchiveState.NOT_ARCHIVED);
 		}
+		if (myTasksChecked()) {
+			filter.setUser(TaskManager.currentUser);
+		} else {
+			filter.setUsers(null);
+		}
+		if (!categoriesSelected().isEmpty()) {
+			filter.setCategories(categoriesSelected());
+		}
+
 		WorkflowController.getInstance().reloadData();
-	}
-
-	@Override
-	public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-		filter();
-
-	}
-
-	@Override
-	public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-		filter();
-
-	}
-
-	@Override
-	public void popupMenuCanceled(PopupMenuEvent e) {
-		filter();
-
 	}
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
 		filter();
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		view.getCategories().setVisible(!view.getCategories().isVisible());
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+
 	}
 }

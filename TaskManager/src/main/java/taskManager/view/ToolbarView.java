@@ -9,10 +9,8 @@
 
 package taskManager.view;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.dnd.DropTarget;
 import java.io.IOException;
@@ -22,16 +20,12 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
 
 import taskManager.controller.ToolbarController;
 import taskManager.draganddrop.DDTransferHandler;
-import taskManager.model.TaskModel.TaskCategory;
 
 /**
  * The Task Managers tab's toolbar panel.
@@ -51,22 +45,14 @@ public class ToolbarView extends JToolBar {
 	public static final String UNARCHIVE = "unarchive";
 	public static final String DELETE = "delete";
 
-	public static final Color[] CATEGORIES = new Color[] { Color.red,
-			Color.green, Color.blue, Color.yellow };
-
 	// toolbar information
 	private JButton createTask;
 	private JButton createStage;
 	private JButton statistics;
 	private JLabel archive;
 	private JLabel delete;
-	private JCheckBox archiveCheckBox;
-	private JCheckBox myTasksCheckBox;
-	private JPopupMenu categories;
 
 	private JLabel projectName;
-
-	private ToolbarController controller;
 
 	/**
 	 * Create a ToolbarView.
@@ -75,8 +61,6 @@ public class ToolbarView extends JToolBar {
 	 *            The ToolbarController associated with this view
 	 */
 	public ToolbarView(ToolbarController controller) {
-
-		this.controller = controller;
 
 		// Construct and set up the buttons and title panels
 		final JPanel buttons = new JPanel();
@@ -125,41 +109,7 @@ public class ToolbarView extends JToolBar {
 			e.printStackTrace();
 		}
 
-		// adds a panel for filters
-		JPanel filters = new JPanel();
-		filters.setLayout(new GridLayout(2, 1));
-		filters.setMaximumSize(new Dimension(180, 60));
-		filters.setMinimumSize(new Dimension(180, 60));
-		filters.setOpaque(false);
-
-		// adds a panel for the checks and the category picker
-		JPanel lower = new JPanel();
-		lower.setLayout(new GridLayout(1, 2));
-
-		// adds a panel for my tasks and archived check boxes
-		JPanel checks = new JPanel();
-		checks.setLayout(new GridLayout(2, 1));
-		checks.setMaximumSize(new Dimension(90, 30));
-		// Checkbox for toggling showing archived tasks.
-		archiveCheckBox = new JCheckBox("<html>Show archived tasks</html>");
-		archiveCheckBox.setOpaque(false);
-		myTasksCheckBox = new JCheckBox("<html>Show only my tasks</html>");
-		myTasksCheckBox.setOpaque(false);
-		checks.add(archiveCheckBox);
-		checks.add(myTasksCheckBox);
-
-		// adds the category dropdown
-		categories = new JPopupMenu("Categories");
-		for (int i = 0; i < CATEGORIES.length; i++) {
-			JCheckBoxMenuItem c = new JCheckBoxMenuItem();
-			c.setName(TaskCategory.values()[i].toString());
-			c.setBackground(CATEGORIES[i]);
-			System.out.println("Adding category");
-			categories.add(c);
-		}
-		lower.add(checks);
-		lower.add(categories);
-		filters.add(lower);
+		FilterView filters = new FilterView();
 
 		// Add archive and delete drop targets
 		try {
@@ -272,14 +222,6 @@ public class ToolbarView extends JToolBar {
 		delete.setEnabled(bool);
 	}
 
-	public boolean isArchiveShown() {
-		return archiveCheckBox.isSelected();
-	}
-
-	public boolean isMyTasksShown() {
-		return myTasksCheckBox.isSelected();
-	}
-
 	/**
 	 * 
 	 * Sets the archive icon to the specified type.
@@ -311,15 +253,4 @@ public class ToolbarView extends JToolBar {
 		return projectName;
 	}
 
-	public JPopupMenu getCategories() {
-		return this.categories;
-	}
-
-	public JCheckBox getArchiveCheckBox() {
-		return this.archiveCheckBox;
-	}
-
-	public JCheckBox getMyTasksCheckBox() {
-		return this.myTasksCheckBox;
-	}
 }
