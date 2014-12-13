@@ -54,7 +54,11 @@ public class ToolbarController extends DropTargetAdapter implements
 	 * Hide Singleton constructor
 	 */
 	private ToolbarController() {
+		FilterController c = new FilterController();
 		reset();
+		view.getCategories().addPopupMenuListener(c);
+		view.getArchiveCheckBox().addItemListener(c);
+		view.getMyTasksCheckBox().addItemListener(c);
 	}
 
 	public void reset() {
