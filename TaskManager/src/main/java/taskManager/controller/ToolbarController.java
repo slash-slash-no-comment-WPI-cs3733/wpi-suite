@@ -300,6 +300,7 @@ public class ToolbarController extends DropTargetAdapter implements
 	public void itemStateChanged(ItemEvent e) {
 		// Reload the workflow view.
 		WorkflowController.pauseInformation = false;
+		WorkflowController.getInstance().removeTaskInfos(true);
 		WorkflowController.getInstance().reloadData();
 	}
 

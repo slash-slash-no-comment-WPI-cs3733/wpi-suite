@@ -226,6 +226,7 @@ public class StageView extends JPanel implements Transferable {
 		stage.addMouseListener(controller);
 		// listen for double click on the stage title to change it
 		labelName.addMouseListener(controller);
+		labelText.addKeyListener(controller);
 
 		// listen for clicks on the 'change title' buttons
 		done.addActionListener(controller);
@@ -260,12 +261,21 @@ public class StageView extends JPanel implements Transferable {
 	}
 
 	/**
+	 *
+	 * @return true if the done button is enabled. false otherwise
+	 */
+	public boolean isDoneBtnEnabled() {
+		return done.isEnabled();
+	}
+
+	/**
 	 * Sets the focus to the text area
 	 */
 	public void focusTextArea() {
 		this.labelText.requestFocus();
 		this.labelText.requestFocusInWindow();
 		this.labelText.grabFocus();
+		this.labelText.selectAll();
 	}
 
 	/**

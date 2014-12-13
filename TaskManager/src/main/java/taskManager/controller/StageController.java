@@ -11,6 +11,8 @@ package taskManager.controller;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.List;
@@ -38,7 +40,7 @@ import taskManager.view.TaskView;
  */
 
 public class StageController implements DropAreaSaveListener, MouseListener,
-		ActionListener {
+		ActionListener, KeyListener {
 
 	private final StageView view;
 	private StageModel model;
@@ -248,65 +250,64 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 
 	}
 
+	private void checkButton() {
+		if (WorkflowModel.getInstance().findStageByName(view.getLabelText()) != null) {
+			JOptionPane.showConfirmDialog(view,
+					"Another stage already has the name " + view.getLabelText()
+							+ ". Please choose another name.",
+					"Warning - Duplicate stage names",
+					JOptionPane.CLOSED_OPTION);
+		} else if (view.isDoneBtnEnabled()) {
+			if (model == null) {
+				model = new StageModel(view.getLabelText());
+			} else {
+				model.setName(view.getLabelText());
+			}
+
+			// refresh the workflow with the new stage
+			WorkflowController.getInstance().reloadData();
+			WorkflowController.getInstance().repaintView();
+
+			// save to the server
+			WorkflowModel.getInstance().save();
+		}
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		final Object button = e.getSource();
 		if (button instanceof JButton) {
-
 			switch (((JButton) button).getName()) {
 			case StageView.CHECK:
-				if (WorkflowModel.getInstance().findStageByName(
-						view.getLabelText()) != null) {
-					JOptionPane.showConfirmDialog(
-							view,
-							"Another stage already has the name "
-									+ view.getLabelText()
-									+ ". Please choose another name.",
-							"Warning - Duplicate stage names",
-							JOptionPane.CLOSED_OPTION);
-				} else {
-					if (model == null) {
-						model = new StageModel(view.getLabelText());
-					} else {
-						model.setName(view.getLabelText());
-					}
-
-					// refresh the workflow with the new stage
-					WorkflowController.getInstance().reloadData();
-					WorkflowController.getInstance().repaintView();
-
-					// save to the server
-					WorkflowModel.getInstance().save();
-				}
+				checkButton();
 				break;
 			// fall through
 			case StageView.X:
-				if (model == null) {
-					// ask the user if they want to cancel the new stage
-					final int opt = JOptionPane
-							.showConfirmDialog(
-									view,
-									"Are you sure you want to cancel creating the stage?",
-									"Cancel Stage Creation",
-									JOptionPane.YES_NO_OPTION);
-					if (opt == JOptionPane.YES_OPTION) {
-
-						// refresh the workflow with no new stage view
-						WorkflowController.getInstance().reloadData();
-						WorkflowController.getInstance().repaintView();
-					}
-
-				} else {
-					// reset the flags
-					WorkflowController.pauseInformation = false;
-					// reload which will remove the textbox
-					WorkflowController.getInstance().reloadData();
-
-				}
-
+				// reset the flags
+				WorkflowController.pauseInformation = false;
+				// reload which will remove the textbox
+				WorkflowController.getInstance().reloadData();
 				break;
 			}
 		}
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if (e.getKeyCode() == 10) {
+			checkButton();
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
 
 	}
 }
