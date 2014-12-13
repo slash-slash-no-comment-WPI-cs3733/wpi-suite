@@ -9,7 +9,6 @@
 package taskManager.view;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -20,6 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import taskManager.controller.FilterController;
+import taskManager.model.TaskModel.TaskCategory;
 
 /**
  * the view containing the elements used for filtering tasks
@@ -31,8 +31,6 @@ public class FilterView extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final Color[] CATEGORIES = new Color[] { Color.red,
-			Color.green, Color.blue, Color.yellow, Color.decode("#FFFFFF") };
 	public static final String[] CATEGORY_NAMES = new String[] { "red",
 			"green", "blue", "yellow", "purple" };
 
@@ -82,7 +80,7 @@ public class FilterView extends JPanel {
 		categories = new JPanel();
 		categories.setLayout(new FlowLayout());
 		labels = new ArrayList<JLabel>();
-		for (int i = 0; i < CATEGORIES.length; i++) {
+		for (int i = 0; i < TaskCategory.values().length; i++) {
 			JPanel catBox = new JPanel();
 			catBox.setLayout(new BorderLayout());
 			JLabel c = new JLabel("");
@@ -93,7 +91,7 @@ public class FilterView extends JPanel {
 			catBox.setMinimumSize(new Dimension(20, 20));
 			catBox.setMaximumSize(new Dimension(20, 20));
 			catBox.setName(CATEGORY_NAMES[i]);
-			catBox.setBackground(CATEGORIES[i]);
+			catBox.setBackground(Colors.CAT_COLORS[i]);
 			catBox.addMouseListener(filterC);
 			categories.add(catBox);
 		}
@@ -181,7 +179,7 @@ public class FilterView extends JPanel {
 	 */
 	public void checkCatBox(boolean checked, String name) {
 		JLabel label = new JLabel();
-		for (int i = 0; i < CATEGORIES.length; i++) {
+		for (int i = 0; i < TaskCategory.values().length; i++) {
 			if (name.equals(CATEGORY_NAMES[i])) {
 				label = labels.get(i);
 			}
