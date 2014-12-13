@@ -11,6 +11,7 @@ package taskManager.controller;
 
 import java.awt.Component;
 
+import taskManager.localization.Localizer;
 import taskManager.view.EditTaskView;
 import taskManager.view.ReportsView;
 import taskManager.view.TabPaneView;
@@ -107,7 +108,7 @@ public class TabPaneController {
 		if (exists) {
 			view.setSelectedComponent(rtv2);
 		} else {
-			addTab("Reports", rtv, true);
+			addTab(Localizer.getString("Reports"), rtv, true);
 			view.setSelectedComponent(rtv);
 		}
 	}

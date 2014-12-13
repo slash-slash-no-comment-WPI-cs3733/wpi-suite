@@ -13,6 +13,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.dnd.DropTarget;
+import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -21,12 +22,15 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
 import taskManager.controller.ToolbarController;
 import taskManager.draganddrop.DDTransferHandler;
+import taskManager.localization.LocaleChangeListener;
+import taskManager.localization.Localizer;
 
 /**
  * The Task Managers tab's toolbar panel.
@@ -34,7 +38,7 @@ import taskManager.draganddrop.DDTransferHandler;
  * @author Clark Jacobsohn
  */
 @SuppressWarnings("serial")
-public class ToolbarView extends JToolBar {
+public class ToolbarView extends JToolBar implements LocaleChangeListener {
 
 	public static final String STATISTICS = "statistics";
 	public static final String REFRESH = "refresh";
@@ -53,6 +57,7 @@ public class ToolbarView extends JToolBar {
 	private JLabel archive;
 	private JLabel delete;
 	private JCheckBox archiveCheckBox;
+	private JComboBox<String> languages;
 
 	private JLabel projectName;
 
@@ -83,17 +88,17 @@ public class ToolbarView extends JToolBar {
 		this.setFloatable(false);
 
 		// Construct the buttons
-		createTask = new JButton("<html>Create Task</html>");
+		createTask = new JButton();
 		createTask.setName(CREATE_TASK);
 		createTask.setMaximumSize(new Dimension(160, 58));
 		createTask.addActionListener(controller);
 
-		createStage = new JButton("<html>Create Stage</html>");
+		createStage = new JButton();
 		createStage.setName(CREATE_STAGE);
 		createStage.setMaximumSize(new Dimension(160, 58));
 		createStage.addActionListener(controller);
 
-		statistics = new JButton("<html>Reports</html>");
+		statistics = new JButton();
 		statistics.setName(REPORT);
 		statistics.setMaximumSize(new Dimension(160, 58));
 		statistics.addActionListener(controller);
@@ -116,7 +121,7 @@ public class ToolbarView extends JToolBar {
 		}
 
 		// Checkbox for toggling showing archived tasks.
-		archiveCheckBox = new JCheckBox("<html>Show archived tasks</html>");
+		archiveCheckBox = new JCheckBox();
 		archiveCheckBox.addItemListener(controller);
 		archiveCheckBox.setOpaque(false);
 
@@ -131,7 +136,7 @@ public class ToolbarView extends JToolBar {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		archive.setToolTipText("Drag here to archive task");
+		archive.setToolTipText("");
 		archive.setEnabled(false);
 		archive.setName(ARCHIVE);
 
@@ -139,7 +144,7 @@ public class ToolbarView extends JToolBar {
 		archive.setTransferHandler(new DDTransferHandler());
 		archive.setDropTarget(new DropTarget(archive, controller));
 
-		delete.setToolTipText("Drag here to delete task");
+		delete.setToolTipText("");
 		delete.setEnabled(false);
 		delete.setName(DELETE);
 
@@ -150,6 +155,20 @@ public class ToolbarView extends JToolBar {
 		projectName = new JLabel();
 		projectName.setFont(new Font("TextField.font", Font.BOLD, 20));
 
+		// Make language selection drop down
+		languages = new JComboBox<String>();
+		File folder = new File(getClass().getResource(
+				"/taskManager/localization").getFile());
+		File[] listOfFiles = folder.listFiles();
+		for (File file : listOfFiles) {
+			String filename = file.getName();
+			if (filename.endsWith(".properties")) {
+				languages
+						.addItem(filename.substring(0, filename.length() - 11));
+			}
+		}
+		languages.addActionListener(controller);
+
 		// Add title to the title panel
 		name.add(Box.createHorizontalStrut(10));
 		name.add(projectName);
@@ -159,6 +178,7 @@ public class ToolbarView extends JToolBar {
 		buttons.add(createTask);
 		buttons.add(createStage);
 		buttons.add(statistics);
+		buttons.add(languages);
 		buttons.add(archiveCheckBox);
 		buttons.add(Box.createHorizontalGlue());
 
@@ -181,6 +201,9 @@ public class ToolbarView extends JToolBar {
 
 		// Add resize listener to fix title
 		this.addComponentListener(controller);
+
+		onLocaleChange();
+		Localizer.addListener(this);
 	}
 
 	@Override
@@ -264,5 +287,27 @@ public class ToolbarView extends JToolBar {
 	 */
 	public JLabel getProjectName() {
 		return projectName;
+	}
+
+	/**
+	 * @return The selected language
+	 */
+	public String getSelectedLanguage() {
+		return (String) languages.getSelectedItem();
+	}
+
+	@Override
+	public void onLocaleChange() {
+		createTask.setText("<html>" + Localizer.getString("CreateTask")
+				+ "</html>");
+		createStage.setText("<html>" + Localizer.getString("CreateStage")
+				+ "</html>");
+		statistics.setText("<html>" + Localizer.getString("Reports")
+				+ "</html>");
+		archiveCheckBox.setText("<html>" + Localizer.getString("ShowArchive")
+				+ "</html>");
+		archive.setToolTipText(Localizer.getString("DragArchive"));
+		delete.setToolTipText(Localizer.getString("DragDelete"));
+
 	}
 }

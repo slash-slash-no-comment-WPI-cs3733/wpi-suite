@@ -25,6 +25,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 
 import taskManager.TaskManager;
+import taskManager.localization.Localizer;
 import taskManager.model.ActivityModel;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
@@ -80,7 +81,8 @@ public class EditTaskController implements ActionListener {
 		}
 		etv.getProjectUsersList().addAllToList(projectUserNames);
 
-		TabPaneController.getInstance().addTab("Create Task", etv, true);
+		TabPaneController.getInstance().addTab(
+				Localizer.getString("CreateTask"), etv, true);
 
 		reloadData();
 	}
@@ -163,7 +165,8 @@ public class EditTaskController implements ActionListener {
 		if (model.getReq() != null) {
 			etv.getRequirements().setSelectedItem(model.getReq().getName());
 		} else {
-			etv.getRequirements().setSelectedItem(EditTaskView.NO_REQ);
+			etv.getRequirements().setSelectedItem(
+					Localizer.getString(EditTaskView.NO_REQ));
 		}
 
 		// makes the archive button clickable
@@ -240,8 +243,9 @@ public class EditTaskController implements ActionListener {
 
 			case EditTaskView.DELETE:
 				final Integer choice = JOptionPane.showConfirmDialog(etv,
-						"Are you sure you want to delete this task?",
-						"Warning - Deleting a task", JOptionPane.YES_NO_OPTION);
+						Localizer.getString("DeleteWarning"),
+						Localizer.getString("DeleteWarningTitle"),
+						JOptionPane.YES_NO_OPTION);
 				if (choice.equals(JOptionPane.YES_OPTION)) {
 					// delete this task
 					currentStage.getTasks().remove(model);
@@ -339,7 +343,7 @@ public class EditTaskController implements ActionListener {
 		final String selectedRequirement = (String) requirements
 				.getSelectedItem();
 		requirements.removeAllItems();
-		requirements.addItem(EditTaskView.NO_REQ);
+		requirements.addItem(Localizer.getString(EditTaskView.NO_REQ));
 		for (Requirement req : reqs) {
 			requirements.addItem(req.getName());
 		}
@@ -687,7 +691,7 @@ public class EditTaskController implements ActionListener {
 		boolean edited = false;
 		if (task.getReq() == null) {
 			if (etv.getRequirements().getSelectedItem().toString()
-					.equals(EditTaskView.NO_REQ)) {
+					.equals(Localizer.getString(EditTaskView.NO_REQ))) {
 				edited = false;
 			} else {
 				edited = true;

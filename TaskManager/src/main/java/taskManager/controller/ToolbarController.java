@@ -23,12 +23,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import taskManager.draganddrop.DDTransferHandler;
+import taskManager.localization.Localizer;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.ReportsView;
@@ -181,6 +183,8 @@ public class ToolbarController extends DropTargetAdapter implements
 				TabPaneController.getInstance().addReportsTab(rtv);
 				break;
 			}
+		} else if (button instanceof JComboBox) {
+			Localizer.setLanguage(view.getSelectedLanguage());
 		}
 	}
 

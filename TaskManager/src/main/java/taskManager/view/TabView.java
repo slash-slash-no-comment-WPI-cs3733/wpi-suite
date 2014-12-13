@@ -25,6 +25,8 @@ import javax.swing.JPanel;
 import taskManager.controller.EditTaskController;
 import taskManager.controller.TabPaneController;
 import taskManager.controller.WorkflowController;
+import taskManager.localization.LocaleChangeListener;
+import taskManager.localization.Localizer;
 import taskManager.model.FetchWorkflowObserver;
 
 /**
@@ -34,7 +36,8 @@ import taskManager.model.FetchWorkflowObserver;
  * @author Samee Swartz
  * @version Nov 21, 2014
  */
-public class TabView extends JPanel implements ActionListener {
+public class TabView extends JPanel implements ActionListener,
+		LocaleChangeListener {
 
 	public static final String X = "X";
 
@@ -42,6 +45,7 @@ public class TabView extends JPanel implements ActionListener {
 	private Component component;
 	private boolean closeable;
 	private TabPaneController tabPaneC;
+	private JButton closeButton = null;
 
 	/**
 	 * 
@@ -76,13 +80,16 @@ public class TabView extends JPanel implements ActionListener {
 		add(label);
 
 		if (closeable) {
-			final JButton closeButton = new JButton("\u2716");
+			closeButton = new JButton();
 			closeButton.setFont(closeButton.getFont().deriveFont((float) 8));
 			closeButton.setMargin(new Insets(0, 0, 0, 0));
 			closeButton.addActionListener(this);
 			closeButton.setName(X);
 			add(closeButton);
 		}
+
+		onLocaleChange();
+		Localizer.addListener(this);
 	}
 
 	/**
@@ -110,12 +117,11 @@ public class TabView extends JPanel implements ActionListener {
 						.getController();
 				// If there are edits, show confirmation dialog.
 				if (etc.isEdited()) {
-					final Integer choice = JOptionPane
-							.showConfirmDialog(
-									tabPaneC.getView(),
-									"You still have unsaved edits. Are you sure you want to delete this tab?",
-									"Warning - Deleting a tab with edits",
-									JOptionPane.YES_NO_OPTION);
+					final Integer choice = JOptionPane.showConfirmDialog(
+							tabPaneC.getView(),
+							Localizer.getString("UnsavedWarning"),
+							Localizer.getString("DeleteTabWarning"),
+							JOptionPane.YES_NO_OPTION);
 					if (choice.equals(JOptionPane.YES_OPTION)) {
 						tabPaneC.removeTabByComponent(component);
 						tabPaneC.getView().setSelectedIndex(0);
@@ -137,6 +143,11 @@ public class TabView extends JPanel implements ActionListener {
 
 	public Component getComponent() {
 		return component;
+	}
+
+	@Override
+	public void onLocaleChange() {
+		closeButton.setText(Localizer.getString("x"));
 	}
 
 }

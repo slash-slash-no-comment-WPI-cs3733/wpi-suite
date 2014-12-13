@@ -21,14 +21,13 @@ import java.util.ResourceBundle;
  */
 public class Localizer {
 
-	// constants with the names of the language files
-	public static final String ENGLISH = "english";
-	public static final String PIRATE = "pirate";
-	public static final String TODO = "TODO";
-	public static final String JAPANESE = "japanese";
+	// TODO: rename language files
 
 	// the current language, default to english
-	private static String currentLanguage = ENGLISH;
+	private static String currentLanguage = "english";
+
+	private static final ResourceBundle defaultRB = ResourceBundle
+			.getBundle("taskManager.localization." + "english");
 
 	// the current resource bundle object
 	private static ResourceBundle rb = ResourceBundle
@@ -49,10 +48,13 @@ public class Localizer {
 		try {
 			return rb.getString(key);
 		} catch (MissingResourceException e) {
-			// return the key if no string exists
-			System.err.println("no string found for key " + key
-					+ " in language " + currentLanguage);
-			return key;
+			// return english if string not found in that language
+			/*
+			 * System.err.println("no string found for key " + key +
+			 * " in language " + currentLanguage);
+			 */
+			System.err.println(key + "=" + key);
+			return defaultRB.getString(key);
 		}
 	}
 

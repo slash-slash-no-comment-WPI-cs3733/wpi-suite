@@ -43,6 +43,8 @@ import org.jdesktop.swingx.JXDatePicker;
 
 import taskManager.controller.EditTaskController;
 import taskManager.controller.TaskInputController;
+import taskManager.localization.LocaleChangeListener;
+import taskManager.localization.Localizer;
 import taskManager.model.ActivityModel;
 import taskManager.model.ActivityModel.ActivityModelType;
 
@@ -56,7 +58,7 @@ import taskManager.model.ActivityModel.ActivityModelType;
  * @author Tyler Jaskoviak
  */
 
-public class EditTaskView extends JScrollPane {
+public class EditTaskView extends JScrollPane implements LocaleChangeListener {
 
 	public static final String STAGES = "stages";
 	public static final String REQUIREMENTS = "requirements";
@@ -72,14 +74,14 @@ public class EditTaskView extends JScrollPane {
 	public static final String ACT_EFFORT = "act_effort";
 	public static final String EST_EFFORT = "est_effort";
 	public static final String DUE_DATE = "due_date";
-	public static final String NO_REQ = "[None]";
+	public static final String NO_REQ = "None";
 	public static final String REFRESH = "refresh";
 	public static final String TITLE = "title";
 	public static final String DESCRIP = "description";
 
-	private static final String TITLE_ERROR = "Title cannot be empty";
-	private static final String DESCRIPTION_ERROR = "Description cannot be empty";
-	private static final String EFFORT_ERROR = "Must be an integer between 0 and 9999";
+	private static final String TITLE_ERROR = "TitleEmpty";
+	private static final String DESCRIPTION_ERROR = "DescriptionEmpty";
+	private static final String EFFORT_ERROR = "EffortNotInt";
 	/**
 	 * 
 	 */
@@ -100,6 +102,18 @@ public class EditTaskView extends JScrollPane {
 	private final JTextField estEffortField;
 	private final JTextField actEffortField;
 	private final JPanel window;
+
+	private final JLabel titleLabel;
+	private final JLabel descriptionLabel;
+	private final JLabel dueDateLabel;
+	private final JLabel stageLabel;
+	private final JLabel estimatedEffortLabel;
+	private final JLabel actualEffortLabel;
+	private final JLabel requirementLabel;
+	private final JLabel assignedUsersLabel;
+	private final JLabel projectUsersLabel;
+	private final JLabel activitiesLabel;
+	private final JLabel commentsLabel;
 
 	private BalloonTip titleError;
 	private BalloonTip descripError;
@@ -154,27 +168,27 @@ public class EditTaskView extends JScrollPane {
 		activities = new ArrayList<ActivityModel>();
 
 		// JLabels
-		JLabel titleLabel = new JLabel("Title");
+		titleLabel = new JLabel();
 		titleLabel.setFont(bigFont);
-		JLabel descriptionLabel = new JLabel("Description");
+		descriptionLabel = new JLabel();
 		descriptionLabel.setFont(bigFont);
-		JLabel dueDateLabel = new JLabel("Due Date");
+		dueDateLabel = new JLabel();
 		dueDateLabel.setFont(bigFont);
-		JLabel stageLabel = new JLabel("Stage");
+		stageLabel = new JLabel();
 		stageLabel.setFont(bigFont);
-		JLabel estimatedEffortLabel = new JLabel("Estimated Effort");
+		estimatedEffortLabel = new JLabel();
 		estimatedEffortLabel.setFont(bigFont);
-		JLabel actualEffortLabel = new JLabel("Actual Effort");
+		actualEffortLabel = new JLabel();
 		actualEffortLabel.setFont(bigFont);
-		JLabel requirementLabel = new JLabel("Select Requirement");
+		requirementLabel = new JLabel();
 		requirementLabel.setFont(bigFont);
-		JLabel assignedUsersLabel = new JLabel("Assigned Users");
+		assignedUsersLabel = new JLabel();
 		assignedUsersLabel.setFont(bigFont);
-		JLabel projectUsersLabel = new JLabel("Project Users");
+		projectUsersLabel = new JLabel();
 		projectUsersLabel.setFont(bigFont);
-		JLabel activitiesLabel = new JLabel("Activities");
+		activitiesLabel = new JLabel();
 		activitiesLabel.setFont(bigFont);
-		JLabel commentsLabel = new JLabel("Comment");
+		commentsLabel = new JLabel();
 		commentsLabel.setFont(bigFont);
 
 		// JTextFields
@@ -241,7 +255,7 @@ public class EditTaskView extends JScrollPane {
 		requirements.setPrototypeDisplayValue("Select a requirement");
 		// JButtons
 		// Delete Task and close the window
-		delete = new JButton("Delete");
+		delete = new JButton();
 		delete.setName(DELETE);
 
 		// Add user to list
@@ -256,23 +270,23 @@ public class EditTaskView extends JScrollPane {
 		this.setRemoveUserEnabled(false);
 
 		// Add comment to comments
-		submitComment = new JButton("Submit Comment");
+		submitComment = new JButton();
 		submitComment.setName(SUBMIT_COMMENT);
 		this.setCommentSubmitEnabled(false);
 
 		// add requirement
-		addReq = new JButton("View Requirement");
+		addReq = new JButton();
 		addReq.setName(VIEW_REQ);
 
 		// saves all the data and closes the window
-		save = new JButton("Save");
+		save = new JButton();
 		save.setName(SAVE);
 		this.setSaveEnabled(false);
 
 		// closes the window without saving
-		cancel = new JButton("Cancel");
+		cancel = new JButton();
 		cancel.setName(CANCEL);
-		archive = new JCheckBox("Archived");
+		archive = new JCheckBox();
 		archive.setName(ARCHIVE);
 
 		// Combo Box for Stage
@@ -380,23 +394,26 @@ public class EditTaskView extends JScrollPane {
 
 		BalloonTipStyle errorStyle = new RoundedBalloonStyle(5, 5,
 				Colors.INPUT_ERROR, Color.red);
-		titleError = new BalloonTip(getTitle(), new JLabel(TITLE_ERROR),
+		titleError = new BalloonTip(getTitle(), new JLabel(), errorStyle,
+				Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST, 5, 15, false);
+		descripError = new BalloonTip(getDescription(), new JLabel(),
 				errorStyle, Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST,
 				5, 15, false);
-		descripError = new BalloonTip(getDescription(), new JLabel(
-				DESCRIPTION_ERROR), errorStyle, Orientation.LEFT_ABOVE,
-				AttachLocation.NORTHEAST, 5, 15, false);
-		actEffortError = new BalloonTip(getActEffort(),
-				new JLabel(EFFORT_ERROR), errorStyle, Orientation.LEFT_ABOVE,
-				AttachLocation.NORTHEAST, 5, 15, false);
-		estEffortError = new BalloonTip(getEstEffort(),
-				new JLabel(EFFORT_ERROR), errorStyle, Orientation.LEFT_ABOVE,
-				AttachLocation.NORTHEAST, 5, 15, false);
+		actEffortError = new BalloonTip(getActEffort(), new JLabel(),
+				errorStyle, Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST,
+				5, 15, false);
+		estEffortError = new BalloonTip(getEstEffort(), new JLabel(),
+				errorStyle, Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST,
+				5, 15, false);
 
 		setTitleErrorVisible(false);
 		setDescriptionErrorVisible(false);
 		setActualEffortErrorVisible(false);
 		setEstEffortErrorVisible(false);
+
+		// load strings the first time
+		onLocaleChange();
+		Localizer.addListener(this);
 	}
 
 	/**
@@ -965,5 +982,34 @@ public class EditTaskView extends JScrollPane {
 	 */
 	public String getCommentsFieldText() {
 		return commentsField.getText();
+	}
+
+	@Override
+	public void onLocaleChange() {
+		titleLabel.setText(Localizer.getString("Title"));
+		descriptionLabel.setText(Localizer.getString("Description"));
+		dueDateLabel.setText(Localizer.getString("DueDate"));
+		stageLabel.setText(Localizer.getString("Stage"));
+		estimatedEffortLabel.setText(Localizer.getString("EstimatedEffort"));
+		actualEffortLabel.setText(Localizer.getString("ActualEffort"));
+		requirementLabel.setText(Localizer.getString("SelectRequirement"));
+		assignedUsersLabel.setText(Localizer.getString("AssignedUsers"));
+		projectUsersLabel.setText(Localizer.getString("ProjectUsers"));
+		activitiesLabel.setText(Localizer.getString("Activities"));
+		commentsLabel.setText(Localizer.getString("Comment"));
+		delete.setText(Localizer.getString("Delete"));
+		submitComment.setText(Localizer.getString("SubmitComment"));
+		addReq.setText(Localizer.getString("ViewRequirement"));
+		save.setText(Localizer.getString("Save"));
+		cancel.setText(Localizer.getString("Cancel"));
+		archive.setText(Localizer.getString("Archived"));
+		((JLabel) titleError.getContents()).setText(Localizer
+				.getString(TITLE_ERROR));
+		((JLabel) descripError.getContents()).setText(Localizer
+				.getString(DESCRIPTION_ERROR));
+		((JLabel) actEffortError.getContents()).setText(Localizer
+				.getString(EFFORT_ERROR));
+		((JLabel) estEffortError.getContents()).setText(Localizer
+				.getString(EFFORT_ERROR));
 	}
 }

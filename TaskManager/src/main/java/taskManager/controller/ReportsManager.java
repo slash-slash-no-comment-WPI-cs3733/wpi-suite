@@ -42,6 +42,7 @@ import org.jfree.chart.renderer.category.StandardBarPainter;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import taskManager.TaskManager;
+import taskManager.localization.Localizer;
 import taskManager.model.ActivityModel;
 import taskManager.model.ActivityModel.ActivityModelType;
 import taskManager.model.StageModel;
@@ -487,8 +488,11 @@ public class ReportsManager implements ActionListener, ChangeListener,
 						stageStr);
 				findVelocityData(users, startCal, endCal, false, stage);
 				generateDataset(false, Period.ofDays(1));
-				JPanel chart = createChart("Effort per Day", "Time", "Effort");
-				TabPaneController.getInstance().addTab("Graph", chart, true);
+				JPanel chart = createChart(Localizer.getString("EffortPerDay"),
+						Localizer.getString("Time"),
+						Localizer.getString("Effort"));
+				TabPaneController.getInstance().addTab(
+						Localizer.getString("Graph"), chart, true);
 				TabPaneController.getInstance().getView()
 						.setSelectedComponent(chart);
 			}

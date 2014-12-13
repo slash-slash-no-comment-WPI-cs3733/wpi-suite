@@ -24,6 +24,7 @@ import org.jdesktop.swingx.prompt.PromptSupport;
 
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DropAreaSaveListener;
+import taskManager.localization.Localizer;
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
@@ -152,8 +153,8 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 			final StageView newStageV = new StageView("");
 			newStageV.setController(new StageController(newStageV, null));
 			newStageV.enableTitleEditing(true);
-			PromptSupport
-					.setPrompt("New Stage Name", newStageV.getLabelField());
+			PromptSupport.setPrompt(Localizer.getString("NewStageName"),
+					newStageV.getLabelField());
 			view.addStageView(newStageV);
 
 			removeTaskInfos(false);

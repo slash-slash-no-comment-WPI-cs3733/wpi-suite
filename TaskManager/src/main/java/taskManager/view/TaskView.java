@@ -17,6 +17,8 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.MouseAdapter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -33,6 +35,8 @@ import javax.swing.border.TitledBorder;
 import taskManager.controller.TaskController;
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DraggablePanelListener;
+import taskManager.localization.LocaleChangeListener;
+import taskManager.localization.Localizer;
 
 /**
  * @author Beth Martino
@@ -41,7 +45,8 @@ import taskManager.draganddrop.DraggablePanelListener;
  * @version November 18, 2014
  */
 
-public class TaskView extends JPanel implements Transferable {
+public class TaskView extends JPanel implements Transferable,
+		LocaleChangeListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -49,6 +54,8 @@ public class TaskView extends JPanel implements Transferable {
 
 	private JLabel userNumber;
 	private JLabel commentNumber;
+	private JLabel dueLabel;
+	private Date dueDate = null;
 
 	/**
 	 * Constructor, creates a list-like view for the following information: the
@@ -66,6 +73,7 @@ public class TaskView extends JPanel implements Transferable {
 	public TaskView(String name, Date duedate, int users, int comments) {
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		this.setAlignmentX(LEFT_ALIGNMENT);
+		this.dueDate = duedate;
 
 		// creates an empty space around the data
 		JPanel spacer = new JPanel();
@@ -100,9 +108,7 @@ public class TaskView extends JPanel implements Transferable {
 		lower.setAlignmentX(LEFT_ALIGNMENT);
 		lower.setOpaque(false);
 
-		JLabel dueLabel = new JLabel("Due: " + (date.get(Calendar.MONTH) + 1)
-				+ "/" + date.get(Calendar.DATE) + "/"
-				+ (date.get(Calendar.YEAR)));
+		dueLabel = new JLabel();
 		dueLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 3));
 		lower.add(dueLabel);
 		JPanel icons = new JPanel(new FlowLayout());
@@ -184,6 +190,9 @@ public class TaskView extends JPanel implements Transferable {
 		// to respond to drops
 		setDropTarget(null);
 
+		onLocaleChange();
+		Localizer.addListener(this);
+
 	}
 
 	@Override
@@ -252,6 +261,13 @@ public class TaskView extends JPanel implements Transferable {
 	@Override
 	public boolean isDataFlavorSupported(DataFlavor flavor) {
 		return flavor.equals(DDTransferHandler.getTaskFlavor());
+	}
+
+	@Override
+	public void onLocaleChange() {
+		final Calendar date = Calendar.getInstance();
+		DateFormat df = new SimpleDateFormat(Localizer.getString("DateFormat"));
+		dueLabel.setText(Localizer.getString("Due") + df.format(dueDate));
 	}
 
 }
