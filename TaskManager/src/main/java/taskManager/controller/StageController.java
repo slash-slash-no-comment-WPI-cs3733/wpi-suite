@@ -11,8 +11,6 @@ package taskManager.controller;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.List;
@@ -41,7 +39,7 @@ import taskManager.view.TaskView;
  */
 
 public class StageController implements DropAreaSaveListener, MouseListener,
-		ActionListener, KeyListener {
+		ActionListener {
 
 	private final StageView view;
 	private StageModel model;
@@ -79,7 +77,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 					// create stage view and controller.
 					int comments = 0;
 					for (ActivityModel a : task.getActivities()) {
-						if (a.getType() == ActivityModel.activityModelType.COMMENT) {
+						if (a.getType() == ActivityModel.ActivityModelType.COMMENT) {
 							comments++;
 						}
 					}
@@ -273,7 +271,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 	 * pressed or the enter button is pressed.
 	 *
 	 */
-	private void addStage() {
+	public void addStage() {
 		if (WorkflowModel.getInstance().findStageByName(view.getLabelText()) != null) {
 			JOptionPane.showConfirmDialog(view,
 					"Another stage already has the name " + view.getLabelText()
@@ -294,23 +292,6 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 			// save to the server
 			WorkflowModel.getInstance().save();
 		}
-	}
-
-	@Override
-	public void keyTyped(KeyEvent e) {
-		// Do nothing.
-	}
-
-	@Override
-	public void keyPressed(KeyEvent e) {
-		if (e.getKeyChar() == KeyEvent.VK_ENTER) {
-			addStage();
-		}
-	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		// Do nothing.
 	}
 
 	/**

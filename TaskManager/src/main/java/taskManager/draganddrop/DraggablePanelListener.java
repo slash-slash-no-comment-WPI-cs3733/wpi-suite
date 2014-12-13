@@ -15,7 +15,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JComponent;
 import javax.swing.TransferHandler;
 
-import taskManager.JanewayModule;
+import taskManager.TaskManager;
 
 /**
  * Listener for initiating a panel drag
@@ -42,7 +42,7 @@ public class DraggablePanelListener extends MouseAdapter {
 	public void mousePressed(MouseEvent e) {
 		System.out.println("Panel pressed");
 		Point p = e.getPoint();
-		if (JanewayModule.isOnMac()) {
+		if (TaskManager.isOnMac()) {
 			// Macs appear to define the coordinates differently.
 			p.x = -p.x;
 			p.y = -p.y;

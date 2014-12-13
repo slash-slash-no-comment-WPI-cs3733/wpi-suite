@@ -166,10 +166,11 @@ public class TaskInputController implements KeyListener, PopupMenuListener,
 		if (e.getKeyChar() == KeyEvent.VK_ENTER) {
 			Component focusOwner = KeyboardFocusManager
 					.getCurrentKeyboardFocusManager().getFocusOwner();
-			if (focusOwner.getName().equals(EditTaskView.COMMENTS)
-					&& checkSaveComment()) {
+			if (focusOwner.getName().equals(EditTaskView.COMMENTS)) {
 				etv.removeLastCharFromComments();
-				etv.getController().addComment();
+				if (checkSaveComment()) {
+					etv.getController().addComment();
+				}
 			}
 		}
 		validate();
@@ -208,8 +209,9 @@ public class TaskInputController implements KeyListener, PopupMenuListener,
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		validate();
-
+		if (evt.getPropertyName().equals("date")) {
+			validate();
+		}
 	}
 
 	@Override

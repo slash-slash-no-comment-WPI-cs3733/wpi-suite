@@ -34,7 +34,7 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.User;
  * @author Stefan Alexander
  * @version November 9, 2014
  */
-public class JanewayModule implements IJanewayModule {
+public class TaskManager implements IJanewayModule {
 
 	// The tabs used by this module
 
@@ -46,7 +46,7 @@ public class JanewayModule implements IJanewayModule {
 	/**
 	 * Construct a blank tab
 	 */
-	public JanewayModule() {
+	public TaskManager() {
 
 		tabs = new ArrayList<JanewayTabModel>();
 		final JanewayTabModel tab = new JanewayTabModel("Task Manager",

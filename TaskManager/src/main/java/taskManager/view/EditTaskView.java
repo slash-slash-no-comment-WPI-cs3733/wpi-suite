@@ -45,7 +45,7 @@ import org.jdesktop.swingx.JXDatePicker;
 import taskManager.controller.EditTaskController;
 import taskManager.controller.TaskInputController;
 import taskManager.model.ActivityModel;
-import taskManager.model.ActivityModel.activityModelType;
+import taskManager.model.ActivityModel.ActivityModelType;
 
 /**
  *  Edit panel for a new task
@@ -146,6 +146,8 @@ public class EditTaskView extends JScrollPane {
 		window = new JPanel(new MigLayout());
 		this.setViewportView(center);
 		this.setLayout(new ScrollPaneLayout());
+		this.getVerticalScrollBar().setUnitIncrement(12);
+		this.getHorizontalScrollBar().setUnitIncrement(12);
 		final Dimension panelSize = getPreferredSize();
 		panelSize.width = 1300; // TODO
 		panelSize.height = 650; // Decide size
@@ -848,7 +850,7 @@ public class EditTaskView extends JScrollPane {
 	 */
 	public ActivityModel addComment() {
 		final ActivityModel act = new ActivityModel(commentsField.getText(),
-				activityModelType.COMMENT);
+				ActivityModelType.COMMENT);
 		activities.add(act);
 		commentsField.setText("");
 		reloadActivitiesPanel();

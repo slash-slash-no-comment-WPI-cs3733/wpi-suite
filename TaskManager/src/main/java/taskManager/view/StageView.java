@@ -228,7 +228,6 @@ public class StageView extends JPanel implements Transferable {
 		// listen for clicks on the 'change title' buttons
 		done.addActionListener(controller);
 		cancel.addActionListener(controller);
-		labelText.addKeyListener(controller);
 	}
 
 	/**

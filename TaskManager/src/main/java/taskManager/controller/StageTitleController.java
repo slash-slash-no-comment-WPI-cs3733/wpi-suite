@@ -34,7 +34,7 @@ public class StageTitleController implements KeyListener {
 	}
 
 	private Boolean checkTitle() {
-		final String newTitle = stageV.getLabelText();
+		final String newTitle = stageV.getLabelText().trim();
 		if (newTitle.equals("") || newTitle.equals(stageV.getName())) {
 			return false;
 		}
@@ -53,8 +53,11 @@ public class StageTitleController implements KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// Do nothing
-
+		if (e.getKeyChar() == KeyEvent.VK_ENTER) {
+			if (checkTitle()) {
+				stageV.getController().addStage();
+			}
+		}
 	}
 
 	@Override
