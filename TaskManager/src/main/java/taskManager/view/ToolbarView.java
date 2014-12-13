@@ -19,6 +19,8 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.Box;
@@ -61,7 +63,8 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	private JLabel archive;
 	private JLabel delete;
 	private JCheckBox archiveCheckBox;
-	private JComboBox<String> languages;
+	private JComboBox<String> languageSelector;
+	private List<String> languages;
 
 	private JLabel projectName;
 
@@ -160,16 +163,15 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		projectName = new JLabel();
 		projectName.setFont(new Font("TextField.font", Font.BOLD, 20));
 
-		// Make language selection drop down
-		languages = new JComboBox<String>();
-
+		languages = new ArrayList<String>();
+		// Get supported languages
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths
 				.get(getClass().getResource("/taskManager/localization")
 						.toURI()))) {
 			for (Path entry : stream) {
 				String filename = entry.getFileName().toString();
 				if (filename.endsWith(".properties")) {
-					languages.addItem(filename.substring(0, filename.toString()
+					languages.add(filename.substring(0, filename.toString()
 							.length() - ".properties".length()));
 				}
 			}
@@ -177,7 +179,14 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 			e.printStackTrace();
 		}
 
-		languages.addActionListener(controller);
+		// Make language selection drop down
+		languageSelector = new JComboBox<String>();
+		for (String language : languages) {
+			Localizer.setLanguage(language);
+			languageSelector.addItem(Localizer.getString("LanguageName"));
+		}
+
+		languageSelector.addActionListener(controller);
 
 		// Add title to the title panel
 		name.add(Box.createHorizontalStrut(10));
@@ -188,7 +197,7 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		buttons.add(createTask);
 		buttons.add(createStage);
 		buttons.add(statistics);
-		buttons.add(languages);
+		buttons.add(languageSelector);
 		buttons.add(archiveCheckBox);
 		buttons.add(Box.createHorizontalGlue());
 
@@ -303,7 +312,7 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	 * @return The selected language
 	 */
 	public String getSelectedLanguage() {
-		return (String) languages.getSelectedItem();
+		return languages.get(languageSelector.getSelectedIndex());
 	}
 
 	@Override
