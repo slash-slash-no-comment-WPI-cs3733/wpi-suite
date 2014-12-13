@@ -40,7 +40,6 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 /**
@@ -492,46 +491,5 @@ class DropAreaListener implements DropTargetListener {
 	@Override
 	public void dropActionChanged(DropTargetDragEvent e) {
 
-	}
-
-	/**
-	 * Convert DropTargetDropEvent to the coordinate system of a different
-	 * component
-	 *
-	 * @param comp
-	 *            target component to convert coordinates to
-	 * @param e
-	 *            event to convert
-	 * @return converted event
-	 */
-	public static DropTargetDropEvent convertCoords(Component comp,
-			DropTargetDropEvent e) {
-		final Point newPoint = SwingUtilities.convertPoint(e
-				.getDropTargetContext().getComponent(), e.getLocation(), comp);
-		final DropTargetDropEvent newE = new DropTargetDropEvent(
-				e.getDropTargetContext(), newPoint, e.getDropAction(),
-				e.getSourceActions());
-		return newE;
-	}
-
-	/**
-	 * Convert DropTargetDragEvent to the coordinate system of a different
-	 * component
-	 *
-	 * @param comp
-	 *            target component to convert coordinates to
-	 * @param e
-	 *            event to convert
-	 * @return converted event
-	 */
-	public static DropTargetDragEvent convertCoords(Component comp,
-			DropTargetDragEvent e) {
-
-		final Point newPoint = SwingUtilities.convertPoint(e
-				.getDropTargetContext().getComponent(), e.getLocation(), comp);
-		final DropTargetDragEvent newE = new DropTargetDragEvent(
-				e.getDropTargetContext(), newPoint, e.getDropAction(),
-				e.getSourceActions());
-		return newE;
 	}
 }

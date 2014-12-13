@@ -24,7 +24,7 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 
-import taskManager.JanewayModule;
+import taskManager.TaskManager;
 import taskManager.model.ActivityModel;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
@@ -69,7 +69,7 @@ public class EditTaskController implements ActionListener {
 
 		// fills the user lists
 		final List<String> projectUserNames = new ArrayList<String>();
-		for (User u : JanewayModule.users) {
+		for (User u : TaskManager.users) {
 			String name = u.getUsername();
 			if (!projectUserNames.contains(name)) {
 				projectUserNames.add(name);
@@ -116,7 +116,7 @@ public class EditTaskController implements ActionListener {
 
 		// populates the project users list
 		final List<String> projectUserNames = new ArrayList<String>();
-		for (User u : JanewayModule.users) {
+		for (User u : TaskManager.users) {
 			String name = u.getUsername();
 			if (!projectUserNames.contains(name)
 					&& !model.getAssigned().contains(name)) {
@@ -276,6 +276,7 @@ public class EditTaskController implements ActionListener {
 				final ActivityModel comment = etv.addComment();
 				// add immediately to the model.
 				model.addActivity(comment);
+				WorkflowModel.getInstance().save();
 				break;
 			}
 		}
@@ -390,7 +391,7 @@ public class EditTaskController implements ActionListener {
 	 * @return the user with the given name
 	 */
 	private static User findUserByName(String name) {
-		for (User u : JanewayModule.users) {
+		for (User u : TaskManager.users) {
 			if (u.getUsername().equals(name)) {
 				return u;
 			}

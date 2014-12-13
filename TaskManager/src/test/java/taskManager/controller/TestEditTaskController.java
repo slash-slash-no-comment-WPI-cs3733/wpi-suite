@@ -39,7 +39,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import taskManager.ClientDataStore;
-import taskManager.JanewayModule;
+import taskManager.TaskManager;
 import taskManager.MockNetwork;
 import taskManager.ScreenshotOnFail;
 import taskManager.model.StageModel;
@@ -74,12 +74,12 @@ public class TestEditTaskController extends ScreenshotOnFail {
 
 	@BeforeClass
 	public static void netSetup() {
-		Network.setInstance(new MockNetwork());
+		Network.setInstance(new MockNetwork(true));
 	}
 
 	@Before
 	public void setup() {
-		JanewayModule.reset();
+		TaskManager.reset();
 
 		// give it some stages
 		for (String name : stageNames) {
@@ -253,7 +253,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	@Test
 	public void testAddUsers() {
 		// create users
-		JanewayModule.users = new User[] { testUser,
+		TaskManager.users = new User[] { testUser,
 				new User("name1", "name1", "password", 4321),
 				new User("name2", "name2", "password", 5678),
 				new User("name3", "name3", "password", 9876) };
@@ -279,7 +279,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	@Test
 	public void testRemoveUsers() {
 		// create users
-		JanewayModule.users = new User[] { testUser,
+		TaskManager.users = new User[] { testUser,
 				new User("name2", "name2", "password", 5678),
 				new User("name3", "name3", "password", 9876) };
 
