@@ -8,7 +8,6 @@
  *******************************************************************************/
 package taskManager.view;
 
-
 import java.awt.Component;
 import java.awt.dnd.DropTarget;
 
@@ -34,7 +33,6 @@ public class WorkflowView extends JLayeredPane {
 
 	private DropAreaPanel stages;
 	private JTextField search;
-
 
 	/**
 	 * Constructor for WorkflowView.
@@ -69,6 +67,7 @@ public class WorkflowView extends JLayeredPane {
 			stages = new DropAreaPanel(DDTransferHandler.getStageFlavor());
 			stages.setLayout(new BoxLayout(stages, BoxLayout.LINE_AXIS));
 			stages.setSaveListener(controller);
+			add(stages);
 
 			// Redispatch drag events down to DropAreaPanel
 			this.setDropTarget(new DropTarget(this, new DropTargetRedispatcher(
@@ -87,14 +86,15 @@ public class WorkflowView extends JLayeredPane {
 		controller.removeTaskInfos(true);
 		add(ti, new Integer(1));
 	}
-	
+
 	/**
 	 * returns the text in the search bar
-	 * @return 
+	 * 
+	 * @return
 	 * 
 	 * @return getSearch
 	 */
-	public JTextField getSearch(){
+	public JTextField getSearch() {
 		return search;
 	}
 

@@ -274,7 +274,6 @@ public class TaskInfoPreviewView extends JPanel {
 
 		this.add(bgPane);
 		bgPane.setBounds(0, 0, this.getWidth() - 10, this.getHeight() - 10);
-
 	}
 
 	/**

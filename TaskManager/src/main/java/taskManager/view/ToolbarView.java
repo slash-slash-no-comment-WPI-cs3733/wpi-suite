@@ -149,7 +149,7 @@ public class ToolbarView extends JToolBar {
 		checks.add(myTasksCheckBox);
 
 		// adds the category dropdown
-		categories = new JPopupMenu();
+		categories = new JPopupMenu("Categories");
 		for (int i = 0; i < CATEGORIES.length; i++) {
 			JCheckBoxMenuItem c = new JCheckBoxMenuItem();
 			c.setName(TaskCategory.values()[i].toString());
@@ -157,7 +157,6 @@ public class ToolbarView extends JToolBar {
 			System.out.println("Adding category");
 			categories.add(c);
 		}
-		categories.setVisible(true);
 		lower.add(checks);
 		lower.add(categories);
 		filters.add(lower);
@@ -275,6 +274,10 @@ public class ToolbarView extends JToolBar {
 
 	public boolean isArchiveShown() {
 		return archiveCheckBox.isSelected();
+	}
+
+	public boolean isMyTasksShown() {
+		return myTasksCheckBox.isSelected();
 	}
 
 	/**

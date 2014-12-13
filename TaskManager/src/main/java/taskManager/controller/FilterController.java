@@ -74,8 +74,7 @@ public class FilterController implements ItemListener, PopupMenuListener {
 	 * @return true if the show my tasks box is checked
 	 */
 	private boolean myTasksChecked() {
-		// TODO Auto-generated method stub
-		return false;
+		return ToolbarController.getInstance().getView().isMyTasksShown();
 	}
 
 	/**
@@ -95,14 +94,15 @@ public class FilterController implements ItemListener, PopupMenuListener {
 			TaskFilter filter = new TaskFilter();
 			WorkflowController.getInstance().setCurrentFilter(filter);
 			if (archiveChecked()) {
-				filter.setArchive(ArchiveState.ARCHIVED);
+				filter.setArchive(ArchiveState.ARCHIVED,
+						ArchiveState.NOT_ARCHIVED);
 			} else {
 				filter.setArchive(ArchiveState.NOT_ARCHIVED);
 			}
 			if (myTasksChecked()) {
 				filter.setUser(TaskManager.currentUser);
 			} else {
-				filter.setUser(null);
+				filter.setUsers(null);
 			}
 			if (!categoriesSelected().isEmpty()) {
 				filter.setCategories(categoriesSelected());
