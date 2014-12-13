@@ -850,8 +850,8 @@ public class EditTaskView extends JScrollPane implements LocaleChangeListener {
 	 * @return the resulting ActivityModel added.
 	 */
 	public ActivityModel addComment() {
-		final ActivityModel act = new ActivityModel(commentsField.getText(),
-				ActivityModelType.COMMENT);
+		final ActivityModel act = new ActivityModel(ActivityModelType.COMMENT,
+				commentsField.getText());
 		activities.add(act);
 		commentsField.setText("");
 		reloadActivitiesPanel();
