@@ -8,9 +8,11 @@
  *******************************************************************************/
 package taskManager.controller;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Date;
 
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
@@ -51,6 +53,13 @@ public class TaskController implements MouseListener {
 		} else {
 			view.setBackground(Colors.TASK);
 		}
+
+		if (model.getDueDate().before(new Date())) {
+			view.setDateColor(Color.RED);
+		} else {
+			view.setDateColor(Color.BLACK);
+		}
+
 	}
 
 	/**
