@@ -46,6 +46,9 @@ public class TabView extends JPanel implements ActionListener,
 	private boolean closeable;
 	private TabPaneController tabPaneC;
 	private JButton closeButton = null;
+	private boolean localizable;
+	private final String title;
+	private final JLabel label;
 
 	/**
 	 * 
@@ -58,17 +61,20 @@ public class TabView extends JPanel implements ActionListener,
 	 * @param closeable
 	 *            Whether to make the tab closeable - aka put an 'x' in the tab
 	 */
-	public TabView(String title, Component component, boolean closeable) {
+	public TabView(String title, Component component, boolean closeable,
+			boolean localizable) {
 		super(new FlowLayout(FlowLayout.LEFT, 0, 0));
 
 		this.component = component;
 		this.closeable = closeable;
+		this.localizable = localizable;
+		this.title = title;
 
 		tabPaneC = TabPaneController.getInstance();
 
 		setOpaque(false);
 
-		final JLabel label = new JLabel(title);
+		label = new JLabel();
 		// This makes the tab's a set width and adds the ... if a task name is
 		// too long for the tab
 		final JLabel temp = new JLabel();
@@ -101,8 +107,8 @@ public class TabView extends JPanel implements ActionListener,
 	 * @param component
 	 *            The component to display in the tab's window/pane
 	 */
-	public TabView(String title, Component component) {
-		this(title, component, true);
+	public TabView(String title, Component component, boolean localizable) {
+		this(title, component, true, localizable);
 	}
 
 	/**
@@ -148,6 +154,10 @@ public class TabView extends JPanel implements ActionListener,
 	@Override
 	public void onLocaleChange() {
 		closeButton.setText(Localizer.getString("x"));
+		if (localizable) {
+			label.setText(Localizer.getString(title));
+		} else {
+			label.setText(title);
+		}
 	}
-
 }

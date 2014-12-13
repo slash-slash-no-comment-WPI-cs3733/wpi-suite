@@ -55,10 +55,10 @@ public class TabPaneView extends JTabbedPane implements LocaleChangeListener {
 
 	@Override
 	public void onLocaleChange() {
-		setTitleAt(0, Localizer.getString("Workflow"));
-		setToolTipTextAt(0, Localizer.getString("Workflow"));
-
-		// TODO: change names of other tabs
+		if (getTabCount() > 0) {
+			setTitleAt(0, Localizer.getString("Workflow"));
+			setToolTipTextAt(0, Localizer.getString("Workflow"));
+		}
 	}
 
 }

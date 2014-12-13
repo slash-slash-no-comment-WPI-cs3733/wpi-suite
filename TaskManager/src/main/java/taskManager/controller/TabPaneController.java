@@ -11,7 +11,6 @@ package taskManager.controller;
 
 import java.awt.Component;
 
-import taskManager.localization.Localizer;
 import taskManager.view.EditTaskView;
 import taskManager.view.ReportsView;
 import taskManager.view.TabPaneView;
@@ -84,7 +83,7 @@ public class TabPaneController {
 		if (exists) {
 			view.setSelectedComponent(etv2);
 		} else {
-			addTab(etv.getTitle().getText(), etv, true);
+			addTab(etv.getTitle().getText(), etv, true, false);
 			view.setSelectedComponent(etv);
 		}
 	}
@@ -108,7 +107,7 @@ public class TabPaneController {
 		if (exists) {
 			view.setSelectedComponent(rtv2);
 		} else {
-			addTab(Localizer.getString("Reports"), rtv, true);
+			addTab("Reports", rtv, true, true);
 			view.setSelectedComponent(rtv);
 		}
 	}
@@ -125,10 +124,11 @@ public class TabPaneController {
 	 *            Whether or not a tab can be closed. True adds an 'x' button to
 	 *            the tab
 	 */
-	public void addTab(String title, Component component, boolean closeable) {
+	public void addTab(String title, Component component, boolean closeable,
+			boolean localizable) {
 		view.addTab(title, component);
 		view.setTabComponentAt(view.indexOfComponent(component), new TabView(
-				title, component, closeable));
+				title, component, closeable, localizable));
 	}
 
 	/**

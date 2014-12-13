@@ -52,11 +52,8 @@ public class Localizer {
 			return rb.getString(key);
 		} catch (MissingResourceException e) {
 			// return english if string not found in that language
-			/*
-			 * System.err.println("no string found for key " + key +
-			 * " in language " + currentLanguage);
-			 */
-			System.err.println(key + "=" + key);
+			System.err.println("no string found for key " + key
+					+ " in language " + currentLanguage);
 			return defaultRB.getString(key);
 		}
 	}

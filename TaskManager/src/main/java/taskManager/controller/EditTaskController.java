@@ -81,8 +81,7 @@ public class EditTaskController implements ActionListener {
 		}
 		etv.getProjectUsersList().addAllToList(projectUserNames);
 
-		TabPaneController.getInstance().addTab(
-				Localizer.getString("CreateTask"), etv, true);
+		TabPaneController.getInstance().addTab("CreateTask", etv, true, true);
 
 		reloadData();
 	}

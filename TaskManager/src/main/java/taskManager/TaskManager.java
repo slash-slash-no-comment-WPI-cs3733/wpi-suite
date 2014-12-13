@@ -19,6 +19,7 @@ import taskManager.controller.TaskController;
 import taskManager.controller.ToolbarController;
 import taskManager.controller.WorkflowController;
 import taskManager.draganddrop.DDTransferHandler;
+import taskManager.localization.Localizer;
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
@@ -77,6 +78,8 @@ public class TaskManager implements IJanewayModule {
 		ToolbarController.getInstance().reset();
 		TabPaneController.getInstance().reset();
 		WorkflowController.getInstance().reset();
+
+		Localizer.setLanguage(Localizer.defaultLanguage);
 	}
 
 	/**

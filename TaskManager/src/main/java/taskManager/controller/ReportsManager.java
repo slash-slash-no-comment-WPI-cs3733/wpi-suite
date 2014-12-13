@@ -491,8 +491,8 @@ public class ReportsManager implements ActionListener, ChangeListener,
 				JPanel chart = createChart(Localizer.getString("EffortPerDay"),
 						Localizer.getString("Time"),
 						Localizer.getString("Effort"));
-				TabPaneController.getInstance().addTab(
-						Localizer.getString("Graph"), chart, true);
+				TabPaneController.getInstance().addTab("Graph", chart, true,
+						true);
 				TabPaneController.getInstance().getView()
 						.setSelectedComponent(chart);
 			}
