@@ -157,6 +157,7 @@ public class ToolbarView extends JToolBar {
 			System.out.println("Adding category");
 			categories.add(c);
 		}
+		categories.setVisible(true);
 		lower.add(checks);
 		lower.add(categories);
 		filters.add(lower);

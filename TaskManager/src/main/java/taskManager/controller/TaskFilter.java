@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 
 import taskManager.model.ActivityModel;
-import taskManager.model.ActivityModel.activityModelType;
+import taskManager.model.ActivityModel.ActivityModelType;
 import taskManager.model.TaskModel;
 import taskManager.model.TaskModel.TaskCategory;
 
@@ -190,7 +190,7 @@ public class TaskFilter {
 		case COMMENTS:
 			final List<ActivityModel> activities = task.getActivities();
 			for (ActivityModel activity : activities) {
-				if (activity.getType().equals(activityModelType.COMMENT)
+				if (activity.getType().equals(ActivityModelType.COMMENT)
 						&& activity.getDescription().toLowerCase()
 								.contains(filterString)) {
 					return true;

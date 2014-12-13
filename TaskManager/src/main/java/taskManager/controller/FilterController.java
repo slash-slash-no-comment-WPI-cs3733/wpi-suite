@@ -18,7 +18,7 @@ import javax.swing.JCheckBox;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
-import taskManager.JanewayModule;
+import taskManager.TaskManager;
 import taskManager.controller.TaskFilter.ArchiveState;
 import taskManager.model.TaskModel.TaskCategory;
 
@@ -87,15 +87,22 @@ public class FilterController implements ItemListener, PopupMenuListener {
 		return ToolbarController.getInstance().getView().isArchiveShown();
 	}
 
-	private void checkForFilter() {
+	/**
+	 * reloads the workflow with the appropriate filter applied
+	 */
+	private void filter() {
 		if (hasFilter()) {
 			TaskFilter filter = new TaskFilter();
 			WorkflowController.getInstance().setCurrentFilter(filter);
 			if (archiveChecked()) {
 				filter.setArchive(ArchiveState.ARCHIVED);
+			} else {
+				filter.setArchive(ArchiveState.NOT_ARCHIVED);
 			}
 			if (myTasksChecked()) {
-				filter.setUser(JanewayModule.currentUser);
+				filter.setUser(TaskManager.currentUser);
+			} else {
+				filter.setUser(null);
 			}
 			if (!categoriesSelected().isEmpty()) {
 				filter.setCategories(categoriesSelected());
@@ -108,24 +115,24 @@ public class FilterController implements ItemListener, PopupMenuListener {
 
 	@Override
 	public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-		checkForFilter();
+		filter();
 
 	}
 
 	@Override
 	public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-		checkForFilter();
+		filter();
 
 	}
 
 	@Override
 	public void popupMenuCanceled(PopupMenuEvent e) {
-		checkForFilter();
+		filter();
 
 	}
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		checkForFilter();
+		filter();
 	}
 }

@@ -20,7 +20,7 @@ import taskManager.controller.TaskFilter;
 import taskManager.controller.TaskFilter.ArchiveState;
 import taskManager.controller.TaskFilter.StringField;
 import taskManager.model.ActivityModel;
-import taskManager.model.ActivityModel.activityModelType;
+import taskManager.model.ActivityModel.ActivityModelType;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.TaskModel.TaskCategory;
@@ -101,7 +101,7 @@ public class TestTaskFilter {
 		tm = new TaskModel("Task Name", sm);
 		tm.setDescription("A Fine Description");
 		tm.addActivity(new ActivityModel("A New Comment",
-				activityModelType.COMMENT));
+				ActivityModelType.COMMENT));
 
 		f.setString("k na");
 		assertTrue(f.check(tm));
