@@ -74,7 +74,7 @@ public class StageView extends JPanel implements Transferable {
 	 * @param name
 	 *            The title of the stage being drawn
 	 */
-	public StageView(String name) {
+	public StageView(String name, StageController stageC) {
 
 		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 
@@ -185,6 +185,8 @@ public class StageView extends JPanel implements Transferable {
 		// scrollbar flicker
 		stage.setDropTarget(new DropTarget(stage, new DropTargetRedispatcher(
 				tasks, DDTransferHandler.getTaskFlavor())));
+
+		setController(stageC);
 	}
 
 	/**
@@ -249,21 +251,21 @@ public class StageView extends JPanel implements Transferable {
 		done.setEnabled(enabled);
 	}
 
+	/**
+	 * 
+	 * @return the text in the titleTextBox.
+	 */
 	public String getLabelText() {
 		return labelText.getText();
 	}
 
 	/**
-	 * makes the editable label field visible/not visible
-	 * 
-	 * @param q
-	 *            true is visible, false is not visible
+	 * Sets the focus to the text area
 	 */
-	public void enableTitleEditing(boolean q) {
-
-		changeLabel.setVisible(q);
-		label.setVisible(!q);
-
+	public void focusTextArea() {
+		this.labelText.requestFocus();
+		this.labelText.requestFocusInWindow();
+		this.labelText.grabFocus();
 	}
 
 	/**

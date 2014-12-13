@@ -72,6 +72,10 @@ public class WorkflowView extends JLayeredPane {
 					stages, DDTransferHandler.getStageFlavor())));
 		}
 		stages.add(stv);
+		// If this is a new stage, open the textbox
+		if (stv.getName() == "") {
+			stv.getController().switchTitle(true);
+		}
 	}
 
 	/**
@@ -85,28 +89,6 @@ public class WorkflowView extends JLayeredPane {
 		add(ti, new Integer(1));
 	}
 
-	/**
-	 * returns the requested StageView, or creates one if it does not exist
-	 * 
-	 * @param name
-	 *            the name of the stageview to be returned
-	 * @return the requested stageview
-	 */
-	public StageView getStageViewByName(String name) {
-		if (name == null) {
-			throw new NullPointerException("name must not be null");
-		}
-		// goes through all of the stage views it contains until it finds
-		// the one that matches the name
-
-		for (Component c : stages.getComponents()) {
-			if (name.equals(c.getName())) {
-				return (StageView) c;
-			}
-		}
-		return new StageView(name);
-	}
-
 	/*
 	 * @see javax.swing.JComponent#setVisible(boolean)
 	 */
@@ -117,5 +99,19 @@ public class WorkflowView extends JLayeredPane {
 			controller.reloadData();
 		}
 		super.setVisible(visible);
+	}
+
+	public void removeChangeTitles() {
+		for (Component c : stages.getComponents()) {
+			if (c instanceof StageView) {
+				if (((StageView) c).getController().isNewStage()) {
+					stages.remove((StageView) c);
+					controller.reloadData();
+				}
+				if (((StageView) c).getController() != null) {
+					((StageView) c).getController().switchTitle(false);
+				}
+			}
+		}
 	}
 }

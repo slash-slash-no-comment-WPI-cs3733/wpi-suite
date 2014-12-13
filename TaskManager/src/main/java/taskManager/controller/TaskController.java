@@ -31,8 +31,7 @@ public class TaskController implements MouseListener {
 	private final TaskModel model;
 	private final Color background;
 
-	public static Boolean anyTaskInfoOut = false;
-	private Boolean thisTaskInfoOut = false;
+	private Boolean taskInfoPreviewOut = false;
 
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
@@ -130,6 +129,8 @@ public class TaskController implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		WorkflowController.getInstance().removeChangeTitles();
+		WorkflowController.pauseInformation = false;
 
 		// Create the taskinfo bubble
 		final Point stageLoc = view.getParent().getParent().getParent()
@@ -142,8 +143,7 @@ public class TaskController implements MouseListener {
 				new TaskInfoPreviewView(model, this, infoLoc));
 
 		// Set the correct flags
-		thisTaskInfoOut = true;
-		TaskController.anyTaskInfoOut = true;
+		taskInfoPreviewOut = true;
 		// make the associated task a darker color while the bubble is out
 		if (isArchived()) {
 			view.setBackground(Colors.ARCHIVE_CLICKED);
@@ -173,7 +173,7 @@ public class TaskController implements MouseListener {
 	public void mouseExited(MouseEvent e) {
 		// only reset the background if there is no taskInfo bubble out for this
 		// task
-		if (!thisTaskInfoOut) {
+		if (!taskInfoPreviewOut) {
 			resetBackground();
 		}
 	}
@@ -182,7 +182,7 @@ public class TaskController implements MouseListener {
 	 * @return the thisTaskInfoOut
 	 */
 	public Boolean getThisTaskInfoOut() {
-		return thisTaskInfoOut;
+		return taskInfoPreviewOut;
 	}
 
 	/**
@@ -190,6 +190,6 @@ public class TaskController implements MouseListener {
 	 *            the thisTaskInfoOut to set
 	 */
 	public void setThisTaskInfoOut(Boolean thisTaskInfoOut) {
-		this.thisTaskInfoOut = thisTaskInfoOut;
+		this.taskInfoPreviewOut = thisTaskInfoOut;
 	}
 }

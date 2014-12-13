@@ -23,7 +23,6 @@ import javax.swing.JPanel;
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DropAreaSaveListener;
 import taskManager.model.ActivityModel;
-import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
@@ -44,24 +43,41 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 	private final StageView view;
 	private StageModel model;
 
-	public static Boolean anyChangeTitleOut = false;
-	private Boolean thisChangeTitleOut = false;
+	private boolean newStage = false;
+
+	/**
+	 * Constructor for the StageController. Use this when a new stage is being
+	 * created (after clicking add stage button).
+	 *
+	 * @param view
+	 *            the corresponding StageView object
+	 */
+	public StageController() {
+		this.view = new StageView("", this);
+		this.newStage = true;
+	}
 
 	/**
 	 * Constructor for the StageController gets all the tasks from the
 	 * StageModel, creates the corresponding TaskView and TaskControllers for
-	 * each, and final adds all of the TaskViews to the UI.
+	 * each, and final adds all of the TaskViews to the UI. Use this when
+	 * loading a stage from a database.
 	 *
 	 * @param view
 	 *            the corresponding StageView object
 	 * @param model
 	 *            the corresponding StageModel object
+	 * @param newStage
+	 *            true if this is a new stage. false if it is being loaded from
+	 *            the database
 	 */
-	public StageController(StageView view, StageModel model) {
-		this.view = view;
+	public StageController(StageModel model) throws IllegalArgumentException {
+		if (model == null) {
+			throw new IllegalArgumentException("Model cannot be null");
+		}
 		this.model = model;
-
-		// Get all the tasks associated with this Stage.
+		this.view = new StageView(model.getName(), this);
+		this.newStage = false;
 
 		// Get state of archive shown check box.
 		final boolean showArchive = ToolbarController.getInstance().getView()
@@ -90,7 +106,6 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 				}
 			}
 		}
-
 	}
 
 	/*
@@ -170,32 +185,40 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 				c.setVisible(!editable);
 			} else if (StageView.CHANGE_TITLE.equals(c.getName())) {
 				c.setVisible(editable);
+				view.focusTextArea();
 			}
 		}
 	}
 
+	/**
+	 *
+	 * @return true if this is a new stage. false if it was loaded from the
+	 *         database
+	 */
+	public boolean isNewStage() {
+		return newStage;
+	}
+
+	/**
+	 *
+	 * @return the StageView for this controller
+	 */
+	public StageView getView() {
+		return view;
+	}
+
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// only bring up the title textbox if nothing else has set
-		// ignoreAllResponses
-		if (!FetchWorkflowObserver.ignoreAllResponses && !anyChangeTitleOut) {
-			// double clicked on the title
-			if (e.getClickCount() == 2 && e.getSource() instanceof JLabel) {
-				// Don't reload while changing a stage name is open.
-				FetchWorkflowObserver.ignoreAllResponses = true;
-				anyChangeTitleOut = true;
-				setThisChangeTitleOut(true);
-				// bring up the title textbox
-				switchTitle(true);
-			}
-		}
-		// If there are no changeTitle textboxes out, clear the workflow
-		else if (!StageController.anyChangeTitleOut) {
-			// reset the flag
-			FetchWorkflowObserver.ignoreAllResponses = false;
-			// this will remove any changeTitle textboxes or taskInfo bubbles
-			// from the workflow
-			WorkflowController.getInstance().removeTaskInfos(false);
+		// clicked on the title
+		if (e.getSource() instanceof JLabel) {
+			// Don't reload while changing a stage name is open.
+			WorkflowController.getInstance().removeChangeTitles();
+			WorkflowController.getInstance().removeTaskInfos(true);
+			WorkflowController.pauseInformation = true;
+			// bring up the title textbox
+			switchTitle(true);
+		} else {
+			WorkflowController.pauseInformation = false;
 			WorkflowController.getInstance().reloadData();
 			WorkflowController.getInstance().repaintView();
 		}
@@ -275,8 +298,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 
 				} else {
 					// reset the flags
-					setThisChangeTitleOut(false);
-					FetchWorkflowObserver.ignoreAllResponses = false;
+					WorkflowController.pauseInformation = false;
 					// reload which will remove the textbox
 					WorkflowController.getInstance().reloadData();
 
@@ -287,20 +309,4 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 		}
 
 	}
-
-	/**
-	 * @return the thisChangeTitleOut
-	 */
-	public Boolean getThisChangeTitleOut() {
-		return thisChangeTitleOut;
-	}
-
-	/**
-	 * @param thisChangeTitleOut
-	 *            the thisChangeTitleOut to set
-	 */
-	public void setThisChangeTitleOut(Boolean thisChangeTitleOut) {
-		this.thisChangeTitleOut = thisChangeTitleOut;
-	}
-
 }
