@@ -22,6 +22,7 @@ import javax.swing.JPanel;
 
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DropAreaSaveListener;
+import taskManager.localization.Localizer;
 import taskManager.model.ActivityModel;
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
@@ -236,10 +237,11 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 						view.getLabelText()) != null) {
 					JOptionPane.showConfirmDialog(
 							view,
-							"Another stage already has the name "
-									+ view.getLabelText()
-									+ ". Please choose another name.",
-							"Warning - Duplicate stage names",
+							Localizer.getString("DuplicateStage") + " "
+									+ view.getLabelText() + ". "
+									+ Localizer.getString("DuplicateStage2")
+									+ ".",
+							Localizer.getString("DuplicateWarning"),
 							JOptionPane.CLOSED_OPTION);
 				} else {
 					if (model == null) {
