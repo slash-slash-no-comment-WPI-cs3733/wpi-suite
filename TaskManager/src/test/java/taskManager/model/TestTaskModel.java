@@ -15,12 +15,15 @@ import static org.junit.Assert.assertTrue;
 import java.util.Date;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import taskManager.MockNetwork;
 import taskManager.TaskManager;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
+import edu.wpi.cs.wpisuitetng.network.Network;
 
 /**
  * @author Sam Khalandovsky
@@ -29,6 +32,11 @@ import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel
 public class TestTaskModel {
 
 	TaskModel task;
+
+	@BeforeClass
+	public static void netSetup() {
+		Network.setInstance(new MockNetwork());
+	}
 
 	@Before
 	public void setUp() {
