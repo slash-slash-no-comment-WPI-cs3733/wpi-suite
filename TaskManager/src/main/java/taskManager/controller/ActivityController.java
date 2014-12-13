@@ -24,7 +24,8 @@ import taskManager.model.WorkflowModel;
 import taskManager.view.ActivityPanel;
 
 /**
- * Controller for a single task's activities
+ * Controller for a single task's activities. Controlls both the comments
+ * ActivityPanel and the all activities ActivityPanel.
  *
  * @author Clark Jacobsohn
  */
@@ -152,7 +153,12 @@ public class ActivityController implements ActionListener, KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		validateSubmitButton();
+		if (validateSubmitButton() && e.getKeyCode() == 10) {
+			ActionEvent ae = new ActionEvent(commentsPanel.getSubmitBtn(), 0,
+					null);
+			actionPerformed(ae);
+			commentsPanel.scrollActivitiesToBottom();
+		}
 	}
 
 	@Override
@@ -164,11 +170,13 @@ public class ActivityController implements ActionListener, KeyListener {
 	 * Checks if the comment box input is valid and sets the comment submit
 	 * button accordingly.
 	 */
-	private void validateSubmitButton() {
+	private boolean validateSubmitButton() {
 		if (commentsPanel.getCommentsFieldText().trim().isEmpty()) {
 			commentsPanel.setCommentSubmitEnabled(false);
+			return false;
 		} else {
 			commentsPanel.setCommentSubmitEnabled(true);
+			return true;
 		}
 	}
 }

@@ -9,12 +9,14 @@
 package taskManager.view;
 
 import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.KeyStroke;
 
 import net.miginfocom.swing.MigLayout;
 import taskManager.controller.ActivityController;
@@ -80,6 +82,8 @@ public class ActivityPanel extends JPanel {
 		JScrollPane activityScroll = new JScrollPane(activities,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		// Scrolls to the bottom of the window where the most recent things are.
+		scrollActivitiesToBottom();
 
 		// Comment textbox
 		commentBox = new JTextArea();
@@ -87,6 +91,10 @@ public class ActivityPanel extends JPanel {
 		commentBox.setWrapStyleWord(true);
 		commentBox.setLineWrap(true);
 		commentBox.addKeyListener(controller);
+		commentBox.getInputMap().put(KeyStroke.getKeyStroke("ENTER"),
+				"doNothing");
+		commentBox.getInputMap()
+				.put(KeyStroke.getKeyStroke("TAB"), "doNothing");
 
 		JScrollPane commentScroll = new JScrollPane(commentBox,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -142,6 +150,17 @@ public class ActivityPanel extends JPanel {
 	}
 
 	/**
+	 * 
+	 * Makes the activitiesScroll JScrollPanel scroll to the bottom.
+	 *
+	 */
+	public void scrollActivitiesToBottom() {
+		Rectangle rect = new Rectangle(0, (int) activities.getPreferredSize()
+				.getHeight(), 10, 10);
+		activities.scrollRectToVisible(rect);
+	}
+
+	/**
 	 * Sets the comment submit button to be enabled or disabled.
 	 * 
 	 * @param e
@@ -165,5 +184,15 @@ public class ActivityPanel extends JPanel {
 	 */
 	public void clearText() {
 		commentBox.setText("");
+	}
+
+	/**
+	 * 
+	 * The submit button. Used by ActionController.
+	 *
+	 * @return the submit button
+	 */
+	public JButton getSubmitBtn() {
+		return submit;
 	}
 }

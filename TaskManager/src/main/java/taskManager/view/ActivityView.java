@@ -29,9 +29,6 @@ import taskManager.model.ActivityModel;
  */
 public class ActivityView extends JPanel {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 6524598229849111521L;
 	public static final String INFO = "info";
 	public static final String MESSAGE_BODY = "message_body";
@@ -39,12 +36,6 @@ public class ActivityView extends JPanel {
 	private JLabel info;
 
 	private JLabel message;
-
-	/*
-	 * JXDatePicker nt_dueDateField = new JXDatePicker();
-	 * nt_dueDateField.setName("due_date"); this.dateField = nt_dueDateField;
-	 * dateField.setDate(Calendar.getInstance().getTime());
-	 */
 
 	/**
 	 * Creates an ActivityView panel, meant to display an activity with name of
