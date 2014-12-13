@@ -202,7 +202,10 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 			WorkflowController.getInstance().removeTaskInfos(false);
 			WorkflowController.getInstance().reloadData();
 			WorkflowController.getInstance().repaintView();
+		}else{
+			XButton();
 		}
+		
 	}
 
 	@Override

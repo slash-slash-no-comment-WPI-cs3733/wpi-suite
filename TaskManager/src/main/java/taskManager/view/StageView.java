@@ -180,7 +180,7 @@ public class StageView extends JPanel implements Transferable {
 		label.addMouseMotionListener(listener);
 		labelName.addMouseListener(listener);
 		labelName.addMouseMotionListener(listener);
-
+		this.addMouseListener(controller);
 		setTransferHandler(new DDTransferHandler());
 
 		// setTransferHandler creates DropTarget by default; we don't want
@@ -276,7 +276,6 @@ public class StageView extends JPanel implements Transferable {
 		this.labelText.requestFocusInWindow();
 		this.labelText.grabFocus();
 		this.labelText.addKeyListener(controller);
-		
 	}
 	
 	/**
