@@ -71,7 +71,7 @@ public abstract class AbstractJsonableModel<T> extends AbstractModel {
 	}
 
 	/**
-	 * Sets fields to match passed model Should call setID(model.getID());
+	 * Sets fields to match passed model. Should call setID(model.getID());
 	 *
 	 * @param model
 	 * @return set of objects that can be safely deleted

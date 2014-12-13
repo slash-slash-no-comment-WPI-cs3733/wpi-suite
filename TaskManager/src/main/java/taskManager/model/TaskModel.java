@@ -403,14 +403,11 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		isArchived = bool;
 	}
 
-	/**
-	 * Changes this taskmodel to be identical to the inputed task model, while
-	 * maintaining the pointer
-	 *
-	 * @param task
-	 *            The task to copy
-	 * @return
+	/*
+	 * @see
+	 * taskManager.model.AbstractJsonableModel#makeIdenticalTo(java.lang.Object)
 	 */
+	@Override
 	public Set<Object> makeIdenticalTo(TaskModel task) {
 		setID(task.getID());
 		name = task.getName();

@@ -311,13 +311,11 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 		taskList.remove(task);
 	}
 
-	/**
-	 * Changes this stagemodel to be identical to the inputted stage model,
-	 * while maintaining the pointer
-	 *
-	 * @param stage
-	 *            The stage to copy
+	/*
+	 * @see
+	 * taskManager.model.AbstractJsonableModel#makeIdenticalTo(java.lang.Object)
 	 */
+	@Override
 	public Set<Object> makeIdenticalTo(StageModel stage) {
 		setID(stage.getID());
 		name = stage.getName();

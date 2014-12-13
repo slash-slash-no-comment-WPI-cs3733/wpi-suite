@@ -256,12 +256,9 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 		return stageList;
 	}
 
-	/**
-	 * Changes this workflowmodel to be identical to the inputed workflow model,
-	 * while maintaining the pointer
-	 *
-	 * @param workflow
-	 *            The workflow to copy
+	/*
+	 * @see
+	 * taskManager.model.AbstractJsonableModel#makeIdenticalTo(java.lang.Object)
 	 */
 	public Set<Object> makeIdenticalTo(WorkflowModel workflow) {
 		setID(workflow.getID());

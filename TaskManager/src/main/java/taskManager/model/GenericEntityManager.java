@@ -111,8 +111,8 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 		// check if object already exists
 		final List<Model> existingModels = db.retrieve(type, "id",
 				newModel.getID(), s.getProject());
-		if (existingModels.size() < 1 || existingModels.get(0) == null
-				|| existingModels == null) {
+		if (existingModels == null || existingModels.size() < 1
+				|| existingModels.get(0) == null) {
 			save(s, newModel); // if it doesn't exist, save it
 		} else {
 			final T existingModel = (T) existingModels.get(0);
