@@ -17,6 +17,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import taskManager.model.ActivityModel.ActivityModelType;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
@@ -105,7 +106,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 			stage.addTask(this);
 			final ActivityModel createTask = new ActivityModel("Created task "
 					+ name + " in stage " + stage.getName() + ".",
-					ActivityModel.activityModelType.CREATION);
+					ActivityModelType.CREATION);
 			activities.add(createTask);
 		}
 	}
@@ -325,8 +326,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 */
 	public void addAssigned(User user) {
 		final ActivityModel addUser = new ActivityModel("User "
-				+ user.getName() + " added to task",
-				ActivityModel.activityModelType.USER_ADD);
+				+ user.getName() + " added to task", ActivityModelType.USER_ADD);
 		final String q = user.getUsername();
 		assigned.add(q);
 		addActivity(addUser);
@@ -349,7 +349,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		assigned.remove(user.getUsername());
 		final ActivityModel delUser = new ActivityModel("Removed user "
 				+ user.getName() + " from task " + name + ".",
-				ActivityModel.activityModelType.USER_ADD);
+				ActivityModelType.USER_ADD);
 		addActivity(delUser);
 		logger.log(Level.FINER, "Removed user " + user.getName()
 				+ " from task " + name + ".");
@@ -381,7 +381,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 */
 	public void addComment(String comment, User user) {
 		final ActivityModel commentActivity = new ActivityModel(comment,
-				ActivityModel.activityModelType.COMMENT);
+				ActivityModelType.COMMENT);
 		addActivity(commentActivity);
 	}
 
@@ -418,8 +418,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	public void setArchived(boolean bool) {
 		if (bool != isArchived) {
 			final ActivityModel archive = new ActivityModel((bool ? "Archived"
-					: "Unarchived") + " task",
-					ActivityModel.activityModelType.ARCHIVE);
+					: "Unarchived") + " task", ActivityModelType.ARCHIVE);
 			addActivity(archive);
 		}
 		isArchived = bool;
