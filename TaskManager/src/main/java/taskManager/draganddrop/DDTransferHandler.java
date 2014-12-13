@@ -44,8 +44,6 @@ public class DDTransferHandler extends TransferHandler {
 
 	public static boolean dragSaved = false;
 
-	private RotationView rotationView = null;
-
 	/**
 	 * Lazy-load the DataFlavor associated with tasks
 	 *
@@ -131,7 +129,7 @@ public class DDTransferHandler extends TransferHandler {
 			g = g.create();
 			if (comp instanceof RotationView) {
 				// just paint the rotated task inside the rotation view
-				rotationView = (RotationView) comp;
+				RotationView rotationView = (RotationView) comp;
 				rotationView.paintChildren(g);
 			} else {
 				comp.paint(g);
