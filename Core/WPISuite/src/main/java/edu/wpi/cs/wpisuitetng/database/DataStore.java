@@ -389,14 +389,14 @@ public class DataStore implements Data {
 						new JdkReflector(Thread.currentThread()
 								.getContextClassLoader()));
 
-		logger.log(Level.WARNING, "Database Delete Attempt...");
+		logger.log(Level.FINE, "Database Delete Attempt...");
 		// ObjectContainer client = server.openClient();
 		ObjectSet<T> result = theDB.queryByExample(aTNG);
 		T found = (T) result.next();
 		theDB.delete(found);
 		theDB.commit();
 
-		logger.log(Level.WARNING, "Database Delete Success!");
+		logger.log(Level.FINE, "Database Delete Success!");
 		// return "Deleted "+aTNG;
 		return found;
 	}
