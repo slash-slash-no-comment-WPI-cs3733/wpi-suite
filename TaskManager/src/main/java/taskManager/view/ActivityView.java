@@ -58,7 +58,7 @@ public class ActivityView extends JPanel {
 	public ActivityView(ActivityModel m, EditTaskController controller) {
 		this.activityM = m;
 		this.controller = controller;
-		setLayout(new MigLayout("", "[][grow, fill]", "0[grow, fill]0"));
+		setLayout(new MigLayout("", "0[][grow, fill]", "0[grow, fill]0"));
 		this.setBackground(Colors.ACTIVITY);
 		// Border
 		final Border raisedbevel = BorderFactory
@@ -101,14 +101,13 @@ public class ActivityView extends JPanel {
 		text.add(infoPanel);
 		text.add(message);
 
-		JLabel color = new JLabel();
-		color.setMinimumSize(new Dimension(20, 20));
-		color.setBackground(Color.BLUE);
-		// if (activityM.getType().equals(ActivityModelType.COMMENT)) {
-		// color.setBackground(Colors.ACTIVITY_COMMENT);
-		// } else {
-		// color.setOpaque(false);
-		// }
+		JPanel color = new JPanel();
+		color.setMinimumSize(new Dimension(20, 10));
+		if (activityM.getType().equals(ActivityModelType.COMMENT)) {
+			color.setBackground(Colors.ACTIVITY_COMMENT);
+		} else {
+			color.setBackground(Colors.ACTIVITY_OTHER);
+		}
 
 		add(color);
 		add(text);
@@ -179,7 +178,6 @@ public class ActivityView extends JPanel {
 
 	@Override
 	public void setBackground(Color bg) {
-		Color oldBg = getBackground();
 		super.setBackground(bg);
 		if (infoPanel != null) {
 			infoPanel.setBackground(bg);

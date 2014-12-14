@@ -38,6 +38,7 @@ import net.java.balloontip.styles.RoundedBalloonStyle;
 import net.miginfocom.swing.MigLayout;
 
 import org.jdesktop.swingx.JXDatePicker;
+import org.jdesktop.swingx.prompt.PromptSupport;
 
 import taskManager.controller.ActivityController;
 import taskManager.controller.EditTaskController;
@@ -99,6 +100,7 @@ public class EditTaskView extends JPanel {
 	private final JTextField actEffortField;
 	private JTextArea commentBox;
 	private final JPanel window;
+	private final JLabel editing;
 
 	private BalloonTip titleError;
 	private BalloonTip descripError;
@@ -372,11 +374,17 @@ public class EditTaskView extends JPanel {
 		windowScroll.getVerticalScrollBar().setUnitIncrement(12);
 		windowScroll.getHorizontalScrollBar().setUnitIncrement(12);
 
+		// label to notify a user if they are editing a task
+		editing = new JLabel("", null, JLabel.CENTER);
+		editing.setMinimumSize(new JLabel("You are currently editing a comment")
+				.getPreferredSize());
+
 		// The activities and comments tabs
 		JPanel tabs = new JPanel(new MigLayout("wrap 1", "[grow, fill]",
-				"[grow, fill][]"));
+				"[grow, fill][][center]"));
 		tabs.add(activityC.getActivitiesPanel());
 		tabs.add(initCommentBoxandBtns());
+		tabs.add(editing);
 		tabs.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
@@ -392,7 +400,7 @@ public class EditTaskView extends JPanel {
 
 	private JPanel initCommentBoxandBtns() {
 		JPanel commentAndBtns = new JPanel(new MigLayout("wrap 1",
-				"[grow, fill]", "[]"));
+				"0[grow, fill]0", "[]"));
 
 		commentBox = new JTextArea();
 		commentBox.setRows(5);
@@ -403,6 +411,10 @@ public class EditTaskView extends JPanel {
 				.put(KeyStroke.getKeyStroke("TAB"), "doNothing");
 		commentBox.getInputMap().put(KeyStroke.getKeyStroke("ENTER"),
 				"doNothing");
+
+		PromptSupport.setPrompt("Add a comment", commentBox);
+		PromptSupport.setFocusBehavior(PromptSupport.FocusBehavior.SHOW_PROMPT,
+				commentBox);
 
 		JScrollPane commentScroll = new JScrollPane(commentBox,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -987,19 +999,24 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * Sets the text in the comment JTextArea.
+	 * Sets up the comment box, edit label, and buttons for when a comment is
+	 * being edited.
 	 * 
 	 */
-	public void setCommentsFieldText(String text) {
+	public void startEditingComment(String text) {
 		commentBox.setText(text);
 		cancelComment.setEnabled(true);
+		editing.setText("You are currently editing the highlighted activity");
+		editing.setForeground(Color.RED);
 	}
 
 	/**
-	 * Clears the text in the comments field.
+	 * Sets the comment box, edit label, and buttons for when a comment is done
+	 * being edited.
 	 */
-	public void clearText() {
+	public void doneEditingComment() {
 		commentBox.setText("");
+		editing.setText("");
 		submitComment.setEnabled(false);
 		cancelComment.setEnabled(false);
 	}
