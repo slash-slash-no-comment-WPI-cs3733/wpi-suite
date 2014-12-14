@@ -486,6 +486,10 @@ public class EditTaskController implements ActionListener {
 	public boolean isEdited() {
 		boolean edited = false;
 
+		if (!etv.getCommentsFieldText().isEmpty()) {
+			return true;
+		}
+
 		// Compare the task info with the filled in info.
 		if (model == null) { // If we're creating a task
 			if (!(etv.getTitleText().isEmpty()
