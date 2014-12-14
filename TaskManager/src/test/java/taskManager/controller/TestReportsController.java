@@ -30,6 +30,7 @@ import taskManager.TaskManager;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.view.ReportsView;
+import taskManager.view.ReportsView.Mode;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
@@ -53,7 +54,7 @@ public class TestReportsController {
 		now = ZonedDateTime.ofInstant(Instant.now(), TimeZone.getDefault()
 				.toZoneId());
 		finished = new StageModel("Finished");
-		rm = new ReportsController(new ReportsView());
+		rm = new ReportsController(new ReportsView(Mode.VELOCITY));
 		TaskModel tm1 = new TaskModel("Task", new StageModel("Start"));
 		tm1.setEstimatedEffort(5);
 		u1 = new User("User 1", "User 1", null, 42);

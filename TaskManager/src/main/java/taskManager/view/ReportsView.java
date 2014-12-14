@@ -9,11 +9,16 @@
 
 package taskManager.view;
 
+import java.awt.CardLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
@@ -33,16 +38,19 @@ import net.miginfocom.swing.MigLayout;
 
 import org.jdesktop.swingx.JXDatePicker;
 
+import com.sun.org.apache.xml.internal.security.c14n.helper.C14nHelper;
+
 import taskManager.controller.ReportsController;
 import taskManager.controller.TaskInputController;
+import taskManager.view.EditTaskView.Mode;
 
 //TODO import taskManager.controller.ReportsController;
 
 /**
  * @author Tyler Jaskoviak
- *
+ * @author Thane Hunt
  */
-public class ReportsView extends JPanel {
+public class ReportsView extends JPanel implements ActionListener{
 
 	public static final String STAGE_NAME = "stage_name";
 	public static final String START_DATE = "start_date";
@@ -58,19 +66,38 @@ public class ReportsView extends JPanel {
 	public static final String REMOVE_USER = "remove_user";
 	public static final String GENERATE = "generate";
 
+	public String names[] = {"Work Velocity", "Task Distribution"};
+
+
 	private JPanel window;
 
+	public enum Mode {
+		VELOCITY, DISTRIBUTION
+	}
+
+	private Mode mode;
+	
 	// Variable to Insert Images
 	Image img;
 
 	// Stage picker
 	private JPanel stagePanel;
 	private JComboBox<String> stages;
+	
+	JPanel stageHolder = new JPanel();
+	JPanel usersHolder = new JPanel();
 
+	//Card-changing panel
+	JPanel cards;
+	JRadioButton workvel = new JRadioButton(names[0]);
+	JRadioButton taskdistro = new JRadioButton(names[1]);
+	JRadioButton distro_users = new JRadioButton("Users");
+	JRadioButton distro_stages = new JRadioButton("Stages");
+	
 	// Date Picker
 	private JPanel datePanel;
-	private JLabel fromLabel;
-	private JLabel toLabel;
+	private JLabel startDateLabel;
+	private JLabel endDateLabel;
 	private JXDatePicker startDate;
 	private JXDatePicker endDate;
 
@@ -99,57 +126,72 @@ public class ReportsView extends JPanel {
 	private ScrollList projectUsersList;
 	private JButton addUser;
 	private JButton removeUser;
+	
+	
+	//Set mode
+	
 
 	// Generate Graph Button
 	private JButton generateGraph;
 
-	public enum Mode {
-		VELOCITY, DISTRIBUTION
-	}
-
-	private Mode mode;
-
 	private ReportsController controller;
 
-	public ReportsView() {
-		setMode(Mode.VELOCITY);
+	public ReportsView(Mode mode) {
 
-		Dimension nt_panelSize = getPreferredSize();
-		nt_panelSize.width = 1000;
-		nt_panelSize.height = 600;
-		this.setPreferredSize(nt_panelSize);
-		this.setMinimumSize(nt_panelSize);
-
-		window = new JPanel();
-		window.setPreferredSize(nt_panelSize);
+		this.mode = mode;
+		
+		window = new JPanel(new MigLayout());
 		this.setLayout(new FlowLayout());
 
-		// Used to organize every JPanel
-		GridBagConstraints reportsGridBag = new GridBagConstraints();
+		
+		
+		//Stages or Users
+		JPanel StagesOrUsers = new JPanel(new MigLayout());
+		
+		
+		//Report Type Pane
+		
+		JPanel reportType = new JPanel(new MigLayout());	
+		JLabel reportTypeLabel = new JLabel("Choose report type");
+		workvel.addActionListener(this);
+		workvel.setSelected(true);
+    	taskdistro.addActionListener(this);
+    	ButtonGroup reportTypeButtons = new ButtonGroup();
+    	reportTypeButtons.add(workvel);
+    	reportTypeButtons.add(taskdistro);
+		
+    	distro_users.addActionListener(this);
+    	distro_users.setSelected(true);
+    	distro_stages.addActionListener(this);
+    	ButtonGroup stagesUsersButtons = new ButtonGroup();
+    	stagesUsersButtons.add(distro_users);
+    	stagesUsersButtons.add(distro_stages);
+    	
+    	reportType.add(reportTypeLabel, "wrap");
+		reportType.add(workvel);
+		reportType.add(taskdistro);
 
-		// Stage
+		StagesOrUsers.add(new JLabel("Select Users or Stages"), "wrap");
+		StagesOrUsers.add(distro_users);
+		StagesOrUsers.add(distro_stages);
+    	
+    	//Important attempt to make this work
+    	JPanel WorkVelocity = new JPanel(new MigLayout());
+    	JPanel TaskDistribution = new JPanel(new MigLayout());
+    	JPanel stageHolder = new JPanel(new MigLayout());
+    	JPanel usersHolder = new JPanel(new MigLayout());
 		stagePanel = new JPanel();
-		stagePanel.setLayout(new GridBagLayout());
+		stagePanel.setLayout(new MigLayout());
 		stages = new JComboBox<String>();
 		stages.setName(STAGE_NAME);
-		reportsGridBag.anchor = GridBagConstraints.FIRST_LINE_START;
-		reportsGridBag.gridx = 0;
-		reportsGridBag.gridy = 0;
 		stagePanel.setBorder(BorderFactory.createTitledBorder("Stage"));
-		stagePanel.add(stages, reportsGridBag);
-		Dimension stageDimensions = getPreferredSize();
-		stageDimensions.width = 175;
-		stageDimensions.height = 75;
-		stagePanel.setPreferredSize(stageDimensions);
-		stagePanel.setMinimumSize(stageDimensions);
-		stagePanel.setMaximumSize(stageDimensions);
+		stagePanel.add(stages);
 
-		fromLabel = new JLabel("Start Date:");
-		toLabel = new JLabel("End Date:");
+		startDateLabel = new JLabel("Start Date:");
+		endDateLabel = new JLabel("End Date:");
 
 		// Date
-		datePanel = new JPanel();
-		datePanel.setLayout(new GridBagLayout());
+		datePanel = new JPanel(new MigLayout());
 		startDate = new JXDatePicker();
 		startDate.setName(START_DATE);
 		startDate.setDate(Calendar.getInstance().getTime());
@@ -165,28 +207,16 @@ public class ReportsView extends JPanel {
 				((new ImageIcon(getClass().getResource("calendar-icon.png")))
 						.getImage()).getScaledInstance(20, 20,
 						java.awt.Image.SCALE_SMOOTH)));
-		reportsGridBag.anchor = GridBagConstraints.WEST;
-		reportsGridBag.gridx = 0;
-		reportsGridBag.gridy = 0;
-		datePanel.setBorder(BorderFactory.createTitledBorder("Timeframe"));
-		datePanel.add(fromLabel, reportsGridBag);
-		reportsGridBag.gridy = 1;
-		datePanel.add(toLabel, reportsGridBag);
-		reportsGridBag.gridx = 1;
-		reportsGridBag.gridy = 0;
-		datePanel.add(startDate, reportsGridBag);
-		reportsGridBag.gridy = 1;
-		datePanel.add(endDate, reportsGridBag);
-		Dimension dateDimensions = getPreferredSize();
-		dateDimensions.width = 250;
-		dateDimensions.height = 90;
-		datePanel.setPreferredSize(dateDimensions);
-		datePanel.setMinimumSize(dateDimensions);
-		datePanel.setMaximumSize(dateDimensions);
-
+		
+		datePanel.add(new JLabel("Select a time frame"), "wrap");
+		datePanel.add(startDateLabel);
+		datePanel.add(startDate, "wrap");
+		datePanel.add(endDateLabel);
+		datePanel.add(endDate);
+	
 		// WorkType
 		workTypePanel = new JPanel();
-		workTypePanel.setLayout(new GridBagLayout());
+		workTypePanel.setLayout(new MigLayout());
 		workFlow = new JRadioButton("Flow");
 		workFlow.setName(WORK_FLOW);
 		workVelocity = new JRadioButton("Velocity");
@@ -194,23 +224,13 @@ public class ReportsView extends JPanel {
 		workTypeGroup = new ButtonGroup();
 		workTypeGroup.add(workFlow);
 		workTypeGroup.add(workVelocity);
-		reportsGridBag.anchor = GridBagConstraints.FIRST_LINE_START;
-		reportsGridBag.gridx = 0;
-		reportsGridBag.gridy = 0;
 		workTypePanel.setBorder(BorderFactory.createTitledBorder("WorkType"));
-		workTypePanel.add(workFlow, reportsGridBag);
-		reportsGridBag.gridy = 1;
-		workTypePanel.add(workVelocity, reportsGridBag);
-		Dimension workTypeDimension = getPreferredSize();
-		workTypeDimension.width = 125;
-		workTypeDimension.height = 75;
-		workTypePanel.setPreferredSize(workTypeDimension);
-		workTypePanel.setMinimumSize(workTypeDimension);
-		workTypePanel.setMaximumSize(workTypeDimension);
+		workTypePanel.add(workFlow);
+		workTypePanel.add(workVelocity);
 
 		// Combined or Compared graph
 		workModePanel = new JPanel();
-		workModePanel.setLayout(new GridBagLayout());
+		workModePanel.setLayout(new MigLayout());
 		combineWork = new JRadioButton("Combine Work");
 		combineWork.setName(COLLABORATIVE);
 		compareWork = new JRadioButton("Compare Work");
@@ -218,20 +238,10 @@ public class ReportsView extends JPanel {
 		workflowGroup = new ButtonGroup();
 		workflowGroup.add(combineWork);
 		workflowGroup.add(compareWork);
-		reportsGridBag.anchor = GridBagConstraints.WEST;
-		reportsGridBag.gridx = 0;
-		reportsGridBag.gridy = 0;
 		workModePanel.setBorder(BorderFactory
 				.createTitledBorder("Compare/Combine"));
-		workModePanel.add(combineWork, reportsGridBag);
-		reportsGridBag.gridy = 1;
-		workModePanel.add(compareWork, reportsGridBag);
-		Dimension workModeDimension = getPreferredSize();
-		workModeDimension.width = 125;
-		workModeDimension.height = 75;
-		workModePanel.setPreferredSize(workModeDimension);
-		workModePanel.setMinimumSize(workModeDimension);
-		workModePanel.setMaximumSize(workModeDimension);
+
+		workModePanel.add(compareWork);
 
 		// Users
 		usersPanel = new JPanel();
@@ -249,15 +259,10 @@ public class ReportsView extends JPanel {
 		removeUser = new JButton("<<");
 		removeUser.setName(REMOVE_USER);
 		this.setRemoveUserEnabled(false);
-		reportsGridBag.anchor = GridBagConstraints.WEST;
-		reportsGridBag.gridx = 0;
-		reportsGridBag.gridy = 0;
-		usersPanel.setBorder(BorderFactory.createTitledBorder("Users"));
 		usersPanel.setBorder(BorderFactory.createTitledBorder("Users"));
 		JPanel usersListPanel = new JPanel(new MigLayout());
 		JPanel projectUsersListPanel = new JPanel(new MigLayout());
 		JPanel addRemoveButtons = new JPanel(new MigLayout());
-		// usersPanel.add(allUsers, reportsGridBag);
 		usersListPanel.add(currUsersList);
 		projectUsersListPanel.add(projectUsersList);
 		addRemoveButtons.add(addUser, "wrap");
@@ -265,20 +270,14 @@ public class ReportsView extends JPanel {
 		usersPanel.add(projectUsersListPanel, "w 100!, gapleft 15px");
 		usersPanel.add(addRemoveButtons);
 		usersPanel.add(usersListPanel, "w 100!");
-		Dimension usersPanelDimension = new Dimension();
-		usersPanelDimension.width = 500;
-		usersPanelDimension.height = 350;
-		usersPanel.setPreferredSize(usersPanelDimension);
-		usersPanel.setMinimumSize(usersPanelDimension);
-		usersPanel.setMaximumSize(usersPanelDimension);
 
+		
 		// Generate Graph
 		generateGraph = new JButton("Generate");
 		generateGraph.setName(GENERATE);
 
-		window.setLayout(new GridBagLayout());
 
-		GridBagConstraints toolbarGrid = new GridBagConstraints();
+		
 		try {
 			img = ImageIO.read(this.getClass().getResourceAsStream(
 					"reports-icon.png"));
@@ -288,38 +287,74 @@ public class ReportsView extends JPanel {
 		}
 		generateGraph.setIcon(new ImageIcon(img));
 
-		// One Column
-		toolbarGrid.anchor = GridBagConstraints.LINE_START;
+		// One Column	
+		//Panel for reports generating options
+		JPanel reportOptions = new JPanel(new MigLayout());
+		stageHolder = new JPanel(new MigLayout());
+		usersHolder = new JPanel(new MigLayout());
+		stageHolder.add(stagePanel);
+		usersHolder.add(usersPanel);
+		
 
-		toolbarGrid.weightx = 0.5;
-		toolbarGrid.weighty = 0.5;
-		toolbarGrid.gridx = 0;
+		WorkVelocity.add(usersPanel, "wrap");
+		WorkVelocity.add(datePanel, "wrap");
+		WorkVelocity.add(stagePanel);
+	
+		
+		
+		
+		TaskDistribution.add(StagesOrUsers, "wrap");
+		TaskDistribution.add(stageHolder, "wrap");
+		TaskDistribution.add(usersHolder, "wrap");
+		
+		
+		cards = new JPanel(new CardLayout());
+		cards.add(WorkVelocity, names[0]);
+		cards.add(TaskDistribution, names[1]);
+	
 
-		toolbarGrid.gridy = 0;
-		window.add(stagePanel, toolbarGrid);
-
-		toolbarGrid.gridy = 1;
-		window.add(datePanel, toolbarGrid);
-
-		// TODO: once the ReportsManager is updated with more functionality show
-		// the commented out components to the view.
-		toolbarGrid.gridy = 3;
-		// window.add(workTypePanel, toolbarGrid);
-
-		toolbarGrid.gridy = 4;
-		// window.add(distributionPanel, toolbarGrid);
-
-		toolbarGrid.gridy = 5;
-		// window.add(workModePanel, toolbarGrid);
-
-		toolbarGrid.gridy = 6;
-		window.add(usersPanel, toolbarGrid);
-
-		toolbarGrid.gridy = 7;
-		window.add(generateGraph, toolbarGrid);
+		window.add(reportType, "wrap");
+		window.add(cards, "wrap");
+		window.add(generateGraph, "center");
 
 		this.add(window);
 	}
+
+	public void actionPerformed(ActionEvent e) {
+	    CardLayout cl = (CardLayout)(cards.getLayout());
+	    if(e.getSource() == workvel)
+	    {
+	    	cl.show(cards, names[0]);
+	    	mode = Mode.VELOCITY;
+	    }
+	    if(e.getSource() == taskdistro)
+	    {
+	    	cl.show(cards, names[1]);
+	    	mode = Mode.DISTRIBUTION;
+	    
+	    	    
+	    }
+	    
+	    
+	}
+
+  // TODO Figure out why I can't change the visibility of these two panels
+	public void actionPerformed1(ActionEvent a) {
+	    if(a.getSource() == distro_users)
+		    {
+		        usersHolder.setVisible(true);
+		    	stageHolder.setVisible(false);
+		    }
+	    	else
+		    {
+		    	usersHolder.setVisible(false);
+		    	stageHolder.setVisible(true);
+		    }	    
+	    }
+	    
+    
+		
+
 
 	public void setController(ReportsController manager) {
 		controller = manager;
@@ -603,7 +638,8 @@ public class ReportsView extends JPanel {
 	public ScrollList getUsersList() {
 		return currUsersList;
 	}
-
+	
+	
 	/**
 	 * Returns the current report mode.
 	 * 
