@@ -41,8 +41,6 @@ public class ActivityPanel extends JTabbedPane {
 	 * Constructs an ActivityPanel with the given type, list of activities, and
 	 * activity controller.
 	 * 
-	 * @param type
-	 *            The type of the activity panel, either COMMENTS or ALL
 	 * @param activityList
 	 *            The list of activities to show in the panel
 	 * @param controller
