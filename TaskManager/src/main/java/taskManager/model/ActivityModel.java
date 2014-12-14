@@ -10,7 +10,7 @@ package taskManager.model;
 
 import java.util.Date;
 
-import taskManager.JanewayModule;
+import taskManager.TaskManager;
 
 /**
  * Description Activities represent changes to a Task and comments users have
@@ -24,12 +24,12 @@ public class ActivityModel {
 	// List of possible model types
 	/**
 	 */
-	public enum activityModelType {
+	public enum ActivityModelType {
 		CREATION, MOVE, COMPLETION, USER_ADD, USER_REMOVE, COMMENT, ARCHIVE
 	};
 
 	// Actual type of this model
-	private activityModelType modelType;
+	private ActivityModelType modelType;
 
 	// Date of creation
 	private Date dateCreated;
@@ -48,8 +48,8 @@ public class ActivityModel {
 	 * @param type
 	 *            The type of activity
 	 */
-	public ActivityModel(String description, activityModelType type) {
-		actor = JanewayModule.currentUser;
+	public ActivityModel(String description, ActivityModelType type) {
+		actor = TaskManager.currentUser;
 		this.description = description;
 		modelType = type;
 		dateCreated = new Date(); // set date to time ActivityModel was
@@ -61,7 +61,7 @@ public class ActivityModel {
 	 *
 	 * @return the activity type
 	 */
-	public activityModelType getType() {
+	public ActivityModelType getType() {
 		return modelType;
 	}
 
@@ -86,7 +86,7 @@ public class ActivityModel {
 	 *            the new description.
 	 */
 	public void setDescription(String newDescription) {
-		if (modelType != activityModelType.COMMENT) {
+		if (modelType != ActivityModelType.COMMENT) {
 			throw new UnsupportedOperationException(
 					"You cannot change the description of non-comment activities.");
 		}

@@ -11,8 +11,10 @@ package taskManager.controller;
 import java.awt.Dimension;
 import java.time.Instant;
 import java.time.Period;
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -23,7 +25,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import taskManager.JanewayModule;
+import taskManager.TaskManager;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.view.ReportsView;
@@ -36,7 +38,7 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.User;
  */
 public class TestReportsManager {
 
-	private Instant now;
+	private ZonedDateTime now;
 	private ReportsManager rm;
 	private FrameFixture fixture;
 	private JFrame frame;
@@ -45,9 +47,10 @@ public class TestReportsManager {
 
 	@Before
 	public void setup() {
-		JanewayModule.reset();
+		TaskManager.reset();
 
-		now = Instant.now();
+		now = ZonedDateTime.ofInstant(Instant.now(), TimeZone.getDefault()
+				.toZoneId());
 		finished = new StageModel("Finished");
 		rm = new ReportsManager(new ReportsView());
 		TaskModel tm1 = new TaskModel("Task", new StageModel("Start"));
