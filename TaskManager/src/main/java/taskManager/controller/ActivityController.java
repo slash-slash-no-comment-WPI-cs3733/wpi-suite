@@ -14,6 +14,7 @@ import java.util.List;
 import taskManager.model.ActivityModel;
 import taskManager.model.TaskModel;
 import taskManager.view.ActivityPanel;
+import taskManager.view.ActivityView;
 
 /**
  * Controller for a single task's activities. Controlls both the comments
@@ -27,8 +28,7 @@ public class ActivityController {
 
 	private TaskModel taskM;
 	private List<ActivityModel> activities;
-	private ActivityPanel activityPanel;
-	private ActivityPanel commentsPanel;
+	private ActivityPanel activityTabs;
 
 	/**
 	 * Constructs an ActivityController for a given task
@@ -37,7 +37,7 @@ public class ActivityController {
 	 *            The task whose activities are being controlled. If this is
 	 *            null, then activities are being tracked for a new task.
 	 */
-	public ActivityController(TaskModel taskM) {
+	public ActivityController(TaskModel taskM, EditTaskController etc) {
 		this.taskM = taskM;
 		if (taskM != null) {
 			activities = taskM.getActivities();
@@ -45,10 +45,7 @@ public class ActivityController {
 			// If the task is null, make a list for the new task's activities
 			activities = new ArrayList<ActivityModel>();
 		}
-		this.activityPanel = new ActivityPanel(ActivityPanel.Type.ALL,
-				activities, this);
-		this.commentsPanel = new ActivityPanel(ActivityPanel.Type.COMMENTS,
-				activities, this);
+		this.activityTabs = new ActivityPanel(activities, etc);
 	}
 
 	/**
@@ -60,8 +57,7 @@ public class ActivityController {
 		if (taskM != null) {
 			activities = taskM.getActivities();
 		}
-		activityPanel.reloadActivities(activities);
-		commentsPanel.reloadActivities(activities);
+		activityTabs.reloadActivities(activities);
 	}
 
 	/**
@@ -86,16 +82,7 @@ public class ActivityController {
 	 * @return the activities panel for this task
 	 */
 	public ActivityPanel getActivitiesPanel() {
-		return activityPanel;
-	}
-
-	/**
-	 * Returns the comments panel for this task, showing just comments
-	 * 
-	 * @return the comments panel for this task
-	 */
-	public ActivityPanel getCommentsPanel() {
-		return commentsPanel;
+		return activityTabs;
 	}
 
 	/**
@@ -107,8 +94,31 @@ public class ActivityController {
 		return activities;
 	}
 
+	/**
+	 * 
+	 * Scrolls the comments and all activities scrollPane's to the bottom.
+	 *
+	 */
 	public void scrollActivitiesToBottom() {
-		commentsPanel.scrollActivitiesToBottom();
-		activityPanel.scrollActivitiesToBottom();
+		activityTabs.scrollActivitiesToBottom();
+	}
+
+	/**
+	 * 
+	 * Set which ActivityView is currently being editted.
+	 *
+	 * @param v
+	 *            the ActivityView being editted.
+	 */
+	public void setEdittedTask(ActivityView v) {
+		activityTabs.setEdittedTask(v);
+	}
+
+	/**
+	 *
+	 * @return the ActivityView being editted
+	 */
+	public ActivityView getEdittedTask() {
+		return activityTabs.getEdittedTask();
 	}
 }

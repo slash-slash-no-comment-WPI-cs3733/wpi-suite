@@ -24,7 +24,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
@@ -64,6 +63,7 @@ public class EditTaskView extends JPanel {
 	public static final String SAVE = "save";
 	public static final String VIEW_REQ = "viewReq";
 	public static final String SUBMIT_COMMENT = "submitComment";
+	public static final String CANCEL_COMMENT = "cancelComment";
 	public static final String ADD_USER = "addUser";
 	public static final String REMOVE_USER = "removeUser";
 	public static final String DELETE = "delete";
@@ -87,6 +87,7 @@ public class EditTaskView extends JPanel {
 	private JButton delete;
 	private JButton addReq;
 	private JButton submitComment;
+	private JButton cancelComment;
 
 	private JCheckBox archive;
 
@@ -145,7 +146,6 @@ public class EditTaskView extends JPanel {
 		// Contains the splitPane and button panel
 		this.setLayout(new MigLayout("wrap 1, align center", "[grow, fill]",
 				"[grow, fill][]"));
-		this.activityC = activityC;
 
 		// the Panel holding all task editing (not activity) stuff
 		window = new JPanel(new MigLayout("center align", "[][][]",
@@ -360,11 +360,6 @@ public class EditTaskView extends JPanel {
 		setActualEffortErrorVisible(false);
 		setEstEffortErrorVisible(false);
 
-		// Make the activities panel
-		JTabbedPane activitiesTabs = new JTabbedPane();
-		activitiesTabs.addTab("Comments", activityC.getCommentsPanel());
-		activitiesTabs.addTab("All Activities", activityC.getActivitiesPanel());
-
 		// The finished panels are added to the main window panel
 		Dimension panelSize = window.getPreferredSize();
 		panelSize.height = 500; // Decide size
@@ -377,7 +372,7 @@ public class EditTaskView extends JPanel {
 		// The activities and comments tabs
 		JPanel tabs = new JPanel(new MigLayout("wrap 1", "[grow, fill]",
 				"[grow, fill][]"));
-		tabs.add(activitiesTabs);
+		tabs.add(activityC.getActivitiesPanel());
 		tabs.add(initCommentBoxandBtns());
 		tabs.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
@@ -414,10 +409,14 @@ public class EditTaskView extends JPanel {
 		// Buttons
 		JPanel buttons = new JPanel();
 		buttons.setOpaque(false);
-		submitComment = new JButton("Submit");
+		submitComment = new JButton("Save Comment");
 		submitComment.setName(EditTaskView.SUBMIT_COMMENT);
 		submitComment.setEnabled(false);
+		cancelComment = new JButton("Cancel");
+		cancelComment.setName(EditTaskView.CANCEL_COMMENT);
+		cancelComment.setEnabled(false);
 		buttons.add(submitComment);
+		buttons.add(cancelComment);
 		buttons.setMaximumSize(new Dimension(10000, 40));
 
 		commentAndBtns.add(commentScroll);
@@ -451,6 +450,7 @@ public class EditTaskView extends JPanel {
 		addReq.addActionListener(controller);
 		delete.addActionListener(controller);
 		submitComment.addActionListener(controller);
+		cancelComment.addActionListener(controller);
 	}
 
 	/**
@@ -905,8 +905,9 @@ public class EditTaskView extends JPanel {
 	 * @param e
 	 *            true to make the submit button enabled, false to disable it
 	 */
-	public void setSubmitCommentEnabled(boolean e) {
+	public void setSubmitCancelCommentEnabled(boolean e) {
 		submitComment.setEnabled(e);
+		cancelComment.setEnabled(e);
 	}
 
 	/**
@@ -919,10 +920,20 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
+	 * Sets the text in the comment JTextArea.
+	 * 
+	 */
+	public void setCommentsFieldText(String text) {
+		commentBox.setText(text);
+		cancelComment.setEnabled(true);
+	}
+
+	/**
 	 * Clears the text in the comments field.
 	 */
 	public void clearText() {
 		commentBox.setText("");
 		submitComment.setEnabled(false);
+		cancelComment.setEnabled(false);
 	}
 }

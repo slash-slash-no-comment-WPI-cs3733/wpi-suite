@@ -9,6 +9,7 @@
 
 package taskManager.view;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
@@ -36,16 +37,23 @@ import taskManager.model.ActivityModel.ActivityModelType;
 public class ActivityView extends JPanel {
 
 	private static final long serialVersionUID = 6524598229849111521L;
-	public static final String INFO = "info";
-	public static final String MESSAGE_BODY = "message_body";
+	public static final String EDIT = "edit";
 
 	private JButton edit;
+	private boolean editable = false;
+
+	private ActivityModel activityM;
+	private EditTaskController controller;
+	private JPanel infoPanel;
 
 	/**
 	 * Creates an ActivityView panel, meant to display an activity with name of
 	 * user, date, and message (activity/comment)
 	 */
-	public ActivityView(ActivityModel m) {
+	public ActivityView(ActivityModel m, EditTaskController controller) {
+		this.activityM = m;
+		this.controller = controller;
+
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setBackground(Colors.ACTIVITY);
 		// Border
@@ -59,16 +67,18 @@ public class ActivityView extends JPanel {
 		JLabel info = new JLabel(DateFormat.getDateTimeInstance(
 				DateFormat.MEDIUM, DateFormat.SHORT).format(m.getDateCreated())
 				+ "     " + m.getActor());
-		info.setName(INFO);
 		info.setMinimumSize(new Dimension(20, 20));
 
-		JPanel infoPanel = new JPanel(new MigLayout("", "[grow, fill][]",
-				"0[]0"));
+		infoPanel = new JPanel(new MigLayout("", "[grow, fill][]", "0[]0"));
 		infoPanel.setBackground(Colors.ACTIVITY);
 		infoPanel.add(info);
 		if (m.getType() == ActivityModelType.COMMENT
 				&& TaskManager.currentUser.equals(m.getActor())) {
+			editable = true;
 			edit = new JButton("Edit");
+			edit.setName(EDIT);
+			edit.setEnabled(true);
+			edit.addActionListener(controller);
 			edit.setFocusPainted(false);
 			edit.setMargin(new Insets(0, 0, 0, 0));
 			edit.setContentAreaFilled(false);
@@ -80,7 +90,6 @@ public class ActivityView extends JPanel {
 
 		// Content of the activity
 		JLabel message = new JLabel("<html>" + m.getDescription() + "</html>");
-		message.setName(MESSAGE_BODY);
 		message.setFont(message.getFont().deriveFont(Font.PLAIN));
 
 		add(infoPanel);
@@ -97,6 +106,56 @@ public class ActivityView extends JPanel {
 	 *            the actionListener to be added to the edit comment button
 	 */
 	public void setEditController(EditTaskController controller) {
-		edit.addActionListener(controller);
+		if (editable) {
+			edit.addActionListener(controller);
+		}
+	}
+
+	/**
+	 * 
+	 * Create a new ActivityView with the same parameters as the current one.
+	 * Also maintain the same background color. Used for adding the "same"
+	 * ActivityView to the comments and all activities tabs in ActivityPanel.
+	 *
+	 * @return a "duplicated" ActivityView.
+	 */
+	public ActivityView duplicate() {
+		ActivityView av = new ActivityView(activityM, controller);
+		av.setBackground(this.getBackground());
+		return av;
+	}
+
+	public ActivityModel getModel() {
+		return activityM;
+	}
+
+	public String getComment() {
+		if (activityM.getType() != ActivityModelType.COMMENT) {
+			throw new UnsupportedOperationException(
+					"This is not a comment activity.");
+		}
+
+		return activityM.getDescription();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof ActivityView)) {
+			return false;
+		}
+		if (!(activityM.equals(((ActivityView) obj).getModel()))) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
+	public void setBackground(Color bg) {
+		Color oldBg = getBackground();
+		super.setBackground(bg);
+		if (infoPanel != null) {
+			infoPanel.setBackground(bg);
+		}
 	}
 }

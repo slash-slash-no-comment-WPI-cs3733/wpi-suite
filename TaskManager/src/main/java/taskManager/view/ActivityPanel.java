@@ -13,9 +13,10 @@ import java.util.List;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 
 import net.miginfocom.swing.MigLayout;
-import taskManager.controller.ActivityController;
+import taskManager.controller.EditTaskController;
 import taskManager.model.ActivityModel;
 
 /**
@@ -26,17 +27,15 @@ import taskManager.model.ActivityModel;
  * @author Clark Jacobsohn
  * @version Dec 9, 201
  */
-public class ActivityPanel extends JPanel {
+public class ActivityPanel extends JTabbedPane {
 
 	private static final long serialVersionUID = -8384336474859145673L;
 
-	JPanel activities;
-
-	public enum Type {
-		COMMENTS, ALL;
-	}
-
-	private Type type;
+	private JPanel activities;
+	private JPanel comments;
+	private EditTaskController controller;
+	private ActivityView activityBeingEditted;
+	private List<ActivityModel> activityList;
 
 	/**
 	 * Constructs an ActivityPanel with the given type, list of activities, and
@@ -47,38 +46,40 @@ public class ActivityPanel extends JPanel {
 	 * @param activityList
 	 *            The list of activities to show in the panel
 	 * @param controller
-	 *            The ActivityController that controls this panel
+	 *            The EditTaskController that controls the ActivityView's
 	 */
-	public ActivityPanel(Type type, List<ActivityModel> activityList,
-			ActivityController controller) {
-		this.type = type;
-		// this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		this.setLayout(new MigLayout("wrap 1", "[grow, fill]", "[grow, fill]"));
+	public ActivityPanel(List<ActivityModel> activityList,
+			EditTaskController controller) {
+		this.activityList = activityList;
+		this.controller = controller;
 		this.setOpaque(false);
 
 		// Create list of activities
 		activities = new JPanel();
 		activities.setLayout(new MigLayout("wrap 1", "0[grow, fill]0", "0[]"));
-		if (!(activityList == null)) {
-			for (ActivityModel a : activityList) {
-				if ((type == Type.COMMENTS)
-						&& (a.getType() == ActivityModel.ActivityModelType.COMMENT)) {
-					activities.add(new ActivityView(a));
-				} else if (type == Type.ALL) {
-					activities.add(new ActivityView(a));
-				}
-			}
-		}
+
+		comments = new JPanel();
+		comments.setLayout(new MigLayout("wrap 1", "0[grow, fill]0", "0[]"));
+
+		reloadActivities(activityList);
 
 		// Activities
 		JScrollPane activityScroll = new JScrollPane(activities,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		// Scrolls to the bottom of the window where the most recent things are.
-		scrollActivitiesToBottom();
 		activityScroll.getVerticalScrollBar().setUnitIncrement(12);
 
-		add(activityScroll);
+		// Comments
+		JScrollPane commentsScroll = new JScrollPane(comments,
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		// Scrolls to the bottom of the window where the most recent things are.
+		commentsScroll.getVerticalScrollBar().setUnitIncrement(12);
+
+		scrollActivitiesToBottom();
+		addTab("Comments", commentsScroll);
+		addTab("All Activities", activityScroll);
 	}
 
 	/**
@@ -88,17 +89,25 @@ public class ActivityPanel extends JPanel {
 	 *            The list of activities to show in the panel
 	 */
 	public void reloadActivities(List<ActivityModel> activityList) {
+		// if this is called by a function outside this class the incoming list
+		// is most likely newer than the stored list.
+		this.activityList = activityList;
 		activities.removeAll();
+		comments.removeAll();
 		if (!(activityList == null)) {
 			for (ActivityModel a : activityList) {
-				if ((type == Type.COMMENTS)
-						&& (a.getType() == ActivityModel.ActivityModelType.COMMENT)) {
-					activities.add(new ActivityView(a));
-				} else if (type == Type.ALL) {
-					activities.add(new ActivityView(a));
+				ActivityView activity = new ActivityView(a, controller);
+				if (activity.equals(activityBeingEditted)) {
+					activity.setBackground(Colors.ACTIVITY_EDIT);
 				}
+
+				if (a.getType() == ActivityModel.ActivityModelType.COMMENT) {
+					comments.add(activity.duplicate());
+				}
+				activities.add(activity);
 			}
 		}
+		scrollActivitiesToBottom();
 		this.repaint();
 	}
 
@@ -108,8 +117,32 @@ public class ActivityPanel extends JPanel {
 	 *
 	 */
 	public void scrollActivitiesToBottom() {
-		Rectangle rect = new Rectangle(0, (int) activities.getPreferredSize()
+		Rectangle rectA = new Rectangle(0, (int) activities.getPreferredSize()
 				.getHeight(), 10, 10);
-		activities.scrollRectToVisible(rect);
+		activities.scrollRectToVisible(rectA);
+
+		Rectangle rectC = new Rectangle(0, (int) comments.getPreferredSize()
+				.getHeight(), 10, 10);
+		comments.scrollRectToVisible(rectC);
+	}
+
+	/**
+	 * 
+	 * Set which ActivityView is currently being editted.
+	 *
+	 * @param v
+	 *            the ActivityView being editted.
+	 */
+	public void setEdittedTask(ActivityView v) {
+		activityBeingEditted = v;
+		reloadActivities(activityList);
+	}
+
+	/**
+	 *
+	 * @return the ActivityView being editted
+	 */
+	public ActivityView getEdittedTask() {
+		return activityBeingEditted;
 	}
 }

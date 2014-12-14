@@ -30,6 +30,7 @@ import taskManager.model.ActivityModel.ActivityModelType;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
+import taskManager.view.ActivityView;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
@@ -58,7 +59,7 @@ public class EditTaskController implements ActionListener {
 	 *
 	 */
 	public EditTaskController() {
-		activityC = new ActivityController(null);
+		activityC = new ActivityController(null, this);
 
 		etv = new EditTaskView(Mode.CREATE, activityC);
 		etv.setController(this);
@@ -97,7 +98,7 @@ public class EditTaskController implements ActionListener {
 	public EditTaskController(TaskModel model) {
 		this.model = model;
 		this.taskID = model.getID();
-		this.activityC = new ActivityController(model);
+		this.activityC = new ActivityController(model, this);
 
 		etv = new EditTaskView(Mode.EDIT, activityC);
 		etv.setName(model.getName());
@@ -301,14 +302,36 @@ public class EditTaskController implements ActionListener {
 				etv.resetFields();
 				returnToWorkflowView();
 				break;
-			case EditTaskView.SUBMIT_COMMENT:
-				ActivityModel comment = new ActivityModel(
-						etv.getCommentsFieldText(), ActivityModelType.COMMENT);
-				// add the activity
-				activityC.addActivity(comment);
+			case EditTaskView.CANCEL_COMMENT:
 				etv.clearText();
-				activityC.scrollActivitiesToBottom();
+				activityC.setEdittedTask(null);
+				break;
+			case EditTaskView.SUBMIT_COMMENT:
+				// the user is currently editing a comment
+				if (activityC.getEdittedTask() != null) {
+					activityC.getEdittedTask().getModel()
+							.setDescription(etv.getCommentsFieldText());
+					// reset
+					activityC.setEdittedTask(null);
+				}
+				// the user is creating a new comment
+				else {
+					ActivityModel comment = new ActivityModel(
+							etv.getCommentsFieldText(),
+							ActivityModelType.COMMENT);
+					// add the activity
+					activityC.addActivity(comment);
+					activityC.scrollActivitiesToBottom();
+				}
+				etv.clearText();
 				WorkflowModel.getInstance().save();
+				break;
+			case ActivityView.EDIT:
+				activityC.setEdittedTask((ActivityView) ((JButton) button)
+						.getParent().getParent());
+				etv.setCommentsFieldText(((ActivityView) ((JButton) button)
+						.getParent().getParent()).getComment());
+				break;
 			}
 		}
 	}
