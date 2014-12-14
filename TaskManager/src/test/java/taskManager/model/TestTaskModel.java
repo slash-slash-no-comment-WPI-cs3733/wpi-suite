@@ -72,8 +72,8 @@ public class TestTaskModel {
 		assertTrue(task2.isArchived());
 		assertTrue(task2.getAssigned().contains(u.getUsername()));
 		assertEquals(d, task2.getDueDate());
-		assertEquals(5, task2.getEstimatedEffort());
-		assertEquals(3, task2.getActualEffort());
+		assertEquals(new Integer(5), task2.getEstimatedEffort());
+		assertEquals(new Integer(3), task2.getActualEffort());
 		assertTrue(task2.getActivities().contains(a));
 		assertEquals(r, task2.getReq());
 		assertEquals(stage2, task2.getStage());
@@ -90,7 +90,7 @@ public class TestTaskModel {
 		assertFalse(task.isEstimatedEffortSet());
 		task.setEstimatedEffort(20);
 		assertTrue(task.isEstimatedEffortSet());
-		assertEquals(20, task.getEstimatedEffort());
+		assertEquals(new Integer(20), task.getEstimatedEffort());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -103,6 +103,6 @@ public class TestTaskModel {
 		assertFalse(task.isActualEffortSet());
 		task.setActualEffort(20);
 		assertTrue(task.isActualEffortSet());
-		assertEquals(20, task.getActualEffort());
+		assertEquals(new Integer(20), task.getActualEffort());
 	}
 }
