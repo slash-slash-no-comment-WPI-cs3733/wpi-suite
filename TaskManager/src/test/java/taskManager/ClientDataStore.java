@@ -110,6 +110,15 @@ public class ClientDataStore implements Data {
 	}
 
 	/**
+	 * Specify a class to enable recursive deletion on
+	 *
+	 * @param cls
+	 */
+	public <T> void enableRecursiveDelete(Class<T> cls) {
+		theDB.ext().configure().objectClass(cls).cascadeOnDelete(true);
+	}
+
+	/**
 	 * Saves a Model into the database
 	 *
 	 * @param Model

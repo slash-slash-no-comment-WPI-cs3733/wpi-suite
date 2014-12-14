@@ -70,31 +70,30 @@ public class TaskInputController implements KeyListener, FocusListener,
 		// requirements for that field
 
 		// Title
-		if (etv.getTitle().getText().trim().isEmpty()) {
+		if (etv.getTitleText().trim().isEmpty()) {
 			titleValid = false;
 		}
 		// Description
-		if (etv.getDescription().getText().trim().isEmpty()) {
+		if (etv.getDescription().trim().isEmpty()) {
 			descriptionValid = false;
 		}
 		// Estimated Effort
-		if (!etv.getEstEffort().getText().isEmpty()) {
+		if (!etv.getEstEffort().isEmpty()) {
 			try {
-				if (Integer.parseInt(etv.getEstEffort().getText().trim()) <= 0
-						|| Integer
-								.parseInt(etv.getEstEffort().getText().trim()) > 9999) {
+				if (Integer.parseInt(etv.getEstEffort().trim()) <= 0
+						|| Integer.parseInt(etv.getEstEffort().trim()) > 9999) {
 					estEffortValid = false;
 				}
 			} catch (NumberFormatException e) {
 				estEffortValid = false;
 			}
 		}
-		if (!etv.getActEffort().getText().trim().isEmpty()) {
+
+		if (!etv.getActEffort().isEmpty()) {
 			// Actual Effort
 			try {
-				if (Integer.parseInt(etv.getActEffort().getText().trim()) < 0
-						|| Integer
-								.parseInt(etv.getActEffort().getText().trim()) > 9999) {
+				if (Integer.parseInt(etv.getActEffort().trim()) < 0
+						|| Integer.parseInt(etv.getActEffort().trim()) > 9999) {
 					actEffortValid = false;
 				}
 			} catch (NumberFormatException e) {
@@ -149,6 +148,7 @@ public class TaskInputController implements KeyListener, FocusListener,
 		etv.setSaveEnabled(this.checkFields() && isEdited());
 		etv.setAddUserEnabled(addUsersSelected);
 		etv.setRemoveUserEnabled(removeUsersSelected);
+		etv.setViewRequirementEnabled(etv.getSelectedRequirement() != null);
 		etv.setCommentSubmitEnabled(this.checkSaveComment());
 	}
 
