@@ -25,9 +25,11 @@ import javax.swing.JTabbedPane;
 
 import taskManager.TaskManager;
 import taskManager.model.ActivityModel;
+import taskManager.model.ActivityModel.ActivityModelType;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
+import taskManager.view.ActivityView;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
@@ -48,14 +50,16 @@ public class EditTaskController implements ActionListener {
 	private final EditTaskView etv;
 	private final List<String> toRemove = new ArrayList<String>();
 	private TaskModel model;
+	private ActivityController activityC;
 
 	/**
 	 * Creates an EditTaskController and EditTaskView form for a *new* Task.
 	 *
 	 */
 	public EditTaskController() {
-		etv = new EditTaskView(Mode.CREATE);
+		activityC = new ActivityController(null, this);
 
+		etv = new EditTaskView(Mode.CREATE, activityC);
 		etv.setController(this);
 		etv.setFieldController(new TaskInputController(etv));
 
@@ -63,7 +67,6 @@ public class EditTaskController implements ActionListener {
 		etv.setSaveEnabled(false);
 
 		// Clear all activities, reset fields.
-		etv.clearActivities();
 		etv.resetFields();
 
 		// fills the user lists
@@ -89,10 +92,11 @@ public class EditTaskController implements ActionListener {
 	 * @param model
 	 */
 	public EditTaskController(TaskModel model) {
-		etv = new EditTaskView(Mode.EDIT);
-		etv.setName(model.getName());
 		this.model = model;
+		this.activityC = new ActivityController(model, this);
 
+		etv = new EditTaskView(Mode.EDIT, activityC);
+		etv.setName(model.getName());
 		etv.setController(this);
 		etv.setFieldController(new TaskInputController(etv));
 
@@ -136,14 +140,6 @@ public class EditTaskController implements ActionListener {
 		// Disable save button until user starts making edits.
 		etv.setSaveEnabled(false);
 
-		// Clear the activities list.
-		etv.clearActivities();
-
-		// set activities pane
-		final List<ActivityModel> tskActivities = model.getActivities();
-		etv.setActivities(tskActivities);
-		etv.setActivitiesPanel(tskActivities);
-
 		// set the requirement dropdown
 		if (model.getReq() != null) {
 			etv.setSelectedRequirement(model.getReq().getName());
@@ -172,10 +168,9 @@ public class EditTaskController implements ActionListener {
 
 			case EditTaskView.SAVE:
 
-				if (etv.getFieldController().checkFields()) {
+				if (etv.getFieldController().checkEditFields()) {
 					// if editing
 					if (isEditingTask()) {
-
 						save();
 					}
 					// if creating a new task
@@ -187,6 +182,10 @@ public class EditTaskController implements ActionListener {
 
 						// creates a new task model
 						model = new TaskModel(etv.getTitleText(), desiredStage);
+						// add pending activities/comments
+						for (ActivityModel act : activityC.getActivities()) {
+							model.addActivity(act);
+						}
 						save();
 					}
 
@@ -269,13 +268,35 @@ public class EditTaskController implements ActionListener {
 				etv.resetFields();
 				returnToWorkflowView();
 				break;
-
+			case EditTaskView.CANCEL_COMMENT:
+				etv.clearText();
+				activityC.setEditedTask(null);
+				break;
 			case EditTaskView.SUBMIT_COMMENT:
-				// adds a comment.
-				final ActivityModel comment = etv.addComment();
-				// add immediately to the model.
-				model.addActivity(comment);
+				// the user is currently editing a comment
+				if (activityC.getEditedTask() != null) {
+					activityC.getEditedTask().getModel()
+							.setDescription(etv.getCommentsFieldText());
+					// reset
+					activityC.setEditedTask(null);
+				}
+				// the user is creating a new comment
+				else {
+					ActivityModel comment = new ActivityModel(
+							etv.getCommentsFieldText(),
+							ActivityModelType.COMMENT);
+					// add the activity
+					activityC.addActivity(comment);
+					activityC.scrollActivitiesToBottom();
+				}
+				etv.clearText();
 				WorkflowModel.getInstance().save();
+				break;
+			case ActivityView.EDIT:
+				activityC.setEditedTask((ActivityView) ((JButton) button)
+						.getParent().getParent().getParent());
+				etv.setCommentsFieldText(((ActivityView) ((JButton) button)
+						.getParent().getParent().getParent()).getComment());
 				break;
 			}
 		}

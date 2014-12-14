@@ -48,7 +48,7 @@ public class TaskInputController implements KeyListener, FocusListener,
 	 */
 	public TaskInputController(EditTaskView etv) {
 		this.etv = etv;
-		checkFields();
+		checkEditFields();
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class TaskInputController implements KeyListener, FocusListener,
 	 * 
 	 * @return true if all the fields are valid
 	 */
-	public boolean checkFields() {
+	public boolean checkEditFields() {
 
 		addUsersSelected = !etv.getProjectUsersList().isSelectionEmpty();
 		removeUsersSelected = !etv.getUsersList().isSelectionEmpty();
@@ -115,41 +115,27 @@ public class TaskInputController implements KeyListener, FocusListener,
 	}
 
 	/**
-	 * sets all 4 error bubbles to invisible
-	 */
-	private void setAllErrorsInvisible() {
-		etv.setActualEffortErrorVisible(false);
-		etv.setEstEffortErrorVisible(false);
-		etv.setDescriptionErrorVisible(false);
-		etv.setTitleErrorVisible(false);
-	}
-
-	/**
-	 * checks if comments are valid
-	 * 
-	 * @param commentValid
-	 *            true if comment is valid
-	 * @return commentValid
 	 *
+	 * @return true if the comment box has a valid comment in it.
 	 */
-	public boolean checkSaveComment() {
-		boolean commentValid = true;
+	public boolean checkCommentBox() {
 		if (etv.getCommentsFieldText().trim().isEmpty()) {
-			// Comments Pane
-			commentValid = false;
+			return false;
+		} else {
+			return true;
 		}
-		return commentValid;
 	}
 
 	/**
 	 * validate the inputs
 	 */
 	public void validate() {
-		etv.setSaveEnabled(this.checkFields() && isEdited());
+		etv.setSaveEnabled(this.checkEditFields() && isEdited());
 		etv.setAddUserEnabled(addUsersSelected);
 		etv.setRemoveUserEnabled(removeUsersSelected);
+
+		etv.setSubmitCancelCommentEnabled(this.checkCommentBox());
 		etv.setViewRequirementEnabled(etv.getSelectedRequirement() != null);
-		etv.setCommentSubmitEnabled(this.checkSaveComment());
 	}
 
 	/**
