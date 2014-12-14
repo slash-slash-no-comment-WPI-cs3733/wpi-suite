@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import taskManager.model.StageModel;
@@ -228,5 +229,31 @@ public class TaskController implements MouseListener {
 	public void taskInfoRemoved() {
 		thisTaskInfoOut = false;
 		resetBackground();
+	}
+
+	/**
+	 * Generate string for table export (Excel format)
+	 *
+	 * @return export string
+	 */
+	public String getExportString() {
+		String fields[] = { "Name", "Description", "Due Date",
+				"Assigned Users", "Estimated Effort", "Actual Effort" };
+		String values[] = { model.getName(), model.getDescription(),
+				new SimpleDateFormat("MM/dd/yy").format(model.getDueDate()),
+				String.join(",", model.getAssigned()),
+				Integer.toString(model.getEstimatedEffort()),
+				Integer.toString(model.getActualEffort()) };
+
+		String export = "";
+		for (int i = 0; i < fields.length; i++) {
+			// remove newlines and tabs
+			values[i] = values[i].replace("\t", "        ");
+			values[i] = values[i].replace("\n", " ");
+			values[i] = values[i].replace("\r", "");
+
+			export += fields[i] + "\t" + values[i] + "\n";
+		}
+		return export;
 	}
 }
