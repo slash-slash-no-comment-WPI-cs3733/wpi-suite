@@ -22,11 +22,13 @@ import java.util.List;
 
 import javax.swing.JFrame;
 
+import org.fest.swing.core.ComponentMatcher;
 import org.fest.swing.exception.ComponentLookupException;
 import org.fest.swing.exception.WaitTimedOutError;
 import org.fest.swing.fixture.FrameFixture;
 import org.fest.swing.fixture.JOptionPaneFixture;
 import org.fest.swing.fixture.JTextComponentFixture;
+import org.jdesktop.swingx.JXDatePicker;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -43,6 +45,7 @@ import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.TabView;
 import taskManager.view.TaskView;
+import edu.wpi.cs.wpisuitetng.exceptions.NotFoundException;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
@@ -92,7 +95,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	}
 
 	@Test
-	public void testAddTask() {
+	public void testAddTask() throws NotFoundException {
 
 		// create a new edit task tab
 		TabPaneController.getInstance().addEditTaskTab(etv);
@@ -101,7 +104,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		// enter information for a new task
 		getTitleBoxFixture().enterText("name");
 		getDescriptionBoxFixture().enterText("Desc");
-		etv.getDateField().setDate(Calendar.getInstance().getTime());
+		getDateField().setDate(Calendar.getInstance().getTime());
 		fixture.textBox(EditTaskView.EST_EFFORT).enterText("3");
 
 		// save the task
@@ -113,7 +116,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	}
 
 	@Test
-	public void testInvalidTask() {
+	public void testInvalidTask() throws NotFoundException {
 
 		// create a new edit task tab
 		TabPaneController.getInstance().addEditTaskTab(etv);
@@ -121,7 +124,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 
 		getTitleBoxFixture().enterText("name");
 		getDescriptionBoxFixture().enterText("desc");
-		etv.getDateField().setDate(Calendar.getInstance().getTime());
+		getDateField().setDate(Calendar.getInstance().getTime());
 		fixture.button(EditTaskView.SAVE).requireEnabled();
 
 		getTitleBoxFixture().deleteText();
@@ -133,7 +136,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	}
 
 	@Test
-	public void testLoadTask() {
+	public void testLoadTask() throws NotFoundException {
 
 		// create a task, and load the edit view with it
 		TaskModel task = createAndLoadTask();
@@ -143,7 +146,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	}
 
 	@Test
-	public void testEditTask() {
+	public void testEditTask() throws NotFoundException {
 		// create a task and load it
 		TaskModel task = createAndLoadTask();
 
@@ -332,7 +335,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	}
 
 	@Test
-	public void testClose() {
+	public void testClose() throws NotFoundException {
 		fixture.button(TabView.X).click();
 		// If warning comes up, hit yes
 		try {
@@ -440,8 +443,9 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	 *
 	 * @param task
 	 *            The task that should be shown on the view
+	 * @throws NotFoundException
 	 */
-	private void verifyTask(TaskModel task) {
+	private void verifyTask(TaskModel task) throws NotFoundException {
 		getTitleBoxFixture().requireText(task.getName());
 		getDescriptionBoxFixture().requireText(task.getDescription());
 		fixture.textBox(EditTaskView.EST_EFFORT).requireText(
@@ -458,21 +462,56 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	 * @return A fixture with the description text box as the target
 	 */
 	private JTextComponentFixture getDescriptionBoxFixture() {
-		return new JTextComponentFixture(fixture.robot, etv.getDescription());
+		return fixture.textBox(EditTaskView.DESCRIP);
 	}
 
 	/**
 	 * Create a fixture for the Title text field on the EditTaskView
 	 *
 	 * @return A fixture with the title text box as the target
+	 * @throws NotFoundException
+	 *             if Title isn't found.
 	 */
-	private JTextComponentFixture getTitleBoxFixture() {
-		return new JTextComponentFixture(fixture.robot, etv.getTitle());
+	private JTextComponentFixture getTitleBoxFixture() throws NotFoundException {
+		return fixture.textBox(EditTaskView.TITLE);
+	}
+
+	/**
+	 * Finds the dateField
+	 *
+	 * @return The due date date-picker
+	 * @throws NotFoundException
+	 *             if the field cannot be found.
+	 */
+	private JXDatePicker getDateField() throws NotFoundException {
+		// Fest doesn't understand JXDatePickers, so I have to use this method
+		return (JXDatePicker) findByName(EditTaskView.DUE_DATE);
+	}
+
+	/**
+	 * 
+	 * Searches the fixture for a component by name. Useful because Fest doesn't
+	 * know how to search for odd types of components.
+	 *
+	 * @param name
+	 *            The Component's name
+	 * @return The first component found with that name.
+	 * @throws NotFoundException
+	 *             If no component has that name in the fixture.
+	 */
+	private Component findByName(String name) throws NotFoundException {
+		final ComponentMatcher nameMatcher = new ComponentMatcher() {
+			@Override
+			public boolean matches(Component c) {
+				return name.equals(c.getName()) && c.isShowing();
+			}
+		};
+		return (Component) fixture.robot.finder().find(fixture.target,
+				nameMatcher);
 	}
 
 	@AfterClass
 	public static void netTeardown() {
 		ClientDataStore.deleteDataStore();
 	}
-
 }

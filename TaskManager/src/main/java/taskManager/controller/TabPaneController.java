@@ -83,7 +83,7 @@ public class TabPaneController {
 		if (exists) {
 			view.setSelectedComponent(etv2);
 		} else {
-			addTab(etv.getTitle().getText(), etv, true);
+			addTab(etv.getTitleText(), etv, true);
 			view.setSelectedComponent(etv);
 		}
 	}
