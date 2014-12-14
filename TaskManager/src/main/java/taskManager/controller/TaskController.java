@@ -207,8 +207,14 @@ public class TaskController implements MouseListener {
 				String.join(",", model.getAssigned()),
 				Integer.toString(model.getEstimatedEffort()),
 				Integer.toString(model.getActualEffort()) };
+
 		String export = "";
 		for (int i = 0; i < fields.length; i++) {
+			// remove newlines and tabs
+			values[i] = values[i].replace("\t", "        ");
+			values[i] = values[i].replace("\n", " ");
+			values[i] = values[i].replace("\r", "");
+
 			export += fields[i] + "\t" + values[i] + "\n";
 		}
 		return export;

@@ -328,7 +328,12 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 			List<String> cells = new ArrayList<String>();
 			cells.add(fields[i]);
 			for (String[] taskStringArray : taskStringArrays) {
-				cells.add(taskStringArray[i]);
+				String val = taskStringArray[i];
+				// remove tabs and newlines
+				val = val.replace("\t", "        ");
+				val = val.replace("\n", " ");
+				val = val.replace("\r", "");
+				cells.add(val);
 			}
 			rows.add(String.join("\t", cells));
 		}
