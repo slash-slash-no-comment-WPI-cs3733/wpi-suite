@@ -10,7 +10,9 @@
 package taskManager.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -309,16 +311,19 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 		taskList.remove(task);
 	}
 
-	/**
-	 * Changes this stagemodel to be identical to the inputted stage model,
-	 * while maintaining the pointer
-	 *
-	 * @param stage
-	 *            The stage to copy
+	/*
+	 * @see
+	 * taskManager.model.AbstractJsonableModel#makeIdenticalTo(java.lang.Object)
 	 */
-	public void makeIdenticalTo(StageModel stage) {
+	@Override
+	public Set<Object> makeIdenticalTo(StageModel stage) {
 		setID(stage.getID());
 		name = stage.getName();
+
+		Set<Object> toDelete = new HashSet<Object>(taskList);
+		taskList = stage.getTasks();
+
+		return toDelete;
 	}
 
 	@Override

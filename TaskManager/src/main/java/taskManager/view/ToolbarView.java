@@ -20,6 +20,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
@@ -43,7 +44,10 @@ public class ToolbarView extends JToolBar {
 	public static final String WORKFLOW = "workflow";
 	public static final String ARCHIVE = "archive";
 	public static final String UNARCHIVE = "unarchive";
+	public static final String SHOW_ARCHIVE = "showArchive";
 	public static final String DELETE = "delete";
+	public static final String FUN_MODE = "funMode";
+	public static final String TASK_ANGLES = "taskAngles";
 
 	// toolbar information
 	private JButton createTask;
@@ -52,6 +56,8 @@ public class ToolbarView extends JToolBar {
 	private FilterView filters;
 	private JLabel archive;
 	private JLabel delete;
+	private JCheckBox funModeCheckBox;
+	private JButton randomizeTaskAngles;
 
 	private JLabel projectName;
 
@@ -67,12 +73,15 @@ public class ToolbarView extends JToolBar {
 		final JPanel buttons = new JPanel();
 		final JPanel name = new JPanel();
 		final JPanel targets = new JPanel();
+		final JPanel funThings = new JPanel();
 		buttons.setLayout(new BoxLayout(buttons, BoxLayout.LINE_AXIS));
 		buttons.setOpaque(false);
 		name.setLayout(new BoxLayout(name, BoxLayout.LINE_AXIS));
 		name.setOpaque(false);
 		targets.setLayout(new BoxLayout(targets, BoxLayout.LINE_AXIS));
 		targets.setOpaque(false);
+		funThings.setLayout(new BoxLayout(funThings, BoxLayout.LINE_AXIS));
+		funThings.setOpaque(false);
 		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 
 		this.setFloatable(false);
@@ -140,6 +149,26 @@ public class ToolbarView extends JToolBar {
 		projectName = new JLabel();
 		projectName.setFont(new Font("TextField.font", Font.BOLD, 20));
 
+		// construct the fun things panel
+		funModeCheckBox = new JCheckBox("<html>Fun Mode</html>");
+		funModeCheckBox.setName(FUN_MODE);
+		funModeCheckBox.addItemListener(controller);
+		funModeCheckBox.setOpaque(false);
+		funModeCheckBox.setToolTipText("Fun things are fun");
+
+		randomizeTaskAngles = new JButton("<html>Randomize Task Angles</html>");
+		randomizeTaskAngles.setName(TASK_ANGLES);
+		randomizeTaskAngles.setMaximumSize(new Dimension(160, 58));
+		randomizeTaskAngles.addActionListener(controller);
+
+		funThings.add(Box.createHorizontalGlue());
+		funThings.add(randomizeTaskAngles);
+		funThings.add(funModeCheckBox);
+		funThings.add(Box.createHorizontalGlue());
+
+		// fun mode is off by default
+		hideFunButtons();
+
 		// Add title to the title panel
 		name.add(Box.createHorizontalStrut(10));
 		name.add(projectName);
@@ -169,10 +198,12 @@ public class ToolbarView extends JToolBar {
 		name.setAlignmentY(CENTER_ALIGNMENT);
 		buttons.setAlignmentY(CENTER_ALIGNMENT);
 		targets.setAlignmentY(CENTER_ALIGNMENT);
+		funThings.setAlignmentY(CENTER_ALIGNMENT);
 
 		// Add panels to the toolbar
 		this.add(name);
 		this.add(buttons);
+		this.add(funThings);
 		this.add(targets);
 
 		// Add resize listener to fix title
@@ -225,6 +256,43 @@ public class ToolbarView extends JToolBar {
 	 */
 	public void setDeleteEnabled(boolean bool) {
 		delete.setEnabled(bool);
+	}
+
+	/**
+	 * @return if the fun mode checkbox is checked
+	 */
+	public boolean isFunMode() {
+		return funModeCheckBox.isSelected();
+	}
+
+	/**
+	 * @param fun
+	 *            if fun mode should be enabled
+	 */
+	public void setFunMode(boolean fun) {
+		if (fun != isFunMode()) {
+			funModeCheckBox.doClick();
+		}
+	}
+
+	/**
+	 * Hides the buttons that are only applicable in fun mode
+	 *
+	 */
+	public void hideFunButtons() {
+		randomizeTaskAngles.setEnabled(false);
+		randomizeTaskAngles.setVisible(false);
+		funModeCheckBox.setVisible(false);
+	}
+
+	/**
+	 * Shows the buttons that are only applicable in fun mode
+	 *
+	 */
+	public void showFunButtons() {
+		randomizeTaskAngles.setEnabled(true);
+		randomizeTaskAngles.setVisible(true);
+		funModeCheckBox.setVisible(true);
 	}
 
 	/**

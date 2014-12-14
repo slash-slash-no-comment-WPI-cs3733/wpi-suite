@@ -8,8 +8,8 @@
  *******************************************************************************/
 package taskManager.controller;
 
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -32,7 +32,7 @@ import taskManager.view.EditTaskView;
  *
  */
 
-public class TaskInputController implements KeyListener, FocusListener,
+public class TaskInputController implements KeyListener, ActionListener,
 		PopupMenuListener, ListSelectionListener, PropertyChangeListener,
 		ItemListener {
 
@@ -70,31 +70,30 @@ public class TaskInputController implements KeyListener, FocusListener,
 		// requirements for that field
 
 		// Title
-		if (etv.getTitle().getText().trim().isEmpty()) {
+		if (etv.getTitleText().trim().isEmpty()) {
 			titleValid = false;
 		}
 		// Description
-		if (etv.getDescription().getText().trim().isEmpty()) {
+		if (etv.getDescription().trim().isEmpty()) {
 			descriptionValid = false;
 		}
 		// Estimated Effort
-		if (!etv.getEstEffort().getText().isEmpty()) {
+		if (!etv.getEstEffort().isEmpty()) {
 			try {
-				if (Integer.parseInt(etv.getEstEffort().getText().trim()) <= 0
-						|| Integer
-								.parseInt(etv.getEstEffort().getText().trim()) > 9999) {
+				if (Integer.parseInt(etv.getEstEffort().trim()) <= 0
+						|| Integer.parseInt(etv.getEstEffort().trim()) > 9999) {
 					estEffortValid = false;
 				}
 			} catch (NumberFormatException e) {
 				estEffortValid = false;
 			}
 		}
-		if (!etv.getActEffort().getText().trim().isEmpty()) {
+
+		if (!etv.getActEffort().isEmpty()) {
 			// Actual Effort
 			try {
-				if (Integer.parseInt(etv.getActEffort().getText().trim()) < 0
-						|| Integer
-								.parseInt(etv.getActEffort().getText().trim()) > 9999) {
+				if (Integer.parseInt(etv.getActEffort().trim()) < 0
+						|| Integer.parseInt(etv.getActEffort().trim()) > 9999) {
 					actEffortValid = false;
 				}
 			} catch (NumberFormatException e) {
@@ -149,6 +148,7 @@ public class TaskInputController implements KeyListener, FocusListener,
 		etv.setSaveEnabled(this.checkFields() && isEdited());
 		etv.setAddUserEnabled(addUsersSelected);
 		etv.setRemoveUserEnabled(removeUsersSelected);
+		etv.setViewRequirementEnabled(etv.getSelectedRequirement() != null);
 		etv.setCommentSubmitEnabled(this.checkSaveComment());
 	}
 
@@ -206,18 +206,13 @@ public class TaskInputController implements KeyListener, FocusListener,
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
 		validate();
-	}
-
-	@Override
-	public void focusGained(FocusEvent arg0) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void focusLost(FocusEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 

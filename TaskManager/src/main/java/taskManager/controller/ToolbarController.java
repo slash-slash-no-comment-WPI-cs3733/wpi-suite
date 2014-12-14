@@ -10,6 +10,7 @@ package taskManager.controller;
 
 import java.awt.Component;
 import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DropTargetAdapter;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
@@ -17,10 +18,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -30,6 +35,7 @@ import taskManager.draganddrop.DDTransferHandler;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.ReportsView;
+import taskManager.view.RotationView;
 import taskManager.view.StageView;
 import taskManager.view.TaskView;
 import taskManager.view.ToolbarView;
@@ -42,7 +48,7 @@ import edu.wpi.cs.wpisuitetng.janeway.config.ConfigManager;
  * @author Sam Khalandovsky
  */
 public class ToolbarController extends DropTargetAdapter implements
-		ActionListener, ComponentListener {
+		ActionListener, ComponentListener, ItemListener {
 
 	private ToolbarView view;
 	private FilterController filterC;
@@ -189,6 +195,9 @@ public class ToolbarController extends DropTargetAdapter implements
 				rtv.setController(new ReportsManager(rtv));
 				TabPaneController.getInstance().addReportsTab(rtv);
 				break;
+			case ToolbarView.TASK_ANGLES:
+				RotationController.resetAngles();
+				WorkflowController.getInstance().reloadData();
 			}
 		}
 	}
@@ -205,11 +214,26 @@ public class ToolbarController extends DropTargetAdapter implements
 			final Transferable trans = e.getTransferable();
 			if (trans.isDataFlavorSupported(DDTransferHandler.getTaskFlavor())) {
 				final TaskView taskV;
+				Object transferData = null;
 				try {
-					taskV = (TaskView) trans.getTransferData(DDTransferHandler
+					transferData = trans.getTransferData(DDTransferHandler
 							.getTaskFlavor());
-				} catch (Exception ex) {
-					System.out.println(ex.getStackTrace());
+				} catch (UnsupportedFlavorException e1) {
+					e1.printStackTrace();
+					return;
+				} catch (IOException e1) {
+					e1.printStackTrace();
+					return;
+				}
+
+				// ignore rotation views
+				if (transferData instanceof RotationView) {
+					transferData = ((RotationView) transferData).getPanel();
+				}
+
+				if (transferData instanceof TaskView) {
+					taskV = (TaskView) transferData;
+				} else {
 					return;
 				}
 
@@ -304,6 +328,23 @@ public class ToolbarController extends DropTargetAdapter implements
 
 	}
 
+	@Override
+	public void itemStateChanged(ItemEvent e) {
+		final Object checkBox = e.getSource();
+		if (checkBox instanceof JCheckBox) {
+			switch (((JCheckBox) checkBox).getName()) {
+			case ToolbarView.FUN_MODE:
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					view.showFunButtons();
+				} else {
+					view.hideFunButtons();
+				}
+			}
+		}
+		// Reload the workflow view.
+		WorkflowController.getInstance().reloadData();
+	}
+
 	/**
 	 * Set toolbar icons during drag action
 	 *
@@ -313,6 +354,11 @@ public class ToolbarController extends DropTargetAdapter implements
 	 *            component being dragged
 	 */
 	public void setIconState(JComponent comp) {
+		// ignore rotation views
+		if (comp instanceof RotationView) {
+			comp = ((RotationView) comp).getPanel();
+		}
+
 		if (comp instanceof TaskView) {
 			boolean isArchived = ((TaskView) comp).getController().isArchived();
 			if (isArchived) {

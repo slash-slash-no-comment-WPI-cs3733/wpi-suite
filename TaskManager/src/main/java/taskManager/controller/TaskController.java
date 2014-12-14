@@ -103,6 +103,15 @@ public class TaskController implements MouseListener {
 	}
 
 	/**
+	 * Get the ID of the task
+	 *
+	 * @return the task ID
+	 */
+	public String getID() {
+		return model.getID();
+	}
+
+	/**
 	 * 
 	 * Populates the EditTaskView with the information from this task.
 	 *
@@ -127,11 +136,16 @@ public class TaskController implements MouseListener {
 	 *
 	 */
 	public void changeToHoverColor() {
+		// don't highlight while task info is out in fun mode, because the clip
+		// bounds passed to the rotation view are sometimes not correct
+		if (ToolbarController.getInstance().getView().isFunMode()
+				&& anyTaskInfoOut) {
+			return;
+		}
 		if (!thisTaskInfoOut) {
 			view.setBackground(Colors.TASK_HOVER);
 			if (model.getCategory() == null) {
 				view.setCategoryColor(view.getBackground(), false);
-
 			}
 			view.setBorderColor(view.getBackground(), false);
 		}
