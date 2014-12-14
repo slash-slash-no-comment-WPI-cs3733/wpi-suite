@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import taskManager.JanewayModule;
+import taskManager.TaskManager;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 public class ReportManagerTest {
@@ -27,7 +27,7 @@ public class ReportManagerTest {
 
 	@Before
 	public void setUp() {
-		JanewayModule.reset();
+		TaskManager.reset();
 
 		rm = new ReportManager();
 		user = new User("Name", "userName", "password", 42);
