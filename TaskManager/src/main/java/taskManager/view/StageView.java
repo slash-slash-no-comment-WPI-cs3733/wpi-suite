@@ -202,7 +202,7 @@ public class StageView extends JPanel implements Transferable {
 	 * @param tkv
 	 *            for new task view will be entered by the user
 	 */
-	public void addTaskView(TaskView tkv) {
+	public void addTaskView(JPanel tkv) {
 		tkv.setAlignmentX(CENTER_ALIGNMENT);
 		tasks.add(tkv);
 	}

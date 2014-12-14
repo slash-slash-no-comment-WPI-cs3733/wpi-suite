@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Date;
 
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
@@ -29,7 +30,6 @@ public class TaskController implements MouseListener {
 
 	private final TaskView view;
 	private final TaskModel model;
-	private final Color background;
 
 	private Boolean taskInfoPreviewOut = false;
 
@@ -53,7 +53,12 @@ public class TaskController implements MouseListener {
 			view.setBackground(Colors.TASK);
 		}
 
-		background = view.getBackground();
+		if (model.getDueDate().before(new Date())) {
+			view.setDateColor(Color.RED);
+		} else {
+			view.setDateColor(Color.BLACK);
+		}
+
 	}
 
 	/**
@@ -97,6 +102,15 @@ public class TaskController implements MouseListener {
 	}
 
 	/**
+	 * Get the ID of the task
+	 *
+	 * @return the task ID
+	 */
+	public String getID() {
+		return model.getID();
+	}
+
+	/**
 	 * 
 	 * Populates the EditTaskView with the information from this task.
 	 *
@@ -112,8 +126,17 @@ public class TaskController implements MouseListener {
 	 *
 	 */
 	public void changeToHoverColor() {
+		// don't highlight while task info is out in fun mode, because the clip
+		// bounds passed to the rotation view are sometimes not correct
+		if (ToolbarController.getInstance().getView().isFunMode()) {
+			return;
+		}
+		if (isArchived() && !taskInfoPreviewOut) {
+			view.setBackground(Colors.ARCHIVE_HOVER);
+		} else if (!taskInfoPreviewOut) {
 
-		view.setBackground(Colors.TASK_HOVER);
+			view.setBackground(Colors.TASK_HOVER);
+		}
 	}
 
 	/**
@@ -122,8 +145,14 @@ public class TaskController implements MouseListener {
 	 *
 	 */
 	public void resetBackground() {
-		if (background != null) {
-			view.setBackground(background);
+		if (isArchived() && taskInfoPreviewOut) {
+			view.setBackground(Colors.ARCHIVE_CLICKED);
+		} else if (isArchived()) {
+			view.setBackground(Colors.ARCHIVE);
+		} else if (taskInfoPreviewOut) {
+			view.setBackground(Colors.TASK_CLICKED);
+		} else {
+			view.setBackground(Colors.TASK);
 		}
 	}
 
@@ -171,11 +200,7 @@ public class TaskController implements MouseListener {
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// only reset the background if there is no taskInfo bubble out for this
-		// task
-		if (!taskInfoPreviewOut) {
-			resetBackground();
-		}
+		resetBackground();
 	}
 
 	/**
@@ -191,5 +216,16 @@ public class TaskController implements MouseListener {
 	 */
 	public void setThisTaskInfoOut(Boolean thisTaskInfoOut) {
 		this.taskInfoPreviewOut = thisTaskInfoOut;
+	}
+
+	/**
+	 * 
+	 * If the taskInfo bubble for this task was removed from view. Resets the
+	 * flag to correctly color the task.
+	 *
+	 */
+	public void taskInfoRemoved() {
+		taskInfoPreviewOut = false;
+		resetBackground();
 	}
 }

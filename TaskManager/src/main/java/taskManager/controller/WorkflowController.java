@@ -218,8 +218,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		for (Component c : view.getComponents()) {
 			if (c instanceof TaskInfoPreviewView) {
 				view.remove(c);
-				((TaskInfoPreviewView) c).getTaskController()
-						.setThisTaskInfoOut(false);
+				((TaskInfoPreviewView) c).getTaskController().taskInfoRemoved();
 				((TaskInfoPreviewView) c).getTaskController().resetBackground();
 			}
 		}

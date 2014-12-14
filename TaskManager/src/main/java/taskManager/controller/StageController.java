@@ -27,6 +27,7 @@ import taskManager.model.ActivityModel;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
+import taskManager.view.RotationView;
 import taskManager.view.StageView;
 import taskManager.view.TaskView;
 
@@ -103,7 +104,14 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 							task.getDueDate(), task.getAssigned().size(),
 							comments);
 					tkv.setController(new TaskController(tkv, task));
-					this.view.addTaskView(tkv);
+
+					// if we're in fun mode, put the rotation view in the stage
+					// view
+					if (ToolbarController.getInstance().getView().isFunMode()) {
+						this.view.addTaskView(tkv.getRotationPane());
+					} else {
+						this.view.addTaskView(tkv);
+					}
 				}
 			}
 		}
@@ -116,8 +124,14 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 	 */
 	@Override
 	public void saveDrop(JPanel panel, int index) {
+		// ignore rotation views
+		if (panel instanceof RotationView) {
+			panel = ((RotationView) panel).getPanel();
+		}
+
 		// Make sure we cast safely
 		if (!(panel instanceof TaskView)) {
+			System.err.println("Tried to save something that isn't a TaskView");
 			return;
 		}
 		final TaskController tc = ((TaskView) panel).getController();
@@ -138,6 +152,9 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 		if (changed) {
 			WorkflowModel.getInstance().save();
 			DDTransferHandler.dragSaved = true;
+			if (ToolbarController.getInstance().getView().isFunMode()) {
+				WorkflowController.getInstance().reloadData();
+			}
 		}
 
 	}
