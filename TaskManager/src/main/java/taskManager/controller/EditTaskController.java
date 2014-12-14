@@ -328,9 +328,9 @@ public class EditTaskController implements ActionListener {
 				break;
 			case ActivityView.EDIT:
 				activityC.setEdittedTask((ActivityView) ((JButton) button)
-						.getParent().getParent());
+						.getParent().getParent().getParent());
 				etv.setCommentsFieldText(((ActivityView) ((JButton) button)
-						.getParent().getParent()).getComment());
+						.getParent().getParent().getParent()).getComment());
 				break;
 			}
 		}

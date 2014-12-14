@@ -16,7 +16,6 @@ import java.awt.Insets;
 import java.text.DateFormat;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -45,6 +44,7 @@ public class ActivityView extends JPanel {
 	private ActivityModel activityM;
 	private EditTaskController controller;
 	private JPanel infoPanel;
+	private JPanel text;
 
 	/**
 	 * Creates an ActivityView panel, meant to display an activity with name of
@@ -53,15 +53,14 @@ public class ActivityView extends JPanel {
 	public ActivityView(ActivityModel m, EditTaskController controller) {
 		this.activityM = m;
 		this.controller = controller;
-
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+		setLayout(new MigLayout("", "[][grow, fill]", "0[grow, fill]0"));
 		this.setBackground(Colors.ACTIVITY);
 		// Border
 		final Border raisedbevel = BorderFactory
 				.createEtchedBorder(EtchedBorder.LOWERED);
 		final TitledBorder title = BorderFactory
 				.createTitledBorder(raisedbevel);
-		title.setTitlePosition(TitledBorder.LEFT);
+		// title.setTitlePosition(TitledBorder.LEFT);
 		this.setBorder(title);
 
 		JLabel info = new JLabel(DateFormat.getDateTimeInstance(
@@ -69,10 +68,10 @@ public class ActivityView extends JPanel {
 				+ "     " + m.getActor());
 		info.setMinimumSize(new Dimension(20, 20));
 
-		infoPanel = new JPanel(new MigLayout("", "[grow, fill][]", "0[]0"));
+		infoPanel = new JPanel(new MigLayout("", "0[grow, fill][]", "0[]0"));
 		infoPanel.setBackground(Colors.ACTIVITY);
 		infoPanel.add(info);
-		if (m.getType() == ActivityModelType.COMMENT
+		if (m.getType().equals(ActivityModelType.COMMENT)
 				&& TaskManager.currentUser.equals(m.getActor())) {
 			editable = true;
 			edit = new JButton("Edit");
@@ -92,9 +91,22 @@ public class ActivityView extends JPanel {
 		JLabel message = new JLabel("<html>" + m.getDescription() + "</html>");
 		message.setFont(message.getFont().deriveFont(Font.PLAIN));
 
-		add(infoPanel);
-		add(message);
+		text = new JPanel(new MigLayout("wrap 1", "0[grow, fill]0", "0[][]0"));
+		text.setOpaque(false);
+		text.add(infoPanel);
+		text.add(message);
 
+		JLabel color = new JLabel();
+		color.setMinimumSize(new Dimension(20, 20));
+		color.setBackground(Color.BLUE);
+		// if (activityM.getType().equals(ActivityModelType.COMMENT)) {
+		// color.setBackground(Colors.ACTIVITY_COMMENT);
+		// } else {
+		// color.setOpaque(false);
+		// }
+
+		add(color);
+		add(text);
 		this.setPreferredSize(new Dimension(50, 20));
 	}
 
@@ -125,10 +137,20 @@ public class ActivityView extends JPanel {
 		return av;
 	}
 
+	/**
+	 *
+	 * @return the ActivityModel for this activity
+	 */
 	public ActivityModel getModel() {
 		return activityM;
 	}
 
+	/**
+	 * 
+	 * If this activity is a comment, return the comment.
+	 *
+	 * @return the comment for this activity
+	 */
 	public String getComment() {
 		if (activityM.getType() != ActivityModelType.COMMENT) {
 			throw new UnsupportedOperationException(
@@ -156,6 +178,7 @@ public class ActivityView extends JPanel {
 		super.setBackground(bg);
 		if (infoPanel != null) {
 			infoPanel.setBackground(bg);
+			text.setBackground(bg);
 		}
 	}
 }
