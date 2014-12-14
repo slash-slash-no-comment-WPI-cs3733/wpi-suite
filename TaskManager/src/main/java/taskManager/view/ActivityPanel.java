@@ -25,7 +25,7 @@ import taskManager.model.ActivityModel;
  *
  * @author Samee Swartz
  * @author Clark Jacobsohn
- * @version Dec 9, 201
+ * @version Dec 9, 2014
  */
 public class ActivityPanel extends JTabbedPane {
 
@@ -34,7 +34,7 @@ public class ActivityPanel extends JTabbedPane {
 	private JPanel activities;
 	private JPanel comments;
 	private EditTaskController controller;
-	private ActivityView activityBeingEditted;
+	private ActivityView activityBeingEdited;
 	private List<ActivityModel> activityList;
 
 	/**
@@ -97,7 +97,7 @@ public class ActivityPanel extends JTabbedPane {
 		if (!(activityList == null)) {
 			for (ActivityModel a : activityList) {
 				ActivityView activity = new ActivityView(a, controller);
-				if (activity.equals(activityBeingEditted)) {
+				if (activity.equals(activityBeingEdited)) {
 					activity.setBackground(Colors.ACTIVITY_EDIT);
 				}
 
@@ -133,8 +133,8 @@ public class ActivityPanel extends JTabbedPane {
 	 * @param v
 	 *            the ActivityView being editted.
 	 */
-	public void setEdittedTask(ActivityView v) {
-		activityBeingEditted = v;
+	public void setEditedTask(ActivityView v) {
+		activityBeingEdited = v;
 		reloadActivities(activityList);
 	}
 
@@ -142,7 +142,7 @@ public class ActivityPanel extends JTabbedPane {
 	 *
 	 * @return the ActivityView being editted
 	 */
-	public ActivityView getEdittedTask() {
-		return activityBeingEditted;
+	public ActivityView getEditedTask() {
+		return activityBeingEdited;
 	}
 }

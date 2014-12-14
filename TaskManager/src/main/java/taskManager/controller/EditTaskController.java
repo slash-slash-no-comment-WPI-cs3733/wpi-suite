@@ -304,15 +304,15 @@ public class EditTaskController implements ActionListener {
 				break;
 			case EditTaskView.CANCEL_COMMENT:
 				etv.clearText();
-				activityC.setEdittedTask(null);
+				activityC.setEditedTask(null);
 				break;
 			case EditTaskView.SUBMIT_COMMENT:
 				// the user is currently editing a comment
-				if (activityC.getEdittedTask() != null) {
-					activityC.getEdittedTask().getModel()
+				if (activityC.getEditedTask() != null) {
+					activityC.getEditedTask().getModel()
 							.setDescription(etv.getCommentsFieldText());
 					// reset
-					activityC.setEdittedTask(null);
+					activityC.setEditedTask(null);
 				}
 				// the user is creating a new comment
 				else {
@@ -327,7 +327,7 @@ public class EditTaskController implements ActionListener {
 				WorkflowModel.getInstance().save();
 				break;
 			case ActivityView.EDIT:
-				activityC.setEdittedTask((ActivityView) ((JButton) button)
+				activityC.setEditedTask((ActivityView) ((JButton) button)
 						.getParent().getParent().getParent());
 				etv.setCommentsFieldText(((ActivityView) ((JButton) button)
 						.getParent().getParent().getParent()).getComment());

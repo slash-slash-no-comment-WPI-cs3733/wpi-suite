@@ -105,20 +105,20 @@ public class ActivityController {
 
 	/**
 	 * 
-	 * Set which ActivityView is currently being editted.
+	 * Set which ActivityView is currently being edited.
 	 *
 	 * @param v
-	 *            the ActivityView being editted.
+	 *            the ActivityView being edited.
 	 */
-	public void setEdittedTask(ActivityView v) {
-		activityTabs.setEdittedTask(v);
+	public void setEditedTask(ActivityView v) {
+		activityTabs.setEditedTask(v);
 	}
 
 	/**
 	 *
-	 * @return the ActivityView being editted
+	 * @return the ActivityView being edited
 	 */
-	public ActivityView getEdittedTask() {
-		return activityTabs.getEdittedTask();
+	public ActivityView getEditedTask() {
+		return activityTabs.getEditedTask();
 	}
 }

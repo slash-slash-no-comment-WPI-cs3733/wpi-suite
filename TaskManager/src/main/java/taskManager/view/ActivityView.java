@@ -30,7 +30,7 @@ import taskManager.model.ActivityModel;
 import taskManager.model.ActivityModel.ActivityModelType;
 
 /**
- * @author Tyler Jaskoviak
+ * @author Samee Swartz
  *
  */
 public class ActivityView extends JPanel {
@@ -49,6 +49,11 @@ public class ActivityView extends JPanel {
 	/**
 	 * Creates an ActivityView panel, meant to display an activity with name of
 	 * user, date, and message (activity/comment)
+	 * 
+	 * @param m
+	 *            the ActivityModel for this activity
+	 * @param controller
+	 *            the EditTaskController which controls the edit button
 	 */
 	public ActivityView(ActivityModel m, EditTaskController controller) {
 		this.activityM = m;
