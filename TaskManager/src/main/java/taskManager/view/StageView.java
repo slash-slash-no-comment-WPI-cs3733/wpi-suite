@@ -261,14 +261,6 @@ public class StageView extends JPanel implements Transferable {
 	}
 
 	/**
-	 *
-	 * @return true if the check button is enabled. false otherwise
-	 */
-	public boolean isDoneBtnEnabled() {
-		return check.isEnabled();
-	}
-
-	/**
 	 * Sets the focus to the text area
 	 */
 	public void focusTextArea() {

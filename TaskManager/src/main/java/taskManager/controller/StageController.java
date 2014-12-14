@@ -268,7 +268,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 							+ ". Please choose another name.",
 					"Warning - Duplicate stage names",
 					JOptionPane.CLOSED_OPTION);
-		} else if (view.isDoneBtnEnabled()) {
+		} else if (view.isCheckEnabled()) {
 			if (model == null) {
 				model = new StageModel(view.getLabelText());
 			} else {
