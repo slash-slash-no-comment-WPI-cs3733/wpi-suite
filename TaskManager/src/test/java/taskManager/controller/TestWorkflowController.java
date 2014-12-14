@@ -8,9 +8,15 @@
  *******************************************************************************/
 package taskManager.controller;
 
+import static org.junit.Assert.assertEquals;
+
+import java.awt.Dimension;
+import java.util.Date;
+
 import javax.swing.JFrame;
 
 import org.fest.swing.fixture.FrameFixture;
+import org.fest.swing.fixture.JPanelFixture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +24,9 @@ import org.junit.Test;
 import taskManager.JanewayModule;
 import taskManager.ScreenshotOnFail;
 import taskManager.model.StageModel;
+import taskManager.model.TaskModel;
+import taskManager.model.WorkflowModel;
+import taskManager.view.Colors;
 
 /**
  * Tests for the workflow controller
@@ -43,6 +52,10 @@ public class TestWorkflowController extends ScreenshotOnFail {
 		JFrame frame = new JFrame();
 		frame.add(WorkflowController.getInstance().getView());
 
+		Dimension size = new Dimension(1000, 500);
+		frame.setSize(size);
+		frame.setPreferredSize(size);
+
 		fixture = new FrameFixture(frame);
 
 		fixture.show();
@@ -59,6 +72,33 @@ public class TestWorkflowController extends ScreenshotOnFail {
 		for (int i = 0; i < 4; i++) {
 			fixture.label(stageNames[i]).requireText(stageNames[i]);
 		}
+	}
+
+	@Test
+	public void testTaskHover() {
+
+		// make a new task
+		TaskModel t = new TaskModel("test", WorkflowModel.getInstance()
+				.getStages().get(0));
+		t.setDueDate(new Date());
+		WorkflowController.getInstance().reloadData();
+
+		fixture.robot.waitForIdle();
+		JPanelFixture taskFixture = fixture.panel("test");
+
+		// make sure the task is visible
+		taskFixture.requireVisible();
+
+		// make sure it highlights
+		taskFixture.robot.moveMouse(taskFixture.target);
+		taskFixture.robot.waitForIdle();
+		assertEquals(taskFixture.target.getBackground(), Colors.TASK_HOVER);
+
+		// make sure it re-highlights after a reload
+		WorkflowController.getInstance().reloadData();
+		fixture.robot.waitForIdle();
+		taskFixture = fixture.panel("test");
+		assertEquals(taskFixture.target.getBackground(), Colors.TASK_HOVER);
 	}
 
 	@After
