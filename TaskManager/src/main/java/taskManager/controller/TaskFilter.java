@@ -92,17 +92,6 @@ public class TaskFilter {
 	}
 
 	/**
-	 * Filter single category
-	 *
-	 * @param category
-	 */
-	public void setCategory(TaskCategory category) {
-		final Set<TaskCategory> categories = new HashSet<TaskCategory>();
-		categories.add(category);
-		setCategories(categories);
-	}
-
-	/**
 	 * Categories to be included in filter
 	 *
 	 * @param categories

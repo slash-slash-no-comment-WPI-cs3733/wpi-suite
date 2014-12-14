@@ -12,6 +12,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -84,7 +85,9 @@ public class TestTaskFilter {
 		tm = new TaskModel("task", sm);
 		tm.setCategory(TaskCategory.RED);
 
-		f.setCategory(TaskCategory.RED);
+		Set<TaskCategory> cat = new HashSet<TaskCategory>();
+		cat.add(TaskCategory.RED);
+		f.setCategories(cat);
 		assertTrue(f.check(tm));
 
 		HashSet<TaskCategory> cats = new HashSet<TaskCategory>();
