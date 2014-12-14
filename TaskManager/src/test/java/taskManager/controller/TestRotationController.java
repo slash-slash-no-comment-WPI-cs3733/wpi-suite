@@ -79,13 +79,17 @@ public class TestRotationController extends ScreenshotOnFail {
 		WorkflowController.getInstance().reloadData();
 
 		fixture = new FrameFixture(frame);
-
 		fixture.show();
 
+		fixture.robot.waitForIdle();
 		// enter fun mode
 		for (int c : code) {
 			fixture.robot.pressKey(c);
+			fixture.robot.waitForIdle();
+			fixture.robot.releaseKey(c);
+			fixture.robot.waitForIdle();
 		}
+		fixture.robot.waitForIdle();
 	}
 
 	@Test
