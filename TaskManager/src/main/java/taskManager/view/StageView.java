@@ -13,7 +13,6 @@ package taskManager.view;
  */
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -23,8 +22,6 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DropTarget;
 import java.awt.event.MouseAdapter;
-import java.util.Arrays;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -80,6 +77,8 @@ public class StageView extends JPanel implements Transferable {
 	public StageView(String name) {
 
 		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+
+		this.setName(name);
 
 		// The tasks panel accepts task drops
 		tasks = new DropAreaPanel(DDTransferHandler.getTaskFlavor());
@@ -203,7 +202,7 @@ public class StageView extends JPanel implements Transferable {
 	 * @param tkv
 	 *            for new task view will be entered by the user
 	 */
-	public void addTaskView(TaskView tkv) {
+	public void addTaskView(JPanel tkv) {
 		tkv.setAlignmentX(CENTER_ALIGNMENT);
 		tasks.add(tkv);
 	}
@@ -276,18 +275,6 @@ public class StageView extends JPanel implements Transferable {
 	 */
 	public JTextField getLabelField() {
 		return labelText;
-	}
-
-	/**
-	 * returns a task view in the stage at the given index
-	 * 
-	 * @param taskIndex
-	 *            the index of the task view you want
-	 * @return the taskview at the given index
-	 */
-	public JPanel getTaskViewByIndex(int taskIndex) {
-		List<Component> t = Arrays.asList(getComponents());
-		return (JPanel) t.get(taskIndex);
 	}
 
 	// ----------------------------

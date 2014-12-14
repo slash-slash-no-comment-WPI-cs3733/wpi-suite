@@ -44,7 +44,7 @@ import org.jdesktop.swingx.JXDatePicker;
 import taskManager.controller.EditTaskController;
 import taskManager.controller.TaskInputController;
 import taskManager.model.ActivityModel;
-import taskManager.model.ActivityModel.activityModelType;
+import taskManager.model.ActivityModel.ActivityModelType;
 
 /**
  *  Edit panel for a new task
@@ -57,6 +57,8 @@ import taskManager.model.ActivityModel.activityModelType;
  */
 
 public class EditTaskView extends JScrollPane {
+
+	private String taskID;
 
 	public static final String STAGES = "stages";
 	public static final String REQUIREMENTS = "requirements";
@@ -89,7 +91,7 @@ public class EditTaskView extends JScrollPane {
 	private JButton addUser;
 	private JButton removeUser;
 	private JButton delete;
-	private JButton addReq;
+	private JButton viewReq;
 	private JButton submitComment;
 	private JCheckBox archive;
 
@@ -136,15 +138,20 @@ public class EditTaskView extends JScrollPane {
 	 * @param mode
 	 *            Which mode this view should be created in
 	 */
-	public EditTaskView(Mode mode) {
+	public EditTaskView(Mode mode, String taskID) {
 		// TODO: User Mode to switch between create and edit views
 		// When Task added make EditTask take in a Task called currTask
+		if (mode.equals(Mode.EDIT)) {
+			this.taskID = taskID;
+		}
 		this.mode = mode;
 		JPanel center = new JPanel();
 		center.setLayout(new MigLayout("center"));
 		window = new JPanel(new MigLayout());
 		this.setViewportView(center);
 		this.setLayout(new ScrollPaneLayout());
+		this.getVerticalScrollBar().setUnitIncrement(12);
+		this.getHorizontalScrollBar().setUnitIncrement(12);
 		final Dimension panelSize = getPreferredSize();
 		panelSize.width = 1300; // TODO
 		panelSize.height = 650; // Decide size
@@ -189,6 +196,7 @@ public class EditTaskView extends JScrollPane {
 		descripArea.setLineWrap(true);
 		descripArea.setWrapStyleWord(true);
 		final JScrollPane descriptionScrollPane = new JScrollPane(descripArea);
+
 		descriptionScrollPane
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		descriptionScrollPane
@@ -261,8 +269,9 @@ public class EditTaskView extends JScrollPane {
 		this.setCommentSubmitEnabled(false);
 
 		// add requirement
-		addReq = new JButton("View Requirement");
-		addReq.setName(VIEW_REQ);
+
+		viewReq = new JButton("View Requirement");
+		viewReq.setName(VIEW_REQ);
 
 		// saves all the data and closes the window
 		save = new JButton("Save");
@@ -323,7 +332,7 @@ public class EditTaskView extends JScrollPane {
 		// Requirements Panel internal content
 		Requirements.add(requirementLabel, "wrap");
 		Requirements.add(requirements, "gapright 10px");
-		Requirements.add(addReq);
+		Requirements.add(viewReq);
 
 		// Users Panel internal content
 
@@ -380,16 +389,16 @@ public class EditTaskView extends JScrollPane {
 
 		BalloonTipStyle errorStyle = new RoundedBalloonStyle(5, 5,
 				Colors.INPUT_ERROR, Color.red);
-		titleError = new BalloonTip(getTitle(), new JLabel(TITLE_ERROR),
+		titleError = new BalloonTip(titleField, new JLabel(TITLE_ERROR),
 				errorStyle, Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST,
 				5, 15, false);
-		descripError = new BalloonTip(getDescription(), new JLabel(
-				DESCRIPTION_ERROR), errorStyle, Orientation.LEFT_ABOVE,
-				AttachLocation.NORTHEAST, 5, 15, false);
-		actEffortError = new BalloonTip(getActEffort(),
+		descripError = new BalloonTip(descripArea,
+				new JLabel(DESCRIPTION_ERROR), errorStyle,
+				Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST, 5, 15, false);
+		actEffortError = new BalloonTip(actEffortField,
 				new JLabel(EFFORT_ERROR), errorStyle, Orientation.LEFT_ABOVE,
 				AttachLocation.NORTHEAST, 5, 15, false);
-		estEffortError = new BalloonTip(getEstEffort(),
+		estEffortError = new BalloonTip(estEffortField,
 				new JLabel(EFFORT_ERROR), errorStyle, Orientation.LEFT_ABOVE,
 				AttachLocation.NORTHEAST, 5, 15, false);
 
@@ -397,6 +406,27 @@ public class EditTaskView extends JScrollPane {
 		setDescriptionErrorVisible(false);
 		setActualEffortErrorVisible(false);
 		setEstEffortErrorVisible(false);
+	}
+
+	/**
+	 * Sets the name of the task, only if the mode is create
+	 * 
+	 * @param id
+	 *            the id to set the view to
+	 */
+	public void setViewID(String id) {
+		if (mode.equals(Mode.CREATE)) {
+			this.taskID = id;
+		}
+	}
+
+	/**
+	 * returns the taskID associated with this view
+	 * 
+	 * @return the task ID associated with this view
+	 */
+	public String getViewID() {
+		return this.taskID;
 	}
 
 	/**
@@ -421,7 +451,7 @@ public class EditTaskView extends JScrollPane {
 		save.addActionListener(controller);
 		addUser.addActionListener(controller);
 		removeUser.addActionListener(controller);
-		addReq.addActionListener(controller);
+		viewReq.addActionListener(controller);
 		submitComment.addActionListener(controller);
 		delete.addActionListener(controller);
 	}
@@ -445,6 +475,7 @@ public class EditTaskView extends JScrollPane {
 		requirements.addPopupMenuListener(fieldC);
 		dateField.addPropertyChangeListener(fieldC);
 		archive.addItemListener(fieldC);
+		fieldC.validate();
 	}
 
 	/**
@@ -473,17 +504,17 @@ public class EditTaskView extends JScrollPane {
 	 *
 	 * @return true if selected.
 	 */
-	public Boolean isArchived() {
+	public boolean isArchived() {
 		return archive.isSelected();
 	}
 
 	/**
 	 * Gets the text in the title field
 	 * 
-	 * @return the title field
+	 * @return the title field's text
 	 */
-	public JTextField getTitle() {
-		return titleField;
+	public String getTitleText() {
+		return titleField.getText();
 	}
 
 	/**
@@ -491,26 +522,26 @@ public class EditTaskView extends JScrollPane {
 	 * 
 	 * @return the description field
 	 */
-	public JTextArea getDescription() {
-		return descripArea;
+	public String getDescription() {
+		return descripArea.getText();
 	}
 
 	/**
-	 * Gets the date field
+	 * Gets the date field's value
 	 * 
-	 * @return the date field
+	 * @return the date entered.
 	 */
-	public JXDatePicker getDateField() {
-		return dateField;
+	public Date getDate() {
+		return dateField.getDate();
 	}
 
 	/**
-	 * Gets the estimated effort field
+	 * Gets the estimated effort
 	 * 
-	 * @return the estimated effort field
+	 * @return the estimated effort text
 	 */
-	public JTextField getEstEffort() {
-		return estEffortField;
+	public String getEstEffort() {
+		return estEffortField.getText();
 	}
 
 	/**
@@ -518,21 +549,83 @@ public class EditTaskView extends JScrollPane {
 	 * 
 	 * @return the actual effort field
 	 */
-	public JTextField getActEffort() {
-		return actEffortField;
+	public String getActEffort() {
+		return actEffortField.getText();
 	}
 
 	/**
-	 * gets the dropdown box in the view that contains all the stage names
 	 * 
-	 * @return the stages dropdown box
+	 * Sets the stage dropdown menu's available options.
+	 *
+	 * @param stageNames
+	 *            The list of stageNames to set as options.
 	 */
-	public JComboBox<String> getStages() {
-		return stages;
+	public void setStages(List<String> stageNames) {
+		final String selectedStage = getSelectedStage();
+
+		stages.removeAllItems();
+		for (String stageName : stageNames) {
+			stages.addItem(stageName);
+		}
+
+		// Select the 1st item if the old selected item doesn't exist
+		stages.setSelectedItem(0);
+		if (!(selectedStage == null)) {
+			stages.setSelectedItem(selectedStage);
+		}
 	}
 
-	public JComboBox<String> getRequirements() {
-		return requirements;
+	/**
+	 * 
+	 * Sets the requirements dropdown menu's available options.
+	 *
+	 * @param reqNames
+	 *            The list of requirement names to set as options.
+	 */
+	public void setRequirements(List<String> reqNames) {
+		final String selectedReq = getSelectedRequirement();
+
+		requirements.removeAllItems();
+		requirements.addItem(NO_REQ);
+		for (String name : reqNames) {
+			requirements.addItem(name);
+		}
+
+		// Select NO_REQ if the old selected item doesn't exist
+		requirements.setSelectedItem(NO_REQ);
+		if (!(selectedReq == null)) {
+			requirements.setSelectedItem(selectedReq);
+		}
+	}
+
+	/**
+	 * Gets the selected requirement. If no requirement is selected, returns
+	 * null.
+	 *
+	 * @return The selected requirement's name
+	 */
+	public String getSelectedRequirement() {
+		if (NO_REQ.equals(requirements.getSelectedItem())) {
+			return null;
+		}
+		return (String) requirements.getSelectedItem();
+	}
+
+	/**
+	 * Sets the selected requirement. Use null to select no requirement.
+	 *
+	 * @param requirementName
+	 *            The requirement's name we're selecting.
+	 */
+	public void setSelectedRequirement(String requirementName) {
+		if (requirementName == null) {
+			requirements.setSelectedItem(NO_REQ);
+		}
+		requirements.setSelectedItem(requirementName);
+
+		if (fieldC != null) {
+			fieldC.validate();
+		}
 	}
 
 	/**
@@ -604,28 +697,24 @@ public class EditTaskView extends JScrollPane {
 	}
 
 	/**
-	 * set stage dropdown box to the stage associated with the task
 	 * 
-	 * @param n
-	 *            the index of the stage in the workflow
+	 * Set stage dropdown box to select a stage
+	 *
+	 * @param stageName
+	 *            The name of the stage to be selected.
 	 */
-	public void setStageDropdown(int n) {
-		final String p = stages.getItemAt(n);
-		stages.setSelectedItem(p);
+	public void setSelectedStage(String stageName) {
+		stages.setSelectedItem(stageName);
 	}
 
 	/**
 	 * 
-	 * Returns the selected stage name. If the selected item cannot be retrieved
-	 * returns an empty string.
+	 * Returns the selected stage name. If it cannot be found, returns null.
 	 *
 	 * @return the selected stage as a String.
 	 */
 	public String getSelectedStage() {
-		if (stages.getSelectedItem() != null) {
-			return stages.getSelectedItem().toString();
-		}
-		return "";
+		return (String) stages.getSelectedItem();
 	}
 
 	/**
@@ -643,16 +732,15 @@ public class EditTaskView extends JScrollPane {
 	/**
 	 * Sets the title field border red
 	 * 
-	 * @param boolean turns the red border on and off
+	 * @param red
+	 *            turns the red border on and off
 	 */
 
 	public void setTitleFieldRed(boolean red) {
 		if (red) {
-			this.titleField
-					.setBorder(BorderFactory.createLineBorder(Color.red));
+			titleField.setBorder(BorderFactory.createLineBorder(Color.red));
 		} else {
-			this.titleField.setBorder(BorderFactory
-					.createLineBorder(Color.black));
+			titleField.setBorder(BorderFactory.createLineBorder(Color.black));
 		}
 	}
 
@@ -677,16 +765,16 @@ public class EditTaskView extends JScrollPane {
 	/**
 	 * Sets the description field border red
 	 * 
-	 * @param boolean turns the red border on and off
+	 * @param red
+	 *            turns the red border on and off
 	 */
 
 	public void setDescriptionFieldRed(boolean red) {
 		if (red) {
-			this.descripArea.setBorder(BorderFactory
-					.createLineBorder(Color.red));
+			descripArea.setBorder(BorderFactory.createLineBorder(Color.red));
 		} else {
-			this.descripArea.setBorder(BorderFactory.createLineBorder(
-					Color.gray, 1));
+			descripArea
+					.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
 		}
 	}
 
@@ -710,7 +798,8 @@ public class EditTaskView extends JScrollPane {
 	/**
 	 * Sets the estimated effort field border red
 	 * 
-	 * @param boolean turns the red border on and off
+	 * @param red
+	 *            turns the red border on and off
 	 */
 
 	public void setEstEffortFieldRed(boolean red) {
@@ -725,7 +814,7 @@ public class EditTaskView extends JScrollPane {
 	/**
 	 * Sets the actual effort field border red
 	 * 
-	 * @param boolean turns the red border on and off
+	 * @red boolean turns the red border on and off
 	 */
 
 	public void setActEffortFieldRed(boolean red) {
@@ -812,7 +901,7 @@ public class EditTaskView extends JScrollPane {
 	 *            true is enabled false is disabled
 	 */
 	public void setCommentSubmitEnabled(boolean e) {
-		this.submitComment.setEnabled(e);
+		submitComment.setEnabled(e);
 	}
 
 	/**
@@ -823,7 +912,7 @@ public class EditTaskView extends JScrollPane {
 	 */
 	public ActivityModel addComment() {
 		final ActivityModel act = new ActivityModel(commentsField.getText(),
-				activityModelType.COMMENT);
+				ActivityModelType.COMMENT);
 		activities.add(act);
 		commentsField.setText("");
 		reloadActivitiesPanel();
@@ -841,7 +930,7 @@ public class EditTaskView extends JScrollPane {
 		final List<ActivityModel> tskActivitiesCopy = new ArrayList<ActivityModel>(
 				activities);
 		activityPane.setMessage("");
-		DateFormat dateF = new SimpleDateFormat("MM/dd/yyyy kk:mm");
+		final DateFormat dateF = new SimpleDateFormat("MM/dd/yyyy kk:mm");
 		for (ActivityModel act : tskActivitiesCopy) {
 			String current = activityPane.getMessage().getText();
 			activityPane.setMessage(current + act.getActor() + " ["
@@ -883,7 +972,6 @@ public class EditTaskView extends JScrollPane {
 	}
 
 	/**
-	 * 
 	 * Adds an activity.
 	 *
 	 * @param act
@@ -894,7 +982,6 @@ public class EditTaskView extends JScrollPane {
 	}
 
 	/**
-	 * 
 	 * Set the delete button to enabled/disabled.
 	 *
 	 * @param bool
@@ -922,11 +1009,6 @@ public class EditTaskView extends JScrollPane {
 		super.setVisible(visible);
 	}
 
-	// Used for tests
-	public JPanel getWindow() {
-		return window;
-	}
-
 	/**
 	 * 
 	 * Returns the EditTaskController.
@@ -945,6 +1027,16 @@ public class EditTaskView extends JScrollPane {
 	 */
 	public Mode getMode() {
 		return mode;
+	}
+
+	/**
+	 * Sets if the view requirement button is enabled/disabled
+	 *
+	 * @param bool
+	 *            should the button be enabled?
+	 */
+	public void setViewRequirementEnabled(boolean bool) {
+		viewReq.setEnabled(bool);
 	}
 
 	/**

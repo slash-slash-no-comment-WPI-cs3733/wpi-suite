@@ -9,19 +9,19 @@
 
 package taskManager.controller;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.time.Instant;
 import java.time.Period;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -39,10 +39,12 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.renderer.category.StandardBarPainter;
 import org.jfree.data.category.DefaultCategoryDataset;
 
-import taskManager.JanewayModule;
+import taskManager.TaskManager;
 import taskManager.model.ActivityModel;
+import taskManager.model.ActivityModel.ActivityModelType;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
@@ -67,14 +69,15 @@ public class ReportsManager implements ActionListener, ChangeListener,
 	 * @author Joseph Blackman
 	 */
 	private class UserData implements Comparable<UserData> {
-		private UserData(String username, Instant completion, Double effort) {
+		private UserData(String username, ZonedDateTime completion,
+				Double effort) {
 			this.username = username;
 			this.completion = completion;
 			this.effort = effort;
 		}
 
 		private String username;
-		private Instant completion;
+		private ZonedDateTime completion;
 		private Double effort;
 
 		/**
@@ -91,8 +94,8 @@ public class ReportsManager implements ActionListener, ChangeListener,
 		}
 	}
 
-	private Instant start;
-	private Instant end;
+	private ZonedDateTime start;
+	private ZonedDateTime end;
 	private DefaultCategoryDataset dataset;
 	private List<UserData> data;
 	private final WorkflowModel workflow;
@@ -113,7 +116,7 @@ public class ReportsManager implements ActionListener, ChangeListener,
 	/**
 	 * Constructor for ReportsManager.
 	 */
-	public ReportsManager(Instant start, Instant end) {
+	public ReportsManager(ZonedDateTime start, ZonedDateTime end) {
 		this.start = start;
 		this.end = end;
 		workflow = WorkflowModel.getInstance();
@@ -127,8 +130,8 @@ public class ReportsManager implements ActionListener, ChangeListener,
 	 * @param end
 	 * @param averageCredit
 	 */
-	public void findVelocityData(Set<String> users, Instant start, Instant end,
-			boolean averageCredit) {
+	public void findVelocityData(Set<String> users, ZonedDateTime start,
+			ZonedDateTime end, boolean averageCredit) {
 		// Assume the completion stage is the final stage
 		this.start = start;
 		this.end = end;
@@ -155,18 +158,18 @@ public class ReportsManager implements ActionListener, ChangeListener,
 	 * @param stage
 	 *            The stage to consider as the completion stage
 	 */
-	public void findVelocityData(Set<String> users, Instant _start,
-			Instant _end, boolean averageCredit, StageModel stage) {
-		// adjust for EST.
-		start = _start.minusSeconds(18000);
-		end = _end.minusSeconds(18000);
+	public void findVelocityData(Set<String> users, ZonedDateTime _start,
+			ZonedDateTime _end, boolean averageCredit, StageModel stage) {
+
+		start = _start;
+		end = _end;
 
 		if (!workflow.getStages().contains(stage)) {
 			throw new IllegalArgumentException("Invalid stage");
 		}
 		data = new ArrayList<UserData>();
 		for (TaskModel task : stage.getTasks()) {
-			Instant completed = null;
+			ZonedDateTime completed = null;
 			boolean foundMoveEvent = false;
 			// We are going to iterate backward through the activities, and take
 			// the final MOVE event. This event must have been to the current
@@ -174,11 +177,12 @@ public class ReportsManager implements ActionListener, ChangeListener,
 			// stage, this MOVE event must actually be a completion event.
 			for (int i = task.getActivities().size() - 1; i >= 0; i--) {
 				ActivityModel activity = task.getActivities().get(i);
-				if (activity.getType() == ActivityModel.activityModelType.MOVE) {
+				if (activity.getType() == ActivityModelType.MOVE) {
 					foundMoveEvent = true;
 
-					completed = Instant.ofEpochMilli(setToEST(
-							activity.getDateCreated()).getTime());
+					completed = ZonedDateTime.ofInstant(activity
+							.getDateCreated().toInstant(), TimeZone
+							.getDefault().toZoneId());
 				}
 				if (foundMoveEvent) {
 					break;
@@ -188,11 +192,13 @@ public class ReportsManager implements ActionListener, ChangeListener,
 				// If the task has no move events, then it was created in the
 				// completion stage. This is likely a retroactive completion, so
 				// we'll assume that the task was completed on its due date.
-				completed = Instant.ofEpochMilli(setToEST(task.getDueDate())
-						.getTime());
+				completed = ZonedDateTime.ofInstant(task.getDueDate()
+						.toInstant(), TimeZone.getDefault().toZoneId());
 			}
-			if (completed != null && completed.isAfter(start)
-					&& completed.isBefore(end)) {
+
+			if (completed != null
+					&& completed.toInstant().isAfter(start.toInstant())
+					&& completed.toInstant().isBefore(end.toInstant())) {
 				for (String username : task.getAssigned()) {
 					if (users.contains(username)) {
 						Double effort = (double) task.getActualEffort();
@@ -200,28 +206,10 @@ public class ReportsManager implements ActionListener, ChangeListener,
 							effort /= task.getAssigned().size();
 						}
 						data.add(new UserData(username, completed, effort));
-						System.out.println("name: " + username + " completed: "
-								+ completed + " effort: " + effort);
 					}
 				}
 			} // End if (inDateRange)
 		} // End if (TaskModel)
-	}
-
-	/**
-	 * 
-	 * Convert the given date to EST assuming we are 5 hours behind.
-	 *
-	 * @param original
-	 *            the original Date object.
-	 * @return the converted Date object.
-	 */
-	public Date setToEST(Date original) {
-		Calendar cal = Calendar.getInstance();
-		Date created = original;
-		cal.setTime(created);
-		cal.add(Calendar.HOUR_OF_DAY, -5);
-		return cal.getTime();
 	}
 
 	/**
@@ -257,25 +245,28 @@ public class ReportsManager implements ActionListener, ChangeListener,
 			dummyUsername = data.iterator().next().username;
 		}
 		// Populate the buckets with names before-hand.
-		for (Instant i = start; i.compareTo(end) < 0; i = i.plus(interval)) {
+		for (ZonedDateTime i = start; i.compareTo(end) < 0; i = i
+				.plus(interval)) {
 			dataset.addValue(0, dummyUsername, intervalName + (seriesNum + 1));
 			seriesNum++;
 		}
 
-		System.out.println("Data size: " + data.size());
-
 		// Iterate through each userdata.
 		for (UserData userData : data) {
-			Instant boundary = start.plus(interval);
+			ZonedDateTime boundary = ZonedDateTime.ofInstant(start.toInstant()
+					.plus(interval), TimeZone.getDefault().toZoneId());
 			seriesNum = 0;
 
 			// continue until we find the seriesNum and boundary.
 			do {
 				boundary = boundary.plus(interval);
 				seriesNum++;
-			} while ((boundary.getEpochSecond() - userData.completion
-					.getEpochSecond()) < 86400); // while the difference is less
-													// than a full day.
+			} while ((boundary.toInstant().getEpochSecond() - userData.completion
+					.toInstant().getEpochSecond()) < 86400); // while the
+																// difference is
+																// less
+																// than a full
+																// day.
 
 			// set the name depending on the teamData value.
 			String keyname = "Team";
@@ -288,15 +279,9 @@ public class ReportsManager implements ActionListener, ChangeListener,
 			if (dataset.getRowKeys().contains(keyname)) {
 				dataset.incrementValue(userData.effort, keyname, intervalName
 						+ (seriesNum));
-				System.out.println("Increment: +" + userData.effort + " name: "
-						+ keyname + " interval: " + seriesNum);
-				System.out.println("Boundary: " + boundary);
 			} else {
 				dataset.addValue(userData.effort, keyname, intervalName
 						+ (seriesNum));
-				System.out.println("Add: +" + userData.effort + " name: "
-						+ keyname + " interval: " + seriesNum);
-				System.out.println("Boundary: " + boundary);
 			}
 		}
 		if (dataset == null) {
@@ -334,7 +319,8 @@ public class ReportsManager implements ActionListener, ChangeListener,
 				);
 
 		final ChartPanel chartPanel = new ChartPanel(chart, false);
-		chartPanel.setPreferredSize(new Dimension(500, 270));
+		chartPanel.setMaximumDrawHeight(2880);
+		chartPanel.setMaximumDrawWidth(5120);
 
 		final CategoryPlot plot = (CategoryPlot) chart.getPlot();
 
@@ -348,7 +334,11 @@ public class ReportsManager implements ActionListener, ChangeListener,
 		// disable bar outlines...
 		((BarRenderer) plot.getRenderer()).setDrawBarOutline(false);
 
-		return new ChartPanel(chart, false);
+		// disable gradients
+		((BarRenderer) plot.getRenderer())
+				.setBarPainter(new StandardBarPainter());
+
+		return chartPanel;
 	}
 
 	/**
@@ -373,7 +363,7 @@ public class ReportsManager implements ActionListener, ChangeListener,
 	 */
 	private void reloadUsers() {
 		ArrayList<String> projectUserNames = new ArrayList<String>();
-		for (User u : JanewayModule.users) {
+		for (User u : TaskManager.users) {
 			String name = u.getUsername();
 			if (!projectUserNames.contains(name)) {
 				projectUserNames.add(name);
@@ -448,11 +438,17 @@ public class ReportsManager implements ActionListener, ChangeListener,
 			} else if (buttonName.equals(ReportsView.ALL_USERS)) {
 
 			} else {
-				Date startdate = rtv.getStartDate().getDate();
-				Date enddate = rtv.getEndDate().getDate();
 				Calendar cal = Calendar.getInstance();
+				cal.setTimeZone(TimeZone.getDefault());
+
+				Date startdate = rtv.getStartDate().getDate();
+				cal.setTime(startdate);
+				startdate = cal.getTime();
+
+				Date enddate = rtv.getEndDate().getDate();
 				cal.setTime(enddate);
 				cal.add(Calendar.DATE, 1);
+				enddate = cal.getTime();
 
 				// TODO: Do validation for the calendars rather than showing
 				// JOptionPanes.
@@ -462,14 +458,11 @@ public class ReportsManager implements ActionListener, ChangeListener,
 							"Start Date cannot be in the future.");
 					return;
 				}
-				if (cal.getTime().before(startdate)) {
+				if (enddate.before(startdate)) {
 					JOptionPane.showMessageDialog(rtv,
 							"End Date must be after the Start Date.");
 					return;
 				}
-
-				Instant startCal = Instant.ofEpochMilli(startdate.getTime());
-				Instant endCal = Instant.ofEpochMilli(cal.getTime().getTime());
 
 				Set<String> users = new HashSet<String>();
 				for (String u : rtv.getCurrUsersList().getAllValues()) {
@@ -479,7 +472,14 @@ public class ReportsManager implements ActionListener, ChangeListener,
 				String stageStr = rtv.getSelectedStage();
 				StageModel stage = WorkflowModel.getInstance().findStageByName(
 						stageStr);
-				findVelocityData(users, startCal, endCal, false, stage);
+
+				ZonedDateTime startZone = ZonedDateTime
+						.ofInstant(startdate.toInstant(), TimeZone.getDefault()
+								.toZoneId());
+				ZonedDateTime endZone = ZonedDateTime.ofInstant(
+						enddate.toInstant(), TimeZone.getDefault().toZoneId());
+				findVelocityData(users, startZone, endZone, false, stage);
+
 				generateDataset(false, Period.ofDays(1));
 				JPanel chart = createChart("Effort per Day", "Time", "Effort");
 				TabPaneController.getInstance().addTab("Graph", chart, true);

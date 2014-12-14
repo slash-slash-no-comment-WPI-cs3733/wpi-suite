@@ -86,7 +86,7 @@ public class TabPaneController implements ChangeListener {
 		if (exists) {
 			view.setSelectedComponent(etv2);
 		} else {
-			addTab(etv.getTitle().getText(), etv, true);
+			addTab(etv.getTitleText(), etv, true);
 			view.setSelectedComponent(etv);
 		}
 	}
@@ -143,6 +143,23 @@ public class TabPaneController implements ChangeListener {
 	public void removeTabByComponent(Component component) {
 		if (!(component instanceof WorkflowView)) {
 			view.remove(component);
+		}
+	}
+
+	/**
+	 * remove a tab of the given id, if it's open
+	 * 
+	 * @param id
+	 *            the id of the tab you want to remove
+	 */
+	public void removeEditTaskTabByID(String id) {
+		for (Component t : view.getComponents()) {
+			if (t instanceof EditTaskView) {
+				EditTaskView tab = (EditTaskView) t;
+				if (tab.getViewID().equals(id)) {
+					TabPaneController.getInstance().removeTabByComponent(tab);
+				}
+			}
 		}
 	}
 

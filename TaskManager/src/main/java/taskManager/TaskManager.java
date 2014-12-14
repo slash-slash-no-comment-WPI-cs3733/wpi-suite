@@ -8,11 +8,13 @@
  *******************************************************************************/
 package taskManager;
 
+import java.awt.KeyboardFocusManager;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
 
+import taskManager.controller.EasterEggListener;
 import taskManager.controller.StageController;
 import taskManager.controller.TabPaneController;
 import taskManager.controller.TaskController;
@@ -33,7 +35,7 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.User;
  * @author Stefan Alexander
  * @version November 9, 2014
  */
-public class JanewayModule implements IJanewayModule {
+public class TaskManager implements IJanewayModule {
 
 	// The tabs used by this module
 
@@ -45,7 +47,7 @@ public class JanewayModule implements IJanewayModule {
 	/**
 	 * Construct a blank tab
 	 */
-	public JanewayModule() {
+	public TaskManager() {
 
 		tabs = new ArrayList<JanewayTabModel>();
 		final JanewayTabModel tab = new JanewayTabModel("Task Manager",
@@ -60,6 +62,9 @@ public class JanewayModule implements IJanewayModule {
 		new StageModel("Complete");
 
 		WorkflowController.getInstance().reloadData();
+
+		KeyboardFocusManager.getCurrentKeyboardFocusManager()
+				.addKeyEventDispatcher(new EasterEggListener());
 	}
 
 	/**

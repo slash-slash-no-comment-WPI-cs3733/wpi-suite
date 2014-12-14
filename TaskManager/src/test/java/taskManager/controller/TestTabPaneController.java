@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import taskManager.JanewayModule;
+import taskManager.TaskManager;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
@@ -56,7 +56,7 @@ public class TestTabPaneController {
 	@Before
 	public void setup() {
 		// create a new workflow model
-		JanewayModule.reset();
+		TaskManager.reset();
 		toolV = ToolbarController.getInstance().getView();
 
 		// give it some stages

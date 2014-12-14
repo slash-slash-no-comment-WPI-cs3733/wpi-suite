@@ -20,7 +20,7 @@ dist
 *.eml
 
 #Test Screenshots
-/*.png
+TaskManager/*.png
 
 # Module jar files #
 Janeway/modules/*.jar
