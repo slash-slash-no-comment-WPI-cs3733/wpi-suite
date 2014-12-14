@@ -9,15 +9,19 @@
 package taskManager.controller;
 
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.SwingUtilities;
+
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.view.Colors;
+import taskManager.view.StageView;
 import taskManager.view.TaskInfoPreviewView;
 import taskManager.view.TaskView;
 
@@ -163,10 +167,10 @@ public class TaskController implements MouseListener {
 	public void mouseClicked(MouseEvent e) {
 
 		// Create the taskinfo bubble
-		final Point stageLoc = view.getParent().getParent().getParent()
-				.getParent().getLocation();
-		final Point stagesPanelLoc = view.getParent().getParent().getParent()
-				.getParent().getParent().getLocation();
+		final Container stageContainer = SwingUtilities.getAncestorOfClass(
+				StageView.class, view);
+		final Point stageLoc = stageContainer.getLocation();
+		final Point stagesPanelLoc = stageContainer.getParent().getLocation();
 		final Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
 				view.getLocation().y);
 		WorkflowController.getInstance().setTaskInfo(
