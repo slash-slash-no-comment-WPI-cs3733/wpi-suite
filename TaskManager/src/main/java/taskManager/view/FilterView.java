@@ -55,10 +55,6 @@ public class FilterView extends JPanel {
 		this.setPreferredSize(SIZE);
 		this.setOpaque(false);
 
-		// // adds a panel for the checks and the category picker
-		// JPanel lower = new JPanel();
-		// lower.setLayout(new GridLayout(1, 2));
-
 		// adds a panel for my tasks and archived check boxes
 		JPanel checks = new JPanel();
 		checks.setLayout(new GridLayout(2, 1));
@@ -100,7 +96,6 @@ public class FilterView extends JPanel {
 			catBox.addMouseListener(filterC);
 			categories.add(catBox);
 		}
-		// categories.setSize(100, 30);
 		categories.setMaximumSize(new Dimension(100, 30));
 
 		this.add(categories);

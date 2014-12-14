@@ -600,10 +600,11 @@ public class EditTaskController implements ActionListener {
 		final Set<String> usersAssigned = new HashSet<String>();
 		usersAssigned.addAll(etv.getUsersList().getAllValues());
 
+		if (!usersAssigned.equals(taskAssigned)) {
+			edited = true;
+		}
 		if ((usersAssigned.size() == 0) && (taskAssigned == null)) {
 			edited = false;
-		} else if (usersAssigned != taskAssigned) {
-			edited = true;
 		}
 		return edited;
 	}

@@ -129,16 +129,14 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 		}
 		final TaskController tc = ((TaskView) panel).getController();
 
-		// if archived tasks are hidden, change index to account for the hidden
+		// if tasks are hidden, change index to account for the hidden
 		// tasks
-		if (!ToolbarController.getInstance().getView().getFilterView()
-				.isArchiveShown()) {
-			final List<TaskModel> taskList = model.getTasks();
-			for (int i = 0; i < index; i++) {
-				if (!WorkflowController.getInstance().getCurrentFilter()
-						.check(taskList.get(i))) {
-					index++;
-				}
+		final List<TaskModel> taskList = model.getTasks();
+		for (int i = 0; i < index; i++) {
+			if (!WorkflowController.getInstance().getCurrentFilter()
+					.check(taskList.get(i))) {
+				index++;
+
 			}
 		}
 
