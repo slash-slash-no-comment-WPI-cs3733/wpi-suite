@@ -45,10 +45,10 @@ public class ScrollList extends JPanel {
 	 */
 	public ScrollList(String t) {
 		setLayout(new BorderLayout());
-		this.setMinimumSize(new Dimension(140, 220));
-		this.setMaximumSize(new Dimension(140, 220));
-		this.setPreferredSize(new Dimension(140, 220));
-		this.setSize(new Dimension(140, 220));
+		this.setMinimumSize(new Dimension(140, 260));
+		this.setMaximumSize(new Dimension(140, 260));
+		this.setPreferredSize(new Dimension(140, 260));
+		this.setSize(new Dimension(140, 260));
 		lm = new DefaultListModel<String>();
 		jl = new JList<String>(lm);
 		jl.setVisibleRowCount(3);

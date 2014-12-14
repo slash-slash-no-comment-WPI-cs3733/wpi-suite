@@ -112,6 +112,15 @@ public class TaskController implements MouseListener {
 	}
 
 	/**
+	 * returns whether or not the task is being hovered over
+	 * 
+	 * @return true if the task is being hovered over, false if it is not
+	 */
+	public boolean isHovered() {
+		return this.isHovered;
+	}
+
+	/**
 	 * 
 	 * Make the task a darker color. Used for when the mouse is over a task or
 	 * when a bubble is out for this task
@@ -120,22 +129,13 @@ public class TaskController implements MouseListener {
 	public void changeToHoverColor() {
 		if (!thisTaskInfoOut) {
 			view.setBackground(Colors.TASK_HOVER);
+			if (model.getCategory() == null) {
+				view.setCategoryColor(view.getBackground(), false);
 
+			}
+			view.setBorderColor(view.getBackground(), false);
 		}
-		if (model.getCategory() == null) {
-			view.setCategoryColor(view.getBackground(), false);
-		}
-		view.setBorderColor(view.getBackground());
 		isHovered = true;
-	}
-
-	/**
-	 * return whether or not the hover effect is on
-	 * 
-	 * @return true if the hover effect is activated, false if it isn't
-	 */
-	public boolean isHovered() {
-		return isHovered;
 	}
 
 	/**
@@ -145,9 +145,7 @@ public class TaskController implements MouseListener {
 	 * @return the color corresponding to the category of the task
 	 */
 	public Color getCategoryColor() {
-
 		Color catColor = Colors.TASK;
-
 		for (int i = 0; i < TaskCategory.values().length; i++) {
 			if (TaskCategory.values()[i].equals(model.getCategory())) {
 				catColor = Colors.CAT_COLORS[i];
@@ -162,18 +160,11 @@ public class TaskController implements MouseListener {
 	 *
 	 */
 	public void resetBackground() {
-		if (thisTaskInfoOut && !isArchived()) {
-			if (model.getCategory() == null) {
-				view.setBorderColor(Colors.TASK_HOVER);
-			} else {
-				view.setBorderColor(getCategoryColor());
-			}
-			view.setBackground(Colors.TASK_HOVER);
-		} else if (!isArchived()) {
+		if (!thisTaskInfoOut && !isArchived()) {
 			view.setBackground(Colors.TASK);
-			view.setBorderColor(view.getBackground());
+			view.setBorderColor(Colors.TASK, false);
 		}
-		view.setCategoryColor(getCategoryColor(), true);
+		view.repaint();
 		isHovered = false;
 	}
 
@@ -196,11 +187,10 @@ public class TaskController implements MouseListener {
 		TaskController.anyTaskInfoOut = true;
 
 		// set the correct background color
-		if ((model.getCategory() == null) && !isArchived()) {
-			view.setBorderColor(Colors.TASK_HOVER);
-		} else if (!isArchived()) {
-			view.setBorderColor(getCategoryColor());
+		if ((model.getCategory() != null)) {
+			view.setBorderColor(getCategoryColor(), true);
 		}
+		isHovered = true;
 	}
 
 	@Override

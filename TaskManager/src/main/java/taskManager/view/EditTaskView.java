@@ -332,9 +332,9 @@ public class EditTaskView extends JScrollPane {
 
 		// Effort Panel internal content
 		Effort.add(estimatedEffortLabel);
-		Effort.add(actualEffortLabel, "wrap, gaptop 10px");
+		Effort.add(actualEffortLabel, "wrap,  gapleft 10px");
 		Effort.add(estEffortField);
-		Effort.add(actEffortField, "wrap");
+		Effort.add(actEffortField, "wrap, gapleft 10px");
 
 		JPanel EffortAndRequirements = new JPanel(new MigLayout());
 		EffortAndRequirements.add(Effort, "wrap");
@@ -359,7 +359,7 @@ public class EditTaskView extends JScrollPane {
 		UserPanel.add(addRemoveButtons);
 		UserPanel.add(usersListPanel);
 
-		Users.add(UserPanel, "h 60%, wrap, gapbottom 15px");
+		Users.add(UserPanel, "h 60%, wrap");
 		Users.add(EffortAndRequirements, "h 40%, wrap");
 
 		// Activities Panel internal content

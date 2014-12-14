@@ -21,6 +21,7 @@ public class Colors {
 
 	public static final Color TASK = Color.decode("#FCFCFC");
 	public static final Color TASK_HOVER = Color.LIGHT_GRAY;
+	public static final Color TASK_CLICKED = Color.decode("#F5F5F5");
 	public static final Color SHADOW_COLOR = Color.BLACK;
 	public static final Color STAGE = Color.decode("#C8DDF1");
 	public static final Color INPUT_ERROR = Color.decode("#FCFCFC");

@@ -232,8 +232,14 @@ public class TaskView extends JPanel implements Transferable {
 	 * @param color
 	 *            the color to set the border to
 	 */
-	public void setBorderColor(Color color) {
-		this.colorBorder.setBorder(BorderFactory.createLineBorder(color, 2));
+	public void setBorderColor(Color color, boolean opaque) {
+		if (!opaque) {
+			this.colorBorder.setBorder(BorderFactory.createEmptyBorder(2, 2, 2,
+					2));
+		} else {
+			this.colorBorder
+					.setBorder(BorderFactory.createLineBorder(color, 2));
+		}
 	}
 
 	@Override
