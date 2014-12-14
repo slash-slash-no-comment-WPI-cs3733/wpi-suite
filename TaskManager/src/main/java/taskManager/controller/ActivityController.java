@@ -36,6 +36,8 @@ public class ActivityController {
 	 * @param taskM
 	 *            The task whose activities are being controlled. If this is
 	 *            null, then activities are being tracked for a new task.
+	 * 
+	 * @etc The controller used for the edit buttons on ActivityView's
 	 */
 	public ActivityController(TaskModel taskM, EditTaskController etc) {
 		this.taskM = taskM;
