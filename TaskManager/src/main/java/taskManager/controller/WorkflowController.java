@@ -14,7 +14,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.swing.JPanel;
@@ -31,6 +30,7 @@ import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
 import taskManager.view.TaskInfoPreviewView;
+import taskManager.view.TaskView;
 import taskManager.view.WorkflowView;
 
 /**
@@ -127,26 +127,34 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 			// add stage view to workflow
 			view.addStageView(stv);
 		}
-		Point mousePos = view.getMousePosition();
-		if (!(mousePos == null)) {
-			Component mouseC = view.findComponentAt(mousePos);
-			checkMouseHover(mouseC,mousePos);
-		}
-		view.revalidate();
-	}
 
-	/**
-	 * finds component the mouse is at, checks for listeners, and then passes
-	 * them an mouse entered even to start the hover sequence over again
-	 */
-	public void checkMouseHover(Component c, Point p) {
-		if (!Arrays.asList(c.getMouseListeners()).isEmpty()) {
-			for (MouseListener m : c.getMouseListeners()) {
-				m.mouseEntered(new MouseEvent(c, MouseEvent.MOUSE_ENTERED, System.currentTimeMillis(),
-						0, p.x, p.y, 0, false));
-				System.out.println("mouse reset");
+		// view needs to be repainted before we can find positions of components
+		view.revalidate();
+		view.repaint();
+
+		// if this doesn't run in the EDT, it sometimes doesn't work
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				// get the mouse position relative to the workflow
+				Point p = view.getMousePosition();
+				if (p != null) {
+					Component mouseC = view.findComponentAt(p);
+					// if we're over a TaskView, call mouse entered on it.
+					while (mouseC != null) {
+						if (mouseC instanceof TaskView) {
+							// calling this on the TaskView's parent or children
+							// does not work; it has to be on the TaskView
+							// itself
+							mouseC.dispatchEvent(new MouseEvent(mouseC,
+									MouseEvent.MOUSE_ENTERED, 0, 0, 0, 0, 0,
+									false));
+							break;
+						}
+						mouseC = mouseC.getParent();
+					}
+				}
 			}
-		}
+		});
 	}
 
 	/**

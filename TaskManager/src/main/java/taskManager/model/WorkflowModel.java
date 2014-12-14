@@ -34,7 +34,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	private static WorkflowModel instance = null;
 
 	public static boolean alive = true;
-	public static int timeout = 60000; // 1 minute
+	public static int timeout = 6000; // 1 minute
 
 	// Generic logger
 	private static final Logger logger = Logger.getLogger(WorkflowModel.class
