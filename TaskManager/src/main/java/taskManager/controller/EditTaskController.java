@@ -517,15 +517,15 @@ public class EditTaskController implements ActionListener {
 
 		// Compare the task info with the filled in info.
 		if (model == null) { // If we're creating a task
-			if (etv.getTitle().getText().isEmpty()
+			if (!(etv.getTitle().getText().isEmpty()
 					&& etv.getDescription().getText().isEmpty()
-					&& checkDate(null)
+					&& !checkDate(null)
 					// && etv.getSelectedStage() ????
-					&& checkUsers(null)
+					&& !checkUsers(null)
 					&& etv.getEstEffort().getText().isEmpty()
 					&& etv.getActEffort().getText().isEmpty()
-					// && etv.getRequirements().getSelectedItem()
-					&& etv.isArchived())
+			// && etv.getRequirements().getSelectedItem()
+			&& !etv.isArchived()))
 				edited = true;
 		}
 		// Title.
@@ -576,7 +576,12 @@ public class EditTaskController implements ActionListener {
 	 */
 	public Boolean checkDate(TaskModel task) {
 		// if the task had a due date, check if it changed
-		final Date dueDate = task.getDueDate();
+		final Date dueDate;
+		if (task != null) {
+			dueDate = task.getDueDate();
+		} else {
+			dueDate = new Date();
+		}
 
 		Calendar cal1 = Calendar.getInstance();
 
@@ -607,7 +612,12 @@ public class EditTaskController implements ActionListener {
 	 */
 	public boolean checkUsers(TaskModel task) {
 		boolean edited = false;
-		Set<String> taskAssigned = task.getAssigned();
+		Set<String> taskAssigned;
+		if (task != null) {
+			taskAssigned = task.getAssigned();
+		} else {
+			taskAssigned = new HashSet<String>();
+		}
 		final Set<String> usersAssigned = new HashSet<String>();
 		usersAssigned.addAll(etv.getUsersList().getAllValues());
 		if (!usersAssigned.equals(taskAssigned)) {
