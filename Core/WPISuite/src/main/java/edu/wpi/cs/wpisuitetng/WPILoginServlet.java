@@ -73,6 +73,8 @@ public class WPILoginServlet extends HttpServlet {
 			try {
 				// find the project ID
 				BufferedReader putBody = request.getReader();
+				putBody.read();
+				putBody.read();
 				String projectName = putBody.readLine();
 
 				// swap out the Sessions and add the project.

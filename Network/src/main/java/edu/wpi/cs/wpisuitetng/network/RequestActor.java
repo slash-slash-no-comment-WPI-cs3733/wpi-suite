@@ -77,7 +77,7 @@ public class RequestActor extends Thread {
 				connection.setDoOutput(true);
 				DataOutputStream out = new DataOutputStream(
 						connection.getOutputStream());
-				out.writeBytes(request.getBody());
+				out.writeUTF(request.getBody());
 				out.flush();
 				out.close();
 			}

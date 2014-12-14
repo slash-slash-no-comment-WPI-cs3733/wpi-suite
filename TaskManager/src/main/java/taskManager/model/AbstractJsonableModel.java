@@ -8,7 +8,10 @@
  *******************************************************************************/
 package taskManager.model;
 
+import java.io.UnsupportedEncodingException;
+
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
 
@@ -87,7 +90,27 @@ public abstract class AbstractJsonableModel<T> extends AbstractModel {
 	 */
 	public static <T> T fromJson(String json, Class<T> type) {
 		final Gson parser = new Gson();
-		return parser.fromJson(json, type);
+		try {
+			return parser.fromJson(json, type);
+		} catch (Exception e) {
+			// e.printStackTrace();
+			json = json.substring(2);
+			char[] temp = json.toCharArray();
+			byte[] bytes = new byte[temp.length];
+			for (int i = 0; i < temp.length; i++) {
+				bytes[i] = (byte) temp[i];
+			}
+			try {
+				return parser.fromJson(new String(bytes, "UTF8"), type);
+			} catch (JsonSyntaxException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (UnsupportedEncodingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -95,7 +118,14 @@ public abstract class AbstractJsonableModel<T> extends AbstractModel {
 	 */
 	@Override
 	public String toJson() {
-		return new Gson().toJson(this, this.getClass());
+		try {
+			return new String(new Gson().toJson(this, this.getClass())
+					.getBytes("UTF8"), "UTF8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "";
+		}
 	}
 
 	/*
