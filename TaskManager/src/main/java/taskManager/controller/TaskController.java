@@ -166,7 +166,6 @@ public class TaskController implements MouseListener {
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		System.out.println("got mouse entered");
 		changeToHoverColor();
 	}
 

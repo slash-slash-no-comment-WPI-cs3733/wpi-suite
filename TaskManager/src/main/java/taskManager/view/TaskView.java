@@ -200,7 +200,6 @@ public class TaskView extends JPanel implements Transferable {
 	public void setController(TaskController controller) {
 		this.controller = controller;
 		this.addMouseListener(controller);
-		System.out.println("added mouse listener");
 	}
 
 	@Override
