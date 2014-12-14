@@ -107,7 +107,6 @@ public class ActivityPanel extends JTabbedPane {
 				activities.add(activity);
 			}
 		}
-		scrollActivitiesToBottom();
 		this.repaint();
 	}
 

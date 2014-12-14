@@ -14,6 +14,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -85,7 +86,7 @@ public class EditTaskView extends JPanel {
 	private JButton addUser;
 	private JButton removeUser;
 	private JButton delete;
-	private JButton addReq;
+	private JButton viewReq;
 	private JButton submitComment;
 	private JButton cancelComment;
 
@@ -184,6 +185,7 @@ public class EditTaskView extends JPanel {
 		descripArea.setLineWrap(true);
 		descripArea.setWrapStyleWord(true);
 		final JScrollPane descriptionScrollPane = new JScrollPane(descripArea);
+
 		descriptionScrollPane
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		descriptionScrollPane
@@ -238,8 +240,9 @@ public class EditTaskView extends JPanel {
 		this.setRemoveUserEnabled(false);
 
 		// add requirement
-		addReq = new JButton("View Requirement");
-		addReq.setName(VIEW_REQ);
+
+		viewReq = new JButton("View Requirement");
+		viewReq.setName(VIEW_REQ);
 
 		// saves all the data and closes the window
 		save = new JButton("Save");
@@ -300,7 +303,7 @@ public class EditTaskView extends JPanel {
 		// Requirements Panel internal content
 		Requirements.add(requirementLabel, "wrap");
 		Requirements.add(requirements, "gapright 10px");
-		Requirements.add(addReq);
+		Requirements.add(viewReq);
 
 		// Users Panel internal content
 
@@ -342,16 +345,16 @@ public class EditTaskView extends JPanel {
 
 		BalloonTipStyle errorStyle = new RoundedBalloonStyle(5, 5,
 				Colors.INPUT_ERROR, Color.red);
-		titleError = new BalloonTip(getTitle(), new JLabel(TITLE_ERROR),
+		titleError = new BalloonTip(titleField, new JLabel(TITLE_ERROR),
 				errorStyle, Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST,
 				5, 15, false);
-		descripError = new BalloonTip(getDescription(), new JLabel(
-				DESCRIPTION_ERROR), errorStyle, Orientation.LEFT_ABOVE,
-				AttachLocation.NORTHEAST, 5, 15, false);
-		actEffortError = new BalloonTip(getActEffort(),
+		descripError = new BalloonTip(descripArea,
+				new JLabel(DESCRIPTION_ERROR), errorStyle,
+				Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST, 5, 15, false);
+		actEffortError = new BalloonTip(actEffortField,
 				new JLabel(EFFORT_ERROR), errorStyle, Orientation.LEFT_ABOVE,
 				AttachLocation.NORTHEAST, 5, 15, false);
-		estEffortError = new BalloonTip(getEstEffort(),
+		estEffortError = new BalloonTip(estEffortField,
 				new JLabel(EFFORT_ERROR), errorStyle, Orientation.LEFT_ABOVE,
 				AttachLocation.NORTHEAST, 5, 15, false);
 
@@ -447,7 +450,7 @@ public class EditTaskView extends JPanel {
 		save.addActionListener(controller);
 		addUser.addActionListener(controller);
 		removeUser.addActionListener(controller);
-		addReq.addActionListener(controller);
+		viewReq.addActionListener(controller);
 		delete.addActionListener(controller);
 		submitComment.addActionListener(controller);
 		cancelComment.addActionListener(controller);
@@ -471,8 +474,8 @@ public class EditTaskView extends JPanel {
 		requirements.addPopupMenuListener(fieldC);
 		dateField.addPropertyChangeListener(fieldC);
 		archive.addItemListener(fieldC);
-
 		commentBox.addKeyListener(fieldC);
+		fieldC.validate();
 	}
 
 	/**
@@ -512,17 +515,17 @@ public class EditTaskView extends JPanel {
 	 *
 	 * @return true if selected.
 	 */
-	public Boolean isArchived() {
+	public boolean isArchived() {
 		return archive.isSelected();
 	}
 
 	/**
 	 * Gets the text in the title field
 	 * 
-	 * @return the title field
+	 * @return the title field's text
 	 */
-	public JTextField getTitle() {
-		return titleField;
+	public String getTitleText() {
+		return titleField.getText();
 	}
 
 	/**
@@ -530,26 +533,26 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the description field
 	 */
-	public JTextArea getDescription() {
-		return descripArea;
+	public String getDescription() {
+		return descripArea.getText();
 	}
 
 	/**
-	 * Gets the date field
+	 * Gets the date field's value
 	 * 
-	 * @return the date field
+	 * @return the date entered.
 	 */
-	public JXDatePicker getDateField() {
-		return dateField;
+	public Date getDate() {
+		return dateField.getDate();
 	}
 
 	/**
-	 * Gets the estimated effort field
+	 * Gets the estimated effort
 	 * 
-	 * @return the estimated effort field
+	 * @return the estimated effort text
 	 */
-	public JTextField getEstEffort() {
-		return estEffortField;
+	public String getEstEffort() {
+		return estEffortField.getText();
 	}
 
 	/**
@@ -557,21 +560,83 @@ public class EditTaskView extends JPanel {
 	 * 
 	 * @return the actual effort field
 	 */
-	public JTextField getActEffort() {
-		return actEffortField;
+	public String getActEffort() {
+		return actEffortField.getText();
 	}
 
 	/**
-	 * gets the dropdown box in the view that contains all the stage names
 	 * 
-	 * @return the stages dropdown box
+	 * Sets the stage dropdown menu's available options.
+	 *
+	 * @param stageNames
+	 *            The list of stageNames to set as options.
 	 */
-	public JComboBox<String> getStages() {
-		return stages;
+	public void setStages(List<String> stageNames) {
+		final String selectedStage = getSelectedStage();
+
+		stages.removeAllItems();
+		for (String stageName : stageNames) {
+			stages.addItem(stageName);
+		}
+
+		// Select the 1st item if the old selected item doesn't exist
+		stages.setSelectedItem(0);
+		if (!(selectedStage == null)) {
+			stages.setSelectedItem(selectedStage);
+		}
 	}
 
-	public JComboBox<String> getRequirements() {
-		return requirements;
+	/**
+	 * 
+	 * Sets the requirements dropdown menu's available options.
+	 *
+	 * @param reqNames
+	 *            The list of requirement names to set as options.
+	 */
+	public void setRequirements(List<String> reqNames) {
+		final String selectedReq = getSelectedRequirement();
+
+		requirements.removeAllItems();
+		requirements.addItem(NO_REQ);
+		for (String name : reqNames) {
+			requirements.addItem(name);
+		}
+
+		// Select NO_REQ if the old selected item doesn't exist
+		requirements.setSelectedItem(NO_REQ);
+		if (!(selectedReq == null)) {
+			requirements.setSelectedItem(selectedReq);
+		}
+	}
+
+	/**
+	 * Gets the selected requirement. If no requirement is selected, returns
+	 * null.
+	 *
+	 * @return The selected requirement's name
+	 */
+	public String getSelectedRequirement() {
+		if (NO_REQ.equals(requirements.getSelectedItem())) {
+			return null;
+		}
+		return (String) requirements.getSelectedItem();
+	}
+
+	/**
+	 * Sets the selected requirement. Use null to select no requirement.
+	 *
+	 * @param requirementName
+	 *            The requirement's name we're selecting.
+	 */
+	public void setSelectedRequirement(String requirementName) {
+		if (requirementName == null) {
+			requirements.setSelectedItem(NO_REQ);
+		}
+		requirements.setSelectedItem(requirementName);
+
+		if (fieldC != null) {
+			fieldC.validate();
+		}
 	}
 
 	/**
@@ -643,28 +708,24 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * set stage dropdown box to the stage associated with the task
 	 * 
-	 * @param n
-	 *            the index of the stage in the workflow
+	 * Set stage dropdown box to select a stage
+	 *
+	 * @param stageName
+	 *            The name of the stage to be selected.
 	 */
-	public void setStageDropdown(int n) {
-		final String p = stages.getItemAt(n);
-		stages.setSelectedItem(p);
+	public void setSelectedStage(String stageName) {
+		stages.setSelectedItem(stageName);
 	}
 
 	/**
 	 * 
-	 * Returns the selected stage name. If the selected item cannot be retrieved
-	 * returns an empty string.
+	 * Returns the selected stage name. If it cannot be found, returns null.
 	 *
 	 * @return the selected stage as a String.
 	 */
 	public String getSelectedStage() {
-		if (stages.getSelectedItem() != null) {
-			return stages.getSelectedItem().toString();
-		}
-		return "";
+		return (String) stages.getSelectedItem();
 	}
 
 	/**
@@ -682,16 +743,15 @@ public class EditTaskView extends JPanel {
 	/**
 	 * Sets the title field border red
 	 * 
-	 * @param boolean turns the red border on and off
+	 * @param red
+	 *            turns the red border on and off
 	 */
 
 	public void setTitleFieldRed(boolean red) {
 		if (red) {
-			this.titleField
-					.setBorder(BorderFactory.createLineBorder(Color.red));
+			titleField.setBorder(BorderFactory.createLineBorder(Color.red));
 		} else {
-			this.titleField.setBorder(BorderFactory
-					.createLineBorder(Color.black));
+			titleField.setBorder(BorderFactory.createLineBorder(Color.black));
 		}
 	}
 
@@ -716,16 +776,16 @@ public class EditTaskView extends JPanel {
 	/**
 	 * Sets the description field border red
 	 * 
-	 * @param boolean turns the red border on and off
+	 * @param red
+	 *            turns the red border on and off
 	 */
 
 	public void setDescriptionFieldRed(boolean red) {
 		if (red) {
-			this.descripArea.setBorder(BorderFactory
-					.createLineBorder(Color.red));
+			descripArea.setBorder(BorderFactory.createLineBorder(Color.red));
 		} else {
-			this.descripArea.setBorder(BorderFactory.createLineBorder(
-					Color.gray, 1));
+			descripArea
+					.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
 		}
 	}
 
@@ -749,7 +809,8 @@ public class EditTaskView extends JPanel {
 	/**
 	 * Sets the estimated effort field border red
 	 * 
-	 * @param boolean turns the red border on and off
+	 * @param red
+	 *            turns the red border on and off
 	 */
 
 	public void setEstEffortFieldRed(boolean red) {
@@ -764,7 +825,7 @@ public class EditTaskView extends JPanel {
 	/**
 	 * Sets the actual effort field border red
 	 * 
-	 * @param boolean turns the red border on and off
+	 * @red boolean turns the red border on and off
 	 */
 
 	public void setActEffortFieldRed(boolean red) {
@@ -874,11 +935,6 @@ public class EditTaskView extends JPanel {
 		super.setVisible(visible);
 	}
 
-	// Used for tests
-	public JPanel getWindow() {
-		return window;
-	}
-
 	/**
 	 * 
 	 * Returns the EditTaskController.
@@ -900,7 +956,18 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * Sets the comment submit button to be enabled or disabled.
+	 * Sets if the view requirement button is enabled/disabled
+	 *
+	 * @param bool
+	 *            should the button be enabled?
+	 */
+	public void setViewRequirementEnabled(boolean bool) {
+		viewReq.setEnabled(bool);
+	}
+
+	/**
+	 * Set whether the submit and cancel buttons for the activity view are
+	 * enabled or not
 	 * 
 	 * @param e
 	 *            true to make the submit button enabled, false to disable it

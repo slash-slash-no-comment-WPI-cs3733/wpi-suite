@@ -89,9 +89,14 @@ public class ManagerLayer {
 				new GenericEntityManager<WorkflowModel>(data,
 						WorkflowModel.class));
 
+		// Set recursive delete for taskmanager models
+		data.enableRecursiveDelete(TaskModel.class);
+		data.enableRecursiveDelete(StageModel.class);
+		data.enableRecursiveDelete(WorkflowModel.class);
+
 		// add just your module to this list
 		String[] fullModuleList = { "core", "defecttracker", "postboard",
-				"requirementmanager" };
+				"requirementmanager", "taskmanager" };
 		((ProjectManager) map.get("coreproject")).setAllModules(fullModuleList);
 		String ssid = null;
 
