@@ -31,6 +31,9 @@ public class MockRequest extends Request {
 	private EntityManager mgr;
 	private Session session;
 
+	// Sets whether requests will actually save or just pretend to
+	private boolean trueSave;
+
 	/**
 	 * Constructor for MockRequest
 	 * 
@@ -39,26 +42,37 @@ public class MockRequest extends Request {
 	 * @param requestMethod
 	 */
 	public MockRequest(NetworkConfiguration networkConfiguration, String path,
-			HttpMethod requestMethod) {
+			HttpMethod requestMethod, boolean trueSave) {
 		super(networkConfiguration, path, requestMethod);
 
-		String delims = "[/]+";
-		String[] pathPieces = path.split(delims);
-		mgr = MockNetwork.entityManagers.get(pathPieces[0] + pathPieces[1]);
-		session = MockNetwork.session;
-		if (pathPieces.length > 2) {
-			id = pathPieces[2];
+		this.trueSave = trueSave;
+		// If actually saving, get manager and session
+		if (trueSave) {
+			String delims = "[/]+";
+			String[] pathPieces = path.split(delims);
+			mgr = MockNetwork.entityManagers.get(pathPieces[0] + pathPieces[1]);
+			session = MockNetwork.session;
+			if (pathPieces.length > 2) {
+				id = pathPieces[2];
+			}
 		}
 	}
 
 	/**
 	 * This method is blocking, unlike in it's parent. The MockDatabase is
-	 * accessed immediately.
+	 * accessed immediately. This allows tests to immediately check the database
+	 * state.
 	 * 
 	 * @see edu.wpi.cs.wpisuitetng.network.Request#send()
 	 */
 	@Override
 	public void send() throws IllegalStateException {
+		// If trueSave is false, don't save anything
+		if (!trueSave) {
+			System.out.println("Save faked");
+			return;
+		}
+
 		String response = null;
 		Model[] m;
 		try {

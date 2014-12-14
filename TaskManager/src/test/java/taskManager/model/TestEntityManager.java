@@ -35,7 +35,7 @@ public class TestEntityManager {
 	@Before
 	public void setup() {
 		TaskManager.reset();
-		Network.setInstance(new MockNetwork());
+		Network.setInstance(new MockNetwork(true));
 		db = ClientDataStore.getDataStore();
 	}
 

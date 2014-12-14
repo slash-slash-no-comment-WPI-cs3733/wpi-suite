@@ -37,38 +37,57 @@ public class MockNetwork extends Network {
 	public static Map<String, EntityManager> entityManagers;
 	public static Session session;
 
+	// Sets whether requests will actually save or just pretend to
+	private boolean trueSave;
+
 	/**
 	 * Reset MockData when creating a new MockNetwork
-	 *
+	 * 
+	 * @param trueSave
+	 *            perform a save when requests are sent
+	 */
+	public MockNetwork(boolean trueSave) {
+		super();
+		// Clean database
+		this.trueSave = trueSave;
+		ClientDataStore.deleteDataStore();
+
+		// if actually saving, setup DB
+		if (trueSave) {
+			ClientDataStore data = ClientDataStore.getDataStore();
+
+			// setup EntityManager map
+			entityManagers = new HashMap<String, EntityManager>();
+			entityManagers.put("taskmanager" + "task",
+					new GenericEntityManager<TaskModel>(data, TaskModel.class));
+			entityManagers
+					.put("taskmanager" + "stage",
+							new GenericEntityManager<StageModel>(data,
+									StageModel.class));
+			entityManagers.put("taskmanager" + "workflow",
+					new GenericEntityManager<WorkflowModel>(data,
+							WorkflowModel.class));
+			entityManagers.put("requirementmanager" + "iteration",
+					new IterationEntityManager(data));
+			entityManagers.put("requirementmanager" + "requirement",
+					new RequirementEntityManager(data));
+
+			data.enableRecursiveDelete(WorkflowModel.class);
+			data.enableRecursiveDelete(StageModel.class);
+			data.enableRecursiveDelete(TaskModel.class);
+
+			// Init session
+			User user = new User("MockUser", "mockuser", "MockPassword", 99);
+			Project project = new Project("MockProject", "MockProjectID");
+			session = new Session(user, project, "MockSSID");
+		}
+	}
+
+	/**
+	 * Default constructor that only fakes saving
 	 */
 	public MockNetwork() {
-		super();
-		// Clean and init database
-		ClientDataStore.deleteDataStore();
-		ClientDataStore data = ClientDataStore.getDataStore();
-
-		// setup EntityManager map
-		entityManagers = new HashMap<String, EntityManager>();
-		entityManagers.put("taskmanager" + "task",
-				new GenericEntityManager<TaskModel>(data, TaskModel.class));
-		entityManagers.put("taskmanager" + "stage",
-				new GenericEntityManager<StageModel>(data, StageModel.class));
-		entityManagers.put("taskmanager" + "workflow",
-				new GenericEntityManager<WorkflowModel>(data,
-						WorkflowModel.class));
-		entityManagers.put("requirementmanager" + "iteration",
-				new IterationEntityManager(data));
-		entityManagers.put("requirementmanager" + "requirement",
-				new RequirementEntityManager(data));
-
-		data.enableRecursiveDelete(WorkflowModel.class);
-		data.enableRecursiveDelete(StageModel.class);
-		data.enableRecursiveDelete(TaskModel.class);
-
-		// Init session
-		User user = new User("MockUser", "mockuser", "MockPassword", 99);
-		Project project = new Project("MockProject", "MockProjectID");
-		session = new Session(user, project, "MockSSID");
+		this(false);
 	}
 
 	/**
@@ -93,6 +112,7 @@ public class MockNetwork extends Network {
 					"http://wpisuitetng");
 		}
 
-		return new MockRequest(defaultNetworkConfiguration, path, requestMethod);
+		return new MockRequest(defaultNetworkConfiguration, path,
+				requestMethod, trueSave);
 	}
 }
