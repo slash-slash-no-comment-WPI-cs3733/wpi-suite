@@ -468,12 +468,15 @@ public class EditTaskController implements ActionListener {
 		// Compare the task info with the filled in info.
 		if (model == null) { // If we're creating a task
 			if (!(etv.getTitleText().isEmpty()
-					&& etv.getDescription().isEmpty() && !checkDate(null)
-					// && etv.getSelectedStage() ????
-					&& !checkUsers(null) && etv.getEstEffort().isEmpty()
+					&& etv.getDescription().isEmpty()
+					&& !checkDate(null)
+					&& etv.getSelectedStage().equals(
+							WorkflowModel.getInstance().getStages().get(0)
+									.getName()) && !checkUsers(null)
+					&& etv.getEstEffort().isEmpty()
 					&& etv.getActEffort().isEmpty()
-			// && etv.getRequirements().getSelectedItem()
-			&& !etv.isArchived()))
+					&& (etv.getSelectedRequirement() == null) && !etv
+						.isArchived()))
 				edited = true;
 		}
 		// Title.
@@ -535,12 +538,8 @@ public class EditTaskController implements ActionListener {
 		final Calendar cal2 = Calendar.getInstance();
 
 		cal1.setTime(dueDate);
-		if (isEditingTask() && dueDate != null) {
-			cal2.setTime(etv.getDate());
-		} else {
-			// check if it has the default date (today)
-			cal2.setTime(Calendar.getInstance().getTime());
-		}
+		cal2.setTime(etv.getDate());
+
 		boolean sameDay = cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
 				&& cal1.get(Calendar.DAY_OF_YEAR) == cal2
 						.get(Calendar.DAY_OF_YEAR);
