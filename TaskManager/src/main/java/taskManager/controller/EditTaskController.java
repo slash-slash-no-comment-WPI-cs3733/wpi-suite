@@ -65,6 +65,9 @@ public class EditTaskController implements ActionListener {
 		// Set the dropdown menu to first stage and disable the menu.
 		etv.setStageDropdown(0);
 
+		etv.setCategories(FilterView.CATEGORY_NAMES);
+		etv.setSelectedCategory(etv.SELECT_TEXT);
+
 		// Disable save button when creating a task.
 		etv.setSaveEnabled(false);
 
@@ -117,7 +120,6 @@ public class EditTaskController implements ActionListener {
 		}
 
 		TabPaneController.getInstance().addEditTaskTab(etv);
-
 		etv.getStages().setSelectedItem(model.getStage().getName());
 
 		// populates the project users list
@@ -163,8 +165,17 @@ public class EditTaskController implements ActionListener {
 
 		etv.setDeleteEnabled(model.isArchived());
 
-		this.reloadData();
+		etv.setCategories(FilterView.CATEGORY_NAMES);
+		etv.setSelectedCategory(etv.SELECT_TEXT);
+		int i = 0;
+		for (TaskCategory c : TaskCategory.values()) {
+			if (c.equals(model.getCategory())) {
+				etv.setSelectedCategory(FilterView.CATEGORY_NAMES[i]);
+			}
+			i++;
+		}
 
+		this.reloadData();
 	}
 
 	@Override
@@ -323,37 +334,19 @@ public class EditTaskController implements ActionListener {
 			stages.setSelectedItem(selectedStage);
 		}
 
-		// reads categories
-		String catName = etv.getSelectedCategory();
-		etv.setCategories(FilterView.CATEGORY_NAMES);
-		// sets the drop down to the category of the model
-		if (model != null && model.getCategory() != null) {
-			for (int i = 1; i < TaskCategory.values().length; i++) {
-				if (model.getCategory().equals(TaskCategory.values()[i])) {
-					catName = FilterView.CATEGORY_NAMES[i - 1];
-				}
-			}
-		}
-		// only set the selected
-		etv.setSelectedCategory(etv.SELECT_TEXT);
-		if (!(catName == null)) {
-			etv.setSelectedCategory(catName);
-		}
-
 		final List<Requirement> reqs = RequirementModel.getInstance()
 				.getRequirements();
-		final JComboBox<String> requirements = etv.getRequirements();
-		final String selectedRequirement = (String) requirements
-				.getSelectedItem();
-		requirements.removeAllItems();
-		requirements.addItem(EditTaskView.NO_REQ);
+		final JComboBox<String> reqsMenu = etv.getRequirements();
+		final String selectedRequirement = (String) reqsMenu.getSelectedItem();
+		reqsMenu.removeAllItems();
+		reqsMenu.addItem(EditTaskView.NO_REQ);
 		for (Requirement req : reqs) {
-			requirements.addItem(req.getName());
+			reqsMenu.addItem(req.getName());
 		}
 		// Select the 1st item if the old selected item doesn't exist
-		requirements.setSelectedItem(0);
+		reqsMenu.setSelectedItem(0);
 		if (!(selectedRequirement == null)) {
-			requirements.setSelectedItem(selectedRequirement);
+			reqsMenu.setSelectedItem(selectedRequirement);
 		}
 
 	}

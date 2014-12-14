@@ -591,12 +591,7 @@ public class EditTaskView extends JScrollPane {
 	 *            the name of the category you want to set the menu to
 	 */
 	public void setSelectedCategory(String cat) {
-		categories.setSelectedIndex(0);
-		for (int i = 0; i < categories.getItemCount(); i++) {
-			if (categories.getItemAt(i).equals(cat)) {
-				categories.setSelectedIndex(i);
-			}
-		}
+		categories.setSelectedItem(cat);
 	}
 
 	/**

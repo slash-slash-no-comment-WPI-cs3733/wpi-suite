@@ -212,12 +212,10 @@ public class TaskFilter {
 		if (archiveStates == null) {
 			return true;
 		}
-
-		return task.isArchived()
-				&& archiveStates.contains(ArchiveState.ARCHIVED)
-				|| !task.isArchived()
-				&& archiveStates.contains(ArchiveState.NOT_ARCHIVED);
-
+		return (task.isArchived() && archiveStates
+				.contains(ArchiveState.ARCHIVED))
+				|| (!task.isArchived() && archiveStates
+						.contains(ArchiveState.NOT_ARCHIVED));
 	}
 
 	/**

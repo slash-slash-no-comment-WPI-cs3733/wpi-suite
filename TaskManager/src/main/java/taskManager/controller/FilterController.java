@@ -98,6 +98,7 @@ public class FilterController implements ItemListener, MouseListener {
 	 * reloads the workflow with the appropriate filter applied
 	 */
 	private void filter() {
+		WorkflowController.getInstance().removeTaskInfos(true);
 		TaskFilter filter = new TaskFilter();
 		WorkflowController.getInstance().setCurrentFilter(filter);
 		if (archiveChecked()) {

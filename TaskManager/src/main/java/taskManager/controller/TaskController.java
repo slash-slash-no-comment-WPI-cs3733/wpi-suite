@@ -145,7 +145,10 @@ public class TaskController implements MouseListener {
 	 * @return the color corresponding to the category of the task
 	 */
 	public Color getCategoryColor() {
-		Color catColor = Colors.TASK;
+		// if the task has no category, give the color for clicking non colored
+		// tasks
+		Color catColor = Colors.TASK_CLICKED;
+		// otherwise, grab the color of the category
 		for (int i = 0; i < TaskCategory.values().length; i++) {
 			if (TaskCategory.values()[i].equals(model.getCategory())) {
 				catColor = Colors.CAT_COLORS[i];
@@ -160,9 +163,13 @@ public class TaskController implements MouseListener {
 	 *
 	 */
 	public void resetBackground() {
-		if (!thisTaskInfoOut && !isArchived()) {
-			view.setBackground(Colors.TASK);
-			view.setBorderColor(Colors.TASK, false);
+		if (!thisTaskInfoOut) {
+			if (!isArchived()) {
+				view.setBackground(Colors.TASK);
+				view.setBorderColor(Colors.TASK, false);
+			} else {
+				view.setBorderColor(Colors.TASK_HOVER, false);
+			}
 		}
 		view.repaint();
 		isHovered = false;
@@ -187,22 +194,28 @@ public class TaskController implements MouseListener {
 		TaskController.anyTaskInfoOut = true;
 
 		// set the correct background color
-		if ((model.getCategory() != null)) {
-			view.setBorderColor(getCategoryColor(), true);
+		if (!isArchived()) {
+			if ((model.getCategory() != null)) {
+				view.setBackground(Colors.TASK);
+			} else {
+				view.setBackground(Colors.TASK_CLICKED);
+			}
 		}
+		// set the appropriate border and category colors
+		view.setCategoryColor(getCategoryColor(), true);
+		view.setBorderColor(getCategoryColor(), true);
+
 		isHovered = true;
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// do nothing
-
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// do nothing
-
 	}
 
 	@Override
