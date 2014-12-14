@@ -467,7 +467,17 @@ public class EditTaskController implements ActionListener {
 
 		// Compare the task info with the filled in info.
 		if (model == null) { // If we're creating a task
-			edited = true;
+			if (!(etv.getTitleText().isEmpty()
+					&& etv.getDescription().isEmpty()
+					&& !checkDate(null)
+					&& etv.getSelectedStage().equals(
+							WorkflowModel.getInstance().getStages().get(0)
+									.getName()) && !checkUsers(null)
+					&& etv.getEstEffort().isEmpty()
+					&& etv.getActEffort().isEmpty()
+					&& (etv.getSelectedRequirement() == null) && !etv
+						.isArchived()))
+				edited = true;
 		}
 		// Title.
 		else if (!model.getName().equals(etv.getTitleText())) {
@@ -517,18 +527,19 @@ public class EditTaskController implements ActionListener {
 	 */
 	public Boolean checkDate(TaskModel task) {
 		// if the task had a due date, check if it changed
-		final Date dueDate = task.getDueDate();
+		final Date dueDate;
+		if (task != null) {
+			dueDate = task.getDueDate();
+		} else {
+			dueDate = new Date();
+		}
 
 		final Calendar cal1 = Calendar.getInstance();
 		final Calendar cal2 = Calendar.getInstance();
 
 		cal1.setTime(dueDate);
-		if (isEditingTask() && dueDate != null) {
-			cal2.setTime(etv.getDate());
-		} else {
-			// check if it has the default date (today)
-			cal2.setTime(Calendar.getInstance().getTime());
-		}
+		cal2.setTime(etv.getDate());
+
 		boolean sameDay = cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
 				&& cal1.get(Calendar.DAY_OF_YEAR) == cal2
 						.get(Calendar.DAY_OF_YEAR);
@@ -547,7 +558,12 @@ public class EditTaskController implements ActionListener {
 	 */
 	private boolean checkUsers(TaskModel task) {
 		boolean edited = false;
-		final Set<String> taskAssigned = task.getAssigned();
+		final Set<String> taskAssigned;
+		if (task != null) {
+			taskAssigned = task.getAssigned();
+		} else {
+			taskAssigned = new HashSet<String>();
+		}
 		final Set<String> usersAssigned = new HashSet<String>();
 		usersAssigned.addAll(etv.getUsersList().getAllValues());
 		if (!usersAssigned.equals(taskAssigned)) {
