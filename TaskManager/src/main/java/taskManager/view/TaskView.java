@@ -19,7 +19,8 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.MouseAdapter;
 import java.io.IOException;
-import java.util.Calendar;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.imageio.ImageIO;
@@ -53,6 +54,7 @@ public class TaskView extends JPanel implements Transferable {
 	private JLabel commentNumber;
 	private JLabel dueLabel;
 	private JPanel color;
+	private JPanel colorBorder;
 
 	private Image ARCHIVE_BG;
 	private Image ARCHIVE_HOVER;
@@ -70,8 +72,9 @@ public class TaskView extends JPanel implements Transferable {
 	 * @param comments
 	 *            the number of comments on the task
 	 */
-	public TaskView(String name, Date duedate, int users, int comments) {
-		// read the hover pbackground picture files
+	public TaskView(String name, Date duedate, int users, int comments,
+			int stageWidth) {
+		// read the hover background picture files
 		try {
 			ARCHIVE_BG = ImageIO.read(this.getClass().getResourceAsStream(
 					"archived-background.png"));
@@ -84,12 +87,12 @@ public class TaskView extends JPanel implements Transferable {
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		this.setAlignmentX(LEFT_ALIGNMENT);
 
-		// creates an empty space around the data
-		JPanel spacer = new JPanel();
-		spacer.setLayout(new BoxLayout(spacer, BoxLayout.Y_AXIS));
-		spacer.setBorder(BorderFactory.createEmptyBorder(4, 2, 4, 4));
-		spacer.setOpaque(false);
-		spacer.setAlignmentX(LEFT_ALIGNMENT);
+		// creates the border for the color
+		colorBorder = new JPanel();
+		colorBorder.setLayout(new BoxLayout(colorBorder, BoxLayout.Y_AXIS));
+		colorBorder.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+		colorBorder.setOpaque(false);
+		colorBorder.setAlignmentX(LEFT_ALIGNMENT);
 
 		// sets the border
 		// TODO sort this out
@@ -100,16 +103,11 @@ public class TaskView extends JPanel implements Transferable {
 		title.setTitlePosition(TitledBorder.LEFT);
 		this.setBorder(title);
 
-		this.setMinimumSize(new Dimension(225, 62));
-		this.setPreferredSize(new Dimension(225, 62));
-		this.setMaximumSize(new Dimension(225, 62));
-		this.setSize(new Dimension(225, 62));
+		this.setMinimumSize(new Dimension(stageWidth - 17, 62));
+		this.setPreferredSize(new Dimension(stageWidth - 17, 62));
+		this.setMaximumSize(new Dimension(stageWidth - 17, 62));
+		this.setSize(new Dimension(stageWidth - 17, 62));
 		this.setName(name);
-
-		// convert Date object to Calendar object to avoid using deprecated
-		// Date methods.
-		final Calendar date = Calendar.getInstance();
-		date.setTime(duedate);
 
 		// formats the lower section containing date and icons
 		JPanel lower = new JPanel();
@@ -117,8 +115,8 @@ public class TaskView extends JPanel implements Transferable {
 		lower.setAlignmentX(LEFT_ALIGNMENT);
 		lower.setOpaque(false);
 
-		dueLabel = new JLabel("Due: " + (date.get(Calendar.MONTH) + 1) + "/"
-				+ date.get(Calendar.DATE) + "/" + (date.get(Calendar.YEAR)));
+		DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+		dueLabel = new JLabel("Due: " + format.format(duedate));
 		dueLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 3));
 		lower.add(dueLabel);
 		JPanel icons = new JPanel(new FlowLayout());
@@ -187,16 +185,16 @@ public class TaskView extends JPanel implements Transferable {
 		// this is the panel that will display the category color
 		color = new JPanel();
 		color.setBackground(Colors.TASK);
-		color.setSize(10, this.getHeight());
-		color.setPreferredSize(new Dimension(10, this.getHeight()));
-		color.setMaximumSize(new Dimension(10, this.getHeight()));
-		color.setMinimumSize(new Dimension(10, this.getHeight()));
+		color.setSize(8, this.getHeight());
+		color.setPreferredSize(new Dimension(8, this.getHeight()));
+		color.setMaximumSize(new Dimension(8, this.getHeight()));
+		color.setMinimumSize(new Dimension(8, this.getHeight()));
 
 		// adds the title, date and icons to the task view
-		spacer.add(nameLabel);
-		spacer.add(lower);
+		colorBorder.add(nameLabel);
+		colorBorder.add(lower);
 		this.add(color);
-		this.add(spacer);
+		this.add(colorBorder);
 
 		// -----------------------
 		// Drag and drop handling:
@@ -226,6 +224,16 @@ public class TaskView extends JPanel implements Transferable {
 	public void setController(TaskController controller) {
 		this.controller = controller;
 		this.addMouseListener(controller);
+	}
+
+	/**
+	 * sets the color of the border around the task. Also sets the opacity
+	 * 
+	 * @param color
+	 *            the color to set the border to
+	 */
+	public void setBorderColor(Color color) {
+		this.colorBorder.setBorder(BorderFactory.createLineBorder(color, 2));
 	}
 
 	@Override

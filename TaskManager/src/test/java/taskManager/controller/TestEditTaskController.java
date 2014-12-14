@@ -34,9 +34,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import taskManager.ClientDataStore;
-import taskManager.TaskManager;
 import taskManager.MockNetwork;
 import taskManager.ScreenshotOnFail;
+import taskManager.TaskManager;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
@@ -235,7 +235,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 
 		// load the edit view
 		TaskController tc = new TaskController(new TaskView("Task", new Date(),
-				0, 0), task);
+				0, 0, 235), task);
 		tc.editTask();
 
 		// make sure the requirement displays properly
@@ -303,7 +303,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		assertTrue(task.isArchived());
 
 		TaskController tc = new TaskController(new TaskView("Task", new Date(),
-				0, 0), task);
+				0, 0, 235), task);
 		tc.editTask();
 
 		fixture.checkBox(EditTaskView.ARCHIVE).uncheck();
@@ -393,7 +393,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 
 		// load the edit view
 		TaskController tc = new TaskController(new TaskView("Task", new Date(),
-				0, 0), task);
+				0, 0, 235), task);
 		tc.editTask();
 		Component c = TabPaneController.getInstance().getView()
 				.getSelectedComponent();

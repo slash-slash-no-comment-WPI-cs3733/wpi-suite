@@ -20,8 +20,7 @@ import java.awt.Color;
 public class Colors {
 
 	public static final Color TASK = Color.decode("#FCFCFC");
-	public static final Color TASK_HOVER = Color.decode("#EEEEEE");
-	public static final Color TASK_CLICKED = Color.LIGHT_GRAY;
+	public static final Color TASK_HOVER = Color.LIGHT_GRAY;
 	public static final Color SHADOW_COLOR = Color.BLACK;
 	public static final Color STAGE = Color.decode("#C8DDF1");
 	public static final Color INPUT_ERROR = Color.decode("#FCFCFC");

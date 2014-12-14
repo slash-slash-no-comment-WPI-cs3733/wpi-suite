@@ -46,8 +46,8 @@ public class FilterView extends JPanel {
 
 	private static final Dimension SIZE = new Dimension(150, 90);
 
-	public FilterView() {
-		filterC = new FilterController(this);
+	public FilterView(FilterController filter) {
+		filterC = filter;
 
 		// adds a panel for this
 		this.setLayout(new GridLayout(3, 1));

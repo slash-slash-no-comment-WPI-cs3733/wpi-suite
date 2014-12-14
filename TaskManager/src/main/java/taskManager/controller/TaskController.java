@@ -120,10 +120,12 @@ public class TaskController implements MouseListener {
 	public void changeToHoverColor() {
 		if (!thisTaskInfoOut) {
 			view.setBackground(Colors.TASK_HOVER);
+
 		}
 		if (model.getCategory() == null) {
 			view.setCategoryColor(view.getBackground(), false);
 		}
+		view.setBorderColor(view.getBackground());
 		isHovered = true;
 	}
 
@@ -161,15 +163,17 @@ public class TaskController implements MouseListener {
 	 */
 	public void resetBackground() {
 		if (thisTaskInfoOut && !isArchived()) {
-			view.setBackground(getCategoryColor());
-		} else {
+			if (model.getCategory() == null) {
+				view.setBorderColor(Colors.TASK_HOVER);
+			} else {
+				view.setBorderColor(getCategoryColor());
+			}
+			view.setBackground(Colors.TASK_HOVER);
+		} else if (!isArchived()) {
 			view.setBackground(Colors.TASK);
+			view.setBorderColor(view.getBackground());
 		}
-		if (model.getCategory() == null) {
-			view.setCategoryColor(Colors.TASK, false);
-		} else {
-			view.setCategoryColor(getCategoryColor(), true);
-		}
+		view.setCategoryColor(getCategoryColor(), true);
 		isHovered = false;
 	}
 
@@ -192,11 +196,10 @@ public class TaskController implements MouseListener {
 		TaskController.anyTaskInfoOut = true;
 
 		// set the correct background color
-		if (model.getCategory() == null && !isArchived()) {
-			view.setBackground(Colors.TASK_CLICKED);
-			view.setCategoryColor(view.getBackground(), false);
+		if ((model.getCategory() == null) && !isArchived()) {
+			view.setBorderColor(Colors.TASK_HOVER);
 		} else if (!isArchived()) {
-			view.setBackground(getCategoryColor());
+			view.setBorderColor(getCategoryColor());
 		}
 	}
 

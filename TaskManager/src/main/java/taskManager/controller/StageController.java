@@ -84,7 +84,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 					// makes a new view for each task
 					TaskView tkv = new TaskView(task.getName(),
 							task.getDueDate(), task.getAssigned().size(),
-							comments);
+							comments, StageView.STAGE_WIDTH);
 					tkv.setController(new TaskController(tkv, task));
 					// sets the category color
 					if (task.getCategory() == null) {
@@ -122,7 +122,8 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 				.isArchiveShown()) {
 			final List<TaskModel> taskList = model.getTasks();
 			for (int i = 0; i < index; i++) {
-				if (taskList.get(i).isArchived()) {
+				if (!WorkflowController.getInstance().getCurrentFilter()
+						.check(taskList.get(i))) {
 					index++;
 				}
 			}

@@ -35,8 +35,17 @@ public class FilterController implements ItemListener, MouseListener {
 
 	private final FilterView view;
 
-	public FilterController(FilterView view) {
-		this.view = view;
+	public FilterController() {
+		this.view = new FilterView(this);
+	}
+
+	/**
+	 * gets the filter view
+	 * 
+	 * @return the filter view
+	 */
+	public FilterView getView() {
+		return this.view;
 	}
 
 	/**
@@ -118,8 +127,6 @@ public class FilterController implements ItemListener, MouseListener {
 		for (String name : FilterView.CATEGORY_NAMES) {
 			if (e.getComponent().getName().equals(name)) {
 				view.checkCatBox(!view.catBoxIsChecked(name), name);
-				System.out.println("Cat box " + name + " checked is "
-						+ view.catBoxIsChecked(name));
 			}
 		}
 		filter();

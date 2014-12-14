@@ -90,8 +90,6 @@ public class WorkflowView extends JLayeredPane {
 	/**
 	 * returns the text in the search bar
 	 * 
-	 * @return
-	 * 
 	 * @return getSearch
 	 */
 	public JTextField getSearch() {

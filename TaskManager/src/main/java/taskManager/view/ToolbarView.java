@@ -61,7 +61,7 @@ public class ToolbarView extends JToolBar {
 	 * @param controller
 	 *            The ToolbarController associated with this view
 	 */
-	public ToolbarView(ToolbarController controller) {
+	public ToolbarView(ToolbarController controller, FilterView f) {
 
 		// Construct and set up the buttons and title panels
 		final JPanel buttons = new JPanel();
@@ -110,8 +110,6 @@ public class ToolbarView extends JToolBar {
 			e.printStackTrace();
 		}
 
-		filters = new FilterView();
-
 		// Add archive and delete drop targets
 		try {
 			img = ImageIO.read(this.getClass().getResourceAsStream(
@@ -153,6 +151,8 @@ public class ToolbarView extends JToolBar {
 		buttons.add(statistics);
 		buttons.add(new Box.Filler(new Dimension(10, 0), new Dimension(40, 0),
 				new Dimension(40, 0)));
+		// adds the filter view
+		filters = f;
 		buttons.add(filters);
 		targets.add(new Box.Filler(new Dimension(5, 0), new Dimension(40, 0),
 				new Dimension(40, 0)));

@@ -81,9 +81,8 @@ public class EditTaskView extends JScrollPane {
 	private static final String TITLE_ERROR = "Title cannot be empty";
 	private static final String DESCRIPTION_ERROR = "Description cannot be empty";
 	private static final String EFFORT_ERROR = "Must be an integer between 0 and 9999";
-	/**
-	 * 
-	 */
+	public final String SELECT_TEXT = "Select category";
+
 	private static final long serialVersionUID = 1L;
 	private JButton save;
 	private JButton cancel;
@@ -304,24 +303,17 @@ public class EditTaskView extends JScrollPane {
 		JPanel dateAndStage = new JPanel(new MigLayout());
 		JPanel EffortDateStage = new JPanel(new MigLayout());
 
-		// Effort Panel internal content
-		Effort.add(estimatedEffortLabel, "wrap");
-		Effort.add(estEffortField, "wrap");
-		Effort.add(actualEffortLabel, "wrap, gaptop 10px");
-		Effort.add(actEffortField);
-
 		// dateAndStage internal content
 		// TODO fix this, adding categories looks dumb
-		dateAndStage.add(dueDateLabel, "wrap");
-		dateAndStage.add(dateField, "wrap");
-		dateAndStage.add(stageLabel, "gaptop 10px, wrap");
-		dateAndStage.add(stages, "wrap");
+		dateAndStage.add(dueDateLabel);
+		dateAndStage.add(stageLabel, "gapleft 10px, wrap");
+		dateAndStage.add(dateField);
+		dateAndStage.add(stages, "gapleft 10px,wrap");
 		dateAndStage.add(categoryLabel, "gaptop 10px, wrap");
 		dateAndStage.add(categories);
 
 		// EffortDateStage internal content
 		EffortDateStage.add(dateAndStage);
-		EffortDateStage.add(Effort);
 
 		// BasicInfo Panel internal content
 		BasicInfo.setBorder(BorderFactory.createTitledBorder(""));
@@ -330,16 +322,25 @@ public class EditTaskView extends JScrollPane {
 
 		BasicInfo.add(descriptionLabel, "gapleft 5px, wrap");
 		BasicInfo.add(descriptionScrollPane,
-				"gapbottom 20px, gapleft 5px, wrap");
-		BasicInfo.add(EffortDateStage, "h 25%, gapleft 5px, gaptop 20px");
+				"gapbottom 10px, gapleft 5px, wrap");
+		BasicInfo.add(EffortDateStage, "h 25%, gapleft 5px");
 
 		// Requirements Panel internal content
 		Requirements.add(requirementLabel, "wrap");
 		Requirements.add(requirements, "gapright 10px");
 		Requirements.add(addReq);
 
-		// Users Panel internal content
+		// Effort Panel internal content
+		Effort.add(estimatedEffortLabel);
+		Effort.add(actualEffortLabel, "wrap, gaptop 10px");
+		Effort.add(estEffortField);
+		Effort.add(actEffortField, "wrap");
 
+		JPanel EffortAndRequirements = new JPanel(new MigLayout());
+		EffortAndRequirements.add(Effort, "wrap");
+		EffortAndRequirements.add(Requirements);
+
+		// Users Panel internal content
 		Users.setBorder(BorderFactory.createTitledBorder(""));
 		JPanel UserPanel = new JPanel(new MigLayout());
 		JPanel usersListPanel = new JPanel(new MigLayout());
@@ -359,7 +360,7 @@ public class EditTaskView extends JScrollPane {
 		UserPanel.add(usersListPanel);
 
 		Users.add(UserPanel, "h 60%, wrap, gapbottom 15px");
-		Users.add(Requirements, "h 40%, gaptop 20px, gapleft 35px");
+		Users.add(EffortAndRequirements, "h 40%, wrap");
 
 		// Activities Panel internal content
 		Activities.setBorder(BorderFactory.createTitledBorder(""));
@@ -561,8 +562,59 @@ public class EditTaskView extends JScrollPane {
 	 * 
 	 * @return the categories dropdown box
 	 */
-	public JComboBox<String> getCategories() {
-		return categories;
+	public ArrayList<String> getCategories() {
+		ArrayList<String> cats = new ArrayList<String>();
+		for (int i = 0; i < categories.getItemCount(); i++) {
+			cats.add(categories.getItemAt(i));
+		}
+		return cats;
+	}
+
+	/**
+	 * Adds the given set of strings to the categories drop down
+	 * 
+	 * @param cats
+	 *            the set of strings to be added to the drop down
+	 */
+	public void setCategories(String[] cats) {
+		categories.removeAllItems();
+		categories.addItem(SELECT_TEXT);
+		for (String s : cats) {
+			categories.addItem(s);
+		}
+	}
+
+	/**
+	 * sets the index of the categories dropdown to the given category name
+	 * 
+	 * @param cat
+	 *            the name of the category you want to set the menu to
+	 */
+	public void setSelectedCategory(String cat) {
+		categories.setSelectedIndex(0);
+		for (int i = 0; i < categories.getItemCount(); i++) {
+			if (categories.getItemAt(i).equals(cat)) {
+				categories.setSelectedIndex(i);
+			}
+		}
+	}
+
+	/**
+	 * gets the string selected in the category drop down
+	 * 
+	 * @return the name of the category selected in the dropdown
+	 */
+	public String getSelectedCategory() {
+		return (String) categories.getSelectedItem();
+	}
+
+	/**
+	 * gets the index of the selected in the category drop down
+	 * 
+	 * @return the index of the category selected in the dropdown
+	 */
+	public int getSelectedIndex() {
+		return categories.getSelectedIndex();
 	}
 
 	/**

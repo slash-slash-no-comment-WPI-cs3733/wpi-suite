@@ -140,6 +140,11 @@ public class EditTaskController implements ActionListener {
 		}
 		etv.getUsersList().addAllToList(assignedUserNames);
 
+		// set the requirement dropdown
+		if (model.getReq() != null) {
+			etv.getRequirements().setSelectedItem(model.getReq().getName());
+		}
+
 		// Disable save button until user starts making edits.
 		etv.setSaveEnabled(false);
 
@@ -319,20 +324,20 @@ public class EditTaskController implements ActionListener {
 		}
 
 		// reads categories
-		final JComboBox<String> cats = etv.getCategories();
-		cats.removeAllItems();
-		cats.addItem("Select Category");
-		cats.setSelectedIndex(0);
-		for (String cat : FilterView.CATEGORY_NAMES) {
-			cats.addItem(cat);
-		}
+		String catName = etv.getSelectedCategory();
+		etv.setCategories(FilterView.CATEGORY_NAMES);
 		// sets the drop down to the category of the model
 		if (model != null && model.getCategory() != null) {
-			for (int i = 0; i < TaskCategory.values().length; i++) {
+			for (int i = 1; i < TaskCategory.values().length; i++) {
 				if (model.getCategory().equals(TaskCategory.values()[i])) {
-					cats.setSelectedIndex(i + 1);
+					catName = FilterView.CATEGORY_NAMES[i - 1];
 				}
 			}
+		}
+		// only set the selected
+		etv.setSelectedCategory(etv.SELECT_TEXT);
+		if (!(catName == null)) {
+			etv.setSelectedCategory(catName);
 		}
 
 		final List<Requirement> reqs = RequirementModel.getInstance()
@@ -386,12 +391,12 @@ public class EditTaskController implements ActionListener {
 						(String) etv.getRequirements().getSelectedItem());
 
 		// sets the category
-		if (etv.getCategories().getSelectedIndex() == 0) {
+		if (etv.getSelectedIndex() == 0) {
 			model.setCategory(null);
 		}
 		for (int i = 1; i <= TaskCategory.values().length; i++) {
-			if (etv.getCategories().getSelectedItem()
-					.equals(FilterView.CATEGORY_NAMES[i - 1])) {
+			if (etv.getSelectedCategory().equals(
+					FilterView.CATEGORY_NAMES[i - 1])) {
 				model.setCategory(TaskCategory.values()[i - 1]);
 			}
 		}
@@ -548,6 +553,11 @@ public class EditTaskController implements ActionListener {
 		else if (!model.getStage().getName().equals(etv.getSelectedStage())) {
 			edited = true;
 		}
+
+		// Stage.
+		else if (checkCategories()) {
+			edited = true;
+		}
 		// Users.
 		else if (checkUsers(model)) {
 			edited = true;
@@ -598,6 +608,25 @@ public class EditTaskController implements ActionListener {
 						.get(Calendar.DAY_OF_YEAR);
 
 		return !sameDay;
+	}
+
+	/**
+	 * returns whether or not the name assigned to the category of the task
+	 * model matches the name selected in the view
+	 * 
+	 * @return true if they match, false if they don't
+	 */
+	public boolean checkCategories() {
+		boolean hasChange = false;
+		for (int i = 0; i < TaskCategory.values().length; i++) {
+			if (TaskCategory.values()[i].equals(model.getCategory())) {
+				if (!FilterView.CATEGORY_NAMES[i].equals(etv
+						.getSelectedCategory())) {
+					hasChange = true;
+				}
+			}
+		}
+		return hasChange;
 	}
 
 	/**

@@ -189,6 +189,15 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	}
 
 	/**
+	 * gets the currently applied task filter
+	 * 
+	 * @return gets the currently applied filter
+	 */
+	public TaskFilter getCurrentFilter() {
+		return this.currentFilter;
+	}
+
+	/**
 	 * 
 	 * Returns the workflow model.
 	 *
