@@ -9,6 +9,7 @@
 
 package taskManager.controller;
 
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -34,6 +35,7 @@ import javax.swing.event.ListSelectionListener;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.StandardChartTheme;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
@@ -323,6 +325,13 @@ public class ReportsManager implements ActionListener, ChangeListener,
 			throw new IllegalStateException(
 					"Tried to generate a chart without creating a dataset first!");
 		}
+
+		StandardChartTheme theme = (StandardChartTheme) ChartFactory
+				.getChartTheme();
+		theme.setExtraLargeFont(new Font("Default", Font.BOLD, 20));
+		theme.setLargeFont(new Font("Default", Font.BOLD, 14));
+		theme.setRegularFont(new Font("Default", Font.BOLD, 12));
+		theme.setSmallFont(new Font("Default", Font.BOLD, 10));
 
 		final JFreeChart chart = ChartFactory.createBarChart(title, // chart
 																	// title
