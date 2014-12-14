@@ -61,7 +61,7 @@ public class StageView extends JPanel implements Transferable {
 	private final JTextField labelText;
 	private final JPanel changeLabel;
 	private final JPanel label;
-	private final JButton done;
+	private final JButton check;
 	private final JButton cancel;
 	private final DropAreaPanel tasks;
 	private final JScrollPane stage;
@@ -118,11 +118,11 @@ public class StageView extends JPanel implements Transferable {
 		labelText.setMaximumSize(new Dimension(135, 25));
 		labelText.setPreferredSize(new Dimension(135, 25));
 		// Checkmark button
-		done = new JButton("\u2713");
-		done.setName(CHECK);
-		done.setEnabled(false);
-		done.setFont(done.getFont().deriveFont((float) 12));
-		done.setMargin(new Insets(0, 0, 0, 0));
+		check = new JButton("\u2713");
+		check.setName(CHECK);
+		check.setEnabled(false);
+		check.setFont(check.getFont().deriveFont((float) 12));
+		check.setMargin(new Insets(0, 0, 0, 0));
 		// 'x' button
 		cancel = new JButton("\u2716");
 		cancel.setName(X);
@@ -130,7 +130,7 @@ public class StageView extends JPanel implements Transferable {
 		cancel.setMargin(new Insets(0, 0, 0, 0));
 
 		changeLabel.add(labelText);
-		changeLabel.add(done);
+		changeLabel.add(check);
 		changeLabel.add(cancel);
 
 		changeLabel.setVisible(false);
@@ -229,7 +229,7 @@ public class StageView extends JPanel implements Transferable {
 		labelText.addKeyListener(controller);
 
 		// listen for clicks on the 'change title' buttons
-		done.addActionListener(controller);
+		check.addActionListener(controller);
 		cancel.addActionListener(controller);
 	}
 
@@ -249,7 +249,7 @@ public class StageView extends JPanel implements Transferable {
 	 *            wether the box should be enabled or not
 	 */
 	public void enableChangeTitleCheckmark(Boolean enabled) {
-		done.setEnabled(enabled);
+		check.setEnabled(enabled);
 	}
 
 	/**
@@ -262,10 +262,10 @@ public class StageView extends JPanel implements Transferable {
 
 	/**
 	 *
-	 * @return true if the done button is enabled. false otherwise
+	 * @return true if the check button is enabled. false otherwise
 	 */
 	public boolean isDoneBtnEnabled() {
-		return done.isEnabled();
+		return check.isEnabled();
 	}
 
 	/**
@@ -299,6 +299,11 @@ public class StageView extends JPanel implements Transferable {
 	public void switchTitles(boolean editable) {
 		label.setVisible(!editable);
 		changeLabel.setVisible(editable);
+		focusTextArea();
+	}
+
+	public boolean isCheckEnabled() {
+		return check.isEnabled();
 	}
 
 	// ----------------------------

@@ -243,7 +243,9 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 	}
 
 	private void checkButton() {
-		if (WorkflowModel.getInstance().findStageByName(view.getLabelText()) != null) {
+		if (view.isCheckEnabled()
+				&& WorkflowModel.getInstance().findStageByName(
+						view.getLabelText()) != null) {
 			JOptionPane.showConfirmDialog(view,
 					"Another stage already has the name " + view.getLabelText()
 							+ ". Please choose another name.",
