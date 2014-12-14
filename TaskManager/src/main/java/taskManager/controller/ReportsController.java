@@ -65,7 +65,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 
 	private ReportsView rtv;
 
-	private enum DistributionType {
+	public enum DistributionType {
 		USER, STAGE;
 	}
 
@@ -397,6 +397,52 @@ public class ReportsController implements ActionListener, ChangeListener,
 	}
 
 	/**
+	 * Return data to allow the calculation of "Distribution", i.e. amount of
+	 * tasks/effort per stage/user. Will get data as a list of data points,
+	 * unsorted. The user should call generateDistributionDataSet() next.
+	 * 
+	 * @param type
+	 *            The type of distribution to generate data for, either STAGE or
+	 *            USER
+	 * @return The list of ReportDatum
+	 */
+	public List<ReportDatum> findDistributionData(DistributionType type) {
+		List<ReportDatum> data = new ArrayList<ReportDatum>();
+
+		// Iterate through the given stages
+		for (StageModel stage : WorkflowModel.getInstance().getStages()) {
+			// Iterate through the tasks
+			for (TaskModel task : stage.getTasks()) {
+				// If we're making a stage distribution, check that at least one
+				// of the set of users we're looking at is assigned to it.
+				if (type == DistributionType.STAGE) {
+					// Use the due date for the timestamp
+					ZonedDateTime dueDate = ZonedDateTime.ofInstant(task
+							.getDueDate().toInstant(), TimeZone.getDefault()
+							.toZoneId());
+					data.add(new ReportDatum(stage.getName(), dueDate,
+							(double) task.getActualEffort()));
+				}
+				// If we're making a user distribution, then add a data point
+				// for each user assigned to the task if they're part of the set
+				// we're looking at.
+				else if (type == DistributionType.USER) {
+					for (String user : task.getAssigned()) {
+						// Use the due date for the timestamp
+						ZonedDateTime dueDate = ZonedDateTime.ofInstant(task
+								.getDueDate().toInstant(), TimeZone
+								.getDefault().toZoneId());
+						data.add(new ReportDatum(user, dueDate, (double) task
+								.getActualEffort()));
+					}
+				}
+			}
+		}
+
+		return data;
+	}
+
+	/**
 	 * This method will format the data into separate categories, such as days,
 	 * weeks, or months. It merges them down into a dataset object, which it
 	 * saves. The user should then call createBarChart() or createPieChart().
@@ -419,10 +465,20 @@ public class ReportsController implements ActionListener, ChangeListener,
 
 		// Iterate through each userdata.
 		for (ReportDatum datum : data) {
-			if (useEffort) {
-				dataset.addValue(datum.effort, "Team", datum.category);
+			// If the dataset contains the keyname, increment the effort value.
+			// Else, add the value as a new object in the dataset.
+			if (dataset.getColumnKeys().contains(datum.category)) {
+				if (useEffort) {
+					dataset.incrementValue(datum.effort, "Team", datum.category);
+				} else {
+					dataset.incrementValue(1, "Team", datum.category);
+				}
 			} else {
-				dataset.addValue(1, "Team", datum.category);
+				if (useEffort) {
+					dataset.addValue(datum.effort, "Team", datum.category);
+				} else {
+					dataset.addValue(1, "Team", datum.category);
+				}
 			}
 		}
 	}
@@ -531,7 +587,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 
 		final JFreeChart chart = ChartFactory.createPieChart(title, // chart
 																	// title
-				new CategoryToPieDataset(dataset, TableOrder.BY_COLUMN, 0), // data
+				new CategoryToPieDataset(dataset, TableOrder.BY_ROW, 0), // data
 				true, // include legend
 				true, // tooltips
 				false // urls
@@ -696,7 +752,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 		JPanel chart = createBarChart("Effort per Day", "Time", "Effort");
 
 		// Open a new tab with the given chart.
-		TabPaneController.getInstance().addTab("Graph", chart, true);
+		TabPaneController.getInstance().addTab("Bar Graph", chart, true);
 		TabPaneController.getInstance().getView().setSelectedComponent(chart);
 	}
 
@@ -704,8 +760,68 @@ public class ReportsController implements ActionListener, ChangeListener,
 	 * Creates a distribution report and makes it visible.
 	 */
 	private void createDistributionReport() {
-		// TODO Auto-generated method stub
+		DistributionType type = rtv.getDistributionType();
 
+		// Set<String> users = new HashSet<String>();
+		// for (User user : TaskManager.users) {
+		// users.add(user.getName());
+		// }
+		//
+		// Set<StageModel> stages = new HashSet<StageModel>();
+		// for (StageModel stage : WorkflowModel.getInstance().getStages()) {
+		// stages.add(stage);
+		// }
+		//
+		// // Set the dates as ZonedDateTimes that have timezone
+		// // information. Set them to from now to the maximum date.
+		// ZonedDateTime startZone = ZonedDateTime.ofInstant(
+		// new Date().toInstant(), TimeZone.getDefault().toZoneId());
+		// ZonedDateTime endZone = ZonedDateTime.ofInstant(
+		// new Date(Long.MAX_VALUE).toInstant(), TimeZone.getDefault()
+		// .toZoneId());
+
+		// Compute velocity (amount of effort/time) and store to data,
+		// unsorted.
+		List<ReportDatum> data = findDistributionData(type);
+
+		boolean useEffort = false;
+
+		// Generate the dataset required to draw the graph, with a given
+		// interval.
+		generateDistributionDataset(data, useEffort);
+
+		String title = "Task Distribution per ";
+		if (type == DistributionType.STAGE) {
+			title += "Stage";
+		} else {
+			title += "User";
+		}
+		if (useEffort) {
+			title += " by Effort";
+		} else {
+			title += " by Number of Tasks";
+		}
+
+		String xLabel;
+		if (type == DistributionType.STAGE) {
+			xLabel = "Stage";
+		} else {
+			xLabel = "User";
+		}
+
+		String yLabel;
+		if (useEffort) {
+			yLabel = "Effort";
+		} else {
+			yLabel = "Tasks";
+		}
+
+		// Create the chart with the Title, Label names.
+		JPanel chart = createPieChart(title);
+
+		// Open a new tab with the given chart.
+		TabPaneController.getInstance().addTab("Pie Chart", chart, true);
+		TabPaneController.getInstance().getView().setSelectedComponent(chart);
 	}
 
 	@Override
