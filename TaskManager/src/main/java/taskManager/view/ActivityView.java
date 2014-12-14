@@ -11,17 +11,23 @@ package taskManager.view;
 
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Insets;
 import java.text.DateFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
+import net.miginfocom.swing.MigLayout;
+import taskManager.TaskManager;
+import taskManager.controller.EditTaskController;
 import taskManager.model.ActivityModel;
+import taskManager.model.ActivityModel.ActivityModelType;
 
 /**
  * @author Tyler Jaskoviak
@@ -33,9 +39,7 @@ public class ActivityView extends JPanel {
 	public static final String INFO = "info";
 	public static final String MESSAGE_BODY = "message_body";
 
-	private JLabel info;
-
-	private JLabel message;
+	private JButton edit;
 
 	/**
 	 * Creates an ActivityView panel, meant to display an activity with name of
@@ -51,20 +55,48 @@ public class ActivityView extends JPanel {
 				.createTitledBorder(raisedbevel);
 		title.setTitlePosition(TitledBorder.LEFT);
 		this.setBorder(title);
-		info = new JLabel(DateFormat.getDateTimeInstance(DateFormat.MEDIUM,
-				DateFormat.SHORT).format(m.getDateCreated())
+
+		JLabel info = new JLabel(DateFormat.getDateTimeInstance(
+				DateFormat.MEDIUM, DateFormat.SHORT).format(m.getDateCreated())
 				+ "     " + m.getActor());
 		info.setName(INFO);
 		info.setMinimumSize(new Dimension(20, 20));
 
+		JPanel infoPanel = new JPanel(new MigLayout("", "[grow, fill][]",
+				"0[]0"));
+		infoPanel.setBackground(Colors.ACTIVITY);
+		infoPanel.add(info);
+		if (m.getType() == ActivityModelType.COMMENT
+				&& TaskManager.currentUser.equals(m.getActor())) {
+			edit = new JButton("Edit");
+			edit.setFocusPainted(false);
+			edit.setMargin(new Insets(0, 0, 0, 0));
+			edit.setContentAreaFilled(false);
+			edit.setBorderPainted(false);
+			edit.setOpaque(false);
+
+			infoPanel.add(edit);
+		}
+
 		// Content of the activity
-		message = new JLabel("<html>" + m.getDescription() + "</html>");
+		JLabel message = new JLabel("<html>" + m.getDescription() + "</html>");
 		message.setName(MESSAGE_BODY);
 		message.setFont(message.getFont().deriveFont(Font.PLAIN));
 
-		add(info);
+		add(infoPanel);
 		add(message);
 
 		this.setPreferredSize(new Dimension(50, 20));
+	}
+
+	/**
+	 * 
+	 * Adds a controller to the edit comment button.
+	 *
+	 * @param controller
+	 *            the actionListener to be added to the edit comment button
+	 */
+	public void setEditController(EditTaskController controller) {
+		edit.addActionListener(controller);
 	}
 }
