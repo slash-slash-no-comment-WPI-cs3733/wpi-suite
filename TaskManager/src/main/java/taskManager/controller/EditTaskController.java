@@ -290,21 +290,37 @@ public class EditTaskController implements ActionListener {
 		String selectedStage = etv.getSelectedStage();
 		for (StageModel stage : WorkflowModel.getInstance().getStages()) {
 			stageNames.add(stage.getName());
+			// grab the stage name of the stage the model is in
+			if (model != null && model.getStage().equals(stage)) {
+				selectedStage = stage.getName();
+			}
 		}
 		etv.setStages(stageNames);
-		etv.setSelectedStage(selectedStage);
+		if (!(selectedStage == null)) {
+			etv.setSelectedStage(selectedStage);
+		}
 
 		final List<Requirement> reqs = RequirementModel.getInstance()
 				.getRequirements();
-		String selectedReq = etv.getSelectedRequirement();
-
+		String selectedReq = null;
+		// don't get the currently selected requirement if there isn't one
+		if (etv.getSelectedRequirement() != null) {
+			selectedReq = etv.getSelectedRequirement();
+		}
 		final List<String> reqNames = new ArrayList<String>();
-
-		for (Requirement req : reqs) {
-			reqNames.add(req.getName());
+		if (reqs != null) {
+			for (Requirement req : reqs) {
+				reqNames.add(req.getName());
+			}
 		}
 		etv.setRequirements(reqNames);
-		etv.setSelectedRequirement(selectedReq);
+		if (!(selectedReq == null)) {
+			etv.setSelectedRequirement(selectedReq);
+		}
+
+		if (model != null) {
+			etv.checkArchive(model.isArchived());
+		}
 
 	}
 

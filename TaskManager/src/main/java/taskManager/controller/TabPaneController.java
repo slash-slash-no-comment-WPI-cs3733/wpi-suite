@@ -186,13 +186,10 @@ public class TabPaneController implements ChangeListener {
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		// TODO once refactoring is finished. this will include setting dropdown
-		// states and the archive button text
 		if (this.view.getSelectedComponent() instanceof EditTaskView) {
 			EditTaskView etv = (EditTaskView) this.view.getSelectedComponent();
 			etv.getController().reloadData();
 		}
-
 	}
 
 }

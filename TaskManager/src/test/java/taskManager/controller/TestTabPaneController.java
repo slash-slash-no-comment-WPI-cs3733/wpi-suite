@@ -11,7 +11,6 @@ package taskManager.controller;
 import static org.junit.Assert.assertEquals;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.util.Date;
@@ -20,10 +19,10 @@ import javax.swing.JFrame;
 
 import org.fest.swing.core.MouseButton;
 import org.fest.swing.fixture.FrameFixture;
+import org.fest.swing.fixture.JOptionPaneFixture;
 import org.fest.swing.fixture.JPanelFixture;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import taskManager.TaskManager;
@@ -32,7 +31,6 @@ import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
 import taskManager.view.TaskInfoPreviewView;
-import taskManager.view.TaskView;
 import taskManager.view.ToolbarView;
 
 public class TestTabPaneController {
@@ -95,7 +93,7 @@ public class TestTabPaneController {
 				"Task 1");
 	}
 
-	@Ignore
+	@Test
 	public void testArchiveTaskWithOpenTab() {
 		// click the task
 		JPanelFixture taskFixture = fixture.panel("Task 1");
@@ -106,45 +104,45 @@ public class TestTabPaneController {
 		// go back to the workflow
 		TabPaneController.getInstance().getView().setSelectedIndex(0);
 
-		Component c = taskFixture.target;
-		while (!(c instanceof TaskView) && c != null) {
-			c = c.getParent();
+		fixture.robot.settings().delayBetweenEvents(10);
 
-		}
-		Point location = c.getLocationOnScreen();
+		Point location = fixture.panel("Task 1").target.getLocationOnScreen();
+		location.x += 10;
+		location.y += 10;
 
-		// click right on the edge
-		taskFixture.robot.pressMouse(location, MouseButton.LEFT_BUTTON);
-
-		// move the mouse to the trash
-		Point goal = fixture.label(ToolbarView.DELETE).target
+		Point goal = fixture.label(ToolbarView.ARCHIVE).target
 				.getLocationOnScreen();
-		taskFixture.robot.settings().delayBetweenEvents(10);
+		goal.x += 10;
+		goal.y += 10;
+
+		fixture.robot.pressMouse(location, MouseButton.LEFT_BUTTON);
 		while (!location.equals(goal)) {
 			int movex = Integer.min(Integer.max(goal.x - location.x, -3), 3);
 			int movey = Integer.min(Integer.max(goal.y - location.y, -3), 3);
 			location.x += movex;
 			location.y += movey;
-			taskFixture.robot.moveMouse(location);
+			fixture.robot.moveMouse(location);
 		}
-		taskFixture.robot.settings().delayBetweenEvents(60);
+		fixture.robot.settings().delayBetweenEvents(60);
+		fixture.robot.settings().idleTimeout(100);
 
-		// end the drag
-		taskFixture.robot.releaseMouseButtons();
+		fixture.robot.releaseMouseButtons();
+
 		fixture.robot.waitForIdle();
 
 		// switch to edit task tab
 		TabPaneController.getInstance().getView().setSelectedIndex(1);
 
-		String result = fixture.button(EditTaskView.ARCHIVE).text();
+		boolean result = fixture.checkBox(EditTaskView.ARCHIVE).target
+				.isSelected();
 
-		assertEquals("Unarchive", result);
+		assertEquals(true, result);
 	}
 
-	@Ignore
+	@Test
 	public void testDeleteTaskWithOpenTab() {
 		// click the task
-		JPanelFixture taskFixture = fixture.panel("test");
+		JPanelFixture taskFixture = fixture.panel("Task 1");
 		taskFixture.click();
 		// click the edit button
 		fixture.button(TaskInfoPreviewView.EDIT).click();
@@ -153,11 +151,60 @@ public class TestTabPaneController {
 		TabPaneController.getInstance().getView().setSelectedIndex(0);
 
 		// archive the task
+		fixture.robot.settings().delayBetweenEvents(10);
+
+		Point location = fixture.panel("Task 1").target.getLocationOnScreen();
+		location.x += 10;
+		location.y += 10;
+
+		Point goal = fixture.label(ToolbarView.ARCHIVE).target
+				.getLocationOnScreen();
+		goal.x += 10;
+		goal.y += 10;
+
+		fixture.robot.pressMouse(location, MouseButton.LEFT_BUTTON);
+		while (!location.equals(goal)) {
+			int movex = Integer.min(Integer.max(goal.x - location.x, -3), 3);
+			int movey = Integer.min(Integer.max(goal.y - location.y, -3), 3);
+			location.x += movex;
+			location.y += movey;
+			fixture.robot.moveMouse(location);
+		}
+		fixture.robot.settings().delayBetweenEvents(60);
+		fixture.robot.settings().idleTimeout(100);
+		fixture.robot.releaseMouseButtons();
+		fixture.robot.waitForIdle();
 
 		// show archived tasks
-		fixture.robot.click(toolV.getComponent(3));
+		fixture.checkBox(ToolbarView.SHOW_ARCHIVE).click();
 
 		// delete the task
+		fixture.robot.settings().delayBetweenEvents(10);
+
+		location = fixture.panel("Task 1").target.getLocationOnScreen();
+		location.x += 10;
+		location.y += 10;
+
+		goal = fixture.label(ToolbarView.DELETE).target.getLocationOnScreen();
+		goal.x += 10;
+		goal.y += 10;
+
+		fixture.robot.pressMouse(location, MouseButton.LEFT_BUTTON);
+		while (!location.equals(goal)) {
+			int movex = Integer.min(Integer.max(goal.x - location.x, -3), 3);
+			int movey = Integer.min(Integer.max(goal.y - location.y, -3), 3);
+			location.x += movex;
+			location.y += movey;
+			fixture.robot.moveMouse(location);
+		}
+		fixture.robot.settings().delayBetweenEvents(60);
+		fixture.robot.settings().idleTimeout(100);
+
+		fixture.robot.releaseMouseButtons();
+
+		fixture.robot.waitForIdle();
+
+		new JOptionPaneFixture(fixture.robot).yesButton().click();
 
 		assertEquals(TabPaneController.getInstance().getView().getTabCount(), 1);
 		assertEquals(TabPaneController.getInstance().getView().getTitleAt(0),

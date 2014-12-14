@@ -61,10 +61,6 @@ public class ToolbarView extends JToolBar {
 
 	private JLabel projectName;
 
-	private JPanel targets;
-
-	private ToolbarController controller;
-
 	/**
 	 * Create a ToolbarView.
 	 * 
@@ -73,10 +69,7 @@ public class ToolbarView extends JToolBar {
 	 */
 	public ToolbarView(ToolbarController controller) {
 
-		this.controller = controller;
-
 		// Construct and set up the buttons and title panels
-
 		final JPanel buttons = new JPanel();
 		final JPanel name = new JPanel();
 		final JPanel targets = new JPanel();
