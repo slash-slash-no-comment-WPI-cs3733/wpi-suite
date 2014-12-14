@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -287,7 +286,7 @@ public class EditTaskController implements ActionListener {
 	 */
 	public void reloadData() {
 
-		final List<String> stageNames = new LinkedList<String>();
+		final List<String> stageNames = new ArrayList<String>();
 
 		for (StageModel stage : WorkflowModel.getInstance().getStages()) {
 			stageNames.add(stage.getName());
@@ -296,7 +295,7 @@ public class EditTaskController implements ActionListener {
 
 		final List<Requirement> reqs = RequirementModel.getInstance()
 				.getRequirements();
-		final List<String> reqNames = new LinkedList<String>();
+		final List<String> reqNames = new ArrayList<String>();
 
 		for (Requirement req : reqs) {
 			reqNames.add(req.getName());

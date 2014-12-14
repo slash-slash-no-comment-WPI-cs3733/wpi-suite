@@ -15,17 +15,14 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.awt.Component;
-import java.awt.Container;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 import javax.swing.JFrame;
 
+import org.fest.swing.core.ComponentMatcher;
 import org.fest.swing.exception.ComponentLookupException;
 import org.fest.swing.exception.WaitTimedOutError;
 import org.fest.swing.fixture.FrameFixture;
@@ -39,9 +36,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import taskManager.ClientDataStore;
-import taskManager.TaskManager;
 import taskManager.MockNetwork;
 import taskManager.ScreenshotOnFail;
+import taskManager.TaskManager;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
@@ -475,22 +472,14 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	 *             If no component has that name in the fixture.
 	 */
 	private Component findByName(String name) throws NotFoundException {
-		// Does a breadth first search
-		Queue<Component> searchList = new LinkedList<Component>();
-		searchList.add(fixture.component());
-		while (!searchList.isEmpty()) {
-			Component c = searchList.remove();
-			if (c instanceof Container) {
-				searchList
-						.addAll(Arrays.asList(((Container) c).getComponents()));
+		final ComponentMatcher nameMatcher = new ComponentMatcher() {
+			@Override
+			public boolean matches(Component c) {
+				return name.equals(c.getName()) && c.isShowing();
 			}
-
-			if (name.equals(c.getName())) {
-				return c;
-			}
-		}
-
-		throw new NotFoundException("Component " + name + " field not found");
+		};
+		return (Component) fixture.robot.finder().find(fixture.target,
+				nameMatcher);
 	}
 
 	@AfterClass
