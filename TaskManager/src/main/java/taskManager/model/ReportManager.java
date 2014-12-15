@@ -83,12 +83,14 @@ public class ReportManager {
 			addUser(user);
 		}
 		final UserReport userData = getUserData(user);
-		final int taskActualEffort = task.getActualEffort();
+		final int taskActualEffort = task.isActualEffortSet() ? task
+				.getActualEffort() : 0;
 		if (taskActualEffort == 0) {
 			throw new IllegalStateException(
 					"Task does not have an actual effort");
 		}
-		final int taskEstimatedEffort = task.getEstimatedEffort();
+		final int taskEstimatedEffort = task.isEstimatedEffortSet() ? task
+				.getEstimatedEffort() : 0;
 		if (taskEstimatedEffort == 0) {
 			throw new IllegalStateException(
 					"Task does not have an estimated effort");
