@@ -8,15 +8,11 @@
  *******************************************************************************/
 package taskManager.view;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-
 import javax.swing.JFrame;
 
 import org.fest.swing.fixture.FrameFixture;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 
 import taskManager.ScreenshotOnFail;
 import taskManager.controller.WorkflowController;
@@ -41,27 +37,6 @@ public class TestWorkflowView extends ScreenshotOnFail {
 
 		fixture = new FrameFixture(frame);
 		fixture.show();
-	}
-
-	@Test
-	public void testGetStageViewByName() {
-		StageView view = new StageView("test");
-		StageView view2 = wfv.getStageViewByName("test");
-
-		// it should have created a new view with the same name
-		assertNotEquals(view, view2);
-		assertEquals(view2.getName(), "test");
-
-		wfv.addStageView(view);
-		view2 = wfv.getStageViewByName("test");
-
-		// now it should get the one from the tests
-		assertEquals(view, view2);
-	}
-
-	@Test(expected = NullPointerException.class)
-	public void testGetStageViewByNameNull() {
-		wfv.getStageViewByName(null);
 	}
 
 	@After

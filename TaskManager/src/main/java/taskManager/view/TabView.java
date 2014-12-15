@@ -25,7 +25,6 @@ import javax.swing.JPanel;
 import taskManager.controller.EditTaskController;
 import taskManager.controller.TabPaneController;
 import taskManager.controller.WorkflowController;
-import taskManager.model.FetchWorkflowObserver;
 
 /**
  * 
@@ -129,7 +128,7 @@ public class TabView extends JPanel implements ActionListener {
 				tabPaneC.getView().setSelectedIndex(0);
 			}
 		}
-		FetchWorkflowObserver.ignoreAllResponses = false;
+		WorkflowController.pauseInformation = false;
 
 		WorkflowController.getInstance().removeTaskInfos(false);
 		WorkflowController.getInstance().reloadData();

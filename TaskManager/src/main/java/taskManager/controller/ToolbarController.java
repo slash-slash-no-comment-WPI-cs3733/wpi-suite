@@ -171,6 +171,7 @@ public class ToolbarController extends DropTargetAdapter implements
 			final String name = ((JButton) button).getName();
 			// close the task preview pane
 			WorkflowController.getInstance().removeTaskInfos(true);
+			WorkflowController.getInstance().removeChangeTitles();
 			switch (name) {
 			case ToolbarView.CREATE_TASK:
 				TabPaneController.getInstance().addCreateTaskTab();
@@ -331,6 +332,8 @@ public class ToolbarController extends DropTargetAdapter implements
 			}
 		}
 		// Reload the workflow view.
+		WorkflowController.pauseInformation = false;
+		WorkflowController.getInstance().removeTaskInfos(true);
 		WorkflowController.getInstance().reloadData();
 	}
 
