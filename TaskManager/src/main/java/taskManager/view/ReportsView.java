@@ -15,6 +15,7 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.time.Period;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -62,7 +63,8 @@ public class ReportsView extends JPanel implements ActionListener {
 	public static final String USERS = "Users";
 	public static final String NUMBER_OF_TASKS = "number_of_tasks";
 
-	public String names[] = { "Work Velocity", "Task Distribution", "Distribution Stages" };
+	public String names[] = { "Work Velocity", "Task Distribution",
+			"Distribution Stages" };
 	public String slices[] = { "Days", "Weeks", "Months" };
 
 	private JPanel window;
@@ -76,9 +78,9 @@ public class ReportsView extends JPanel implements ActionListener {
 
 	// Variable to Insert Images
 	Image img;
-	//Effort or number of tasks panel
+	// Effort or number of tasks panel
 	private JPanel effortOrNumberofTasks;
-	
+
 	// Stage picker
 	private JPanel stagePanel;
 	private JComboBox<String> stages;
@@ -86,7 +88,6 @@ public class ReportsView extends JPanel implements ActionListener {
 	private JComboBox<String> stages2;
 	private JComboBox<String> timeSliceList;
 
-	
 	JPanel TaskDistribution = new JPanel();
 	JPanel WorkVelocity = new JPanel(new MigLayout());
 	JPanel usersHolder = new JPanel();
@@ -99,9 +100,7 @@ public class ReportsView extends JPanel implements ActionListener {
 	JRadioButton effort = new JRadioButton("Effort");
 	JRadioButton numberoftasks = new JRadioButton("Number of Tasks");
 	JCheckBox select_stages = new JCheckBox("All Stages");
-	
 
-	
 	// Date Picker
 	private JPanel timePanel;
 	private JPanel datePanel;
@@ -154,8 +153,8 @@ public class ReportsView extends JPanel implements ActionListener {
 		this.setLayout(new FlowLayout());
 
 		// Stages or Users
-		JPanel SelectStages= new JPanel(new MigLayout());
-	
+		JPanel SelectStages = new JPanel(new MigLayout());
+
 		// Report Type Pane
 
 		JPanel reportType = new JPanel(new MigLayout());
@@ -168,7 +167,7 @@ public class ReportsView extends JPanel implements ActionListener {
 		reportTypeButtons.add(taskdistro);
 		effort.addActionListener(this);
 		numberoftasks.addActionListener(this);
-		
+
 		ButtonGroup effortOrTasksButtons = new ButtonGroup();
 		effortOrTasksButtons.add(effort);
 		effortOrTasksButtons.add(numberoftasks);
@@ -180,21 +179,20 @@ public class ReportsView extends JPanel implements ActionListener {
 		effortOrNumberofTasks.add(effort);
 		effortOrNumberofTasks.add(numberoftasks);
 
-		
 		JPanel WorkVelocity = new JPanel(new MigLayout());
 		JPanel TaskDistribution = new JPanel(new MigLayout());
-		
-		//Create two differnent stage views for each view
+
+		// Create two differnent stage views for each view
 		stagePanel = new JPanel();
-		stagePanel2= new JPanel();
+		stagePanel2 = new JPanel();
 		stagePanel.setLayout(new MigLayout());
 		stagePanel2.setLayout(new MigLayout());
 		stages = new JComboBox<String>();
 		stages.setName(STAGE_NAME);
-		
+
 		stages2 = new JComboBox<String>();
 		stages2.setName(STAGE_NAME2);
-		
+
 		timeSliceList = new JComboBox<String>(slices);
 		timeSliceList.setPrototypeDisplayValue("Time slices");
 		stagePanel.add(new JLabel("Stage"), "align left");
@@ -203,9 +201,7 @@ public class ReportsView extends JPanel implements ActionListener {
 
 		startDateLabel = new JLabel("Start Date:");
 		endDateLabel = new JLabel("End Date:");
-		
-		
-		
+
 		// Date
 		datePanel = new JPanel(new MigLayout());
 		startDate = new JXDatePicker();
@@ -224,29 +220,25 @@ public class ReportsView extends JPanel implements ActionListener {
 						.getImage()).getScaledInstance(20, 20,
 						java.awt.Image.SCALE_SMOOTH)));
 
-	
 		datePanel.add(startDateLabel, "gapbottom 13px");
 		datePanel.add(startDate, "wrap, gapbottom 13px");
 		datePanel.add(endDateLabel);
 		datePanel.add(endDate);
 
 		timeSliceLabel = new JLabel("Units");
-		
-		
-		//Time 
+
+		// Time
 		timePanel = new JPanel(new MigLayout());
 		timeSlice = new JPanel(new MigLayout());
 		timeSlice.add(timeSliceLabel, "gapright 5px");
-	    timeSlice.add(timeSliceList);
-	    JPanel sliceAndStage = new JPanel(new MigLayout());
-	    sliceAndStage.add(timeSlice, "wrap");
-	    sliceAndStage.add(stagePanel, "gapright 20px");
-	    
+		timeSlice.add(timeSliceList);
+		JPanel sliceAndStage = new JPanel(new MigLayout());
+		sliceAndStage.add(timeSlice, "wrap");
+		sliceAndStage.add(stagePanel, "gapright 20px");
+
 		timePanel.add(sliceAndStage, "h 100%, w 50%");
 		timePanel.add(datePanel, "h 100%, w 50%");
 
-		
-		
 		// WorkType
 		workTypePanel = new JPanel();
 		workTypePanel.setLayout(new MigLayout());
@@ -299,7 +291,7 @@ public class ReportsView extends JPanel implements ActionListener {
 		projectUsersListPanel.add(projectUsersList);
 		addRemoveButtons.add(addUser, "wrap");
 		addRemoveButtons.add(removeUser);
-		
+
 		usersPanel.add(projectUsersListPanel, "w 100!, gapleft 15px");
 		usersPanel.add(addRemoveButtons);
 		usersPanel.add(usersListPanel, "w 100!");
@@ -320,25 +312,22 @@ public class ReportsView extends JPanel implements ActionListener {
 		// One Column
 		// Panel for reports generating options
 		JPanel reportOptions = new JPanel(new MigLayout());
-		
+
 		SelectStages.add(new JLabel("Select Stage"), "wrap");
 		SelectStages.add(stagePanel2, "wrap");
 		SelectStages.add(select_stages, "gaptop 15px");
-		
+
 		JPanel Distro = new JPanel(new MigLayout());
-		
+
 		Distro.add(SelectStages);
 		TaskDistribution.add(Distro, "gapleft 70px");
 		WorkVelocity.add(allUsers, "wrap, gapleft 20px");
 		WorkVelocity.add(usersPanel, "wrap, w 100%");
 		WorkVelocity.add(timePanel, "w 100%");
-	
-		
-		
-		
+
 		cards = new JPanel(new CardLayout());
 		cards.add(WorkVelocity, names[0]);
-    	cards.add(TaskDistribution, names[1]);
+		cards.add(TaskDistribution, names[1]);
 		generator.add(reportType, "align center, wrap");
 		generator.add(cards, "wrap");
 		generator.add(effortOrNumberofTasks, "wrap");
@@ -349,26 +338,22 @@ public class ReportsView extends JPanel implements ActionListener {
 		this.add(window);
 	}
 
-
 	public void actionPerformed(ActionEvent e) {
 		CardLayout cl = (CardLayout) (cards.getLayout());
-		
+
 		if (e.getSource() == workvel) {
 			cl.show(cards, names[0]);
 			mode = Mode.VELOCITY;
-			
+
 		}
 		if (e.getSource() == taskdistro) {
-			
+
 			cl.show(cards, names[1]);
 			mode = Mode.DISTRIBUTION;
-		
+
 		}
-		
 
 	}
-	
-	
 
 	public void setController(ReportsController manager) {
 		controller = manager;
@@ -389,10 +374,7 @@ public class ReportsView extends JPanel implements ActionListener {
 	public void setFieldController(TaskInputController controller) {
 		stages.addPopupMenuListener(controller);
 	}
-	
-	
-	
-	
+
 	/**
 	 * Adds the action listener (controller) to this view
 	 * 
@@ -402,10 +384,6 @@ public class ReportsView extends JPanel implements ActionListener {
 	public void setFieldController2(TaskInputController controller) {
 		stages2.addPopupMenuListener(controller);
 	}
-	
-	
-	
-
 
 	/**
 	 * gets the dropdown box in the view that contains all the stage names
@@ -440,14 +418,6 @@ public class ReportsView extends JPanel implements ActionListener {
 		return "";
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
 	/**
 	 * gets the dropdown box in the view that contains all the stage names
 	 * 
@@ -469,8 +439,8 @@ public class ReportsView extends JPanel implements ActionListener {
 	}
 
 	/**
-	 * Returns the selected stage2 name. If the selected item cannot be retrieved
-	 * returns an empty string.
+	 * Returns the selected stage2 name. If the selected item cannot be
+	 * retrieved returns an empty string.
 	 *
 	 * @return the selected stage as a String.
 	 */
@@ -480,13 +450,7 @@ public class ReportsView extends JPanel implements ActionListener {
 		}
 		return "";
 	}
-	
-	
-	
-	
-	
-	
-	
+
 	/**
 	 * Returns the start date for the graph
 	 * 
@@ -742,5 +706,26 @@ public class ReportsView extends JPanel implements ActionListener {
 		} else {
 			return DistributionType.USER;
 		}
+	}
+
+	public Period getTimeUnit() {
+		switch ((String) timeSliceList.getSelectedItem()) {
+		case "Days":
+			return Period.ofDays(1);
+		case "Weeks":
+			return Period.ofWeeks(1);
+		case "Months":
+			return Period.ofMonths(1);
+		default:
+			return Period.ofDays(1);
+		}
+	}
+
+	public boolean getUseEffort() {
+		return effort.isSelected();
+	}
+
+	public boolean getUseAllStages() {
+		return select_stages.isSelected();
 	}
 }

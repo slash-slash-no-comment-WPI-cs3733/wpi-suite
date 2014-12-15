@@ -79,7 +79,7 @@ public class TestReportsController {
 		users.add("User 1");
 		List<ReportsController.ReportDatum> data = rm.findVelocityData(users,
 				now, now.plusSeconds(60 * 60 * 24 * 7), false, finished);
-		rm.generateVelocityDataset(data, users, false, Period.ofDays(1));
+		rm.generateVelocityDataset(data, users, false, Period.ofDays(1), true);
 		final JPanel chart = rm.createBarChart("Title", "Time", "Effort");
 		frame.add(chart);
 		frame.revalidate();
@@ -100,7 +100,7 @@ public class TestReportsController {
 		users.add("User 1");
 		List<ReportsController.ReportDatum> data = rm.findVelocityData(users,
 				now, now.plusSeconds(60 * 60 * 24 * 7), false, finished);
-		rm.generateVelocityDataset(data, users, false, Period.ofDays(1));
+		rm.generateVelocityDataset(data, users, false, Period.ofDays(1), true);
 		final JPanel chart = rm.createBarChart("Title", "Time", "Effort");
 		frame.add(chart);
 		frame.revalidate();

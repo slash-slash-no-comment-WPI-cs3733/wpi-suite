@@ -15,6 +15,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.time.Period;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -139,14 +140,56 @@ public class ReportsController implements ActionListener, ChangeListener,
 	 * @param averageCredit
 	 * @return The list of ReportDatum that matches the given criteria
 	 */
-	public List<ReportDatum> findVelocityData(Set<String> users,
-			ZonedDateTime start, ZonedDateTime end, boolean averageCredit) {
-		// Assume the completion stage is the final stage
-		this.start = start;
-		this.end = end;
-		final List<StageModel> stageList = workflow.getStages();
-		final StageModel finalStage = stageList.get(stageList.size() - 1);
-		return findVelocityData(users, start, end, averageCredit, finalStage);
+	public List<ReportDatum> findVelocityData(ZonedDateTime _start,
+			ZonedDateTime _end, boolean averageCredit, StageModel stage) {
+
+		start = _start;
+		end = _end;
+
+		if (!workflow.getStages().contains(stage)) {
+			throw new IllegalArgumentException("Invalid stage");
+		}
+		List<ReportDatum> data = new ArrayList<ReportDatum>();
+		// Iterate through all tasks for the specified stage.
+		for (TaskModel task : stage.getTasks()) {
+			ZonedDateTime completed = null;
+			boolean foundMoveEvent = false;
+			// We are going to iterate backward through the activities, and take
+			// the final MOVE event. This event must have been to the current
+			// stage (it hasn't been moved after), and since we're in the final
+			// stage, this MOVE event must actually be a completion event.
+			for (int i = task.getActivities().size() - 1; i >= 0; i--) {
+				ActivityModel activity = task.getActivities().get(i);
+				if (activity.getType() == ActivityModelType.MOVE) {
+					foundMoveEvent = true;
+
+					completed = ZonedDateTime.ofInstant(activity
+							.getDateCreated().toInstant(), TimeZone
+							.getDefault().toZoneId());
+				}
+				if (foundMoveEvent) {
+					break;
+				}
+			}
+			if (!foundMoveEvent) {
+				// If the task has no move events, then it was created in the
+				// completion stage. This is likely a retroactive completion, so
+				// we'll assume that the task was completed on its due date.
+				completed = ZonedDateTime.ofInstant(task.getDueDate()
+						.toInstant(), TimeZone.getDefault().toZoneId());
+			}
+
+			// If the completion date is retrieved and the date is between the
+			// specified dates.
+			if (completed != null
+					&& completed.toInstant().isAfter(start.toInstant())
+					&& completed.toInstant().isBefore(end.toInstant())) {
+				data.add(new ReportDatum("Team", completed, (double) task
+						.getActualEffort()));
+			} // End if (inDateRange)
+		} // End if (TaskModel)
+
+		return data;
 	}
 
 	/**
@@ -245,7 +288,8 @@ public class ReportsController implements ActionListener, ChangeListener,
 	 *            The interval to group the data by.
 	 */
 	public void generateVelocityDataset(List<ReportDatum> data,
-			Set<String> users, boolean teamData, Period interval) {
+			Set<String> users, boolean teamData, Period interval,
+			boolean useEffort) {
 		if (data == null) {
 			throw new IllegalStateException(
 					"Tried to generate a dataset without getting any data first!");
@@ -253,30 +297,35 @@ public class ReportsController implements ActionListener, ChangeListener,
 		dataset = new DefaultCategoryDataset();
 		String intervalName = "Interval";
 		int intervalSeconds;
+		int intervalDays;
 
 		// Set the label name according to the specified interval.
 		if (interval.equals(Period.ofDays(1))) {
 			intervalName = "Day ";
 			intervalSeconds = 24 * 60 * 60;
+			intervalDays = 1;
 		} else if (interval.equals(Period.ofWeeks(1))) {
 			intervalName = "Week ";
 			intervalSeconds = 7 * 24 * 60 * 60;
+			intervalDays = 7;
 		} else {
 			intervalName = "Month ";
 			intervalSeconds = 30 * 7 * 24 * 60 * 60;
+			intervalDays = 30;
 		}
+
 		int seriesNum = 0;
 
 		// We get this user to add some 0s to, rather than creating a ""
 		if (teamData) {
-			for (ZonedDateTime i = start; i.compareTo(end) < 0; i = i
-					.plus(interval)) {
+			for (ZonedDateTime i = start; i.compareTo(end) < 0; i = i.plus(
+					intervalDays, ChronoUnit.DAYS)) {
 				dataset.addValue(0, "Team", intervalName + (seriesNum + 1));
 				seriesNum++;
 			}
 		} else {
-			for (ZonedDateTime i = start; i.compareTo(end) < 0; i = i
-					.plus(interval)) {
+			for (ZonedDateTime i = start; i.compareTo(end) < 0; i = i.plus(
+					intervalDays, ChronoUnit.DAYS)) {
 				for (String user : users) {
 					// Populate the buckets with names before-hand.
 					dataset.addValue(0, user, intervalName + (seriesNum + 1));
@@ -292,7 +341,8 @@ public class ReportsController implements ActionListener, ChangeListener,
 			// effort for the current completion date (e.g. if completion date
 			// is January 1, boundary is January 2).
 			ZonedDateTime boundary = ZonedDateTime.ofInstant(start.toInstant()
-					.plus(interval), TimeZone.getDefault().toZoneId());
+					.plus(intervalDays, ChronoUnit.DAYS), TimeZone.getDefault()
+					.toZoneId());
 
 			// seriesnum is only used for the labels, e.g. the int part of Day
 			// 1, Day 2, ...
@@ -301,8 +351,10 @@ public class ReportsController implements ActionListener, ChangeListener,
 			// continue until we find the seriesNum and boundary.
 			// while the difference is less than a full day.
 			do {
-				boundary = boundary.plus(interval); // increment by interval
-													// (day/week/month).
+				boundary = boundary.plus(intervalDays, ChronoUnit.DAYS); // increment
+																			// by
+																			// interval
+				// (day/week/month).
 				seriesNum++;
 			} while ((boundary.toInstant().getEpochSecond() - datum.timeStamp
 					.toInstant().getEpochSecond()) < intervalSeconds);
@@ -314,12 +366,14 @@ public class ReportsController implements ActionListener, ChangeListener,
 			}
 
 			String columnKey = intervalName + (seriesNum);
+			double value = useEffort ? datum.effort : 1;
 			// If the dataset contains the keyname, increment the effort value.
 			// Else, add the value as a new object in the dataset.
-			if (dataset.getRowKeys().contains(keyname)) {
-				dataset.incrementValue(datum.effort, keyname, columnKey);
+			if (dataset.getRowKeys().contains(keyname)
+					&& dataset.getColumnKeys().contains(columnKey)) {
+				dataset.incrementValue(value, keyname, columnKey);
 			} else {
-				dataset.addValue(datum.effort, keyname, columnKey);
+				dataset.addValue(value, keyname, columnKey);
 			}
 		}
 	}
@@ -415,11 +469,12 @@ public class ReportsController implements ActionListener, ChangeListener,
 	 *            USER
 	 * @return The list of ReportDatum
 	 */
-	public List<ReportDatum> findDistributionData(DistributionType type) {
+	public List<ReportDatum> findDistributionData(DistributionType type,
+			List<StageModel> stages) {
 		List<ReportDatum> data = new ArrayList<ReportDatum>();
 
 		// Iterate through the given stages
-		for (StageModel stage : WorkflowModel.getInstance().getStages()) {
+		for (StageModel stage : stages) {
 			// Iterate through the tasks
 			for (TaskModel task : stage.getTasks()) {
 				// If we're making a stage distribution, check that at least one
@@ -709,6 +764,19 @@ public class ReportsController implements ActionListener, ChangeListener,
 	 * Creates a velocity report and makes it visible.
 	 */
 	private void createVelocityReport() {
+		boolean teamData = rtv.getAllUsers().isSelected();
+
+		Set<String> users = new HashSet<String>();
+		if (!teamData) {
+			// Get all of the selected users from the view and store to a
+			// set.
+			for (String u : rtv.getCurrUsersList().getAllValues()) {
+				users.add(u);
+			}
+		}
+
+		Period interval = rtv.getTimeUnit();
+
 		// Get the starting/ending dates from the view.
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeZone(TimeZone.getDefault());
@@ -739,19 +807,6 @@ public class ReportsController implements ActionListener, ChangeListener,
 			return;
 		}
 
-		// Get all of the selected users from the view and store to a
-		// set.
-		Set<String> users = new HashSet<String>();
-		for (String u : rtv.getCurrUsersList().getAllValues()) {
-			users.add(u);
-		}
-
-		// Get the selected stage from the view and store as a
-		// StageModel.
-		String stageStr = rtv.getSelectedStage();
-		StageModel stage = WorkflowModel.getInstance()
-				.findStageByName(stageStr);
-
 		// Set the dates as ZonedDateTimes that have timezone
 		// information.
 		ZonedDateTime startZone = ZonedDateTime.ofInstant(
@@ -759,17 +814,42 @@ public class ReportsController implements ActionListener, ChangeListener,
 		ZonedDateTime endZone = ZonedDateTime.ofInstant(enddate.toInstant(),
 				TimeZone.getDefault().toZoneId());
 
+		// Get the selected stage from the view and store as a
+		// StageModel.
+		String stageStr = rtv.getSelectedStage();
+		StageModel stage = WorkflowModel.getInstance()
+				.findStageByName(stageStr);
+
+		boolean useEffort = rtv.getUseEffort();
+
 		// Compute velocity (amount of effort/time) and store to data,
 		// unsorted.
-		List<ReportDatum> data = findVelocityData(users, startZone, endZone,
-				false, stage);
+		List<ReportDatum> data;
+		if (teamData) {
+			data = findVelocityData(startZone, endZone, false, stage);
+		} else {
+			data = findVelocityData(users, startZone, endZone, false, stage);
+		}
 
 		// Generate the dataset required to draw the graph, with a given
 		// interval.
-		generateVelocityDataset(data, users, false, Period.ofDays(1));
+		generateVelocityDataset(data, users, teamData, interval, useEffort);
+
+		String title = "";
+		title += useEffort ? "Effort per " : "Tasks per ";
+		if (interval.equals(Period.ofDays(1))) {
+			title += "Day";
+		} else if (interval.equals(Period.ofWeeks(1))) {
+			title += "Week";
+		} else if (interval.equals(Period.ofMonths(1))) {
+			title += "Month";
+		}
+
+		String xLabel = "Time";
+		String yLabel = useEffort ? "Effort" : "Tasks";
 
 		// Create the chart with the Title, Label names.
-		JPanel chart = createLineChart("Effort per Day", "Time", "Effort");
+		JPanel chart = createLineChart(title, xLabel, yLabel);
 
 		// Open a new tab with the given chart.
 		TabPaneController.getInstance().addTab("Line Graph", chart, true);
@@ -782,29 +862,23 @@ public class ReportsController implements ActionListener, ChangeListener,
 	private void createDistributionReport() {
 		DistributionType type = rtv.getDistributionType();
 
-		// Set<String> users = new HashSet<String>();
-		// for (User user : TaskManager.users) {
-		// users.add(user.getName());
-		// }
-		//
-		// Set<StageModel> stages = new HashSet<StageModel>();
-		// for (StageModel stage : WorkflowModel.getInstance().getStages()) {
-		// stages.add(stage);
-		// }
-		//
-		// // Set the dates as ZonedDateTimes that have timezone
-		// // information. Set them to from now to the maximum date.
-		// ZonedDateTime startZone = ZonedDateTime.ofInstant(
-		// new Date().toInstant(), TimeZone.getDefault().toZoneId());
-		// ZonedDateTime endZone = ZonedDateTime.ofInstant(
-		// new Date(Long.MAX_VALUE).toInstant(), TimeZone.getDefault()
-		// .toZoneId());
+		List<StageModel> stages;
+		boolean allStages = rtv.getUseAllStages();
+		if (allStages) {
+			stages = WorkflowModel.getInstance().getStages();
+		} else {
+			stages = new ArrayList<StageModel>();
+			String stageStr = rtv.getSelectedStage();
+			StageModel stage = WorkflowModel.getInstance().findStageByName(
+					stageStr);
+			stages.add(stage);
+		}
+
+		boolean useEffort = rtv.getUseEffort();
 
 		// Compute velocity (amount of effort/time) and store to data,
 		// unsorted.
-		List<ReportDatum> data = findDistributionData(type);
-
-		boolean useEffort = false;
+		List<ReportDatum> data = findDistributionData(type, stages);
 
 		// Generate the dataset required to draw the graph, with a given
 		// interval.
