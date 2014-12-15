@@ -252,14 +252,18 @@ public class ReportsController implements ActionListener, ChangeListener,
 		}
 		dataset = new DefaultCategoryDataset();
 		String intervalName = "Interval";
+		int intervalSeconds;
 
 		// Set the label name according to the specified interval.
 		if (interval.equals(Period.ofDays(1))) {
 			intervalName = "Day ";
+			intervalSeconds = 24 * 60 * 60;
 		} else if (interval.equals(Period.ofWeeks(1))) {
 			intervalName = "Week ";
-		} else if (interval.equals(Period.ofMonths(1))) {
+			intervalSeconds = 7 * 24 * 60 * 60;
+		} else {
 			intervalName = "Month ";
+			intervalSeconds = 30 * 7 * 24 * 60 * 60;
 		}
 		int seriesNum = 0;
 
@@ -303,7 +307,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 													// (day/week/month).
 				seriesNum++;
 			} while ((boundary.toInstant().getEpochSecond() - datum.timeStamp
-					.toInstant().getEpochSecond()) < 86400);
+					.toInstant().getEpochSecond()) < intervalSeconds);
 
 			// set the name depending on the teamData value.
 			String keyname = "Team";
