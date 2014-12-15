@@ -22,6 +22,7 @@ import java.util.Set;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 
 import taskManager.TaskManager;
 import taskManager.model.ActivityModel;
@@ -293,10 +294,13 @@ public class EditTaskController implements ActionListener {
 				WorkflowModel.getInstance().save();
 				break;
 			case ActivityView.EDIT:
-				activityC.setEditedTask((ActivityView) ((JButton) button)
-						.getParent().getParent().getParent());
-				etv.startEditingComment(((ActivityView) ((JButton) button)
-						.getParent().getParent().getParent()).getComment());
+				activityC.setEditedTask((ActivityView) SwingUtilities
+						.getAncestorOfClass(ActivityView.class,
+								(JButton) button));
+
+				etv.startEditingComment(((ActivityView) SwingUtilities
+						.getAncestorOfClass(ActivityView.class,
+								(JButton) button)).getComment());
 				break;
 			}
 		}
