@@ -123,6 +123,8 @@ public class TabPaneController {
 	 * @param closeable
 	 *            Whether or not a tab can be closed. True adds an 'x' button to
 	 *            the tab
+	 * @param localizable
+	 *            If this title should be localized
 	 */
 	public void addTab(String title, Component component, boolean closeable,
 			boolean localizable) {

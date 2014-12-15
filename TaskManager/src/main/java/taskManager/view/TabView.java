@@ -60,6 +60,8 @@ public class TabView extends JPanel implements ActionListener,
 	 *            The component to display in the tab's window/pane
 	 * @param closeable
 	 *            Whether to make the tab closeable - aka put an 'x' in the tab
+	 * @param localizable
+	 *            If this title should be localized
 	 */
 	public TabView(String title, Component component, boolean closeable,
 			boolean localizable) {
@@ -106,6 +108,8 @@ public class TabView extends JPanel implements ActionListener,
 	 *            The title to put in the tab itself
 	 * @param component
 	 *            The component to display in the tab's window/pane
+	 * @param localizable
+	 *            If this title should be localized
 	 */
 	public TabView(String title, Component component, boolean localizable) {
 		this(title, component, true, localizable);

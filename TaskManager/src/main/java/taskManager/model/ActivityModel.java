@@ -101,6 +101,9 @@ public class ActivityModel {
 	 */
 	public String getDescription() {
 		String format;
+		if (type == null) {
+			return "";
+		}
 		switch (type) {
 		case CREATION:
 			format = Localizer.getString("ActivityCreate");

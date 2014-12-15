@@ -20,7 +20,8 @@ import javax.swing.UIManager;
 import taskManager.view.EditTaskView;
 
 /**
- * Description
+ * Returns strings in the appropriate language, defaulting to english. Notifies
+ * all listeners whenever the language is changed
  *
  * @author Jon Sorrells
  */
