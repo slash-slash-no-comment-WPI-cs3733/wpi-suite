@@ -36,6 +36,7 @@ public class ScrollList extends JPanel {
 	private final DefaultListModel<String> lm;
 	private final JScrollPane listScroller;
 	private final JList<String> jl;
+	private final JLabel title;
 
 	/**
 	 * Constructor for a scroll list
@@ -62,7 +63,7 @@ public class ScrollList extends JPanel {
 		listScroller
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-		final JLabel title = new JLabel(t);
+		title = new JLabel(t);
 		this.add(title, BorderLayout.NORTH);
 		this.setBackground(Colors.TASK);
 		this.add(listScroller, BorderLayout.CENTER);
@@ -241,6 +242,10 @@ public class ScrollList extends JPanel {
 	public void setController(ReportsController listener) {
 		jl.addListSelectionListener(listener);
 		jl.addPropertyChangeListener(listener);
+	}
+
+	public void setTitle(String s) {
+		title.setText(s);
 	}
 
 }

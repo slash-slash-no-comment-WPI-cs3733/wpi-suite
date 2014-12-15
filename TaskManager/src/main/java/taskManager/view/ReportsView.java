@@ -29,6 +29,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.border.TitledBorder;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -37,6 +38,8 @@ import org.jdesktop.swingx.JXDatePicker;
 import taskManager.controller.ReportsController;
 import taskManager.controller.ReportsController.DistributionType;
 import taskManager.controller.TaskInputController;
+import taskManager.localization.LocaleChangeListener;
+import taskManager.localization.Localizer;
 
 //TODO import taskManager.controller.ReportsController;
 
@@ -44,7 +47,8 @@ import taskManager.controller.TaskInputController;
  * @author Tyler Jaskoviak
  * @author Thane Hunt
  */
-public class ReportsView extends JPanel implements ActionListener {
+public class ReportsView extends JPanel implements ActionListener,
+		LocaleChangeListener {
 
 	public static final String STAGE_NAME = "stage_name";
 	public static final String STAGE_NAME2 = "stage_name2";
@@ -244,7 +248,7 @@ public class ReportsView extends JPanel implements ActionListener {
 		workTypePanel.setLayout(new MigLayout());
 		workFlow = new JRadioButton("Flow");
 		workFlow.setName(WORK_FLOW);
-		workVelocity = new JRadioButton("Velocity");
+		workVelocity = new JRadioButton("");
 		workVelocity.setName(WORK_VELOCITY);
 		workTypeGroup = new ButtonGroup();
 		workTypeGroup.add(workFlow);
@@ -258,7 +262,7 @@ public class ReportsView extends JPanel implements ActionListener {
 		workModePanel.setLayout(new MigLayout());
 		combineWork = new JRadioButton("Combine Work");
 		combineWork.setName(COLLABORATIVE);
-		compareWork = new JRadioButton("Compare Work");
+		compareWork = new JRadioButton("");
 		compareWork.setName(COMPARATIVE);
 		workflowGroup = new ButtonGroup();
 		workflowGroup.add(combineWork);
@@ -272,9 +276,9 @@ public class ReportsView extends JPanel implements ActionListener {
 		usersPanel = new JPanel();
 		allUsers = new JCheckBox("Add all Users to report");
 		allUsers.setName(ALL_USERS);
-		currUsersList = new ScrollList("Users Included in Report");
+		currUsersList = new ScrollList("");
 		currUsersList.setBackground(this.getBackground());
-		projectUsersList = new ScrollList("Users Not Included");
+		projectUsersList = new ScrollList("");
 		projectUsersList.setBackground(this.getBackground());
 		// Add user to list
 		addUser = new JButton(">>");
@@ -297,7 +301,7 @@ public class ReportsView extends JPanel implements ActionListener {
 		usersPanel.add(usersListPanel, "w 100!");
 
 		// Generate Graph
-		generateGraph = new JButton("Generate");
+		generateGraph = new JButton();
 		generateGraph.setName(GENERATE);
 
 		try {
@@ -353,6 +357,8 @@ public class ReportsView extends JPanel implements ActionListener {
 
 		}
 
+		onLocaleChange();
+		Localizer.addListener(this);
 	}
 
 	public void setController(ReportsController manager) {
@@ -747,5 +753,27 @@ public class ReportsView extends JPanel implements ActionListener {
 	 */
 	public boolean getUseAllStages() {
 		return select_stages.isSelected();
+	}
+
+	@Override
+	public void onLocaleChange() {
+		((TitledBorder) stagePanel.getBorder()).setTitle(Localizer
+				.getString("Stage"));
+		((TitledBorder) datePanel.getBorder()).setTitle(Localizer
+				.getString("Timeframe"));
+		workFlow.setText(Localizer.getString("Flow"));
+		workVelocity.setText(Localizer.getString("Velocity"));
+		((TitledBorder) workTypePanel.getBorder()).setTitle(Localizer
+				.getString("WorkType"));
+		combineWork.setText(Localizer.getString("CombineWork"));
+		compareWork.setText(Localizer.getString("CompareWork"));
+		((TitledBorder) workModePanel.getBorder()).setTitle(Localizer
+				.getString("CompareCombine"));
+		allUsers.setText(Localizer.getString("All"));
+		currUsersList.setTitle(Localizer.getString("UsersReport"));
+		projectUsersList.setTitle(Localizer.getString("UsersNotReport"));
+		((TitledBorder) usersPanel.getBorder()).setTitle(Localizer
+				.getString("Users"));
+		generateGraph.setText(Localizer.getString("Generate"));
 	}
 }

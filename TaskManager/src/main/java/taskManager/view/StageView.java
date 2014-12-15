@@ -41,12 +41,15 @@ import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DraggablePanelListener;
 import taskManager.draganddrop.DropAreaPanel;
 import taskManager.draganddrop.DropTargetRedispatcher;
+import taskManager.localization.LocaleChangeListener;
+import taskManager.localization.Localizer;
 
 /**
  * @author Beth Martino
  * @version November 9, 2014
  */
-public class StageView extends JPanel implements Transferable {
+public class StageView extends JPanel implements Transferable,
+		LocaleChangeListener {
 
 	private static final long serialVersionUID = 1L;
 	private StageController controller;
@@ -124,7 +127,7 @@ public class StageView extends JPanel implements Transferable {
 		check.setFont(check.getFont().deriveFont((float) 12));
 		check.setMargin(new Insets(0, 0, 0, 0));
 		// 'x' button
-		cancel = new JButton("\u2716");
+		cancel = new JButton();
 		cancel.setName(X);
 		cancel.setFont(cancel.getFont().deriveFont((float) 12));
 		cancel.setMargin(new Insets(0, 0, 0, 0));
@@ -187,6 +190,8 @@ public class StageView extends JPanel implements Transferable {
 				tasks, DDTransferHandler.getTaskFlavor())));
 
 		setController(stageC);
+		onLocaleChange();
+		Localizer.addListener(this);
 	}
 
 	/**
@@ -338,5 +343,10 @@ public class StageView extends JPanel implements Transferable {
 	public boolean isDataFlavorSupported(DataFlavor flavor) {
 		return flavor.equals(DDTransferHandler.getStageFlavor())
 				|| flavor.equals(DataFlavor.stringFlavor);
+	}
+
+	@Override
+	public void onLocaleChange() {
+		cancel.setText(Localizer.getString("x"));
 	}
 }
