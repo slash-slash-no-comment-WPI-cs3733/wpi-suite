@@ -128,7 +128,7 @@ public class TaskInfoPreviewView extends JPanel {
 		closeButton = new JButton("\u2716");
 		closeButton.setName(X);
 		closeButton.setFont(closeButton.getFont().deriveFont((float) 10));
-		closeButton.setMargin(new Insets(0, 0, 0, 0));
+		closeButton.setMargin(new Insets(0, 2, 0, 2));
 		closeButton.setFocusPainted(false);
 		closeButton.setContentAreaFilled(false);
 		closeButton.setBorderPainted(false);
