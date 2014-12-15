@@ -9,7 +9,7 @@
 package taskManager.localization;
 
 /**
- * Description
+ * Interface to listen for locale changes
  *
  * @author Jon Sorrells
  */

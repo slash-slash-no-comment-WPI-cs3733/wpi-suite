@@ -18,7 +18,8 @@ import java.util.ResourceBundle;
 import javax.swing.UIManager;
 
 /**
- * Description
+ * Returns strings in the appropriate language, defaulting to english. Notifies
+ * all listeners whenever the language is changed
  *
  * @author Jon Sorrells
  */
