@@ -68,10 +68,11 @@ public class FilterController implements ItemListener, MouseListener {
 		Component[] cats = view.getCategories().getComponents();
 		Set<TaskCategory> selected = new HashSet<TaskCategory>();
 		for (int i = 0; i < cats.length; i++) {
-			if (cats[1] instanceof JPanel) {
+			if (cats[i] instanceof JPanel) {
 				String name = cats[i].getName();
 				if (view.catBoxIsChecked(name)) {
-					selected.add(TaskCategory.values()[i]);
+					// ignore the "no category option"
+					selected.add(TaskCategory.values()[i + 1]);
 				}
 			}
 		}

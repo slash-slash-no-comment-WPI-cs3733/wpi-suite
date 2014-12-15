@@ -28,7 +28,7 @@ public class Colors {
 
 	public static final Color[] CAT_COLORS = new Color[] { // first is a
 			// "no category color"
-			Color.decode("#BDBDBD"), Color.decode("#EF5350"),
+			Color.decode("#B6B6B6"), Color.decode("#EF5350"),
 			Color.decode("#4CAF50"), Color.decode("#2196F3"),
 			Color.decode("#FBC02D"), Color.decode("#7E57C2") };
 

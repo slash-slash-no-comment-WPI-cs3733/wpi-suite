@@ -181,7 +181,7 @@ public class FilterView extends JPanel {
 		for (int i = 0; i < TaskCategory.values().length; i++) {
 			// don't check for the "no category" name
 			if (name.equals(Colors.CATEGORY_NAMES[i])) {
-				label = labels.get(i);
+				label = labels.get(i - 1);
 			}
 		}
 		if (checked) {
