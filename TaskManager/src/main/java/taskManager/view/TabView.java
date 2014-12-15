@@ -11,17 +11,18 @@ package taskManager.view;
 
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import net.miginfocom.swing.MigLayout;
 import taskManager.controller.EditTaskController;
 import taskManager.controller.TabPaneController;
 import taskManager.controller.WorkflowController;
@@ -34,7 +35,7 @@ import taskManager.model.FetchWorkflowObserver;
  * @author Samee Swartz
  * @version Nov 21, 2014
  */
-public class TabView extends JPanel implements ActionListener {
+public class TabView extends JPanel implements ActionListener, MouseListener {
 
 	public static final String X = "X";
 
@@ -42,6 +43,7 @@ public class TabView extends JPanel implements ActionListener {
 	private Component component;
 	private boolean closeable;
 	private TabPaneController tabPaneC;
+	private final JButton closeButton;
 
 	/**
 	 * 
@@ -55,7 +57,7 @@ public class TabView extends JPanel implements ActionListener {
 	 *            Whether to make the tab closeable - aka put an 'x' in the tab
 	 */
 	public TabView(String title, Component component, boolean closeable) {
-		super(new FlowLayout(FlowLayout.LEFT, 0, 0));
+		super(new MigLayout("", "0[][]0", "0[]0"));
 
 		this.component = component;
 		this.closeable = closeable;
@@ -71,15 +73,18 @@ public class TabView extends JPanel implements ActionListener {
 		temp.setText("Tabs Name Length");
 		final Dimension size = temp.getPreferredSize();
 		label.setMaximumSize(size);
-		label.setPreferredSize(size);
-		label.setBorder(BorderFactory.createEmptyBorder(3, 0, 2, 7));
 		add(label);
 
+		closeButton = new JButton("\u2716");
 		if (closeable) {
-			final JButton closeButton = new JButton("\u2716");
-			closeButton.setFont(closeButton.getFont().deriveFont((float) 8));
-			closeButton.setMargin(new Insets(0, 0, 0, 0));
+			closeButton.setFont(closeButton.getFont().deriveFont((float) 10));
+			closeButton.setMargin(new Insets(0, 2, 0, 2));
+			closeButton.setFocusPainted(false);
+			closeButton.setContentAreaFilled(false);
+			closeButton.setBorderPainted(false);
+			closeButton.setOpaque(false);
 			closeButton.addActionListener(this);
+			closeButton.addMouseListener(this);
 			closeButton.setName(X);
 			add(closeButton);
 		}
@@ -137,6 +142,31 @@ public class TabView extends JPanel implements ActionListener {
 
 	public Component getComponent() {
 		return component;
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// Do nothing
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// Do nothing
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// Do nothing
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		closeButton.setBorderPainted(true);
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		closeButton.setBorderPainted(false);
 	}
 
 }

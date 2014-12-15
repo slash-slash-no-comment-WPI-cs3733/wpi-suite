@@ -12,7 +12,7 @@ package taskManager.view;
 import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
@@ -45,6 +45,14 @@ public class TabPaneView extends JTabbedPane {
 		final JScrollPane scroll = new JScrollPane(WorkflowController
 				.getInstance().getView());
 
-		this.addTab("Workflow", new ImageIcon(), scroll, "Workflow");
+		JLabel workflowTab = new JLabel("Workflow");
+		workflowTab.setMaximumSize(new Dimension(200, 20));
+		workflowTab.setMinimumSize(new Dimension(20, 20));
+		workflowTab.setSize(new Dimension(workflowTab.getPreferredSize().width,
+				20));
+		workflowTab.setPreferredSize(new Dimension(workflowTab
+				.getPreferredSize().width, 20));
+		this.addTab("Workflow", scroll);
+		this.setTabComponentAt(this.indexOfComponent(scroll), workflowTab);
 	}
 }

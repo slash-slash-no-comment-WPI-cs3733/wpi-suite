@@ -30,5 +30,6 @@ public class Colors {
 	public static final Color ACTIVITY_EDIT = Color.LIGHT_GRAY;
 	public static final Color ACTIVITY_COMMENT = Color.CYAN;
 	public static final Color STAGE = Color.decode("#C8DDF1");
-	public static final Color INPUT_ERROR = Color.decode("#FCFCFC");
+	public static final Color ERROR_BUBBLE = Color.decode("#FCFCFC");
+	public static final Color ERROR = Color.decode("#FFDDDD");
 }

@@ -144,6 +144,7 @@ public class StageView extends JPanel implements Transferable {
 		stage = new JScrollPane(tasks,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		stage.getVerticalScrollBar().setUnitIncrement(12);
 
 		label.setBackground(Colors.STAGE);
 		final Border color = BorderFactory.createLineBorder(

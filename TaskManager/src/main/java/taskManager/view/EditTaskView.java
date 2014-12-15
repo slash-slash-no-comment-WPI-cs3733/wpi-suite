@@ -344,7 +344,7 @@ public class EditTaskView extends JPanel {
 		window.add(SpacerBtm, "dock south");
 
 		BalloonTipStyle errorStyle = new RoundedBalloonStyle(5, 5,
-				Colors.INPUT_ERROR, Color.red);
+				Colors.ERROR_BUBBLE, Color.RED);
 		titleError = new BalloonTip(titleField, new JLabel(TITLE_ERROR),
 				errorStyle, Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST,
 				5, 15, false);
@@ -744,22 +744,16 @@ public class EditTaskView extends JPanel {
 	 * Sets the title field border red
 	 * 
 	 * @param red
-	 *            turns the red border on and off
+	 *            turns the red background on and off
 	 */
 
 	public void setTitleFieldRed(boolean red) {
 		if (red) {
-			titleField.setBorder(BorderFactory.createLineBorder(Color.red));
+			titleField.setBackground(Colors.ERROR);
 		} else {
-			titleField.setBorder(BorderFactory.createLineBorder(Color.black));
+			titleField.setBackground(Color.WHITE);
 		}
 	}
-
-	/**
-	 * Sets the title field border red
-	 * 
-	 * @param boolean turns the red border on and off
-	 */
 
 	/**
 	 * Sets the description error visible or invisible
@@ -774,26 +768,19 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * Sets the description field border red
+	 * Sets the description field red
 	 * 
 	 * @param red
-	 *            turns the red border on and off
+	 *            turns the red background on and off
 	 */
 
 	public void setDescriptionFieldRed(boolean red) {
 		if (red) {
-			descripArea.setBorder(BorderFactory.createLineBorder(Color.red));
+			descripArea.setBackground(Colors.ERROR);
 		} else {
-			descripArea
-					.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+			descripArea.setBackground(Color.WHITE);
 		}
 	}
-
-	/**
-	 * Sets the description field border red
-	 * 
-	 * @param boolean turns the red border on and off
-	 */
 
 	/**
 	 * Sets the estimated effort error visible or invisible
@@ -807,33 +794,31 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * Sets the estimated effort field border red
+	 * Sets the estimated effort red
 	 * 
 	 * @param red
-	 *            turns the red border on and off
+	 *            turns the red background on and off
 	 */
 
 	public void setEstEffortFieldRed(boolean red) {
 		if (red) {
-			estEffortField.setBorder(BorderFactory.createLineBorder(Color.red));
+			estEffortField.setBackground(Colors.ERROR);
 		} else {
-			estEffortField
-					.setBorder(BorderFactory.createLineBorder(Color.gray));
+			estEffortField.setBackground(Color.WHITE);
 		}
 	}
 
 	/**
-	 * Sets the actual effort field border red
+	 * Sets the actual effort red
 	 * 
-	 * @red boolean turns the red border on and off
+	 * @red boolean turns the red background on and off
 	 */
 
 	public void setActEffortFieldRed(boolean red) {
 		if (red) {
-			actEffortField.setBorder(BorderFactory.createLineBorder(Color.red));
+			actEffortField.setBackground(Colors.ERROR);
 		} else {
-			actEffortField
-					.setBorder(BorderFactory.createLineBorder(Color.gray));
+			actEffortField.setBackground(Color.WHITE);
 		}
 	}
 

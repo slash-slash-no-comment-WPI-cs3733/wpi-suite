@@ -55,6 +55,7 @@ public class TaskInfoPreviewView extends JPanel {
 	private final TaskModel taskM;
 	private final TaskController taskC;
 	private final TaskInfoPreviewController controller;
+	private final JButton closeButton;
 	public static final String EDIT = "edit";
 	public static final String X = "x";
 	public static final int WIDTH = 220;
@@ -75,7 +76,7 @@ public class TaskInfoPreviewView extends JPanel {
 			Point loc) {
 		taskM = model;
 		taskC = controller;
-		this.controller = new TaskInfoPreviewController(taskC);
+		this.controller = new TaskInfoPreviewController(taskC, this);
 
 		this.setLayout(null);
 		this.setOpaque(false);
@@ -86,7 +87,7 @@ public class TaskInfoPreviewView extends JPanel {
 		setBoundsWithoutClipping(loc, 245, 415);
 
 		bgPane.setBackground(Colors.TASK);
-		final Border color = BorderFactory.createLineBorder(getBackground(), 3);
+		final Border color = BorderFactory.createLineBorder(Color.GRAY, 3);
 		final DropShadowBorder shadow = new DropShadowBorder();
 		shadow.setShadowColor(Color.BLACK);
 		shadow.setShowLeftShadow(true);
@@ -124,11 +125,16 @@ public class TaskInfoPreviewView extends JPanel {
 		title.setMaximumSize(titleSize);
 		titleBar.add(title);
 		// Closable 'x' button
-		final JButton closeButton = new JButton("\u2716");
+		closeButton = new JButton("\u2716");
 		closeButton.setName(X);
-		closeButton.setFont(closeButton.getFont().deriveFont((float) 8));
+		closeButton.setFont(closeButton.getFont().deriveFont((float) 10));
 		closeButton.setMargin(new Insets(0, 0, 0, 0));
+		closeButton.setFocusPainted(false);
+		closeButton.setContentAreaFilled(false);
+		closeButton.setBorderPainted(false);
+		closeButton.setOpaque(false);
 		closeButton.addActionListener(this.controller);
+		closeButton.addMouseListener(this.controller);
 		titleBar.add(closeButton);
 		if (model.isArchived()) {
 			titleBar.setBackground(Colors.ARCHIVE_CLICKED);
@@ -309,5 +315,9 @@ public class TaskInfoPreviewView extends JPanel {
 	 */
 	public TaskController getTaskController() {
 		return taskC;
+	}
+
+	public void setCloseBorder(boolean border) {
+		closeButton.setBorderPainted(border);
 	}
 }
