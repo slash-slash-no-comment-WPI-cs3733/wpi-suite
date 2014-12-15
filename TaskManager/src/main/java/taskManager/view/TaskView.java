@@ -262,12 +262,16 @@ public class TaskView extends JPanel implements Transferable {
 	 */
 	@Override
 	public Object getTransferData(DataFlavor flavor)
-			throws UnsupportedFlavorException {
-		if (!flavor.equals(DDTransferHandler.getTaskFlavor())) {
+			throws UnsupportedFlavorException, IOException {
+		if (flavor.equals(DDTransferHandler.getTaskFlavor())) {
+			// return this panel as the transfer data
+			return this;
+
+		} else if (flavor.equals(DataFlavor.stringFlavor)) {
+			return controller.getExportString();
+		} else {
 			throw new UnsupportedFlavorException(flavor);
 		}
-		// return this panel as the transfer data
-		return this;
 	}
 
 	/*
@@ -275,7 +279,8 @@ public class TaskView extends JPanel implements Transferable {
 	 */
 	@Override
 	public DataFlavor[] getTransferDataFlavors() {
-		final DataFlavor[] flavors = { DDTransferHandler.getTaskFlavor() };
+		DataFlavor[] flavors = { DDTransferHandler.getTaskFlavor(),
+				DataFlavor.stringFlavor };
 		return flavors;
 	}
 
@@ -285,7 +290,8 @@ public class TaskView extends JPanel implements Transferable {
 	 */
 	@Override
 	public boolean isDataFlavorSupported(DataFlavor flavor) {
-		return flavor.equals(DDTransferHandler.getTaskFlavor());
+		return flavor.equals(DDTransferHandler.getTaskFlavor())
+				|| flavor.equals(DataFlavor.stringFlavor);
 	}
 
 	/*

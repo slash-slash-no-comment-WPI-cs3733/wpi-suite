@@ -15,7 +15,6 @@ import static org.junit.Assert.fail;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Point;
-import java.awt.event.KeyEvent;
 import java.util.Date;
 
 import javax.swing.BoxLayout;
@@ -52,10 +51,6 @@ public class TestRotationController extends ScreenshotOnFail {
 	private FrameFixture fixture;
 	private JFrame frame;
 	private TaskModel t = null;
-	private static final int[] code = { KeyEvent.VK_UP, KeyEvent.VK_UP,
-			KeyEvent.VK_DOWN, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT,
-			KeyEvent.VK_RIGHT, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT,
-			KeyEvent.VK_B, KeyEvent.VK_A, KeyEvent.VK_ENTER };
 
 	@BeforeClass
 	public static void netSetup() {
@@ -87,17 +82,12 @@ public class TestRotationController extends ScreenshotOnFail {
 		WorkflowController.getInstance().reloadData();
 
 		fixture = new FrameFixture(frame);
-
 		fixture.show();
 
 		fixture.robot.waitForIdle();
 		// enter fun mode
-		for (int c : code) {
-			fixture.robot.pressKey(c);
-			fixture.robot.waitForIdle();
-			fixture.robot.releaseKey(c);
-			fixture.robot.waitForIdle();
-		}
+
+		ToolbarController.getInstance().getView().setFunMode(true);
 		fixture.robot.waitForIdle();
 	}
 
@@ -105,6 +95,7 @@ public class TestRotationController extends ScreenshotOnFail {
 	public void testFunButtonVibility() {
 		// turn off fun mode
 		fixture.checkBox(ToolbarView.FUN_MODE).uncheck();
+		fixture.robot.waitForIdle();
 
 		// make sure fun buttons are not visible at first
 		try {
@@ -115,9 +106,8 @@ public class TestRotationController extends ScreenshotOnFail {
 		}
 
 		// enter fun mode
-		for (int c : code) {
-			fixture.robot.pressKey(c);
-		}
+		ToolbarController.getInstance().getView().setFunMode(true);
+		fixture.robot.waitForIdle();
 
 		// make sure fun buttons are visible now
 		fixture.button(ToolbarView.TASK_ANGLES).requireVisible();

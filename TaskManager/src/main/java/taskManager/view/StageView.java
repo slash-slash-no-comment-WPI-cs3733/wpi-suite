@@ -61,7 +61,7 @@ public class StageView extends JPanel implements Transferable {
 	private final JTextField labelText;
 	private final JPanel changeLabel;
 	private final JPanel label;
-	private final JButton done;
+	private final JButton check;
 	private final JButton cancel;
 	private final DropAreaPanel tasks;
 	private final JScrollPane stage;
@@ -74,7 +74,7 @@ public class StageView extends JPanel implements Transferable {
 	 * @param name
 	 *            The title of the stage being drawn
 	 */
-	public StageView(String name) {
+	public StageView(String name, StageController stageC) {
 
 		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 
@@ -120,11 +120,11 @@ public class StageView extends JPanel implements Transferable {
 		labelText.setMaximumSize(new Dimension(135, 25));
 		labelText.setPreferredSize(new Dimension(135, 25));
 		// Checkmark button
-		done = new JButton("\u2713");
-		done.setName(CHECK);
-		done.setEnabled(false);
-		done.setFont(done.getFont().deriveFont((float) 12));
-		done.setMargin(new Insets(0, 0, 0, 0));
+		check = new JButton("\u2713");
+		check.setName(CHECK);
+		check.setEnabled(false);
+		check.setFont(check.getFont().deriveFont((float) 12));
+		check.setMargin(new Insets(0, 0, 0, 0));
 		// 'x' button
 		cancel = new JButton("\u2716");
 		cancel.setName(X);
@@ -132,7 +132,7 @@ public class StageView extends JPanel implements Transferable {
 		cancel.setMargin(new Insets(0, 0, 0, 0));
 
 		changeLabel.add(labelText);
-		changeLabel.add(done);
+		changeLabel.add(check);
 		changeLabel.add(cancel);
 
 		changeLabel.setVisible(false);
@@ -187,6 +187,8 @@ public class StageView extends JPanel implements Transferable {
 		// scrollbar flicker
 		stage.setDropTarget(new DropTarget(stage, new DropTargetRedispatcher(
 				tasks, DDTransferHandler.getTaskFlavor())));
+
+		setController(stageC);
 	}
 
 	/**
@@ -226,9 +228,10 @@ public class StageView extends JPanel implements Transferable {
 		stage.addMouseListener(controller);
 		// listen for double click on the stage title to change it
 		labelName.addMouseListener(controller);
+		labelText.addKeyListener(controller);
 
 		// listen for clicks on the 'change title' buttons
-		done.addActionListener(controller);
+		check.addActionListener(controller);
 		cancel.addActionListener(controller);
 	}
 
@@ -248,24 +251,25 @@ public class StageView extends JPanel implements Transferable {
 	 *            wether the box should be enabled or not
 	 */
 	public void enableChangeTitleCheckmark(Boolean enabled) {
-		done.setEnabled(enabled);
+		check.setEnabled(enabled);
 	}
 
+	/**
+	 * 
+	 * @return the text in the titleTextBox.
+	 */
 	public String getLabelText() {
 		return labelText.getText();
 	}
 
 	/**
-	 * makes the editable label field visible/not visible
-	 * 
-	 * @param q
-	 *            true is visible, false is not visible
+	 * Sets the focus to the text area
 	 */
-	public void enableTitleEditing(boolean q) {
-
-		changeLabel.setVisible(q);
-		label.setVisible(!q);
-
+	public void focusTextArea() {
+		this.labelText.requestFocus();
+		this.labelText.requestFocusInWindow();
+		this.labelText.grabFocus();
+		this.labelText.selectAll();
 	}
 
 	/**
@@ -275,6 +279,25 @@ public class StageView extends JPanel implements Transferable {
 	 */
 	public JTextField getLabelField() {
 		return labelText;
+	}
+
+	/**
+	 *
+	 * Changes which title is visible, the label or the textbox. If editable is
+	 * true, the textbox is visible.
+	 *
+	 * @param editable
+	 *            true to make the textbox visible, false to make the label
+	 *            visible
+	 */
+	public void switchTitles(boolean editable) {
+		label.setVisible(!editable);
+		changeLabel.setVisible(editable);
+		focusTextArea();
+	}
+
+	public boolean isCheckEnabled() {
+		return check.isEnabled();
 	}
 
 	// ----------------------------
@@ -288,11 +311,15 @@ public class StageView extends JPanel implements Transferable {
 	@Override
 	public Object getTransferData(DataFlavor flavor)
 			throws UnsupportedFlavorException {
-		if (!flavor.equals(DDTransferHandler.getStageFlavor())) {
+		if (flavor.equals(DDTransferHandler.getStageFlavor())) {
+			// return this panel as the transfer data
+			return this;
+
+		} else if (flavor.equals(DataFlavor.stringFlavor)) {
+			return controller.getExportString();
+		} else {
 			throw new UnsupportedFlavorException(flavor);
 		}
-		// return this panel as the transfer data
-		return this;
 	}
 
 	/*
@@ -300,7 +327,8 @@ public class StageView extends JPanel implements Transferable {
 	 */
 	@Override
 	public DataFlavor[] getTransferDataFlavors() {
-		final DataFlavor[] flavors = { DDTransferHandler.getStageFlavor() };
+		final DataFlavor[] flavors = { DDTransferHandler.getStageFlavor(),
+				DataFlavor.stringFlavor };
 		return flavors;
 	}
 
@@ -310,7 +338,7 @@ public class StageView extends JPanel implements Transferable {
 	 */
 	@Override
 	public boolean isDataFlavorSupported(DataFlavor flavor) {
-		return flavor.equals(DDTransferHandler.getStageFlavor());
+		return flavor.equals(DDTransferHandler.getStageFlavor())
+				|| flavor.equals(DataFlavor.stringFlavor);
 	}
-
 }

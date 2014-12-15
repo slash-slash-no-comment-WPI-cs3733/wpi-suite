@@ -20,7 +20,6 @@ import edu.wpi.cs.wpisuitetng.network.models.ResponseModel;
  */
 public class FetchWorkflowObserver extends GenericRequestObserver {
 
-	public static boolean ignoreAllResponses = false;
 	private boolean keepOpen;
 
 	final WorkflowModel model;
@@ -51,7 +50,7 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 	@Override
 	public void responseSuccess(IRequest iReq) {
 
-		if (ignoreAllResponses) {
+		if (WorkflowController.pauseInformation) {
 			System.out.println("Ignoring response due to global ignore flag");
 
 			// restart the connection

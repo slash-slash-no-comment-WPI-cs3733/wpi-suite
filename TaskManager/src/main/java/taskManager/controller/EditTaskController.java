@@ -25,9 +25,11 @@ import javax.swing.JTabbedPane;
 
 import taskManager.TaskManager;
 import taskManager.model.ActivityModel;
+import taskManager.model.ActivityModel.ActivityModelType;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
+import taskManager.view.ActivityView;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
@@ -48,14 +50,16 @@ public class EditTaskController implements ActionListener {
 	private final EditTaskView etv;
 	private final List<String> toRemove = new ArrayList<String>();
 	private TaskModel model;
+	private ActivityController activityC;
 
 	/**
 	 * Creates an EditTaskController and EditTaskView form for a *new* Task.
 	 *
 	 */
 	public EditTaskController() {
-		etv = new EditTaskView(Mode.CREATE, null);
+		activityC = new ActivityController(null, this);
 
+		etv = new EditTaskView(Mode.CREATE, activityC, null);
 		etv.setController(this);
 		etv.setFieldController(new TaskInputController(etv));
 
@@ -63,7 +67,6 @@ public class EditTaskController implements ActionListener {
 		etv.setSaveEnabled(false);
 
 		// Clear all activities, reset fields.
-		etv.clearActivities();
 		etv.resetFields();
 
 		// fills the user lists
@@ -89,9 +92,11 @@ public class EditTaskController implements ActionListener {
 	 * @param model
 	 */
 	public EditTaskController(TaskModel model) {
-		etv = new EditTaskView(Mode.EDIT, model.getID());
 		this.model = model;
+		this.activityC = new ActivityController(model, this);
 
+		etv = new EditTaskView(Mode.EDIT, activityC, model.getID());
+		etv.setName(model.getName());
 		etv.setController(this);
 		etv.setFieldController(new TaskInputController(etv));
 
@@ -135,14 +140,6 @@ public class EditTaskController implements ActionListener {
 		// Disable save button until user starts making edits.
 		etv.setSaveEnabled(false);
 
-		// Clear the activities list.
-		etv.clearActivities();
-
-		// set activities pane
-		final List<ActivityModel> tskActivities = model.getActivities();
-		etv.setActivities(tskActivities);
-		etv.setActivitiesPanel(tskActivities);
-
 		// set the requirement dropdown
 		if (model.getReq() != null) {
 			etv.setSelectedRequirement(model.getReq().getName());
@@ -171,10 +168,9 @@ public class EditTaskController implements ActionListener {
 
 			case EditTaskView.SAVE:
 
-				if (etv.getFieldController().checkFields()) {
+				if (etv.getFieldController().checkEditFields()) {
 					// if editing
 					if (isEditingTask()) {
-
 						save();
 					}
 					// if creating a new task
@@ -187,6 +183,10 @@ public class EditTaskController implements ActionListener {
 						// creates a new task model
 						model = new TaskModel(etv.getTitleText(), desiredStage);
 						etv.setViewID(model.getID());
+						// add pending activities/comments
+						for (ActivityModel act : activityC.getActivities()) {
+							model.addActivity(act);
+						}
 						save();
 					}
 
@@ -269,13 +269,35 @@ public class EditTaskController implements ActionListener {
 				etv.resetFields();
 				returnToWorkflowView();
 				break;
-
+			case EditTaskView.CANCEL_COMMENT:
+				etv.clearText();
+				activityC.setEditedTask(null);
+				break;
 			case EditTaskView.SUBMIT_COMMENT:
-				// adds a comment.
-				final ActivityModel comment = etv.addComment();
-				// add immediately to the model.
-				model.addActivity(comment);
+				// the user is currently editing a comment
+				if (activityC.getEditedTask() != null) {
+					activityC.getEditedTask().getModel()
+							.setDescription(etv.getCommentsFieldText());
+					// reset
+					activityC.setEditedTask(null);
+				}
+				// the user is creating a new comment
+				else {
+					ActivityModel comment = new ActivityModel(
+							etv.getCommentsFieldText(),
+							ActivityModelType.COMMENT);
+					// add the activity
+					activityC.addActivity(comment);
+					activityC.scrollActivitiesToBottom();
+				}
+				etv.clearText();
 				WorkflowModel.getInstance().save();
+				break;
+			case ActivityView.EDIT:
+				activityC.setEditedTask((ActivityView) ((JButton) button)
+						.getParent().getParent().getParent());
+				etv.setCommentsFieldText(((ActivityView) ((JButton) button)
+						.getParent().getParent().getParent()).getComment());
 				break;
 			}
 		}
@@ -488,7 +510,17 @@ public class EditTaskController implements ActionListener {
 
 		// Compare the task info with the filled in info.
 		if (model == null) { // If we're creating a task
-			edited = true;
+			if (!(etv.getTitleText().isEmpty()
+					&& etv.getDescription().isEmpty()
+					&& !checkDate(null)
+					&& etv.getSelectedStage().equals(
+							WorkflowModel.getInstance().getStages().get(0)
+									.getName()) && !checkUsers(null)
+					&& etv.getEstEffort().isEmpty()
+					&& etv.getActEffort().isEmpty()
+					&& (etv.getSelectedRequirement() == null) && !etv
+						.isArchived()))
+				edited = true;
 		}
 		// Title.
 		else if (!model.getName().equals(etv.getTitleText())) {
@@ -538,18 +570,19 @@ public class EditTaskController implements ActionListener {
 	 */
 	public Boolean checkDate(TaskModel task) {
 		// if the task had a due date, check if it changed
-		final Date dueDate = task.getDueDate();
+		final Date dueDate;
+		if (task != null) {
+			dueDate = task.getDueDate();
+		} else {
+			dueDate = new Date();
+		}
 
 		final Calendar cal1 = Calendar.getInstance();
 		final Calendar cal2 = Calendar.getInstance();
 
 		cal1.setTime(dueDate);
-		if (isEditingTask() && dueDate != null) {
-			cal2.setTime(etv.getDate());
-		} else {
-			// check if it has the default date (today)
-			cal2.setTime(Calendar.getInstance().getTime());
-		}
+		cal2.setTime(etv.getDate());
+
 		boolean sameDay = cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR)
 				&& cal1.get(Calendar.DAY_OF_YEAR) == cal2
 						.get(Calendar.DAY_OF_YEAR);
@@ -568,7 +601,12 @@ public class EditTaskController implements ActionListener {
 	 */
 	private boolean checkUsers(TaskModel task) {
 		boolean edited = false;
-		final Set<String> taskAssigned = task.getAssigned();
+		final Set<String> taskAssigned;
+		if (task != null) {
+			taskAssigned = task.getAssigned();
+		} else {
+			taskAssigned = new HashSet<String>();
+		}
 		final Set<String> usersAssigned = new HashSet<String>();
 		usersAssigned.addAll(etv.getUsersList().getAllValues());
 		if (!usersAssigned.equals(taskAssigned)) {
