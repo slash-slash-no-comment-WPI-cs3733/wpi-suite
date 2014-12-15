@@ -77,9 +77,9 @@ public class TestReportsController {
 	public void simpleTest() throws InterruptedException {
 		Set<String> users = new HashSet<String>();
 		users.add("User 1");
-		List<ReportsController.ReportDatum> data = rm.findVelocityData(users, now,
-				now.plusSeconds(60 * 60 * 24 * 7), false, finished);
-		rm.generateVelocityDataset(data, false, Period.ofDays(1));
+		List<ReportsController.ReportDatum> data = rm.findVelocityData(users,
+				now, now.plusSeconds(60 * 60 * 24 * 7), false, finished);
+		rm.generateVelocityDataset(data, users, false, Period.ofDays(1));
 		final JPanel chart = rm.createBarChart("Title", "Time", "Effort");
 		frame.add(chart);
 		frame.revalidate();
@@ -98,9 +98,9 @@ public class TestReportsController {
 	public void testSingleUser() throws InterruptedException {
 		Set<String> users = new HashSet<String>();
 		users.add("User 1");
-		List<ReportsController.ReportDatum> data = rm.findVelocityData(users, now,
-				now.plusSeconds(60 * 60 * 24 * 7), false, finished);
-		rm.generateVelocityDataset(data, false, Period.ofDays(1));
+		List<ReportsController.ReportDatum> data = rm.findVelocityData(users,
+				now, now.plusSeconds(60 * 60 * 24 * 7), false, finished);
+		rm.generateVelocityDataset(data, users, false, Period.ofDays(1));
 		final JPanel chart = rm.createBarChart("Title", "Time", "Effort");
 		frame.add(chart);
 		frame.revalidate();

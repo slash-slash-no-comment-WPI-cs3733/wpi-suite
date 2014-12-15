@@ -39,6 +39,7 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.renderer.category.LineAndShapeRenderer;
 import org.jfree.chart.renderer.category.StandardBarPainter;
 import org.jfree.data.category.CategoryToPieDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
@@ -244,7 +245,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 	 *            The interval to group the data by.
 	 */
 	public void generateVelocityDataset(List<ReportDatum> data,
-			boolean teamData, Period interval) {
+			Set<String> users, boolean teamData, Period interval) {
 		if (data == null) {
 			throw new IllegalStateException(
 					"Tried to generate a dataset without getting any data first!");
@@ -261,20 +262,27 @@ public class ReportsController implements ActionListener, ChangeListener,
 			intervalName = "Month ";
 		}
 		int seriesNum = 0;
-		// We get this user to add some 0s to, rather than creating a "" user.
-		String dummyUsername = "User";
-		if (!data.isEmpty()) {
-			dummyUsername = data.iterator().next().category;
-		}
-		// Populate the buckets with names before-hand.
-		for (ZonedDateTime i = start; i.compareTo(end) < 0; i = i
-				.plus(interval)) {
-			dataset.addValue(0, dummyUsername, intervalName + (seriesNum + 1));
-			seriesNum++;
-		}
 
+		// We get this user to add some 0s to, rather than creating a ""
+		if (teamData) {
+			for (ZonedDateTime i = start; i.compareTo(end) < 0; i = i
+					.plus(interval)) {
+				dataset.addValue(0, "Team", intervalName + (seriesNum + 1));
+				seriesNum++;
+			}
+		} else {
+			for (ZonedDateTime i = start; i.compareTo(end) < 0; i = i
+					.plus(interval)) {
+				for (String user : users) {
+					// Populate the buckets with names before-hand.
+					dataset.addValue(0, user, intervalName + (seriesNum + 1));
+				}
+				seriesNum++;
+			}
+
+		}
 		// Iterate through each userdata.
-		for (ReportDatum userData : data) {
+		for (ReportDatum datum : data) {
 
 			// Boundary is the temporary enddate to use to calculate the total
 			// effort for the current completion date (e.g. if completion date
@@ -294,23 +302,22 @@ public class ReportsController implements ActionListener, ChangeListener,
 				boundary = boundary.plus(interval); // increment by interval
 													// (day/week/month).
 				seriesNum++;
-			} while ((boundary.toInstant().getEpochSecond() - userData.timeStamp
+			} while ((boundary.toInstant().getEpochSecond() - datum.timeStamp
 					.toInstant().getEpochSecond()) < 86400);
 
 			// set the name depending on the teamData value.
 			String keyname = "Team";
 			if (!teamData) {
-				keyname = userData.category;
+				keyname = datum.category;
 			}
 
+			String columnKey = intervalName + (seriesNum);
 			// If the dataset contains the keyname, increment the effort value.
 			// Else, add the value as a new object in the dataset.
 			if (dataset.getRowKeys().contains(keyname)) {
-				dataset.incrementValue(userData.effort, keyname, intervalName
-						+ (seriesNum));
+				dataset.incrementValue(datum.effort, keyname, columnKey);
 			} else {
-				dataset.addValue(userData.effort, keyname, intervalName
-						+ (seriesNum));
+				dataset.addValue(datum.effort, keyname, columnKey);
 			}
 		}
 	}
@@ -547,7 +554,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 	 * 
 	 * @return a JPanel containing the graph
 	 */
-	public JPanel createLineGraph(String title, String xlabel, String ylabel) {
+	public JPanel createLineChart(String title, String xlabel, String ylabel) {
 		if (dataset == null) {
 			throw new IllegalStateException(
 					"Tried to generate a chart without creating a dataset first!");
@@ -563,6 +570,11 @@ public class ReportsController implements ActionListener, ChangeListener,
 				true, // tooltips?
 				false // URLs?
 				);
+
+		final CategoryPlot plot = (CategoryPlot) chart.getPlot();
+		final LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot
+				.getRenderer();
+		renderer.setBaseShapesVisible(true);
 
 		final ChartPanel chartPanel = new ChartPanel(chart, false);
 		chartPanel.setMaximumDrawHeight(2880);
@@ -746,13 +758,13 @@ public class ReportsController implements ActionListener, ChangeListener,
 
 		// Generate the dataset required to draw the graph, with a given
 		// interval.
-		generateVelocityDataset(data, false, Period.ofDays(1));
+		generateVelocityDataset(data, users, false, Period.ofDays(1));
 
 		// Create the chart with the Title, Label names.
-		JPanel chart = createBarChart("Effort per Day", "Time", "Effort");
+		JPanel chart = createLineChart("Effort per Day", "Time", "Effort");
 
 		// Open a new tab with the given chart.
-		TabPaneController.getInstance().addTab("Bar Graph", chart, true);
+		TabPaneController.getInstance().addTab("Line Graph", chart, true);
 		TabPaneController.getInstance().getView().setSelectedComponent(chart);
 	}
 
