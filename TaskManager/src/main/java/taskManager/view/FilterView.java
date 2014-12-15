@@ -18,6 +18,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import taskManager.controller.FilterController;
 import taskManager.model.TaskModel.TaskCategory;
@@ -40,11 +41,17 @@ public class FilterView extends JPanel {
 	private JCheckBox myTasksCheckBox;
 	private JPanel categories;
 	private ArrayList<JLabel> labels;
+	private JTextField search;
 
 	private static final Dimension SIZE = new Dimension(150, 90);
 
 	public FilterView(FilterController filter) {
 		filterC = filter;
+
+		// Construct Search bar
+		search = new JTextField();
+		search.setMaximumSize(new Dimension(160, 30));
+		search.addKeyListener(filterC);
 
 		// adds a panel for this
 		this.setLayout(new GridLayout(3, 1));
@@ -97,6 +104,7 @@ public class FilterView extends JPanel {
 		}
 		categories.setMaximumSize(new Dimension(100, 30));
 
+		this.add(search);
 		this.add(categories);
 		this.add(checks);
 
@@ -217,6 +225,15 @@ public class FilterView extends JPanel {
 	 */
 	public FilterController getController() {
 		return this.filterC;
+	}
+
+	/**
+	 * returns the text in the search field
+	 *
+	 * @ return searchString
+	 */
+	public String getSearchString() {
+		return search.getText();
 	}
 
 }

@@ -11,6 +11,8 @@ package taskManager.controller;
 import java.awt.Component;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.HashSet;
@@ -33,7 +35,8 @@ import taskManager.view.FilterView;
  * @author Beth Martino
  *
  */
-public class FilterController implements ItemListener, MouseListener {
+public class FilterController implements ItemListener, MouseListener,
+		KeyListener {
 
 	private final FilterView view;
 
@@ -48,15 +51,6 @@ public class FilterController implements ItemListener, MouseListener {
 	 */
 	public FilterView getView() {
 		return this.view;
-	}
-
-	/**
-	 * returns true if there is something in the search bar
-	 * 
-	 * @return
-	 */
-	private boolean hasSearch() {
-		return false;
 	}
 
 	/**
@@ -103,7 +97,7 @@ public class FilterController implements ItemListener, MouseListener {
 	private void filter() {
 		WorkflowController.getInstance().removeTaskInfos(true);
 		TaskFilter filter = new TaskFilter();
-		WorkflowController.getInstance().setCurrentFilter(filter);
+
 		if (archiveChecked()) {
 			filter.setArchive(ArchiveState.ARCHIVED, ArchiveState.NOT_ARCHIVED);
 		} else {
@@ -117,8 +111,10 @@ public class FilterController implements ItemListener, MouseListener {
 		if (!categoriesSelected().isEmpty()) {
 			filter.setCategories(categoriesSelected());
 		}
-
-		WorkflowController.getInstance().reloadData();
+		if (!view.getSearchString().equals("")) {
+			filter.setString(view.getSearchString());
+		}
+		WorkflowController.getInstance().reloadData(filter);
 	}
 
 	@Override
@@ -154,5 +150,20 @@ public class FilterController implements ItemListener, MouseListener {
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// do nothing
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		filter();
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		filter();
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		filter();
 	}
 }
