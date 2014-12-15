@@ -200,7 +200,8 @@ public class ReportsManager implements ActionListener, ChangeListener,
 					&& completed.toInstant().isBefore(end.toInstant())) {
 				for (String username : task.getAssigned()) {
 					if (users.contains(username)) {
-						Double effort = (double) task.getActualEffort();
+						Double effort = task.isActualEffortSet() ? (double) task
+								.getActualEffort() : 0;
 						if (averageCredit) {
 							effort /= task.getAssigned().size();
 						}

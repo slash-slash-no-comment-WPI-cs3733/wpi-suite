@@ -56,16 +56,10 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	private Date dueDate;
 
 	// Estimated effort required for completion
-	private int estimatedEffort;
-
-	// Boolean stating whether estimated effort is set.
-	private boolean hasEstimatedEffort = false;
+	private Integer estimatedEffort;
 
 	// Effort actually expended to complete
-	private int actualEffort;
-
-	// Boolean stating whether actual effort is set.
-	private boolean hasActualEffort = false;
+	private Integer actualEffort;
 
 	// Actions and comments relevant to task
 	private List<ActivityModel> activities;
@@ -178,7 +172,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	/**
 	 * @return the estimatedEffort
 	 */
-	public int getEstimatedEffort() {
+	public Integer getEstimatedEffort() {
 		return estimatedEffort;
 	}
 
@@ -189,36 +183,25 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 * @return the boolean.
 	 */
 	public boolean isEstimatedEffortSet() {
-		return hasEstimatedEffort;
-	}
-
-	/**
-	 * 
-	 * Sets the hasEstimatedEffort.
-	 *
-	 * @param flag
-	 */
-	public void setHasEstimatedEffort(boolean flag) {
-		hasEstimatedEffort = flag;
+		return estimatedEffort != null;
 	}
 
 	/**
 	 * @param estimatedEffort
 	 *            the estimatedEffort to set
 	 */
-	public void setEstimatedEffort(int estimatedEffort) {
-		if (estimatedEffort <= 0) {
+	public void setEstimatedEffort(Integer estimatedEffort) {
+		if (estimatedEffort != null && estimatedEffort <= 0) {
 			throw new IllegalArgumentException(
 					"estimatedEffort must be non-negative");
 		}
 		this.estimatedEffort = estimatedEffort;
-		hasEstimatedEffort = true;
 	}
 
 	/**
 	 * @return the actualEffort
 	 */
-	public int getActualEffort() {
+	public Integer getActualEffort() {
 		return actualEffort;
 	}
 
@@ -229,30 +212,19 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 * @return the boolean.
 	 */
 	public boolean isActualEffortSet() {
-		return hasActualEffort;
-	}
-
-	/**
-	 * 
-	 * Sets the hasActualEffort.
-	 *
-	 * @param flag
-	 */
-	public void setHasActualEffort(boolean flag) {
-		hasActualEffort = flag;
+		return actualEffort != null;
 	}
 
 	/**
 	 * @param actualEffort
 	 *            the actualEffort to set
 	 */
-	public void setActualEffort(int actualEffort) {
-		if (actualEffort < 0) {
+	public void setActualEffort(Integer actualEffort) {
+		if (actualEffort != null && actualEffort < 0) {
 			throw new IllegalArgumentException(
 					"actualEffort must be non-negative");
 		}
 		this.actualEffort = actualEffort;
-		hasActualEffort = true;
 	}
 
 	/**

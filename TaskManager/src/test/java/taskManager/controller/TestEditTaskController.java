@@ -165,7 +165,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		TaskModel newTask = stage.findTaskByName("newT").get(0);
 		assertEquals(newTask.getDescription(), "newD");
 		assertEquals(newTask.getDueDate(), d);
-		assertEquals(newTask.getEstimatedEffort(), 4);
+		assertEquals(newTask.getEstimatedEffort(), new Integer(4));
 	}
 
 	@Test
@@ -189,7 +189,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		fixture.textBox(EditTaskView.ACT_EFFORT).deleteText().enterText("4");
 		fixture.button(EditTaskView.SAVE).click();
 
-		assertEquals(4, task.getActualEffort());
+		assertEquals(new Integer(4), task.getActualEffort());
 
 	}
 

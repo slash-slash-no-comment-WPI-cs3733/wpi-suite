@@ -8,9 +8,10 @@
  *******************************************************************************/
 package taskManager.controller;
 
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.text.SimpleDateFormat;
@@ -25,7 +26,6 @@ import javax.swing.JPanel;
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DropAreaSaveListener;
 import taskManager.model.ActivityModel;
-import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
@@ -42,29 +42,46 @@ import taskManager.view.TaskView;
  */
 
 public class StageController implements DropAreaSaveListener, MouseListener,
-		ActionListener {
+		ActionListener, KeyListener {
 
 	private final StageView view;
 	private StageModel model;
 
-	public static Boolean anyChangeTitleOut = false;
-	private Boolean thisChangeTitleOut = false;
+	private boolean newStage = false;
+
+	/**
+	 * Constructor for the StageController. Use this when a new stage is being
+	 * created (after clicking add stage button).
+	 *
+	 * @param view
+	 *            the corresponding StageView object
+	 */
+	public StageController() {
+		this.view = new StageView("", this);
+		this.newStage = true;
+	}
 
 	/**
 	 * Constructor for the StageController gets all the tasks from the
 	 * StageModel, creates the corresponding TaskView and TaskControllers for
-	 * each, and final adds all of the TaskViews to the UI.
+	 * each, and final adds all of the TaskViews to the UI. Use this when
+	 * loading a stage from a database.
 	 *
 	 * @param view
 	 *            the corresponding StageView object
 	 * @param model
 	 *            the corresponding StageModel object
+	 * @param newStage
+	 *            true if this is a new stage. false if it is being loaded from
+	 *            the database
 	 */
-	public StageController(StageView view, StageModel model) {
-		this.view = view;
+	public StageController(StageModel model) throws IllegalArgumentException {
+		if (model == null) {
+			throw new IllegalArgumentException("Model cannot be null");
+		}
 		this.model = model;
-
-		// Get all the tasks associated with this Stage.
+		this.view = new StageView(model.getName(), this);
+		this.newStage = false;
 
 		// Get state of archive shown check box.
 		final boolean showArchive = ToolbarController.getInstance().getView()
@@ -100,7 +117,6 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 				}
 			}
 		}
-
 	}
 
 	/*
@@ -184,37 +200,38 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 	 *            visible
 	 */
 	public void switchTitle(Boolean editable) {
-		for (Component c : view.getComponents()) {
-			if (StageView.TITLE.equals(c.getName())) {
-				c.setVisible(!editable);
-			} else if (StageView.CHANGE_TITLE.equals(c.getName())) {
-				c.setVisible(editable);
-			}
-		}
+		view.switchTitles(editable);
+	}
+
+	/**
+	 *
+	 * @return true if this is a new stage. false if it was loaded from the
+	 *         database
+	 */
+	public boolean isNewStage() {
+		return newStage;
+	}
+
+	/**
+	 *
+	 * @return the StageView for this controller
+	 */
+	public StageView getView() {
+		return view;
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// only bring up the title textbox if nothing else has set
-		// ignoreAllResponses
-		if (!FetchWorkflowObserver.ignoreAllResponses && !anyChangeTitleOut) {
-			// double clicked on the title
-			if (e.getClickCount() == 2 && e.getSource() instanceof JLabel) {
-				// Don't reload while changing a stage name is open.
-				FetchWorkflowObserver.ignoreAllResponses = true;
-				anyChangeTitleOut = true;
-				setThisChangeTitleOut(true);
-				// bring up the title textbox
-				switchTitle(true);
-			}
-		}
-		// If there are no changeTitle textboxes out, clear the workflow
-		else if (!StageController.anyChangeTitleOut) {
-			// reset the flag
-			FetchWorkflowObserver.ignoreAllResponses = false;
-			// this will remove any changeTitle textboxes or taskInfo bubbles
-			// from the workflow
-			WorkflowController.getInstance().removeTaskInfos(false);
+		// clicked on the title
+		if (e.getSource() instanceof JLabel) {
+			// Don't reload while changing a stage name is open.
+			WorkflowController.getInstance().removeChangeTitles();
+			WorkflowController.getInstance().removeTaskInfos(true);
+			WorkflowController.pauseInformation = true;
+			// bring up the title textbox
+			switchTitle(true);
+		} else {
+			WorkflowController.pauseInformation = false;
 			WorkflowController.getInstance().reloadData();
 			WorkflowController.getInstance().repaintView();
 		}
@@ -244,82 +261,61 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 
 	}
 
+	private void checkButton() {
+		if (view.isCheckEnabled()
+				&& WorkflowModel.getInstance().findStageByName(
+						view.getLabelText()) != null) {
+			JOptionPane.showConfirmDialog(view,
+					"Another stage already has the name " + view.getLabelText()
+							+ ". Please choose another name.",
+					"Warning - Duplicate stage names",
+					JOptionPane.CLOSED_OPTION);
+		} else if (view.isCheckEnabled()) {
+			if (model == null) {
+				model = new StageModel(view.getLabelText());
+			} else {
+				model.setName(view.getLabelText());
+			}
+
+			// refresh the workflow with the new stage
+			WorkflowController.getInstance().reloadData();
+			WorkflowController.getInstance().repaintView();
+
+			// save to the server
+			WorkflowModel.getInstance().save();
+		}
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		final Object button = e.getSource();
 		if (button instanceof JButton) {
-
 			switch (((JButton) button).getName()) {
 			case StageView.CHECK:
-				if (WorkflowModel.getInstance().findStageByName(
-						view.getLabelText()) != null) {
-					JOptionPane.showConfirmDialog(
-							view,
-							"Another stage already has the name "
-									+ view.getLabelText()
-									+ ". Please choose another name.",
-							"Warning - Duplicate stage names",
-							JOptionPane.CLOSED_OPTION);
-				} else {
-					if (model == null) {
-						model = new StageModel(view.getLabelText());
-					} else {
-						model.setName(view.getLabelText());
-					}
-
-					// refresh the workflow with the new stage
-					WorkflowController.getInstance().reloadData();
-					WorkflowController.getInstance().repaintView();
-
-					// save to the server
-					WorkflowModel.getInstance().save();
-				}
+				checkButton();
 				break;
 			// fall through
 			case StageView.X:
-				if (model == null) {
-					// ask the user if they want to cancel the new stage
-					final int opt = JOptionPane
-							.showConfirmDialog(
-									view,
-									"Are you sure you want to cancel creating the stage?",
-									"Cancel Stage Creation",
-									JOptionPane.YES_NO_OPTION);
-					if (opt == JOptionPane.YES_OPTION) {
-
-						// refresh the workflow with no new stage view
-						WorkflowController.getInstance().reloadData();
-						WorkflowController.getInstance().repaintView();
-					}
-
-				} else {
-					// reset the flags
-					setThisChangeTitleOut(false);
-					FetchWorkflowObserver.ignoreAllResponses = false;
-					// reload which will remove the textbox
-					WorkflowController.getInstance().reloadData();
-
-				}
-
+				// reset the flags
+				WorkflowController.pauseInformation = false;
+				// reload which will remove the textbox
+				WorkflowController.getInstance().reloadData();
 				break;
 			}
 		}
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
 
 	}
 
-	/**
-	 * @return the thisChangeTitleOut
-	 */
-	public Boolean getThisChangeTitleOut() {
-		return thisChangeTitleOut;
-	}
-
-	/**
-	 * @param thisChangeTitleOut
-	 *            the thisChangeTitleOut to set
-	 */
-	public void setThisChangeTitleOut(Boolean thisChangeTitleOut) {
-		this.thisChangeTitleOut = thisChangeTitleOut;
+	@Override
+	public void keyPressed(KeyEvent e) {
+		if (e.getKeyCode() == 10) {
+			checkButton();
+		}
 	}
 
 	/**
@@ -357,4 +353,9 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 		return String.join("\n", rows);
 	}
 
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+
+	}
 }

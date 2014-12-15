@@ -357,14 +357,14 @@ public class EditTaskController implements ActionListener {
 		try {
 			model.setEstimatedEffort(Integer.parseInt(etv.getEstEffort()));
 		} catch (java.lang.NumberFormatException e2) {
-			// Set to false since this value is not set.
-			model.setHasEstimatedEffort(false);
+			// Set to null.
+			model.setEstimatedEffort(null);
 		}
 
 		try {
 			model.setActualEffort(Integer.parseInt(etv.getActEffort()));
 		} catch (java.lang.NumberFormatException e2) {
-			model.setHasActualEffort(false);
+			model.setActualEffort(null);
 		}
 
 		// sets the due date from the calendar
@@ -586,7 +586,7 @@ public class EditTaskController implements ActionListener {
 	 */
 	private boolean checkEstEffort(TaskModel task) {
 		boolean edited = false;
-		if (task.getEstimatedEffort() == 0) {
+		if (!task.isEstimatedEffortSet()) {
 			if (etv.getEstEffort().isEmpty()) {
 				edited = false;
 			} else {
@@ -618,7 +618,7 @@ public class EditTaskController implements ActionListener {
 	 */
 	private boolean checkActEffort(TaskModel task) {
 		boolean edited = false;
-		if (task.getActualEffort() == 0) {
+		if (!task.isActualEffortSet()) {
 			if (etv.getActEffort().isEmpty()) {
 				edited = false;
 			} else {
