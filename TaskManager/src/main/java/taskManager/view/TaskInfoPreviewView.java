@@ -317,6 +317,13 @@ public class TaskInfoPreviewView extends JPanel {
 		return taskC;
 	}
 
+	/**
+	 * 
+	 * Set the BorderPainted boolean for the closeButton.
+	 *
+	 * @param border
+	 *            true to make the border visible, false otherwise
+	 */
 	public void setCloseBorder(boolean border) {
 		closeButton.setBorderPainted(border);
 	}

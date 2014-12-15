@@ -33,6 +33,8 @@ public class TaskInfoPreviewController implements ActionListener, MouseListener 
 	 *
 	 * @param taskC
 	 *            the controller for the task
+	 * @param t
+	 *            the taskInfoPreviewView being controlled
 	 */
 	public TaskInfoPreviewController(TaskController taskC, TaskInfoPreviewView t) {
 		this.taskC = taskC;
