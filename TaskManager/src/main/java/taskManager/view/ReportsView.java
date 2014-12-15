@@ -28,6 +28,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.border.TitledBorder;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -35,6 +36,8 @@ import org.jdesktop.swingx.JXDatePicker;
 
 import taskManager.controller.ReportsManager;
 import taskManager.controller.TaskInputController;
+import taskManager.localization.LocaleChangeListener;
+import taskManager.localization.Localizer;
 
 //TODO import taskManager.controller.ReportsController;
 
@@ -42,7 +45,7 @@ import taskManager.controller.TaskInputController;
  * @author Tyler Jaskoviak
  *
  */
-public class ReportsView extends JPanel {
+public class ReportsView extends JPanel implements LocaleChangeListener {
 
 	public static final String STAGE_NAME = "stage_name";
 	public static final String START_DATE = "start_date";
@@ -128,7 +131,7 @@ public class ReportsView extends JPanel {
 		reportsGridBag.anchor = GridBagConstraints.FIRST_LINE_START;
 		reportsGridBag.gridx = 0;
 		reportsGridBag.gridy = 0;
-		stagePanel.setBorder(BorderFactory.createTitledBorder("Stage"));
+		stagePanel.setBorder(BorderFactory.createTitledBorder(""));
 		stagePanel.add(stages, reportsGridBag);
 		Dimension stageDimensions = getPreferredSize();
 		stageDimensions.width = 175;
@@ -137,8 +140,8 @@ public class ReportsView extends JPanel {
 		stagePanel.setMinimumSize(stageDimensions);
 		stagePanel.setMaximumSize(stageDimensions);
 
-		fromLabel = new JLabel("Start Date:");
-		toLabel = new JLabel("End Date:");
+		fromLabel = new JLabel();
+		toLabel = new JLabel();
 
 		// Date
 		datePanel = new JPanel();
@@ -161,7 +164,7 @@ public class ReportsView extends JPanel {
 		reportsGridBag.anchor = GridBagConstraints.WEST;
 		reportsGridBag.gridx = 0;
 		reportsGridBag.gridy = 0;
-		datePanel.setBorder(BorderFactory.createTitledBorder("Timeframe"));
+		datePanel.setBorder(BorderFactory.createTitledBorder(""));
 		datePanel.add(fromLabel, reportsGridBag);
 		reportsGridBag.gridy = 1;
 		datePanel.add(toLabel, reportsGridBag);
@@ -180,9 +183,9 @@ public class ReportsView extends JPanel {
 		// WorkType
 		workTypePanel = new JPanel();
 		workTypePanel.setLayout(new GridBagLayout());
-		workFlow = new JRadioButton("Flow");
+		workFlow = new JRadioButton("");
 		workFlow.setName(WORK_FLOW);
-		workVelocity = new JRadioButton("Velocity");
+		workVelocity = new JRadioButton("");
 		workVelocity.setName(WORK_VELOCITY);
 		workTypeGroup = new ButtonGroup();
 		workTypeGroup.add(workFlow);
@@ -190,7 +193,7 @@ public class ReportsView extends JPanel {
 		reportsGridBag.anchor = GridBagConstraints.FIRST_LINE_START;
 		reportsGridBag.gridx = 0;
 		reportsGridBag.gridy = 0;
-		workTypePanel.setBorder(BorderFactory.createTitledBorder("WorkType"));
+		workTypePanel.setBorder(BorderFactory.createTitledBorder(""));
 		workTypePanel.add(workFlow, reportsGridBag);
 		reportsGridBag.gridy = 1;
 		workTypePanel.add(workVelocity, reportsGridBag);
@@ -204,9 +207,9 @@ public class ReportsView extends JPanel {
 		// Combined or Compared graph
 		workModePanel = new JPanel();
 		workModePanel.setLayout(new GridBagLayout());
-		combineWork = new JRadioButton("Combine Work");
+		combineWork = new JRadioButton("");
 		combineWork.setName(COLLABORATIVE);
-		compareWork = new JRadioButton("Compare Work");
+		compareWork = new JRadioButton("");
 		compareWork.setName(COMPARATIVE);
 		workflowGroup = new ButtonGroup();
 		workflowGroup.add(combineWork);
@@ -214,8 +217,7 @@ public class ReportsView extends JPanel {
 		reportsGridBag.anchor = GridBagConstraints.WEST;
 		reportsGridBag.gridx = 0;
 		reportsGridBag.gridy = 0;
-		workModePanel.setBorder(BorderFactory
-				.createTitledBorder("Compare/Combine"));
+		workModePanel.setBorder(BorderFactory.createTitledBorder(""));
 		workModePanel.add(combineWork, reportsGridBag);
 		reportsGridBag.gridy = 1;
 		workModePanel.add(compareWork, reportsGridBag);
@@ -228,11 +230,11 @@ public class ReportsView extends JPanel {
 
 		// Users
 		usersPanel = new JPanel();
-		allUsers = new JCheckBox("All");
+		allUsers = new JCheckBox();
 		allUsers.setName(ALL_USERS);
-		currUsersList = new ScrollList("Users Included in Report");
+		currUsersList = new ScrollList("");
 		currUsersList.setBackground(this.getBackground());
-		projectUsersList = new ScrollList("Users Not Included");
+		projectUsersList = new ScrollList("");
 		projectUsersList.setBackground(this.getBackground());
 		// Add user to list
 		addUser = new JButton(">>");
@@ -245,8 +247,7 @@ public class ReportsView extends JPanel {
 		reportsGridBag.anchor = GridBagConstraints.WEST;
 		reportsGridBag.gridx = 0;
 		reportsGridBag.gridy = 0;
-		usersPanel.setBorder(BorderFactory.createTitledBorder("Users"));
-		usersPanel.setBorder(BorderFactory.createTitledBorder("Users"));
+		usersPanel.setBorder(BorderFactory.createTitledBorder(""));
 		JPanel usersListPanel = new JPanel(new MigLayout());
 		JPanel projectUsersListPanel = new JPanel(new MigLayout());
 		JPanel addRemoveButtons = new JPanel(new MigLayout());
@@ -266,7 +267,7 @@ public class ReportsView extends JPanel {
 		usersPanel.setMaximumSize(usersPanelDimension);
 
 		// Generate Graph
-		generateGraph = new JButton("Generate");
+		generateGraph = new JButton();
 		generateGraph.setName(GENERATE);
 
 		window.setLayout(new GridBagLayout());
@@ -312,6 +313,9 @@ public class ReportsView extends JPanel {
 		window.add(generateGraph, toolbarGrid);
 
 		this.add(window);
+
+		onLocaleChange();
+		Localizer.addListener(this);
 	}
 
 	public void setController(ReportsManager manager) {
@@ -595,5 +599,29 @@ public class ReportsView extends JPanel {
 	 */
 	public ScrollList getUsersList() {
 		return currUsersList;
+	}
+
+	@Override
+	public void onLocaleChange() {
+		((TitledBorder) stagePanel.getBorder()).setTitle(Localizer
+				.getString("Stage"));
+		fromLabel.setText(Localizer.getString("StartDate") + ":");
+		toLabel.setText(Localizer.getString("EndDate") + ":");
+		((TitledBorder) datePanel.getBorder()).setTitle(Localizer
+				.getString("Timeframe"));
+		workFlow.setText(Localizer.getString("Flow"));
+		workVelocity.setText(Localizer.getString("Velocity"));
+		((TitledBorder) workTypePanel.getBorder()).setTitle(Localizer
+				.getString("WorkType"));
+		combineWork.setText(Localizer.getString("CombineWork"));
+		compareWork.setText(Localizer.getString("CompareWork"));
+		((TitledBorder) workModePanel.getBorder()).setTitle(Localizer
+				.getString("CompareCombine"));
+		allUsers.setText(Localizer.getString("All"));
+		currUsersList.setTitle(Localizer.getString("UsersReport"));
+		projectUsersList.setTitle(Localizer.getString("UsersNotReport"));
+		((TitledBorder) usersPanel.getBorder()).setTitle(Localizer
+				.getString("Users"));
+		generateGraph.setText(Localizer.getString("Generate"));
 	}
 }
