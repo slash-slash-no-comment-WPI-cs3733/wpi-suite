@@ -46,6 +46,7 @@ import taskManager.controller.TaskInputController;
 public class ReportsView extends JPanel implements ActionListener {
 
 	public static final String STAGE_NAME = "stage_name";
+	public static final String STAGE_NAME2 = "stage_name2";
 	public static final String START_DATE = "start_date";
 	public static final String END_DATE = "end_date";
 	public static final String WORK_FLOW = "work_flow";
@@ -58,10 +59,14 @@ public class ReportsView extends JPanel implements ActionListener {
 	public static final String ADD_USER = "add_user";
 	public static final String REMOVE_USER = "remove_user";
 	public static final String GENERATE = "generate";
+	public static final String USERS = "Users";
+	public static final String NUMBER_OF_TASKS = "number_of_tasks";
 
-	public String names[] = { "Work Velocity", "Task Distribution" };
+	public String names[] = { "Work Velocity", "Task Distribution", "Distribution Stages" };
+	public String slices[] = { "Days", "Weeks", "Months" };
 
 	private JPanel window;
+	private JPanel generator;
 
 	public enum Mode {
 		VELOCITY, DISTRIBUTION
@@ -71,23 +76,37 @@ public class ReportsView extends JPanel implements ActionListener {
 
 	// Variable to Insert Images
 	Image img;
-
+	//Effort or number of tasks panel
+	private JPanel effortOrNumberofTasks;
+	
 	// Stage picker
 	private JPanel stagePanel;
 	private JComboBox<String> stages;
+	private JPanel stagePanel2;
+	private JComboBox<String> stages2;
+	private JComboBox<String> timeSliceList;
 
-	JPanel stageHolder = new JPanel();
+	
+	JPanel TaskDistribution = new JPanel();
+	JPanel WorkVelocity = new JPanel(new MigLayout());
 	JPanel usersHolder = new JPanel();
-
+	JPanel usersHolderDistro = new JPanel();
+	JPanel SelectStages = new JPanel();
 	// Card-changing panel
 	JPanel cards;
 	JRadioButton workvel = new JRadioButton(names[0]);
 	JRadioButton taskdistro = new JRadioButton(names[1]);
-	JRadioButton distro_users = new JRadioButton("Users");
-	JRadioButton distro_stages = new JRadioButton("Stages");
+	JRadioButton effort = new JRadioButton("Effort");
+	JRadioButton numberoftasks = new JRadioButton("Number of Tasks");
+	JCheckBox select_stages = new JCheckBox("All Stages");
+	
 
+	
 	// Date Picker
+	private JPanel timePanel;
 	private JPanel datePanel;
+	private JPanel timeSlice;
+	private JLabel timeSliceLabel;
 	private JLabel startDateLabel;
 	private JLabel endDateLabel;
 	private JXDatePicker startDate;
@@ -131,11 +150,12 @@ public class ReportsView extends JPanel implements ActionListener {
 		this.mode = mode;
 
 		window = new JPanel(new MigLayout());
+		generator = new JPanel(new MigLayout());
 		this.setLayout(new FlowLayout());
 
 		// Stages or Users
-		JPanel StagesOrUsers = new JPanel(new MigLayout());
-
+		JPanel SelectStages= new JPanel(new MigLayout());
+	
 		// Report Type Pane
 
 		JPanel reportType = new JPanel(new MigLayout());
@@ -146,37 +166,46 @@ public class ReportsView extends JPanel implements ActionListener {
 		ButtonGroup reportTypeButtons = new ButtonGroup();
 		reportTypeButtons.add(workvel);
 		reportTypeButtons.add(taskdistro);
-
-		distro_users.addActionListener(this);
-		distro_users.setSelected(true);
-		distro_stages.addActionListener(this);
-		ButtonGroup stagesUsersButtons = new ButtonGroup();
-		stagesUsersButtons.add(distro_users);
-		stagesUsersButtons.add(distro_stages);
-
+		effort.addActionListener(this);
+		numberoftasks.addActionListener(this);
+		
+		ButtonGroup effortOrTasksButtons = new ButtonGroup();
+		effortOrTasksButtons.add(effort);
+		effortOrTasksButtons.add(numberoftasks);
+		select_stages.addActionListener(this);
+		effortOrNumberofTasks = new JPanel(new MigLayout());
 		reportType.add(reportTypeLabel, "wrap");
 		reportType.add(workvel);
 		reportType.add(taskdistro);
+		effortOrNumberofTasks.add(effort);
+		effortOrNumberofTasks.add(numberoftasks);
 
-		StagesOrUsers.add(new JLabel("Select Users or Stages"), "wrap");
-		StagesOrUsers.add(distro_users);
-		StagesOrUsers.add(distro_stages);
-
-		// Important attempt to make this work
+		
 		JPanel WorkVelocity = new JPanel(new MigLayout());
 		JPanel TaskDistribution = new JPanel(new MigLayout());
-		JPanel stageHolder = new JPanel(new MigLayout());
-		JPanel usersHolder = new JPanel(new MigLayout());
+		
+		//Create two differnent stage views for each view
 		stagePanel = new JPanel();
+		stagePanel2= new JPanel();
 		stagePanel.setLayout(new MigLayout());
+		stagePanel2.setLayout(new MigLayout());
 		stages = new JComboBox<String>();
 		stages.setName(STAGE_NAME);
-		stagePanel.setBorder(BorderFactory.createTitledBorder("Stage"));
-		stagePanel.add(stages);
+		
+		stages2 = new JComboBox<String>();
+		stages2.setName(STAGE_NAME2);
+		
+		timeSliceList = new JComboBox<String>(slices);
+		timeSliceList.setPrototypeDisplayValue("Time slices");
+		stagePanel.add(new JLabel("Stage"), "align left");
+		stagePanel.add(stages, "align left");
+		stagePanel2.add(stages2);
 
 		startDateLabel = new JLabel("Start Date:");
 		endDateLabel = new JLabel("End Date:");
-
+		
+		
+		
 		// Date
 		datePanel = new JPanel(new MigLayout());
 		startDate = new JXDatePicker();
@@ -195,12 +224,29 @@ public class ReportsView extends JPanel implements ActionListener {
 						.getImage()).getScaledInstance(20, 20,
 						java.awt.Image.SCALE_SMOOTH)));
 
-		datePanel.add(new JLabel("Select a time frame"), "wrap");
-		datePanel.add(startDateLabel);
-		datePanel.add(startDate, "wrap");
+	
+		datePanel.add(startDateLabel, "gapbottom 13px");
+		datePanel.add(startDate, "wrap, gapbottom 13px");
 		datePanel.add(endDateLabel);
 		datePanel.add(endDate);
 
+		timeSliceLabel = new JLabel("Units");
+		
+		
+		//Time 
+		timePanel = new JPanel(new MigLayout());
+		timeSlice = new JPanel(new MigLayout());
+		timeSlice.add(timeSliceLabel, "gapright 5px");
+	    timeSlice.add(timeSliceList);
+	    JPanel sliceAndStage = new JPanel(new MigLayout());
+	    sliceAndStage.add(timeSlice, "wrap");
+	    sliceAndStage.add(stagePanel, "gapright 20px");
+	    
+		timePanel.add(sliceAndStage, "h 100%, w 50%");
+		timePanel.add(datePanel, "h 100%, w 50%");
+
+		
+		
 		// WorkType
 		workTypePanel = new JPanel();
 		workTypePanel.setLayout(new MigLayout());
@@ -230,9 +276,9 @@ public class ReportsView extends JPanel implements ActionListener {
 
 		workModePanel.add(compareWork);
 
-		// Users
+		// Users for Work Velocity
 		usersPanel = new JPanel();
-		allUsers = new JCheckBox("All");
+		allUsers = new JCheckBox("Add all Users to report");
 		allUsers.setName(ALL_USERS);
 		currUsersList = new ScrollList("Users Included in Report");
 		currUsersList.setBackground(this.getBackground());
@@ -246,7 +292,6 @@ public class ReportsView extends JPanel implements ActionListener {
 		removeUser = new JButton("<<");
 		removeUser.setName(REMOVE_USER);
 		this.setRemoveUserEnabled(false);
-		usersPanel.setBorder(BorderFactory.createTitledBorder("Users"));
 		JPanel usersListPanel = new JPanel(new MigLayout());
 		JPanel projectUsersListPanel = new JPanel(new MigLayout());
 		JPanel addRemoveButtons = new JPanel(new MigLayout());
@@ -254,6 +299,7 @@ public class ReportsView extends JPanel implements ActionListener {
 		projectUsersListPanel.add(projectUsersList);
 		addRemoveButtons.add(addUser, "wrap");
 		addRemoveButtons.add(removeUser);
+		
 		usersPanel.add(projectUsersListPanel, "w 100!, gapleft 15px");
 		usersPanel.add(addRemoveButtons);
 		usersPanel.add(usersListPanel, "w 100!");
@@ -274,54 +320,55 @@ public class ReportsView extends JPanel implements ActionListener {
 		// One Column
 		// Panel for reports generating options
 		JPanel reportOptions = new JPanel(new MigLayout());
-		stageHolder = new JPanel(new MigLayout());
-		usersHolder = new JPanel(new MigLayout());
-		stageHolder.add(stagePanel);
-		usersHolder.add(usersPanel);
-
-		WorkVelocity.add(usersPanel, "wrap");
-		WorkVelocity.add(datePanel, "wrap");
-		WorkVelocity.add(stagePanel);
-
-		TaskDistribution.add(StagesOrUsers, "wrap");
-		TaskDistribution.add(stageHolder, "wrap");
-		TaskDistribution.add(usersHolder, "wrap");
-
+		
+		SelectStages.add(new JLabel("Select Stage"), "wrap");
+		SelectStages.add(stagePanel2, "wrap");
+		SelectStages.add(select_stages, "gaptop 15px");
+		
+		JPanel Distro = new JPanel(new MigLayout());
+		
+		Distro.add(SelectStages);
+		TaskDistribution.add(Distro, "gapleft 70px");
+		WorkVelocity.add(allUsers, "wrap, gapleft 20px");
+		WorkVelocity.add(usersPanel, "wrap, w 100%");
+		WorkVelocity.add(timePanel, "w 100%");
+	
+		
+		
+		
 		cards = new JPanel(new CardLayout());
 		cards.add(WorkVelocity, names[0]);
-		cards.add(TaskDistribution, names[1]);
-
-		window.add(reportType, "wrap");
-		window.add(cards, "wrap");
-		window.add(generateGraph, "center");
-
+    	cards.add(TaskDistribution, names[1]);
+		generator.add(reportType, "align center, wrap");
+		generator.add(cards, "wrap");
+		generator.add(effortOrNumberofTasks, "wrap");
+		generator.add(generateGraph, "dock south, gapbottom 20px");
+		CardLayout cl = (CardLayout) (cards.getLayout());
+		cl.show(cards, names[0]);
+		window.add(generator, "dock west");
 		this.add(window);
 	}
 
+
 	public void actionPerformed(ActionEvent e) {
 		CardLayout cl = (CardLayout) (cards.getLayout());
+		
 		if (e.getSource() == workvel) {
 			cl.show(cards, names[0]);
 			mode = Mode.VELOCITY;
+			
 		}
 		if (e.getSource() == taskdistro) {
+			
 			cl.show(cards, names[1]);
 			mode = Mode.DISTRIBUTION;
-
+		
 		}
+		
 
 	}
-
-	// TODO Figure out why I can't change the visibility of these two panels
-	public void actionPerformed1(ActionEvent a) {
-		if (a.getSource() == distro_users) {
-			usersHolder.setVisible(true);
-			stageHolder.setVisible(false);
-		} else {
-			usersHolder.setVisible(false);
-			stageHolder.setVisible(true);
-		}
-	}
+	
+	
 
 	public void setController(ReportsController manager) {
 		controller = manager;
@@ -342,6 +389,23 @@ public class ReportsView extends JPanel implements ActionListener {
 	public void setFieldController(TaskInputController controller) {
 		stages.addPopupMenuListener(controller);
 	}
+	
+	
+	
+	
+	/**
+	 * Adds the action listener (controller) to this view
+	 * 
+	 * @param controller
+	 *            the controller to be attached to this view
+	 */
+	public void setFieldController2(TaskInputController controller) {
+		stages2.addPopupMenuListener(controller);
+	}
+	
+	
+	
+
 
 	/**
 	 * gets the dropdown box in the view that contains all the stage names
@@ -376,6 +440,53 @@ public class ReportsView extends JPanel implements ActionListener {
 		return "";
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * gets the dropdown box in the view that contains all the stage names
+	 * 
+	 * @return the stages2 dropdown box
+	 */
+	public JComboBox<String> getStages2() {
+		return stages2;
+	}
+
+	/**
+	 * set stage2 dropdown box to the stage for graphing
+	 * 
+	 * @param n
+	 *            the index of the stage in the workflow
+	 */
+	public void setStageDropdown2(int n) {
+		String p = stages2.getItemAt(n);
+		stages2.setSelectedItem(p);
+	}
+
+	/**
+	 * Returns the selected stage2 name. If the selected item cannot be retrieved
+	 * returns an empty string.
+	 *
+	 * @return the selected stage as a String.
+	 */
+	public String getSelectedStage2() {
+		if (stages2.getSelectedItem() != null) {
+			return stages2.getSelectedItem().toString();
+		}
+		return "";
+	}
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * Returns the start date for the graph
 	 * 
@@ -626,10 +737,10 @@ public class ReportsView extends JPanel implements ActionListener {
 	}
 
 	public DistributionType getDistributionType() {
-		if (distro_users.isSelected()) {
-			return DistributionType.USER;
-		} else {
+		if (select_stages.isSelected()) {
 			return DistributionType.STAGE;
+		} else {
+			return DistributionType.USER;
 		}
 	}
 }

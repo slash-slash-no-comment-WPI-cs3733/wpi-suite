@@ -621,11 +621,17 @@ public class ReportsController implements ActionListener, ChangeListener,
 	 */
 	private void reloadStages() {
 		JComboBox<String> stages = rtv.getStages();
+		JComboBox<String> stages2 = rtv.getStages2();
 		stages.removeAllItems();
+		stages2.removeAllItems();
 		for (StageModel stage : WorkflowModel.getInstance().getStages()) {
 			stages.addItem(stage.getName());
 		}
+		for (StageModel stage : WorkflowModel.getInstance().getStages()) {
+			stages2.addItem(stage.getName());
+		}
 		// Select the 1st item if the old selected item doesn't exist
+		stages.setSelectedItem(0);
 		stages.setSelectedItem(0);
 	}
 
