@@ -146,7 +146,6 @@ public class TaskInputController implements KeyListener, PopupMenuListener,
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		// If Enter key pressed on the comment field, submit the comment.
 		validate();
 	}
 
