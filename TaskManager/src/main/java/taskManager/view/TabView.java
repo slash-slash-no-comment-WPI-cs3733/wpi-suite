@@ -25,6 +25,8 @@ import javax.swing.JPanel;
 import taskManager.controller.EditTaskController;
 import taskManager.controller.TabPaneController;
 import taskManager.controller.WorkflowController;
+import taskManager.localization.LocaleChangeListener;
+import taskManager.localization.Localizer;
 
 /**
  * 
@@ -33,7 +35,8 @@ import taskManager.controller.WorkflowController;
  * @author Samee Swartz
  * @version Nov 21, 2014
  */
-public class TabView extends JPanel implements ActionListener {
+public class TabView extends JPanel implements ActionListener,
+		LocaleChangeListener {
 
 	public static final String X = "X";
 
@@ -41,6 +44,10 @@ public class TabView extends JPanel implements ActionListener {
 	private Component component;
 	private boolean closeable;
 	private TabPaneController tabPaneC;
+	private JButton closeButton = null;
+	private boolean localizable;
+	private final String title;
+	private final JLabel label;
 
 	/**
 	 * 
@@ -52,18 +59,23 @@ public class TabView extends JPanel implements ActionListener {
 	 *            The component to display in the tab's window/pane
 	 * @param closeable
 	 *            Whether to make the tab closeable - aka put an 'x' in the tab
+	 * @param localizable
+	 *            If this title should be localized
 	 */
-	public TabView(String title, Component component, boolean closeable) {
+	public TabView(String title, Component component, boolean closeable,
+			boolean localizable) {
 		super(new FlowLayout(FlowLayout.LEFT, 0, 0));
 
 		this.component = component;
 		this.closeable = closeable;
+		this.localizable = localizable;
+		this.title = title;
 
 		tabPaneC = TabPaneController.getInstance();
 
 		setOpaque(false);
 
-		final JLabel label = new JLabel(title);
+		label = new JLabel();
 		// This makes the tab's a set width and adds the ... if a task name is
 		// too long for the tab
 		final JLabel temp = new JLabel();
@@ -75,13 +87,16 @@ public class TabView extends JPanel implements ActionListener {
 		add(label);
 
 		if (closeable) {
-			final JButton closeButton = new JButton("\u2716");
+			closeButton = new JButton();
 			closeButton.setFont(closeButton.getFont().deriveFont((float) 8));
 			closeButton.setMargin(new Insets(0, 0, 0, 0));
 			closeButton.addActionListener(this);
 			closeButton.setName(X);
 			add(closeButton);
 		}
+
+		onLocaleChange();
+		Localizer.addListener(this);
 	}
 
 	/**
@@ -92,9 +107,11 @@ public class TabView extends JPanel implements ActionListener {
 	 *            The title to put in the tab itself
 	 * @param component
 	 *            The component to display in the tab's window/pane
+	 * @param localizable
+	 *            If this title should be localized
 	 */
-	public TabView(String title, Component component) {
-		this(title, component, true);
+	public TabView(String title, Component component, boolean localizable) {
+		this(title, component, true, localizable);
 	}
 
 	/**
@@ -109,12 +126,11 @@ public class TabView extends JPanel implements ActionListener {
 						.getController();
 				// If there are edits, show confirmation dialog.
 				if (etc.isEdited()) {
-					final Integer choice = JOptionPane
-							.showConfirmDialog(
-									tabPaneC.getView(),
-									"You still have unsaved edits. Are you sure you want to delete this tab?",
-									"Warning - Deleting a tab with edits",
-									JOptionPane.YES_NO_OPTION);
+					final Integer choice = JOptionPane.showConfirmDialog(
+							tabPaneC.getView(),
+							Localizer.getString("UnsavedWarning"),
+							Localizer.getString("DeleteTabWarning"),
+							JOptionPane.YES_NO_OPTION);
 					if (choice.equals(JOptionPane.YES_OPTION)) {
 						tabPaneC.removeTabByComponent(component);
 						tabPaneC.getView().setSelectedIndex(0);
@@ -138,4 +154,13 @@ public class TabView extends JPanel implements ActionListener {
 		return component;
 	}
 
+	@Override
+	public void onLocaleChange() {
+		closeButton.setText(Localizer.getString("x"));
+		if (localizable) {
+			label.setText(Localizer.getString(title));
+		} else {
+			label.setText(title);
+		}
+	}
 }

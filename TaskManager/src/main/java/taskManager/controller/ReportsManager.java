@@ -9,6 +9,7 @@
 
 package taskManager.controller;
 
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
@@ -35,6 +36,7 @@ import javax.swing.event.ListSelectionListener;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.StandardChartTheme;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
@@ -43,6 +45,7 @@ import org.jfree.chart.renderer.category.StandardBarPainter;
 import org.jfree.data.category.DefaultCategoryDataset;
 
 import taskManager.TaskManager;
+import taskManager.localization.Localizer;
 import taskManager.model.ActivityModel;
 import taskManager.model.ActivityModel.ActivityModelType;
 import taskManager.model.StageModel;
@@ -308,6 +311,13 @@ public class ReportsManager implements ActionListener, ChangeListener,
 					"Tried to generate a chart without creating a dataset first!");
 		}
 
+		StandardChartTheme theme = (StandardChartTheme) ChartFactory
+				.getChartTheme();
+		theme.setExtraLargeFont(new Font("Default", Font.BOLD, 20));
+		theme.setLargeFont(new Font("Default", Font.BOLD, 14));
+		theme.setRegularFont(new Font("Default", Font.BOLD, 12));
+		theme.setSmallFont(new Font("Default", Font.BOLD, 10));
+
 		final JFreeChart chart = ChartFactory.createBarChart(title, // chart
 																	// title
 				xlabel, // domain axis label
@@ -482,8 +492,11 @@ public class ReportsManager implements ActionListener, ChangeListener,
 				findVelocityData(users, startZone, endZone, false, stage);
 
 				generateDataset(false, Period.ofDays(1));
-				JPanel chart = createChart("Effort per Day", "Time", "Effort");
-				TabPaneController.getInstance().addTab("Graph", chart, true);
+				JPanel chart = createChart(Localizer.getString("EffortPerDay"),
+						Localizer.getString("Time"),
+						Localizer.getString("Effort"));
+				TabPaneController.getInstance().addTab("Graph", chart, true,
+						true);
 				TabPaneController.getInstance().getView()
 						.setSelectedComponent(chart);
 			}

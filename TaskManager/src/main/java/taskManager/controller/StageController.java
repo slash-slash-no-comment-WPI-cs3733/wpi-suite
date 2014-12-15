@@ -14,6 +14,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +26,7 @@ import javax.swing.JPanel;
 
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DropAreaSaveListener;
+import taskManager.localization.Localizer;
 import taskManager.model.ActivityModel;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
@@ -266,9 +268,9 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 				&& WorkflowModel.getInstance().findStageByName(
 						view.getLabelText()) != null) {
 			JOptionPane.showConfirmDialog(view,
-					"Another stage already has the name " + view.getLabelText()
-							+ ". Please choose another name.",
-					"Warning - Duplicate stage names",
+					MessageFormat.format(Localizer.getString("DuplicateStage"),
+							view.getLabelText()), Localizer
+							.getString("DuplicateWarning"),
 					JOptionPane.CLOSED_OPTION);
 		} else if (view.isCheckEnabled()) {
 			if (model == null) {
