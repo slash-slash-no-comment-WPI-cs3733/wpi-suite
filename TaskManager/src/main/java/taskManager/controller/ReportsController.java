@@ -876,7 +876,8 @@ public class ReportsController implements ActionListener, ChangeListener,
 		JPanel chart = createLineChart(title, xLabel, yLabel);
 
 		// Open a new tab with the given chart.
-		TabPaneController.getInstance().addTab("Line Graph", chart, true);
+		TabPaneController.getInstance()
+				.addTab("Line Graph", chart, true, false);
 		TabPaneController.getInstance().getView().setSelectedComponent(chart);
 	}
 
@@ -925,7 +926,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 		JPanel chart = createPieChart(title);
 
 		// Open a new tab with the given chart.
-		TabPaneController.getInstance().addTab("Pie Chart", chart, true);
+		TabPaneController.getInstance().addTab("Pie Chart", chart, true, false);
 		TabPaneController.getInstance().getView().setSelectedComponent(chart);
 	}
 
