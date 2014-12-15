@@ -26,12 +26,14 @@ import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import taskManager.draganddrop.DDTransferHandler;
+import taskManager.localization.Localizer;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.ReportsView;
@@ -189,6 +191,8 @@ public class ToolbarController extends DropTargetAdapter implements
 				RotationController.resetAngles();
 				WorkflowController.getInstance().reloadData();
 			}
+		} else if (button instanceof JComboBox) {
+			Localizer.setLanguage(view.getSelectedLanguage());
 		}
 	}
 
