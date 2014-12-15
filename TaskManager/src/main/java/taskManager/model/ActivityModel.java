@@ -100,4 +100,26 @@ public class ActivityModel {
 		return actor;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof ActivityModel)) {
+			return false;
+		}
+		if (!(modelType.equals(((ActivityModel) obj).getType()))) {
+			return false;
+		}
+		if (!(dateCreated.equals(((ActivityModel) obj).getDateCreated()))) {
+			return false;
+		}
+		if (!(description.equals(((ActivityModel) obj).getDescription()))) {
+			return false;
+		}
+		// actor != null needed for tests
+		if ((actor != null)
+				&& (!(actor.equals(((ActivityModel) obj).getActor())))) {
+			return false;
+		}
+
+		return true;
+	}
 }

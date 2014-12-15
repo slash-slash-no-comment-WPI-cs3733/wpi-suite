@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -32,6 +33,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import taskManager.controller.TaskController;
+import taskManager.controller.ToolbarController;
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DraggablePanelListener;
 
@@ -47,6 +49,7 @@ public class TaskView extends JPanel implements Transferable {
 	private static final long serialVersionUID = 1L;
 
 	private TaskController controller;
+	private RotationView rotationView;
 
 	private JLabel userNumber;
 	private JLabel commentNumber;
@@ -174,17 +177,21 @@ public class TaskView extends JPanel implements Transferable {
 		spacer.add(lower);
 		this.add(spacer);
 
-		// -----------------------
-		// Drag and drop handling:
-		final MouseAdapter listener = new DraggablePanelListener(this);
-		addMouseListener(listener);
-		addMouseMotionListener(listener);
+		// in fun mode, create a rotation view
+		if (ToolbarController.getInstance().getView().isFunMode()) {
+			this.rotationView = new RotationView(this);
+			// the rotation view will handle drag/drop
+		} else {
+			// Drag and drop handling:
+			final MouseAdapter listener = new DraggablePanelListener(this);
+			addMouseListener(listener);
+			addMouseMotionListener(listener);
+			setTransferHandler(new DDTransferHandler());
 
-		setTransferHandler(new DDTransferHandler());
-
-		// setTransferHandler creates DropTarget by default; we don't want tasks
-		// to respond to drops
-		setDropTarget(null);
+			// setTransferHandler creates DropTarget by default; we don't want
+			// tasks to respond to drops
+			setDropTarget(null);
+		}
 
 	}
 
@@ -201,7 +208,12 @@ public class TaskView extends JPanel implements Transferable {
 	 */
 	public void setController(TaskController controller) {
 		this.controller = controller;
-		this.addMouseListener(controller);
+		if (ToolbarController.getInstance().getView().isFunMode()) {
+			rotationView.setListener(controller);
+		} else {
+			addMouseListener(controller);
+		}
+
 	}
 
 	@Override
@@ -240,12 +252,16 @@ public class TaskView extends JPanel implements Transferable {
 	 */
 	@Override
 	public Object getTransferData(DataFlavor flavor)
-			throws UnsupportedFlavorException {
-		if (!flavor.equals(DDTransferHandler.getTaskFlavor())) {
+			throws UnsupportedFlavorException, IOException {
+		if (flavor.equals(DDTransferHandler.getTaskFlavor())) {
+			// return this panel as the transfer data
+			return this;
+
+		} else if (flavor.equals(DataFlavor.stringFlavor)) {
+			return controller.getExportString();
+		} else {
 			throw new UnsupportedFlavorException(flavor);
 		}
-		// return this panel as the transfer data
-		return this;
 	}
 
 	/*
@@ -253,7 +269,8 @@ public class TaskView extends JPanel implements Transferable {
 	 */
 	@Override
 	public DataFlavor[] getTransferDataFlavors() {
-		final DataFlavor[] flavors = { DDTransferHandler.getTaskFlavor() };
+		DataFlavor[] flavors = { DDTransferHandler.getTaskFlavor(),
+				DataFlavor.stringFlavor };
 		return flavors;
 	}
 
@@ -263,7 +280,49 @@ public class TaskView extends JPanel implements Transferable {
 	 */
 	@Override
 	public boolean isDataFlavorSupported(DataFlavor flavor) {
-		return flavor.equals(DDTransferHandler.getTaskFlavor());
+		return flavor.equals(DDTransferHandler.getTaskFlavor())
+				|| flavor.equals(DataFlavor.stringFlavor);
+	}
+
+	/*
+	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+	 */
+	@Override
+	public void paintComponent(Graphics g) {
+		// in fun mode, use the rotation view to draw the task rotated
+		if (ToolbarController.getInstance().getView().isFunMode()) {
+			if (rotationView.isPainting()) {
+				super.paintComponent(g);
+			} else {
+				g.setColor(rotationView.getParent().getBackground());
+				g.fillRect(0, 0, getWidth(), getHeight());
+				rotationView.repaint();
+			}
+		} else {
+			super.paintComponent(g);
+		}
+	}
+
+	/*
+	 * @see javax.swing.JComponent#paintChildren(java.awt.Graphics)
+	 */
+	@Override
+	public void paintChildren(Graphics g) {
+		// in fun mode, use the rotation view to draw the task rotated
+		if (ToolbarController.getInstance().getView().isFunMode()) {
+			if (rotationView.isPainting()) {
+				super.paintChildren(g);
+			} else {
+				g.setColor(rotationView.getParent().getBackground());
+				g.fillRect(0, 0, getWidth(), getHeight());
+			}
+		} else {
+			super.paintChildren(g);
+		}
+	}
+
+	public JPanel getRotationPane() {
+		return rotationView;
 	}
 
 }

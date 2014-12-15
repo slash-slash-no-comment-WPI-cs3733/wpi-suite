@@ -39,7 +39,7 @@ public class WorkflowModelTest {
 
 	@BeforeClass
 	public static void netSetup() {
-		Network.setInstance(new MockNetwork());
+		Network.setInstance(new MockNetwork(true));
 	}
 
 	@Before

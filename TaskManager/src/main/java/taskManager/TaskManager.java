@@ -8,12 +8,14 @@
  *******************************************************************************/
 package taskManager;
 
+import java.awt.KeyboardFocusManager;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 
+import taskManager.controller.EasterEggListener;
 import taskManager.controller.StageController;
 import taskManager.controller.TabPaneController;
 import taskManager.controller.TaskController;
@@ -64,6 +66,9 @@ public class TaskManager implements IJanewayModule {
 		new StageModel("Complete");
 
 		WorkflowController.getInstance().reloadData();
+
+		KeyboardFocusManager.getCurrentKeyboardFocusManager()
+				.addKeyEventDispatcher(new EasterEggListener());
 	}
 
 	/**

@@ -13,6 +13,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -27,6 +29,7 @@ import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
+import taskManager.view.RotationView;
 import taskManager.view.StageView;
 import taskManager.view.TaskView;
 
@@ -86,7 +89,14 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 							task.getDueDate(), task.getAssigned().size(),
 							comments);
 					tkv.setController(new TaskController(tkv, task));
-					this.view.addTaskView(tkv);
+
+					// if we're in fun mode, put the rotation view in the stage
+					// view
+					if (ToolbarController.getInstance().getView().isFunMode()) {
+						this.view.addTaskView(tkv.getRotationPane());
+					} else {
+						this.view.addTaskView(tkv);
+					}
 				}
 			}
 		}
@@ -100,8 +110,14 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 	 */
 	@Override
 	public void saveDrop(JPanel panel, int index) {
+		// ignore rotation views
+		if (panel instanceof RotationView) {
+			panel = ((RotationView) panel).getPanel();
+		}
+
 		// Make sure we cast safely
 		if (!(panel instanceof TaskView)) {
+			System.err.println("Tried to save something that isn't a TaskView");
 			return;
 		}
 		final TaskController tc = ((TaskView) panel).getController();
@@ -122,6 +138,9 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 		if (changed) {
 			WorkflowModel.getInstance().save();
 			DDTransferHandler.dragSaved = true;
+			if (ToolbarController.getInstance().getView().isFunMode()) {
+				WorkflowController.getInstance().reloadData();
+			}
 		}
 
 	}
@@ -307,6 +326,41 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 	 */
 	public void setThisChangeTitleOut(Boolean thisChangeTitleOut) {
 		this.thisChangeTitleOut = thisChangeTitleOut;
+	}
+
+	/**
+	 * Generate string for table export (Excel format)
+	 *
+	 * @return export string
+	 */
+	public String getExportString() {
+		String fields[] = { "Name", "Description", "Due Date",
+				"Assigned Users", "Estimated Effort", "Actual Effort" };
+		List<String[]> taskStringArrays = new ArrayList<String[]>();
+		for (TaskModel tm : model.getTasks()) {
+			String values[] = { tm.getName(), tm.getDescription(),
+					new SimpleDateFormat("MM/dd/yy").format(tm.getDueDate()),
+					String.join(",", tm.getAssigned()),
+					Integer.toString(tm.getEstimatedEffort()),
+					Integer.toString(tm.getActualEffort()) };
+			taskStringArrays.add(values);
+		}
+		List<String> rows = new ArrayList<String>();
+		rows.add(model.getName());
+		for (int i = 0; i < fields.length; i++) {
+			List<String> cells = new ArrayList<String>();
+			cells.add(fields[i]);
+			for (String[] taskStringArray : taskStringArrays) {
+				String val = taskStringArray[i];
+				// remove tabs and newlines
+				val = val.replace("\t", "        ");
+				val = val.replace("\n", " ");
+				val = val.replace("\r", "");
+				cells.add(val);
+			}
+			rows.add(String.join("\t", cells));
+		}
+		return String.join("\n", rows);
 	}
 
 }

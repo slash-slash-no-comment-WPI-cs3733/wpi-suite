@@ -9,14 +9,19 @@
 package taskManager.controller;
 
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.swing.SwingUtilities;
 
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.view.Colors;
+import taskManager.view.StageView;
 import taskManager.view.TaskInfoPreviewView;
 import taskManager.view.TaskView;
 
@@ -103,6 +108,15 @@ public class TaskController implements MouseListener {
 	}
 
 	/**
+	 * Get the ID of the task
+	 *
+	 * @return the task ID
+	 */
+	public String getID() {
+		return model.getID();
+	}
+
+	/**
 	 * 
 	 * Populates the EditTaskView with the information from this task.
 	 *
@@ -118,9 +132,16 @@ public class TaskController implements MouseListener {
 	 *
 	 */
 	public void changeToHoverColor() {
+		// don't highlight while task info is out in fun mode, because the clip
+		// bounds passed to the rotation view are sometimes not correct
+		if (ToolbarController.getInstance().getView().isFunMode()
+				&& anyTaskInfoOut) {
+			return;
+		}
 		if (isArchived() && !thisTaskInfoOut) {
 			view.setBackground(Colors.ARCHIVE_HOVER);
 		} else if (!thisTaskInfoOut) {
+
 			view.setBackground(Colors.TASK_HOVER);
 		}
 	}
@@ -146,10 +167,10 @@ public class TaskController implements MouseListener {
 	public void mouseClicked(MouseEvent e) {
 
 		// Create the taskinfo bubble
-		final Point stageLoc = view.getParent().getParent().getParent()
-				.getParent().getLocation();
-		final Point stagesPanelLoc = view.getParent().getParent().getParent()
-				.getParent().getParent().getLocation();
+		final Container stageContainer = SwingUtilities.getAncestorOfClass(
+				StageView.class, view);
+		final Point stageLoc = stageContainer.getLocation();
+		final Point stagesPanelLoc = stageContainer.getParent().getLocation();
 		final Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
 				view.getLocation().y);
 		WorkflowController.getInstance().setTaskInfo(
@@ -212,5 +233,31 @@ public class TaskController implements MouseListener {
 	public void taskInfoRemoved() {
 		thisTaskInfoOut = false;
 		resetBackground();
+	}
+
+	/**
+	 * Generate string for table export (Excel format)
+	 *
+	 * @return export string
+	 */
+	public String getExportString() {
+		String fields[] = { "Name", "Description", "Due Date",
+				"Assigned Users", "Estimated Effort", "Actual Effort" };
+		String values[] = { model.getName(), model.getDescription(),
+				new SimpleDateFormat("MM/dd/yy").format(model.getDueDate()),
+				String.join(",", model.getAssigned()),
+				Integer.toString(model.getEstimatedEffort()),
+				Integer.toString(model.getActualEffort()) };
+
+		String export = "";
+		for (int i = 0; i < fields.length; i++) {
+			// remove newlines and tabs
+			values[i] = values[i].replace("\t", "        ");
+			values[i] = values[i].replace("\n", " ");
+			values[i] = values[i].replace("\r", "");
+
+			export += fields[i] + "\t" + values[i] + "\n";
+		}
+		return export;
 	}
 }
