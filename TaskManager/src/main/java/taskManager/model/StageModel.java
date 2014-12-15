@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import taskManager.model.ActivityModel.ActivityModelType;
 import edu.wpi.cs.wpisuitetng.modules.core.models.Project;
 import edu.wpi.cs.wpisuitetng.network.Network;
 import edu.wpi.cs.wpisuitetng.network.Request;
@@ -281,10 +282,8 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 			if (!this.equals(oldStage)) {
 
 				// since this is a move, add relevant activity
-				final ActivityModel movedTask = new ActivityModel("Moved task "
-						+ task.getName() + " from stage " + oldStage.getName()
-						+ " to stage " + name + ".",
-						ActivityModel.ActivityModelType.MOVE);
+				final ActivityModel movedTask = new ActivityModel(
+						ActivityModelType.MOVE, oldStage.getName(), name);
 				task.addActivity(movedTask);
 			}
 		}

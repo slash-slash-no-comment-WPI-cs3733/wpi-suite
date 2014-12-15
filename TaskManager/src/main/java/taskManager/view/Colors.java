@@ -25,10 +25,10 @@ public class Colors {
 	public static final Color ARCHIVE = Color.decode("#FFCF33");
 	public static final Color ARCHIVE_CLICKED = Color.decode("#FFDB66");
 	public static final Color SHADOW_COLOR = Color.BLACK;
-	public static final Color ARCHIVE_HOVER = Color.decode("#E6B000");
 	public static final Color ACTIVITY = Color.decode("#FCFCFC");
 	public static final Color ACTIVITY_EDIT = Color.LIGHT_GRAY;
 	public static final Color ACTIVITY_COMMENT = Color.CYAN;
+	public static final Color ARCHIVE_HOVER = Color.decode("#E6B000");
 	public static final Color STAGE = Color.decode("#C8DDF1");
 	public static final Color ERROR_BUBBLE = Color.decode("#FCFCFC");
 	public static final Color ERROR = Color.decode("#FFDDDD");

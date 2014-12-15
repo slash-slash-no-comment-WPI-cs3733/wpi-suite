@@ -43,12 +43,15 @@ import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DraggablePanelListener;
 import taskManager.draganddrop.DropAreaPanel;
 import taskManager.draganddrop.DropTargetRedispatcher;
+import taskManager.localization.LocaleChangeListener;
+import taskManager.localization.Localizer;
 
 /**
  * @author Beth Martino
  * @version November 9, 2014
  */
-public class StageView extends JPanel implements Transferable {
+public class StageView extends JPanel implements Transferable,
+		LocaleChangeListener {
 
 	private static final long serialVersionUID = 1L;
 	private StageController controller;
@@ -63,7 +66,7 @@ public class StageView extends JPanel implements Transferable {
 	private final JTextField labelText;
 	private final JPanel changeLabel;
 	private final JPanel label;
-	private final JButton done;
+	private final JButton check;
 	private final JButton cancel;
 	private final DropAreaPanel tasks;
 	private final JScrollPane stage;
@@ -76,7 +79,7 @@ public class StageView extends JPanel implements Transferable {
 	 * @param name
 	 *            The title of the stage being drawn
 	 */
-	public StageView(String name) {
+	public StageView(String name, StageController stageC) {
 
 		this.setLayout(new MigLayout("wrap 1", "[grow, fill]"));
 
@@ -120,19 +123,19 @@ public class StageView extends JPanel implements Transferable {
 		labelText.setMaximumSize(new Dimension(135, 25));
 		labelText.setPreferredSize(new Dimension(135, 25));
 		// Checkmark button
-		done = new JButton("\u2713");
-		done.setName(CHECK);
-		done.setEnabled(false);
-		done.setFont(done.getFont().deriveFont((float) 12));
-		done.setMargin(new Insets(0, 0, 0, 0));
+		check = new JButton("\u2713");
+		check.setName(CHECK);
+		check.setEnabled(false);
+		check.setFont(check.getFont().deriveFont((float) 12));
+		check.setMargin(new Insets(0, 0, 0, 0));
 		// 'x' button
-		cancel = new JButton("\u2716");
+		cancel = new JButton();
 		cancel.setName(X);
 		cancel.setFont(cancel.getFont().deriveFont((float) 12));
 		cancel.setMargin(new Insets(0, 0, 0, 0));
 
 		changeLabel.add(labelText);
-		changeLabel.add(done);
+		changeLabel.add(check);
 		changeLabel.add(cancel);
 
 		changeLabel.setVisible(false);
@@ -188,6 +191,10 @@ public class StageView extends JPanel implements Transferable {
 		// scrollbar flicker
 		stage.setDropTarget(new DropTarget(stage, new DropTargetRedispatcher(
 				tasks, DDTransferHandler.getTaskFlavor())));
+
+		setController(stageC);
+		onLocaleChange();
+		Localizer.addListener(this);
 	}
 
 	/**
@@ -227,9 +234,10 @@ public class StageView extends JPanel implements Transferable {
 		stage.addMouseListener(controller);
 		// listen for double click on the stage title to change it
 		labelName.addMouseListener(controller);
+		labelText.addKeyListener(controller);
 
 		// listen for clicks on the 'change title' buttons
-		done.addActionListener(controller);
+		check.addActionListener(controller);
 		cancel.addActionListener(controller);
 	}
 
@@ -249,24 +257,25 @@ public class StageView extends JPanel implements Transferable {
 	 *            wether the box should be enabled or not
 	 */
 	public void enableChangeTitleCheckmark(Boolean enabled) {
-		done.setEnabled(enabled);
+		check.setEnabled(enabled);
 	}
 
+	/**
+	 * 
+	 * @return the text in the titleTextBox.
+	 */
 	public String getLabelText() {
 		return labelText.getText();
 	}
 
 	/**
-	 * makes the editable label field visible/not visible
-	 * 
-	 * @param q
-	 *            true is visible, false is not visible
+	 * Sets the focus to the text area
 	 */
-	public void enableTitleEditing(boolean q) {
-
-		changeLabel.setVisible(q);
-		label.setVisible(!q);
-
+	public void focusTextArea() {
+		this.labelText.requestFocus();
+		this.labelText.requestFocusInWindow();
+		this.labelText.grabFocus();
+		this.labelText.selectAll();
 	}
 
 	/**
@@ -276,6 +285,25 @@ public class StageView extends JPanel implements Transferable {
 	 */
 	public JTextField getLabelField() {
 		return labelText;
+	}
+
+	/**
+	 *
+	 * Changes which title is visible, the label or the textbox. If editable is
+	 * true, the textbox is visible.
+	 *
+	 * @param editable
+	 *            true to make the textbox visible, false to make the label
+	 *            visible
+	 */
+	public void switchTitles(boolean editable) {
+		label.setVisible(!editable);
+		changeLabel.setVisible(editable);
+		focusTextArea();
+	}
+
+	public boolean isCheckEnabled() {
+		return check.isEnabled();
 	}
 
 	// ----------------------------
@@ -318,5 +346,10 @@ public class StageView extends JPanel implements Transferable {
 	public boolean isDataFlavorSupported(DataFlavor flavor) {
 		return flavor.equals(DDTransferHandler.getStageFlavor())
 				|| flavor.equals(DataFlavor.stringFlavor);
+	}
+
+	@Override
+	public void onLocaleChange() {
+		cancel.setText(Localizer.getString("x"));
 	}
 }
