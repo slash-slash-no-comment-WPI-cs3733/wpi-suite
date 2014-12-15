@@ -16,7 +16,6 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -54,9 +53,6 @@ public class WPICoreServlet extends HttpServlet {
 	 */
 	public void doGet(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException {
-		// res.setCharacterEncoding("UTF8");
-		// PrintWriter out = res.getWriter();
-		// ServletOutputStream out = res.getOutputStream();
 		String delims = "[/]+";
 		String[] path = req.getPathInfo().split(delims);
 
@@ -67,28 +63,13 @@ public class WPICoreServlet extends HttpServlet {
 			handlePolling(req, res, path);
 			return;
 		}
-		// ServletOutputStream out = res.getOutputStream();
 		DataOutputStream out = new DataOutputStream(res.getOutputStream());
 		try {
-
-			byte[] a = new byte[3];
-			a[0] = (byte) 227;
-			a[1] = (byte) 129;
-			a[2] = (byte) 130;
 
 			String s = ManagerLayer.getInstance().read(path, req.getCookies());
 
 			out.writeUTF(s);
 			out.flush();
-
-			// char[] temp = s.toCharArray();
-			// byte[] bytes = new byte[temp.length];
-			// for (int i = 0; i < temp.length; i++) {
-			// bytes[i] = (byte) temp[i];
-			// }
-			//
-			// out.write(bytes);
-			// out.flush();
 		} catch (WPISuiteException e) {
 			res.setStatus(e.getStatus());
 		}
@@ -113,7 +94,7 @@ public class WPICoreServlet extends HttpServlet {
 			String[] path) throws IOException {
 
 		int timeout = Integer.parseInt(req.getHeader("long-polling"));
-		PrintWriter out = res.getWriter();
+		DataOutputStream out = new DataOutputStream(res.getOutputStream());
 		System.out.println("waiting on request: " + req.toString());
 
 		synchronized (updateNotifier) {
@@ -140,10 +121,11 @@ public class WPICoreServlet extends HttpServlet {
 		// TODO: send the same object we received from the client, instead of
 		// doing a database read
 		try {
-			out.println(ManagerLayer.getInstance().read(path, req.getCookies()));
+			out.writeUTF(ManagerLayer.getInstance()
+					.read(path, req.getCookies()));
 		} catch (WPISuiteException e) {
 			res.setStatus(e.getStatus());
-			out.write(this.reponseFormatter.formatContent(e));
+			out.writeUTF(this.reponseFormatter.formatContent(e));
 			out.flush();
 			out.close();
 			return;
@@ -159,8 +141,9 @@ public class WPICoreServlet extends HttpServlet {
 	 */
 	public void doPut(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException {
-		BufferedReader in = req.getReader();
-		PrintWriter out = res.getWriter();
+		BufferedReader in = new BufferedReader(new InputStreamReader(
+				req.getInputStream(), "UTF8"));
+		DataOutputStream out = new DataOutputStream(res.getOutputStream());
 		String delims = "[/]+";
 		String[] path = req.getPathInfo().split(delims);
 
@@ -168,7 +151,7 @@ public class WPICoreServlet extends HttpServlet {
 		path[path.length - 1] = null;
 
 		try {
-			out.println(ManagerLayer.getInstance().create(path, in.readLine(),
+			out.writeUTF(ManagerLayer.getInstance().create(path, in.readLine(),
 					req.getCookies()));
 			// notify if something was written to the database
 			synchronized (updateNotifier) {
@@ -177,7 +160,7 @@ public class WPICoreServlet extends HttpServlet {
 			}
 		} catch (WPISuiteException e) {
 			res.setStatus(e.getStatus());
-			out.write(this.reponseFormatter.formatContent(e));
+			out.writeUTF(this.reponseFormatter.formatContent(e));
 			out.flush();
 			out.close();
 			return;
@@ -193,10 +176,9 @@ public class WPICoreServlet extends HttpServlet {
 	 */
 	public void doPost(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException {
-		// BufferedReader in = req.getReader();
 		BufferedReader in = new BufferedReader(new InputStreamReader(
 				req.getInputStream(), "UTF8"));
-		PrintWriter out = res.getWriter();
+		DataOutputStream out = new DataOutputStream(res.getOutputStream());
 		String delims = "[/]+";
 		String[] path = req.getPathInfo().split(delims);
 
@@ -204,7 +186,7 @@ public class WPICoreServlet extends HttpServlet {
 		path[path.length - 1] = null;
 
 		try {
-			out.println(ManagerLayer.getInstance().update(path, in.readLine(),
+			out.writeUTF(ManagerLayer.getInstance().update(path, in.readLine(),
 					req.getCookies()));
 			// notify if something was written to the database
 			synchronized (updateNotifier) {
@@ -214,7 +196,7 @@ public class WPICoreServlet extends HttpServlet {
 			System.out.println();
 		} catch (WPISuiteException e) {
 			res.setStatus(e.getStatus());
-			out.write(this.reponseFormatter.formatContent(e));
+			out.writeUTF(this.reponseFormatter.formatContent(e));
 			out.flush();
 			out.close();
 		}
@@ -228,7 +210,7 @@ public class WPICoreServlet extends HttpServlet {
 	 */
 	public void doDelete(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException {
-		PrintWriter out = res.getWriter();
+		DataOutputStream out = new DataOutputStream(res.getOutputStream());
 		String delims = "[/]+";
 		String[] path = req.getPathInfo().split(delims);
 
@@ -236,7 +218,7 @@ public class WPICoreServlet extends HttpServlet {
 		path[path.length - 1] = null;
 
 		try {
-			out.println(ManagerLayer.getInstance().delete(path,
+			out.writeUTF(ManagerLayer.getInstance().delete(path,
 					req.getCookies()));
 			// notify if something was written to the database
 			synchronized (updateNotifier) {
@@ -245,7 +227,7 @@ public class WPICoreServlet extends HttpServlet {
 			}
 		} catch (WPISuiteException e) {
 			res.setStatus(e.getStatus());
-			out.write(this.reponseFormatter.formatContent(e));
+			out.writeUTF(this.reponseFormatter.formatContent(e));
 			out.flush();
 			out.close();
 		}
