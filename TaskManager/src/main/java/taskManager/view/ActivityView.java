@@ -13,6 +13,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.text.DateFormat;
 
 import javax.swing.BorderFactory;
@@ -33,13 +35,16 @@ import taskManager.model.ActivityModel.ActivityModelType;
  * @author Samee Swartz
  *
  */
-public class ActivityView extends JPanel {
+public class ActivityView extends JPanel implements MouseListener {
 
 	private static final long serialVersionUID = 6524598229849111521L;
 	public static final String EDIT = "edit";
 
 	private JButton edit;
+	// if this activity can be edited
 	private boolean editable = false;
+	// if this activity is currently being edited
+	private boolean editing = false;
 
 	private ActivityModel activityM;
 	private EditTaskController controller;
@@ -65,7 +70,6 @@ public class ActivityView extends JPanel {
 				.createEtchedBorder(EtchedBorder.LOWERED);
 		final TitledBorder title = BorderFactory
 				.createTitledBorder(raisedbevel);
-		// title.setTitlePosition(TitledBorder.LEFT);
 		this.setBorder(title);
 
 		JLabel info = new JLabel(DateFormat.getDateTimeInstance(
@@ -81,8 +85,10 @@ public class ActivityView extends JPanel {
 			editable = true;
 			edit = new JButton("Edit");
 			edit.setName(EDIT);
-			edit.setEnabled(true);
+			edit.setFont(edit.getFont().deriveFont(Font.PLAIN));
 			edit.addActionListener(controller);
+			edit.addMouseListener(this);
+			// for making it not look like a button
 			edit.setFocusPainted(false);
 			edit.setMargin(new Insets(0, 0, 0, 0));
 			edit.setContentAreaFilled(false);
@@ -138,6 +144,7 @@ public class ActivityView extends JPanel {
 	public ActivityView duplicate() {
 		ActivityView av = new ActivityView(activityM, controller);
 		av.setBackground(this.getBackground());
+		av.setEditing(this.editing);
 		return av;
 	}
 
@@ -164,6 +171,15 @@ public class ActivityView extends JPanel {
 		return activityM.getDescription();
 	}
 
+	public void setEditing(boolean e) {
+		editing = e;
+		if (editable && editing) {
+			edit.setFont(edit.getFont().deriveFont(Font.BOLD));
+		} else if (editable) {
+			edit.setFont(edit.getFont().deriveFont(Font.PLAIN));
+		}
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof ActivityView)) {
@@ -183,5 +199,31 @@ public class ActivityView extends JPanel {
 			infoPanel.setBackground(bg);
 			text.setBackground(bg);
 		}
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// Do nothing
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// Do nothing
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// Do nothing
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		edit.setFont(edit.getFont().deriveFont(Font.BOLD));
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		if (!editing)
+			edit.setFont(edit.getFont().deriveFont(Font.PLAIN));
 	}
 }

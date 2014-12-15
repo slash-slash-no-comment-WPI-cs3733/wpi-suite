@@ -1004,10 +1004,15 @@ public class EditTaskView extends JPanel {
 	 * 
 	 */
 	public void startEditingComment(String text) {
-		commentBox.setText(text);
 		cancelComment.setEnabled(true);
 		editing.setText("You are currently editing the highlighted activity");
 		editing.setForeground(Color.RED);
+		commentBox.setText(text);
+
+		commentBox.requestFocus();
+		commentBox.requestFocusInWindow();
+		commentBox.grabFocus();
+		commentBox.setCaretPosition(commentBox.getSelectionEnd());
 	}
 
 	/**

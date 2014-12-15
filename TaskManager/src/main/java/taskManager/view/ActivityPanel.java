@@ -97,6 +97,7 @@ public class ActivityPanel extends JTabbedPane {
 				ActivityView activity = new ActivityView(a, controller);
 				if (activity.equals(activityBeingEdited)) {
 					activity.setBackground(Colors.ACTIVITY_COMMENT);
+					activity.setEditing(true);
 				}
 
 				if (a.getType() == ActivityModel.ActivityModelType.COMMENT) {
