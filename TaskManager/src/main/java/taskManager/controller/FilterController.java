@@ -21,12 +21,14 @@ import javax.swing.JPanel;
 import taskManager.TaskManager;
 import taskManager.controller.TaskFilter.ArchiveState;
 import taskManager.model.TaskModel.TaskCategory;
+import taskManager.view.Colors;
 import taskManager.view.FilterView;
 
 /**
- * A controller for the filter view in toolbar. When you click filter options,
- * this controller adds a new filter to the workflow according to the optons
- * selected
+ * A controller for the filters. Includes filter by category,
+ * "Show only my tasks", "Show archived tasks" and filter by search. Every time
+ * a filter element is clicked, it checks which filters are selected and creates
+ * a new TaskFilter object and applies it to the workflow
  * 
  * @author Beth Martino
  *
@@ -125,7 +127,7 @@ public class FilterController implements ItemListener, MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		for (String name : FilterView.CATEGORY_NAMES) {
+		for (String name : Colors.CATEGORY_NAMES) {
 			if (e.getComponent().getName().equals(name)) {
 				view.checkCatBox(!view.catBoxIsChecked(name), name);
 			}

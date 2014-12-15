@@ -81,7 +81,6 @@ public class EditTaskView extends JScrollPane {
 	private static final String TITLE_ERROR = "Title cannot be empty";
 	private static final String DESCRIPTION_ERROR = "Description cannot be empty";
 	private static final String EFFORT_ERROR = "Must be an integer between 0 and 9999";
-	public final String SELECT_TEXT = "Select category";
 
 	private static final long serialVersionUID = 1L;
 	private JButton save;
@@ -620,7 +619,6 @@ public class EditTaskView extends JScrollPane {
 	 */
 	public void setCategories(String[] cats) {
 		categories.removeAllItems();
-		categories.addItem(SELECT_TEXT);
 		for (String s : cats) {
 			categories.addItem(s);
 		}
@@ -643,15 +641,6 @@ public class EditTaskView extends JScrollPane {
 	 */
 	public String getSelectedCategory() {
 		return (String) categories.getSelectedItem();
-	}
-
-	/**
-	 * gets the index of the selected in the category drop down
-	 * 
-	 * @return the index of the category selected in the dropdown
-	 */
-	public int getSelectedIndex() {
-		return categories.getSelectedIndex();
 	}
 
 	/**

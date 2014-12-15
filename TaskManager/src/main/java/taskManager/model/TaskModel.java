@@ -38,7 +38,7 @@ import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
 public class TaskModel extends AbstractJsonableModel<TaskModel> {
 
 	public enum TaskCategory {
-		RED, GREEN, BLUE, YELLOW, PURPLE
+		NO_CATEGORY, RED, GREEN, BLUE, YELLOW, PURPLE
 	}
 
 	// Generic logger
@@ -109,6 +109,8 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 					ActivityModelType.CREATION);
 			activities.add(createTask);
 		}
+
+		this.category = TaskCategory.NO_CATEGORY;
 	}
 
 	/**

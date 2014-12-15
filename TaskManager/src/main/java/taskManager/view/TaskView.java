@@ -105,10 +105,11 @@ public class TaskView extends JPanel implements Transferable {
 		title.setTitlePosition(TitledBorder.LEFT);
 		this.setBorder(title);
 
-		this.setMinimumSize(new Dimension(stageWidth - 17, 62));
-		this.setPreferredSize(new Dimension(stageWidth - 17, 62));
-		this.setMaximumSize(new Dimension(stageWidth - 17, 62));
-		this.setSize(new Dimension(stageWidth - 17, 62));
+		Dimension viewSize = new Dimension(stageWidth - 17, 62);
+		this.setMinimumSize(viewSize);
+		this.setPreferredSize(viewSize);
+		this.setMaximumSize(viewSize);
+		this.setSize(viewSize);
 		this.setName(name);
 
 		// formats the lower section containing date and icons
@@ -119,7 +120,7 @@ public class TaskView extends JPanel implements Transferable {
 
 		DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
 		dueLabel = new JLabel("Due: " + format.format(duedate));
-		dueLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 3));
+		dueLabel.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 3));
 		lower.add(dueLabel);
 		JPanel icons = new JPanel(new FlowLayout());
 		icons.setOpaque(false);
@@ -187,10 +188,11 @@ public class TaskView extends JPanel implements Transferable {
 		// this is the panel that will display the category color
 		color = new JPanel();
 		color.setBackground(Colors.TASK);
-		color.setSize(8, this.getHeight());
-		color.setPreferredSize(new Dimension(8, this.getHeight()));
-		color.setMaximumSize(new Dimension(8, this.getHeight()));
-		color.setMinimumSize(new Dimension(8, this.getHeight()));
+		Dimension colorSize = new Dimension(8, this.getHeight());
+		color.setSize(colorSize);
+		color.setPreferredSize(colorSize);
+		color.setMaximumSize(colorSize);
+		color.setMinimumSize(colorSize);
 
 		// adds the title, date and icons to the task view
 		colorBorder.add(nameLabel);

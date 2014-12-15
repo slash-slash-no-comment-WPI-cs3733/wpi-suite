@@ -144,9 +144,6 @@ public class TaskController implements MouseListener {
 		}
 		if (!thisTaskInfoOut) {
 			view.setBackground(Colors.TASK_HOVER);
-			if (model.getCategory() == null) {
-				view.setCategoryColor(view.getBackground(), false);
-			}
 			view.setBorderColor(view.getBackground(), false);
 		}
 		isHovered = true;

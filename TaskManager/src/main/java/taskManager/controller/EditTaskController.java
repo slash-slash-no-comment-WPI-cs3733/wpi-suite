@@ -29,9 +29,9 @@ import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.TaskModel.TaskCategory;
 import taskManager.model.WorkflowModel;
+import taskManager.view.Colors;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
-import taskManager.view.FilterView;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.RequirementManager;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
@@ -61,8 +61,9 @@ public class EditTaskController implements ActionListener {
 		etv.setController(this);
 		etv.setFieldController(new TaskInputController(etv));
 
-		etv.setCategories(FilterView.CATEGORY_NAMES);
-		etv.setSelectedCategory(etv.SELECT_TEXT);
+		etv.setCategories(Colors.CATEGORY_NAMES);
+		// set the drop down to say "select category"
+		etv.setSelectedCategory(Colors.CATEGORY_NAMES[0]);
 
 		// Disable save button when creating a task.
 		etv.setSaveEnabled(false);
@@ -116,8 +117,6 @@ public class EditTaskController implements ActionListener {
 
 		TabPaneController.getInstance().addEditTaskTab(etv);
 
-		etv.setSelectedStage(model.getStage().getName());
-
 		// populates the project users list
 		final List<String> projectUserNames = new ArrayList<String>();
 		for (User u : TaskManager.users) {
@@ -149,12 +148,6 @@ public class EditTaskController implements ActionListener {
 		etv.setActivities(tskActivities);
 		etv.setActivitiesPanel(tskActivities);
 
-		// set the requirement dropdown
-		if (model.getReq() != null) {
-			etv.setSelectedRequirement(model.getReq().getName());
-		} else {
-			etv.setSelectedRequirement(null);
-		}
 		// makes the archive button clickable
 		etv.enableArchive();
 
@@ -162,17 +155,24 @@ public class EditTaskController implements ActionListener {
 
 		etv.setDeleteEnabled(model.isArchived());
 
-		etv.setCategories(FilterView.CATEGORY_NAMES);
-		etv.setSelectedCategory(etv.SELECT_TEXT);
+		etv.setCategories(Colors.CATEGORY_NAMES);
+		// set the category in the drop down to "select category"
+		etv.setSelectedCategory(Colors.CATEGORY_NAMES[0]);
 		int i = 0;
 		for (TaskCategory c : TaskCategory.values()) {
 			if (c.equals(model.getCategory())) {
-				etv.setSelectedCategory(FilterView.CATEGORY_NAMES[i]);
+				etv.setSelectedCategory(Colors.CATEGORY_NAMES[i]);
 			}
 			i++;
 		}
-
 		this.reloadData();
+		etv.setSelectedStage(model.getStage().getName());
+		// set the requirement dropdown
+		if (model.getReq() != null) {
+			etv.setSelectedRequirement(model.getReq().getName());
+		} else {
+			etv.setSelectedRequirement(null);
+		}
 	}
 
 	@Override
@@ -188,7 +188,6 @@ public class EditTaskController implements ActionListener {
 				if (etv.getFieldController().checkFields()) {
 					// if editing
 					if (isEditingTask()) {
-
 						save();
 					}
 					// if creating a new task
@@ -202,7 +201,6 @@ public class EditTaskController implements ActionListener {
 						model = new TaskModel(etv.getTitleText(), desiredStage);
 						save();
 					}
-
 				} else {
 					etv.setSaveEnabled(false);
 				}
@@ -300,21 +298,29 @@ public class EditTaskController implements ActionListener {
 	public void reloadData() {
 
 		final List<String> stageNames = new ArrayList<String>();
-
+		final String selectedStage = etv.getSelectedStage();
 		for (StageModel stage : WorkflowModel.getInstance().getStages()) {
 			stageNames.add(stage.getName());
 		}
 		etv.setStages(stageNames);
+		if (selectedStage != null) {
+			etv.setSelectedStage(selectedStage);
+		}
 
 		final List<Requirement> reqs = RequirementModel.getInstance()
 				.getRequirements();
 
 		final List<String> reqNames = new ArrayList<String>();
-
+		final String selectedReq = etv.getSelectedRequirement();
 		for (Requirement req : reqs) {
 			reqNames.add(req.getName());
 		}
 		etv.setRequirements(reqNames);
+		if (selectedReq != null) {
+			etv.setSelectedRequirement(selectedReq);
+		}
+
+		etv.getFieldController().validate();
 	}
 
 	/**
@@ -349,14 +355,9 @@ public class EditTaskController implements ActionListener {
 		final Requirement r = RequirementModel.getInstance()
 				.getRequirementByName(etv.getSelectedRequirement());
 
-		// sets the category
-		if (etv.getSelectedIndex() == 0) {
-			model.setCategory(null);
-		}
-		for (int i = 1; i <= TaskCategory.values().length; i++) {
-			if (etv.getSelectedCategory().equals(
-					FilterView.CATEGORY_NAMES[i - 1])) {
-				model.setCategory(TaskCategory.values()[i - 1]);
+		for (int i = 0; i < TaskCategory.values().length; i++) {
+			if (etv.getSelectedCategory().equals(Colors.CATEGORY_NAMES[i])) {
+				model.setCategory(TaskCategory.values()[i]);
 			}
 		}
 
@@ -574,12 +575,15 @@ public class EditTaskController implements ActionListener {
 	 */
 	public boolean checkCategories() {
 		boolean hasChange = false;
+		String modelCatName = null;
 		for (int i = 0; i < TaskCategory.values().length; i++) {
 			if (TaskCategory.values()[i].equals(model.getCategory())) {
-				if (!FilterView.CATEGORY_NAMES[i].equals(etv
-						.getSelectedCategory())) {
-					hasChange = true;
-				}
+				modelCatName = Colors.CATEGORY_NAMES[i];
+			}
+		}
+		if (modelCatName != null) {
+			if (!etv.getSelectedCategory().equals(modelCatName)) {
+				hasChange = true;
 			}
 		}
 		return hasChange;

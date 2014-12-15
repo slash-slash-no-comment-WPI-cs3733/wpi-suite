@@ -26,8 +26,12 @@ public class Colors {
 	public static final Color STAGE = Color.decode("#C8DDF1");
 	public static final Color INPUT_ERROR = Color.decode("#FCFCFC");
 
-	public static final Color[] CAT_COLORS = new Color[] {
-			Color.decode("#EF5350"), Color.decode("#4CAF50"),
-			Color.decode("#2196F3"), Color.decode("#FBC02D"),
-			Color.decode("#7E57C2") };
+	public static final Color[] CAT_COLORS = new Color[] { // first is a
+			// "no category color"
+			Color.decode("#BDBDBD"), Color.decode("#EF5350"),
+			Color.decode("#4CAF50"), Color.decode("#2196F3"),
+			Color.decode("#FBC02D"), Color.decode("#7E57C2") };
+
+	public static final String[] CATEGORY_NAMES = new String[] {
+			"Select category", "red", "green", "blue", "yellow", "purple" };
 }

@@ -80,8 +80,8 @@ public class TaskManager implements IJanewayModule {
 
 		// Reset singletons
 		ToolbarController.getInstance().reset();
-		TabPaneController.getInstance().reset();
 		WorkflowController.getInstance().reset();
+		TabPaneController.getInstance().reset();
 	}
 
 	/**

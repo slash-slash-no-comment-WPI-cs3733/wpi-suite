@@ -32,9 +32,6 @@ public class FilterView extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 
-	public static final String[] CATEGORY_NAMES = new String[] { "red",
-			"green", "blue", "yellow", "purple" };
-
 	private final String CHECK = "\u2713";
 
 	private FilterController filterC;
@@ -58,7 +55,7 @@ public class FilterView extends JPanel {
 		// adds a panel for my tasks and archived check boxes
 		JPanel checks = new JPanel();
 		checks.setLayout(new GridLayout(2, 1));
-		checks.setMinimumSize(new Dimension(150, 30));
+		checks.setMinimumSize(new Dimension(160, 30));
 		// Checkbox for toggling showing archived tasks.
 		archiveCheckBox = new JCheckBox("<html>Show archived tasks</html>");
 		archiveCheckBox.setOpaque(false);
@@ -77,12 +74,14 @@ public class FilterView extends JPanel {
 		categories.setLayout(new FlowLayout());
 		categories.setOpaque(false);
 		labels = new ArrayList<JLabel>();
-		for (int i = 0; i < TaskCategory.values().length; i++) {
+		// make all of the category boxes, don't include the "no category"
+		Dimension catBoxSize = new Dimension(20, 20);
+		for (int i = 1; i < TaskCategory.values().length; i++) {
 			JPanel catBox = new JPanel();
-			catBox.setSize(20, 20);
-			catBox.setPreferredSize(new Dimension(20, 20));
-			catBox.setMinimumSize(new Dimension(20, 20));
-			catBox.setMaximumSize(new Dimension(20, 20));
+			catBox.setSize(catBoxSize);
+			catBox.setPreferredSize(catBoxSize);
+			catBox.setMinimumSize(catBoxSize);
+			catBox.setMaximumSize(catBoxSize);
 			catBox.setLayout(new BoxLayout(catBox, BoxLayout.Y_AXIS));
 			JLabel c = new JLabel("");
 			c.setFont(new Font("Default", Font.BOLD, 14));
@@ -91,7 +90,7 @@ public class FilterView extends JPanel {
 			c.setAlignmentY(CENTER_ALIGNMENT);
 			catBox.add(c);
 			labels.add(c);
-			catBox.setName(CATEGORY_NAMES[i]);
+			catBox.setName(Colors.CATEGORY_NAMES[i]);
 			catBox.setBackground(Colors.CAT_COLORS[i]);
 			catBox.addMouseListener(filterC);
 			categories.add(catBox);
@@ -180,7 +179,8 @@ public class FilterView extends JPanel {
 	public void checkCatBox(boolean checked, String name) {
 		JLabel label = new JLabel();
 		for (int i = 0; i < TaskCategory.values().length; i++) {
-			if (name.equals(CATEGORY_NAMES[i])) {
+			// don't check for the "no category" name
+			if (name.equals(Colors.CATEGORY_NAMES[i])) {
 				label = labels.get(i);
 			}
 		}
