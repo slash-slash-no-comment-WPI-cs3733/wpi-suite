@@ -13,7 +13,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-import taskManager.model.FetchWorkflowObserver;
 import taskManager.view.TaskInfoPreviewView;
 
 /**
@@ -46,7 +45,7 @@ public class TaskInfoPreviewController implements ActionListener {
 				// Fall through
 			case TaskInfoPreviewView.X:
 				// reset the flag
-				FetchWorkflowObserver.ignoreAllResponses = false;
+				WorkflowController.pauseInformation = false;
 				// remove any taskInfo bubbles from the workflow
 				WorkflowController.getInstance().removeTaskInfos(false);
 				WorkflowController.getInstance().reloadData();

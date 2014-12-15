@@ -9,14 +9,19 @@
 package taskManager.controller;
 
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.swing.SwingUtilities;
 
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.view.Colors;
+import taskManager.view.StageView;
 import taskManager.view.TaskInfoPreviewView;
 import taskManager.view.TaskView;
 
@@ -31,8 +36,7 @@ public class TaskController implements MouseListener {
 	private final TaskView view;
 	private final TaskModel model;
 
-	public static Boolean anyTaskInfoOut = false;
-	private Boolean thisTaskInfoOut = false;
+	private Boolean taskInfoPreviewOut = false;
 
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
@@ -129,13 +133,12 @@ public class TaskController implements MouseListener {
 	public void changeToHoverColor() {
 		// don't highlight while task info is out in fun mode, because the clip
 		// bounds passed to the rotation view are sometimes not correct
-		if (ToolbarController.getInstance().getView().isFunMode()
-				&& anyTaskInfoOut) {
+		if (ToolbarController.getInstance().getView().isFunMode()) {
 			return;
 		}
-		if (isArchived() && !thisTaskInfoOut) {
+		if (isArchived() && !taskInfoPreviewOut) {
 			view.setBackground(Colors.ARCHIVE_HOVER);
-		} else if (!thisTaskInfoOut) {
+		} else if (!taskInfoPreviewOut) {
 
 			view.setBackground(Colors.TASK_HOVER);
 		}
@@ -147,11 +150,11 @@ public class TaskController implements MouseListener {
 	 *
 	 */
 	public void resetBackground() {
-		if (isArchived() && thisTaskInfoOut) {
+		if (isArchived() && taskInfoPreviewOut) {
 			view.setBackground(Colors.ARCHIVE_CLICKED);
 		} else if (isArchived()) {
 			view.setBackground(Colors.ARCHIVE);
-		} else if (thisTaskInfoOut) {
+		} else if (taskInfoPreviewOut) {
 			view.setBackground(Colors.TASK_CLICKED);
 		} else {
 			view.setBackground(Colors.TASK);
@@ -160,20 +163,21 @@ public class TaskController implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		WorkflowController.getInstance().removeChangeTitles();
+		WorkflowController.pauseInformation = false;
 
 		// Create the taskinfo bubble
-		final Point stageLoc = view.getParent().getParent().getParent()
-				.getParent().getLocation();
-		final Point stagesPanelLoc = view.getParent().getParent().getParent()
-				.getParent().getParent().getLocation();
+		final Container stageContainer = SwingUtilities.getAncestorOfClass(
+				StageView.class, view);
+		final Point stageLoc = stageContainer.getLocation();
+		final Point stagesPanelLoc = stageContainer.getParent().getLocation();
 		final Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
 				view.getLocation().y);
 		WorkflowController.getInstance().setTaskInfo(
 				new TaskInfoPreviewView(model, this, infoLoc));
 
 		// Set the correct flags
-		thisTaskInfoOut = true;
-		TaskController.anyTaskInfoOut = true;
+		taskInfoPreviewOut = true;
 		// make the associated task a darker color while the bubble is out
 		if (isArchived()) {
 			view.setBackground(Colors.ARCHIVE_CLICKED);
@@ -208,7 +212,7 @@ public class TaskController implements MouseListener {
 	 * @return the thisTaskInfoOut
 	 */
 	public Boolean getThisTaskInfoOut() {
-		return thisTaskInfoOut;
+		return taskInfoPreviewOut;
 	}
 
 	/**
@@ -216,7 +220,7 @@ public class TaskController implements MouseListener {
 	 *            the thisTaskInfoOut to set
 	 */
 	public void setThisTaskInfoOut(Boolean thisTaskInfoOut) {
-		this.thisTaskInfoOut = thisTaskInfoOut;
+		this.taskInfoPreviewOut = thisTaskInfoOut;
 	}
 
 	/**
@@ -226,7 +230,33 @@ public class TaskController implements MouseListener {
 	 *
 	 */
 	public void taskInfoRemoved() {
-		thisTaskInfoOut = false;
+		taskInfoPreviewOut = false;
 		resetBackground();
+	}
+
+	/**
+	 * Generate string for table export (Excel format)
+	 *
+	 * @return export string
+	 */
+	public String getExportString() {
+		String fields[] = { "Name", "Description", "Due Date",
+				"Assigned Users", "Estimated Effort", "Actual Effort" };
+		String values[] = { model.getName(), model.getDescription(),
+				new SimpleDateFormat("MM/dd/yy").format(model.getDueDate()),
+				String.join(",", model.getAssigned()),
+				Integer.toString(model.getEstimatedEffort()),
+				Integer.toString(model.getActualEffort()) };
+
+		String export = "";
+		for (int i = 0; i < fields.length; i++) {
+			// remove newlines and tabs
+			values[i] = values[i].replace("\t", "        ");
+			values[i] = values[i].replace("\n", " ");
+			values[i] = values[i].replace("\r", "");
+
+			export += fields[i] + "\t" + values[i] + "\n";
+		}
+		return export;
 	}
 }

@@ -9,6 +9,7 @@
 package taskManager.controller;
 
 import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
@@ -24,11 +25,12 @@ import org.jdesktop.swingx.prompt.PromptSupport;
 
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DropAreaSaveListener;
-import taskManager.model.FetchWorkflowObserver;
+import taskManager.localization.Localizer;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
 import taskManager.view.TaskInfoPreviewView;
+import taskManager.view.TaskView;
 import taskManager.view.WorkflowView;
 
 /**
@@ -46,6 +48,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	private boolean hasNewStageView;
 
 	private static WorkflowController instance;
+	public static boolean pauseInformation;
 
 	/**
 	 * Hide Singleton constructor
@@ -103,8 +106,10 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 *
 	 */
 	public synchronized void reloadData() {
+
 		// clear the stages previously on the view
 		this.removeChangeTitles();
+		this.removeTaskInfos(false);
 		hasNewStageView = false;
 		for (Component c : view.getComponents()) {
 			if (!(c instanceof TaskInfoPreviewView)) {
@@ -114,16 +119,43 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 
 		// get all the stages in this workflow
 		final List<StageModel> stages = model.getStages();
+
 		// and add them all to the view
 		for (StageModel stage : stages) {
 			// create stage view and controller.
-			StageView stv = new StageView(stage.getName());
-			stv.setController(new StageController(stv, stage));
+			StageView stv = new StageController(stage).getView();
 
 			// add stage view to workflow
 			view.addStageView(stv);
 		}
+
+		// view needs to be repainted before we can find positions of components
 		view.revalidate();
+		view.repaint();
+
+		// if this doesn't run in the EDT, it sometimes doesn't work
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				// get the mouse position relative to the workflow
+				Point p = view.getMousePosition();
+				if (p != null) {
+					Component mouseC = view.findComponentAt(p);
+					// if we're over a TaskView, call mouse entered on it.
+					while (mouseC != null) {
+						if (mouseC instanceof TaskView) {
+							// calling this on the TaskView's parent or children
+							// does not work; it has to be on the TaskView
+							// itself
+							mouseC.dispatchEvent(new MouseEvent(mouseC,
+									MouseEvent.MOUSE_ENTERED, 0, 0, 0, 0, 0,
+									false));
+							break;
+						}
+						mouseC = mouseC.getParent();
+					}
+				}
+			}
+		});
 	}
 
 	/**
@@ -149,13 +181,16 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	public void addStageToView() {
 		if (!hasNewStageView) {
 			hasNewStageView = true;
-			final StageView newStageV = new StageView("");
-			newStageV.setController(new StageController(newStageV, null));
-			newStageV.enableTitleEditing(true);
-			PromptSupport
-					.setPrompt("New Stage Name", newStageV.getLabelField());
-			view.addStageView(newStageV);
+			final StageView newStageV = new StageController().getView();
+			newStageV.getController().switchTitle(true);
 
+			PromptSupport.setPrompt(Localizer.getString("NewStageName"),
+					newStageV.getLabelField());
+			PromptSupport.setFocusBehavior(
+					PromptSupport.FocusBehavior.SHOW_PROMPT,
+					newStageV.getLabelField());
+
+			view.addStageView(newStageV);
 			removeTaskInfos(false);
 
 			view.revalidate();
@@ -219,7 +254,6 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 				((TaskInfoPreviewView) c).getTaskController().resetBackground();
 			}
 		}
-		TaskController.anyTaskInfoOut = false;
 		if (repaint) {
 			// display without reloading
 			this.repaintView();
@@ -232,12 +266,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 *
 	 */
 	public void removeChangeTitles() {
-		for (Component c : view.getComponents()) {
-			if (c instanceof StageView) {
-				((StageView) c).getController().setThisChangeTitleOut(false);
-			}
-		}
-		StageController.anyChangeTitleOut = false;
+		view.removeChangeTitles();
 	}
 
 	/**
@@ -251,13 +280,11 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if (!StageController.anyChangeTitleOut) {
-			// Removes the task info bubble from the screen
-			FetchWorkflowObserver.ignoreAllResponses = false;
-			removeTaskInfos(false);
-			this.reloadData();
-			this.repaintView();
-		}
+		// Removes the task info bubble from the screen
+		WorkflowController.pauseInformation = false;
+		removeTaskInfos(false);
+		this.reloadData();
+		this.repaintView();
 	}
 
 	@Override
