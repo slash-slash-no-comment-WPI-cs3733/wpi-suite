@@ -21,6 +21,7 @@ import java.awt.event.MouseAdapter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.imageio.ImageIO;
@@ -37,6 +38,8 @@ import taskManager.controller.TaskController;
 import taskManager.controller.ToolbarController;
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DraggablePanelListener;
+import taskManager.localization.LocaleChangeListener;
+import taskManager.localization.Localizer;
 
 /**
  * @author Beth Martino
@@ -45,7 +48,8 @@ import taskManager.draganddrop.DraggablePanelListener;
  * @version November 18, 2014
  */
 
-public class TaskView extends JPanel implements Transferable {
+public class TaskView extends JPanel implements Transferable,
+		LocaleChangeListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -60,6 +64,7 @@ public class TaskView extends JPanel implements Transferable {
 
 	private Image ARCHIVE_BG;
 	private Image ARCHIVE_HOVER;
+	private Date dueDate = null;
 
 	/**
 	 * Constructor, creates a list-like view for the following information: the
@@ -88,6 +93,7 @@ public class TaskView extends JPanel implements Transferable {
 
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		this.setAlignmentX(LEFT_ALIGNMENT);
+		this.dueDate = duedate;
 
 		// creates the border for the color
 		colorBorder = new JPanel();
@@ -121,6 +127,7 @@ public class TaskView extends JPanel implements Transferable {
 		DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
 		dueLabel = new JLabel("Due: " + format.format(duedate));
 		dueLabel.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 3));
+
 		lower.add(dueLabel);
 		JPanel icons = new JPanel(new FlowLayout());
 		icons.setOpaque(false);
@@ -216,6 +223,9 @@ public class TaskView extends JPanel implements Transferable {
 			setDropTarget(null);
 		}
 
+		onLocaleChange();
+		Localizer.addListener(this);
+
 	}
 
 	@Override
@@ -289,7 +299,7 @@ public class TaskView extends JPanel implements Transferable {
 	 * Sets the font color of the due date used to show red overdue dates
 	 * 
 	 * @param color
-	 *            to set the date to
+	 *            to set the date to the given color
 	 */
 	public void setDateColor(Color color) {
 		dueLabel.setForeground(color);
@@ -305,12 +315,16 @@ public class TaskView extends JPanel implements Transferable {
 	 */
 	@Override
 	public Object getTransferData(DataFlavor flavor)
-			throws UnsupportedFlavorException {
-		if (!flavor.equals(DDTransferHandler.getTaskFlavor())) {
+			throws UnsupportedFlavorException, IOException {
+		if (flavor.equals(DDTransferHandler.getTaskFlavor())) {
+			// return this panel as the transfer data
+			return this;
+
+		} else if (flavor.equals(DataFlavor.stringFlavor)) {
+			return controller.getExportString();
+		} else {
 			throw new UnsupportedFlavorException(flavor);
 		}
-		// return this panel as the transfer data
-		return this;
 	}
 
 	/*
@@ -318,7 +332,8 @@ public class TaskView extends JPanel implements Transferable {
 	 */
 	@Override
 	public DataFlavor[] getTransferDataFlavors() {
-		final DataFlavor[] flavors = { DDTransferHandler.getTaskFlavor() };
+		DataFlavor[] flavors = { DDTransferHandler.getTaskFlavor(),
+				DataFlavor.stringFlavor };
 		return flavors;
 	}
 
@@ -328,7 +343,8 @@ public class TaskView extends JPanel implements Transferable {
 	 */
 	@Override
 	public boolean isDataFlavorSupported(DataFlavor flavor) {
-		return flavor.equals(DDTransferHandler.getTaskFlavor());
+		return flavor.equals(DDTransferHandler.getTaskFlavor())
+				|| flavor.equals(DataFlavor.stringFlavor);
 	}
 
 	/*
@@ -377,6 +393,13 @@ public class TaskView extends JPanel implements Transferable {
 
 	public JPanel getRotationPane() {
 		return rotationView;
+	}
+
+	@Override
+	public void onLocaleChange() {
+		final Calendar date = Calendar.getInstance();
+		DateFormat df = new SimpleDateFormat(Localizer.getString("DateFormat"));
+		dueLabel.setText(Localizer.getString("Due") + " " + df.format(dueDate));
 	}
 
 }

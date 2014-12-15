@@ -37,6 +37,7 @@ import org.junit.Test;
 import taskManager.MockNetwork;
 import taskManager.ScreenshotOnFail;
 import taskManager.TaskManager;
+import taskManager.localization.Localizer;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
@@ -168,7 +169,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		TaskModel newTask = stage.findTaskByName("newT").get(0);
 		assertEquals(newTask.getDescription(), "newD");
 		assertEquals(newTask.getDueDate(), d);
-		assertEquals(newTask.getEstimatedEffort(), 4);
+		assertEquals(newTask.getEstimatedEffort(), new Integer(4));
 	}
 
 	@Test
@@ -192,7 +193,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		fixture.textBox(EditTaskView.ACT_EFFORT).deleteText().enterText("4");
 		fixture.button(EditTaskView.SAVE).click();
 
-		assertEquals(4, task.getActualEffort());
+		assertEquals(new Integer(4), task.getActualEffort());
 
 	}
 
@@ -208,7 +209,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 
 		// make sure it has no requirement yet
 		fixture.comboBox(EditTaskView.REQUIREMENTS).requireSelection(
-				EditTaskView.NO_REQ);
+				Localizer.getString(EditTaskView.NO_REQ));
 
 		// add a requirement to the task
 		fixture.comboBox(EditTaskView.REQUIREMENTS).selectItem(req.getName());
@@ -361,6 +362,34 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		fixture.optionPane().yesButton().click();
 		assertEquals(task.getName(), name);
 
+	}
+
+	@Test
+	public void testCloseCreateTask() {
+		// Close task opened in setup
+		fixture.button(TabView.X).click();
+		try {
+			fixture.optionPane().yesButton().click();
+		} catch (ComponentLookupException | WaitTimedOutError e) {
+		}
+		// load the Create task view
+		TabPaneController.getInstance().addCreateTaskTab();
+
+		Component c = TabPaneController.getInstance().getView()
+				.getSelectedComponent();
+		if (c instanceof EditTaskView) {
+			etv = (EditTaskView) c;
+		} else {
+			fail("oh god what's going on");
+		}
+		frame.pack();
+
+		fixture.button(TabView.X).click();
+		try { // dialog shouldn't come up if no changes made
+			fixture.optionPane();
+			fail("New task threw up popup");
+		} catch (ComponentLookupException | WaitTimedOutError e) {
+		}
 	}
 
 	@After

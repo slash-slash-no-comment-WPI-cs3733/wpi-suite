@@ -57,6 +57,8 @@ public class DropTargetRedispatcher implements DropTargetListener {
 	public void dragEnter(DropTargetDragEvent dtde) {
 		if (dtde.getTransferable().isDataFlavorSupported(flavor)) {
 			target.getDropTarget().dragEnter(convertCoords(dtde, target));
+		} else {
+			dtde.rejectDrag();
 		}
 	}
 
@@ -69,6 +71,8 @@ public class DropTargetRedispatcher implements DropTargetListener {
 	public void dragOver(DropTargetDragEvent dtde) {
 		if (dtde.getTransferable().isDataFlavorSupported(flavor)) {
 			target.getDropTarget().dragOver(convertCoords(dtde, target));
+		} else {
+			dtde.rejectDrag();
 		}
 	}
 
@@ -81,6 +85,8 @@ public class DropTargetRedispatcher implements DropTargetListener {
 		if (dtde.getTransferable().isDataFlavorSupported(flavor)) {
 			target.getDropTarget().dropActionChanged(
 					convertCoords(dtde, target));
+		} else {
+			dtde.rejectDrag();
 		}
 	}
 
@@ -101,6 +107,8 @@ public class DropTargetRedispatcher implements DropTargetListener {
 	public void drop(DropTargetDropEvent dtde) {
 		if (dtde.getTransferable().isDataFlavorSupported(flavor)) {
 			target.getDropTarget().drop(convertCoords(dtde, target));
+		} else {
+			dtde.rejectDrop();
 		}
 	}
 

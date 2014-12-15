@@ -103,8 +103,8 @@ public class TestTaskFilter {
 	public void testString() {
 		tm = new TaskModel("Task Name", sm);
 		tm.setDescription("A Fine Description");
-		tm.addActivity(new ActivityModel("A New Comment",
-				ActivityModelType.COMMENT));
+		tm.addActivity(new ActivityModel(ActivityModelType.COMMENT,
+				"A New Comment"));
 
 		f.setString("k na");
 		assertTrue(f.check(tm));

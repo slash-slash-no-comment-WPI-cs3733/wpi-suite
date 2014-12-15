@@ -12,8 +12,6 @@ package taskManager.view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -27,10 +25,11 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.ScrollPaneLayout;
 
 import net.java.balloontip.BalloonTip;
 import net.java.balloontip.BalloonTip.AttachLocation;
@@ -41,22 +40,25 @@ import net.miginfocom.swing.MigLayout;
 
 import org.jdesktop.swingx.JXDatePicker;
 
+import taskManager.controller.ActivityController;
 import taskManager.controller.EditTaskController;
 import taskManager.controller.TaskInputController;
-import taskManager.model.ActivityModel;
-import taskManager.model.ActivityModel.ActivityModelType;
+import taskManager.localization.LocaleChangeListener;
+import taskManager.localization.Localizer;
 
 /**
- *  Edit panel for a new task
+ *  Edit panel for a task
  */
 
 /**
  * 
  * @author Thane Hunt
  * @author Tyler Jaskoviak
+ * @author Samee Swartz
+ * @author Clark Jacobsohn
  */
 
-public class EditTaskView extends JScrollPane {
+public class EditTaskView extends JPanel implements LocaleChangeListener {
 
 	public static final String STAGES = "stages";
 	public static final String REQUIREMENTS = "requirements";
@@ -65,22 +67,22 @@ public class EditTaskView extends JScrollPane {
 	public static final String SAVE = "save";
 	public static final String VIEW_REQ = "viewReq";
 	public static final String SUBMIT_COMMENT = "submitComment";
+	public static final String CANCEL_COMMENT = "cancelComment";
 	public static final String ADD_USER = "addUser";
 	public static final String REMOVE_USER = "removeUser";
 	public static final String DELETE = "delete";
-	public static final String COMMENTS = "comments";
 	public static final String ACT_EFFORT = "act_effort";
 	public static final String EST_EFFORT = "est_effort";
 	public static final String DUE_DATE = "due_date";
-	public static final String NO_REQ = "[None]";
+	public static final String NO_REQ = "None";
 	public static final String REFRESH = "refresh";
 	public static final String TITLE = "title";
 	public static final String DESCRIP = "description";
 	public static final String CATEGORIES = "categories";
 
-	private static final String TITLE_ERROR = "Title cannot be empty";
-	private static final String DESCRIPTION_ERROR = "Description cannot be empty";
-	private static final String EFFORT_ERROR = "Must be an integer between 0 and 9999";
+	private static final String TITLE_ERROR = "TitleEmpty";
+	private static final String DESCRIPTION_ERROR = "DescriptionEmpty";
+	private static final String EFFORT_ERROR = "EffortNotInt";
 
 	private static final long serialVersionUID = 1L;
 	private JButton save;
@@ -90,20 +92,36 @@ public class EditTaskView extends JScrollPane {
 	private JButton delete;
 	private JButton viewReq;
 	private JButton submitComment;
+	private JButton cancelComment;
+
 	private JCheckBox archive;
 
-	private final JTextArea commentsField;
 	private final JTextField titleField;
 	private final JTextArea descripArea;
 	private final JXDatePicker dateField;
 	private final JTextField estEffortField;
 	private final JTextField actEffortField;
+	private JTextArea commentBox;
 	private final JPanel window;
+
+	private final JLabel titleLabel;
+	private final JLabel descriptionLabel;
+	private final JLabel dueDateLabel;
+	private final JLabel stageLabel;
+	private final JLabel estimatedEffortLabel;
+	private final JLabel actualEffortLabel;
+	private final JLabel requirementLabel;
+	private final JLabel assignedUsersLabel;
+	private final JLabel projectUsersLabel;
+	private final JLabel activitiesLabel;
+	private final JLabel commentsLabel;
 
 	private BalloonTip titleError;
 	private BalloonTip descripError;
 	private BalloonTip actEffortError;
 	private BalloonTip estEffortError;
+
+	private JSplitPane splitPane;
 
 	private final Mode mode;
 
@@ -119,10 +137,7 @@ public class EditTaskView extends JScrollPane {
 	private final JComboBox<String> categories;
 
 	private EditTaskController controller;
-	private final ActivityView activityPane;
-
-	private List<ActivityModel> activities;
-
+	private ActivityController activityC;
 	private TaskInputController fieldC;
 
 	// create new Font
@@ -135,50 +150,49 @@ public class EditTaskView extends JScrollPane {
 	 * 
 	 * @param mode
 	 *            Which mode this view should be created in
+	 * 
+	 * @param activityC
+	 *            The ActivityController for this EditTaskView's task
 	 */
-	public EditTaskView(Mode mode) {
+	public EditTaskView(Mode mode, ActivityController activityC) {
+
 		// TODO: User Mode to switch between create and edit views
 		// When Task added make EditTask take in a Task called currTask
 		this.mode = mode;
-		JPanel center = new JPanel();
-		center.setLayout(new MigLayout("center"));
-		window = new JPanel(new MigLayout());
-		this.setViewportView(center);
-		this.setLayout(new ScrollPaneLayout());
-		this.getVerticalScrollBar().setUnitIncrement(12);
-		this.getHorizontalScrollBar().setUnitIncrement(12);
-		final Dimension panelSize = getPreferredSize();
-		panelSize.width = 1300; // TODO Decide size
-		panelSize.height = 650;
-		center.setPreferredSize(panelSize);
-		window.setPreferredSize(panelSize);
+		this.activityC = activityC;
+		this.setOpaque(false);
+		// Contains the splitPane and button panel
+		this.setLayout(new MigLayout("wrap 1, align center", "[grow, fill]",
+				"[grow, fill][]"));
 
-		activities = new ArrayList<ActivityModel>();
+		// the Panel holding all task editing (not activity) stuff
+		window = new JPanel(new MigLayout("center align", "[][][]",
+				"[grow, fill]"));
 
 		// JLabels
-		JLabel titleLabel = new JLabel("Title");
+		titleLabel = new JLabel();
 		titleLabel.setFont(bigFont);
-		JLabel descriptionLabel = new JLabel("Description");
+		descriptionLabel = new JLabel();
 		descriptionLabel.setFont(bigFont);
-		JLabel dueDateLabel = new JLabel("Due Date");
+		dueDateLabel = new JLabel();
 		dueDateLabel.setFont(bigFont);
-		JLabel stageLabel = new JLabel("Stage");
+		stageLabel = new JLabel();
 		stageLabel.setFont(bigFont);
 		JLabel categoryLabel = new JLabel("Category");
 		categoryLabel.setFont(bigFont);
-		JLabel estimatedEffortLabel = new JLabel("Estimated Effort");
+		estimatedEffortLabel = new JLabel();
 		estimatedEffortLabel.setFont(bigFont);
-		JLabel actualEffortLabel = new JLabel("Actual Effort");
+		actualEffortLabel = new JLabel();
 		actualEffortLabel.setFont(bigFont);
-		JLabel requirementLabel = new JLabel("Select Requirement");
+		requirementLabel = new JLabel();
 		requirementLabel.setFont(bigFont);
-		JLabel assignedUsersLabel = new JLabel("Assigned Users");
+		assignedUsersLabel = new JLabel();
 		assignedUsersLabel.setFont(bigFont);
-		JLabel projectUsersLabel = new JLabel("Project Users");
+		projectUsersLabel = new JLabel();
 		projectUsersLabel.setFont(bigFont);
-		JLabel activitiesLabel = new JLabel("Activities");
+		activitiesLabel = new JLabel();
 		activitiesLabel.setFont(bigFont);
-		JLabel commentsLabel = new JLabel("Comment");
+		commentsLabel = new JLabel();
 		commentsLabel.setFont(bigFont);
 
 		// JTextFields
@@ -188,6 +202,7 @@ public class EditTaskView extends JScrollPane {
 		titleField.setName(TITLE);
 
 		descripArea = new JTextArea(14, 26);
+		descripArea.setMinimumSize(new Dimension(20, 100));
 		descripArea.setName(DESCRIP);
 		descripArea.setEditable(true);
 		descripArea.setLineWrap(true);
@@ -199,22 +214,12 @@ public class EditTaskView extends JScrollPane {
 		descriptionScrollPane
 				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 
-		commentsField = new JTextArea(6, 24);
-		JScrollPane commentScrollPane = new JScrollPane(commentsField);
-		commentScrollPane
-				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		commentScrollPane
-				.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-
 		estEffortField = new JTextField(4);
 		estEffortField.setEditable(true);
 		estEffortField.setName(EST_EFFORT);
 		actEffortField = new JTextField(4);
 		actEffortField.setEditable(true);
 		actEffortField.setName(ACT_EFFORT);
-		commentsField.setEditable(true);
-		commentsField.setLineWrap(true);
-		commentsField.setName(COMMENTS);
 
 		// adds calendar
 		dateField = new JXDatePicker();
@@ -236,15 +241,13 @@ public class EditTaskView extends JScrollPane {
 		projectUsersList = new ScrollList("");
 		projectUsersList.setBackground(this.getBackground());
 
-		// Comment Pane
-		activityPane = new ActivityView();
 		// Requirement Pane
 		requirements = new JComboBox<String>();
 		requirements.setName(REQUIREMENTS);
 		requirements.setPrototypeDisplayValue("Select a requirement");
 		// JButtons
 		// Delete Task and close the window
-		delete = new JButton("Delete");
+		delete = new JButton();
 		delete.setName(DELETE);
 
 		// Add user to list
@@ -253,31 +256,25 @@ public class EditTaskView extends JScrollPane {
 		this.setAddUserEnabled(false);
 
 		// remove user from list
-
 		removeUser = new JButton("<<");
 		removeUser.setName(REMOVE_USER);
 		this.setRemoveUserEnabled(false);
 
-		// Add comment to comments
-		submitComment = new JButton("Submit Comment");
-		submitComment.setName(SUBMIT_COMMENT);
-		this.setCommentSubmitEnabled(false);
-
 		// add requirement
-
-		viewReq = new JButton("View Requirement");
+		viewReq = new JButton();
 		viewReq.setName(VIEW_REQ);
 
 		// saves all the data and closes the window
-		save = new JButton("Save");
+		save = new JButton();
 		save.setName(SAVE);
 		this.setSaveEnabled(false);
 
 		// closes the window without saving
-		cancel = new JButton("Cancel");
+		cancel = new JButton();
 		cancel.setName(CANCEL);
-		archive = new JCheckBox("Archived");
+		archive = new JCheckBox();
 		archive.setName(ARCHIVE);
+		archive.setOpaque(false);
 
 		// Combo Box for Stage
 		stages = new JComboBox<String>();
@@ -289,18 +286,18 @@ public class EditTaskView extends JScrollPane {
 		categories = new JComboBox<String>();
 		categories.setName(CATEGORIES);
 
-		window.setLayout(new MigLayout());
-
 		window.add(titleLabel);
 
-		// This is where the 9 primary panels are defined
-		JPanel Spacer = new JPanel(new MigLayout());
+		// This is where the 8 primary panels are defined
+		JPanel SpacerTop = new JPanel(new MigLayout());
+		JPanel SpacerBtm = new JPanel(new MigLayout());
 		JPanel BasicInfo = new JPanel(new MigLayout());
-		JPanel Users = new JPanel(new MigLayout());
-		JPanel Activities = new JPanel(new MigLayout("fill"));
+		JPanel Users = new JPanel(new MigLayout("align center, wrap 1",
+				"[grow, fill]"));
 		JPanel Effort = new JPanel(new MigLayout());
-		JPanel Requirements = new JPanel(new MigLayout());
-		JPanel EditSaveCancel = new JPanel(new MigLayout("align center"));
+		JPanel Requirements = new JPanel(new MigLayout("center"));
+		JPanel EditSaveCancel = new JPanel(new MigLayout("center"));
+		EditSaveCancel.setOpaque(false);
 		JPanel dateAndStage = new JPanel(new MigLayout());
 		JPanel EffortDateStage = new JPanel(new MigLayout());
 
@@ -317,11 +314,12 @@ public class EditTaskView extends JScrollPane {
 		EffortDateStage.add(dateAndStage);
 
 		// BasicInfo Panel internal content
-		BasicInfo.setBorder(BorderFactory.createTitledBorder(""));
-		BasicInfo.add(titleLabel, "gapleft 5px, wrap");
-		BasicInfo.add(titleField, "gapleft 5px, wrap");
 
-		BasicInfo.add(descriptionLabel, "gapleft 5px, wrap");
+		BasicInfo.setBorder(BorderFactory.createTitledBorder(""));
+		BasicInfo.add(titleLabel, "gapleft 15px, wrap");
+		BasicInfo.add(titleField, "gapleft 15px, wrap");
+
+		BasicInfo.add(descriptionLabel, "gapleft 15px, wrap");
 		BasicInfo.add(descriptionScrollPane,
 				"gapbottom 10px, gapleft 5px, wrap");
 		BasicInfo.add(EffortDateStage, "h 25%, gapleft 5px");
@@ -343,10 +341,10 @@ public class EditTaskView extends JScrollPane {
 
 		// Users Panel internal content
 		Users.setBorder(BorderFactory.createTitledBorder(""));
-		JPanel UserPanel = new JPanel(new MigLayout());
-		JPanel usersListPanel = new JPanel(new MigLayout());
-		JPanel projectUsersListPanel = new JPanel(new MigLayout());
-		JPanel addRemoveButtons = new JPanel(new MigLayout());
+		JPanel UserPanel = new JPanel(new MigLayout("align center"));
+		JPanel usersListPanel = new JPanel(new MigLayout("align center"));
+		JPanel projectUsersListPanel = new JPanel(new MigLayout("align center"));
+		JPanel addRemoveButtons = new JPanel(new MigLayout("align center"));
 		usersListPanel.add(assignedUsersLabel, "wrap");
 
 		usersListPanel.add(usersList);
@@ -363,15 +361,6 @@ public class EditTaskView extends JScrollPane {
 		Users.add(UserPanel, "h 60%, wrap");
 		Users.add(EffortAndRequirements, "h 40%, wrap");
 
-		// Activities Panel internal content
-		Activities.setBorder(BorderFactory.createTitledBorder(""));
-		Activities.add(activitiesLabel, "wrap, gaptop 10px, gapleft 25px");
-		Activities.add(activityPane, "wrap, gapbottom 50px, gapleft 25px");
-		Activities.add(commentsLabel, "gapleft 25px, wrap");
-		Activities.add(commentScrollPane, "wrap, gapbottom 10px, gapleft 25px");
-		Activities.add(submitComment,
-				"dock south, gapleft 30px, gapright 30px, gapbottom 20px");
-
 		// EditSaveCancel Panel internal content
 
 		EditSaveCancel.add(save);
@@ -382,36 +371,96 @@ public class EditTaskView extends JScrollPane {
 			EditSaveCancel.add(archive);
 		}
 
-		// The finished panels are added to the main window panel
-
-		window.add(Spacer, "dock north");
+		window.add(SpacerTop, "dock north");
 		window.add(BasicInfo, "h 80%, w 30%");
 		window.add(Users, "h 80%, w 30%, gapleft 10px");
-		window.add(Activities, "h 80%, w 25%, gapleft 10px");
-		window.add(EditSaveCancel, "dock south, h 10%");
-
-		// Add the window to EditTaskView
-		center.add(window);
+		window.add(SpacerBtm, "dock south");
 
 		BalloonTipStyle errorStyle = new RoundedBalloonStyle(5, 5,
 				Colors.INPUT_ERROR, Color.red);
-		titleError = new BalloonTip(titleField, new JLabel(TITLE_ERROR),
+		titleError = new BalloonTip(titleField, new JLabel(), errorStyle,
+				Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST, 5, 15, false);
+		descripError = new BalloonTip(descripArea, new JLabel(), errorStyle,
+				Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST, 5, 15, false);
+		actEffortError = new BalloonTip(actEffortField, new JLabel(),
 				errorStyle, Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST,
 				5, 15, false);
-		descripError = new BalloonTip(descripArea,
-				new JLabel(DESCRIPTION_ERROR), errorStyle,
-				Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST, 5, 15, false);
-		actEffortError = new BalloonTip(actEffortField,
-				new JLabel(EFFORT_ERROR), errorStyle, Orientation.LEFT_ABOVE,
-				AttachLocation.NORTHEAST, 5, 15, false);
-		estEffortError = new BalloonTip(estEffortField,
-				new JLabel(EFFORT_ERROR), errorStyle, Orientation.LEFT_ABOVE,
-				AttachLocation.NORTHEAST, 5, 15, false);
+		estEffortError = new BalloonTip(estEffortField, new JLabel(),
+				errorStyle, Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST,
+				5, 15, false);
 
 		setTitleErrorVisible(false);
 		setDescriptionErrorVisible(false);
 		setActualEffortErrorVisible(false);
 		setEstEffortErrorVisible(false);
+
+		// The finished panels are added to the main window panel
+		Dimension panelSize = window.getPreferredSize();
+		panelSize.height = 500; // Decide size
+		window.setPreferredSize(panelSize);
+
+		JScrollPane windowScroll = new JScrollPane(window);
+		windowScroll.getVerticalScrollBar().setUnitIncrement(12);
+		windowScroll.getHorizontalScrollBar().setUnitIncrement(12);
+
+		// The activities and comments tabs
+		JPanel tabs = new JPanel(new MigLayout("wrap 1", "[grow, fill]",
+				"[grow, fill][]"));
+		tabs.add(activityC.getActivitiesPanel());
+		tabs.add(initCommentBoxandBtns());
+		tabs.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+
+		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
+				windowScroll, tabs);
+		splitPane.setDividerLocation(900);
+		splitPane.setDividerSize(10);
+
+		splitPane.setContinuousLayout(true);
+		splitPane.setResizeWeight(.5);
+		this.add(splitPane);
+		this.add(EditSaveCancel);
+	}
+
+	private JPanel initCommentBoxandBtns() {
+		JPanel commentAndBtns = new JPanel(new MigLayout("wrap 1",
+				"[grow, fill]", "[]"));
+
+		commentBox = new JTextArea();
+		commentBox.setRows(5);
+		commentBox.setWrapStyleWord(true);
+		commentBox.setLineWrap(true);
+
+		commentBox.getInputMap()
+				.put(KeyStroke.getKeyStroke("TAB"), "doNothing");
+		commentBox.getInputMap().put(KeyStroke.getKeyStroke("ENTER"),
+				"doNothing");
+
+		JScrollPane commentScroll = new JScrollPane(commentBox,
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		commentScroll.setMinimumSize(new Dimension(20, 100));
+
+		// Buttons
+		JPanel buttons = new JPanel();
+		buttons.setOpaque(false);
+		submitComment = new JButton("Save Comment");
+		submitComment.setName(EditTaskView.SUBMIT_COMMENT);
+		submitComment.setEnabled(false);
+		cancelComment = new JButton("Cancel");
+		cancelComment.setName(EditTaskView.CANCEL_COMMENT);
+		cancelComment.setEnabled(false);
+		buttons.add(submitComment);
+		buttons.add(cancelComment);
+		buttons.setMaximumSize(new Dimension(10000, 40));
+
+		commentAndBtns.add(commentScroll);
+		commentAndBtns.add(buttons);
+
+		// load strings the first time
+		onLocaleChange();
+		Localizer.addListener(this);
+
+		return commentAndBtns;
 	}
 
 	/**
@@ -437,8 +486,9 @@ public class EditTaskView extends JScrollPane {
 		addUser.addActionListener(controller);
 		removeUser.addActionListener(controller);
 		viewReq.addActionListener(controller);
-		submitComment.addActionListener(controller);
 		delete.addActionListener(controller);
+		submitComment.addActionListener(controller);
+		cancelComment.addActionListener(controller);
 	}
 
 	/**
@@ -458,10 +508,10 @@ public class EditTaskView extends JScrollPane {
 		categories.addPopupMenuListener(fieldC);
 		usersList.setController(fieldC);
 		projectUsersList.setController(fieldC);
-		commentsField.addKeyListener(fieldC);
 		requirements.addPopupMenuListener(fieldC);
 		dateField.addPropertyChangeListener(fieldC);
 		archive.addItemListener(fieldC);
+		commentBox.addKeyListener(fieldC);
 		fieldC.validate();
 		addUser.addActionListener(fieldC);
 		removeUser.addActionListener(fieldC);
@@ -586,13 +636,13 @@ public class EditTaskView extends JScrollPane {
 		final String selectedReq = getSelectedRequirement();
 
 		requirements.removeAllItems();
-		requirements.addItem(NO_REQ);
+		requirements.addItem(Localizer.getString(NO_REQ));
 		for (String name : reqNames) {
 			requirements.addItem(name);
 		}
 
 		// Select NO_REQ if the old selected item doesn't exist
-		requirements.setSelectedItem(NO_REQ);
+		requirements.setSelectedItem(Localizer.getString(NO_REQ));
 		if (!(selectedReq == null)) {
 			requirements.setSelectedItem(selectedReq);
 		}
@@ -650,7 +700,7 @@ public class EditTaskView extends JScrollPane {
 	 * @return The selected requirement's name
 	 */
 	public String getSelectedRequirement() {
-		if (NO_REQ.equals(requirements.getSelectedItem())) {
+		if (Localizer.getString(NO_REQ).equals(requirements.getSelectedItem())) {
 			return null;
 		}
 		return (String) requirements.getSelectedItem();
@@ -664,7 +714,7 @@ public class EditTaskView extends JScrollPane {
 	 */
 	public void setSelectedRequirement(String requirementName) {
 		if (requirementName == null) {
-			requirements.setSelectedItem(NO_REQ);
+			requirements.setSelectedItem(Localizer.getString(NO_REQ));
 		}
 		requirements.setSelectedItem(requirementName);
 
@@ -924,7 +974,6 @@ public class EditTaskView extends JScrollPane {
 		estEffortField.setText("");
 		actEffortField.setText("");
 		dateField.setDate(Calendar.getInstance().getTime());
-		activityPane.setMessage("");
 		usersList.removeAllValues();
 		projectUsersList.removeAllValues();
 	}
@@ -940,93 +989,7 @@ public class EditTaskView extends JScrollPane {
 	}
 
 	/**
-	 * enables or disables the comment submit button
 	 * 
-	 * @param e
-	 *            true is enabled false is disabled
-	 */
-	public void setCommentSubmitEnabled(boolean e) {
-		submitComment.setEnabled(e);
-	}
-
-	/**
-	 * 
-	 * Adds comment to the activities list and refreshes the activities panel.
-	 *
-	 * @return the resulting ActivityModel added.
-	 */
-	public ActivityModel addComment() {
-		final ActivityModel act = new ActivityModel(commentsField.getText(),
-				ActivityModelType.COMMENT);
-		activities.add(act);
-		commentsField.setText("");
-		reloadActivitiesPanel();
-		fieldC.validate();
-		return act;
-	}
-
-	/**
-	 * 
-	 * Sets the activies panel according to the activities list.
-	 *
-	 * @param activities
-	 */
-	public void setActivitiesPanel(List<ActivityModel> activities) {
-		final List<ActivityModel> tskActivitiesCopy = new ArrayList<ActivityModel>(
-				activities);
-		activityPane.setMessage("");
-		final DateFormat dateF = new SimpleDateFormat("MM/dd/yyyy kk:mm");
-		for (ActivityModel act : tskActivitiesCopy) {
-			String current = activityPane.getMessage().getText();
-			activityPane.setMessage(current + act.getActor() + " ["
-					+ dateF.format(act.getDateCreated()) + "]: "
-					+ act.getDescription() + "\n");
-
-		}
-	}
-
-	/**
-	 * 
-	 * Reloads the activities panel.
-	 *
-	 */
-	public void reloadActivitiesPanel() {
-		setActivitiesPanel(activities);
-	}
-
-	/**
-	 * 
-	 * Sets activities.
-	 *
-	 * @param act
-	 */
-	public void setActivities(List<ActivityModel> act) {
-		final List<ActivityModel> tskActivitiesCopy = new ArrayList<ActivityModel>(
-				act);
-		activityPane.setMessage("");
-		activities = tskActivitiesCopy;
-	}
-
-	/**
-	 * 
-	 * Clears the activities.
-	 *
-	 */
-	public void clearActivities() {
-		activities.clear();
-	}
-
-	/**
-	 * Adds an activity.
-	 *
-	 * @param act
-	 *            the activity.
-	 */
-	public void addActivity(ActivityModel act) {
-		activities.add(act);
-	}
-
-	/**
 	 * Set the delete button to enabled/disabled.
 	 *
 	 * @param bool
@@ -1044,11 +1007,13 @@ public class EditTaskView extends JScrollPane {
 		if (visible && titleField.getKeyListeners().length > 0) {
 			final TaskInputController tic = (TaskInputController) titleField
 					.getKeyListeners()[0];
-			tic.checkFields();
-			reloadActivitiesPanel();
+			tic.checkEditFields();
 		}
 		if (visible && controller != null) {
 			controller.reloadData();
+		}
+		if (visible) {
+			activityC.reloadActivitiesPanel();
 		}
 
 		super.setVisible(visible);
@@ -1085,11 +1050,70 @@ public class EditTaskView extends JScrollPane {
 	}
 
 	/**
-	 * Returns the comments field's text
+	 * Set whether the submit and cancel buttons for the activity view are
+	 * enabled or not
 	 * 
-	 * @return The text the user wants to say
+	 * @param e
+	 *            true to make the submit button enabled, false to disable it
+	 */
+	public void setSubmitCancelCommentEnabled(boolean e) {
+		submitComment.setEnabled(e);
+		cancelComment.setEnabled(e);
+	}
+
+	/**
+	 * Returns the text in the comments field.
+	 * 
+	 * @return The text in the comments field
 	 */
 	public String getCommentsFieldText() {
-		return commentsField.getText();
+		return commentBox.getText();
+	}
+
+	/**
+	 * Sets the text in the comment JTextArea.
+	 * 
+	 */
+	public void setCommentsFieldText(String text) {
+		commentBox.setText(text);
+		cancelComment.setEnabled(true);
+	}
+
+	/**
+	 * Clears the text in the comments field.
+	 */
+	public void clearText() {
+		commentBox.setText("");
+		submitComment.setEnabled(false);
+		cancelComment.setEnabled(false);
+	}
+
+	@Override
+	public void onLocaleChange() {
+		titleLabel.setText(Localizer.getString("Title"));
+		descriptionLabel.setText(Localizer.getString("Description"));
+		dueDateLabel.setText(Localizer.getString("DueDate"));
+		stageLabel.setText(Localizer.getString("Stage"));
+		estimatedEffortLabel.setText(Localizer.getString("EstimatedEffort"));
+		actualEffortLabel.setText(Localizer.getString("ActualEffort"));
+		requirementLabel.setText(Localizer.getString("SelectRequirement"));
+		assignedUsersLabel.setText(Localizer.getString("AssignedUsers"));
+		projectUsersLabel.setText(Localizer.getString("ProjectUsers"));
+		activitiesLabel.setText(Localizer.getString("Activities"));
+		commentsLabel.setText(Localizer.getString("Comment"));
+		delete.setText(Localizer.getString("Delete"));
+		submitComment.setText(Localizer.getString("SubmitComment"));
+		viewReq.setText(Localizer.getString("ViewRequirement"));
+		save.setText(Localizer.getString("Save"));
+		cancel.setText(Localizer.getString("Cancel"));
+		archive.setText(Localizer.getString("Archived"));
+		((JLabel) titleError.getContents()).setText(Localizer
+				.getString(TITLE_ERROR));
+		((JLabel) descripError.getContents()).setText(Localizer
+				.getString(DESCRIPTION_ERROR));
+		((JLabel) actEffortError.getContents()).setText(Localizer
+				.getString(EFFORT_ERROR));
+		((JLabel) estEffortError.getContents()).setText(Localizer
+				.getString(EFFORT_ERROR));
 	}
 }
