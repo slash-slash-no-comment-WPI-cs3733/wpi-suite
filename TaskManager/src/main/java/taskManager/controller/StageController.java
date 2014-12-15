@@ -66,7 +66,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 	}
 
 	public StageController(StageModel model) {
-		this(model, new TaskFilter());
+		this(model, WorkflowController.getInstance().getCurrentFilter());
 	}
 
 	/**
