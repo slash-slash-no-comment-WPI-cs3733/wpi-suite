@@ -294,9 +294,9 @@ public class ReportsController implements ActionListener, ChangeListener,
 	}
 
 	/**
-	 * This method will format the data into separate categories, such as days,
-	 * weeks, or months. It merges them down into a dataset object, which it
-	 * saves. The user should then call createLineChart().
+	 * This method will format the data into separate categories, such as days
+	 * or weeks. It merges them down into a dataset object, which it saves. The
+	 * user should then call createLineChart().
 	 * 
 	 * @param data
 	 *            The data to format into categories
@@ -328,14 +328,10 @@ public class ReportsController implements ActionListener, ChangeListener,
 			intervalName = "Day ";
 			intervalSeconds = 24 * 60 * 60;
 			intervalDays = 1;
-		} else if (interval.equals(Period.ofWeeks(1))) {
+		} else {
 			intervalName = "Week ";
 			intervalSeconds = 7 * 24 * 60 * 60;
 			intervalDays = 7;
-		} else {
-			intervalName = "Month ";
-			intervalSeconds = 30 * 7 * 24 * 60 * 60;
-			intervalDays = 30;
 		}
 
 		int seriesNum = 0;
@@ -534,9 +530,9 @@ public class ReportsController implements ActionListener, ChangeListener,
 	}
 
 	/**
-	 * This method will format the data into separate categories, such as days,
-	 * weeks, or months. It merges them down into a dataset object, which it
-	 * saves. The user should then call createBarChart() or createPieChart().
+	 * This method will format the data into separate categories, such as days
+	 * or weeks. It merges them down into a dataset object, which it saves. The
+	 * user should then call createBarChart() or createPieChart().
 	 *
 	 * @param data
 	 *            The list of ReportDatum with which to construct the dataset
@@ -865,8 +861,6 @@ public class ReportsController implements ActionListener, ChangeListener,
 			title += "Day";
 		} else if (interval.equals(Period.ofWeeks(1))) {
 			title += "Week";
-		} else if (interval.equals(Period.ofMonths(1))) {
-			title += "Month";
 		}
 
 		String xLabel = "Time";

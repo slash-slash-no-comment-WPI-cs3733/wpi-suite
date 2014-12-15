@@ -69,7 +69,7 @@ public class ReportsView extends JPanel implements ActionListener,
 
 	public String names[] = { "Work Velocity", "Task Distribution",
 			"Distribution Stages" };
-	public String slices[] = { "Days", "Weeks", "Months" };
+	public String slices[] = { "Days", "Weeks" };
 
 	private JPanel window;
 	private JPanel generator;
@@ -730,8 +730,6 @@ public class ReportsView extends JPanel implements ActionListener,
 			return Period.ofDays(1);
 		case "Weeks":
 			return Period.ofWeeks(1);
-		case "Months":
-			return Period.ofMonths(1);
 		default:
 			return Period.ofDays(1);
 		}
