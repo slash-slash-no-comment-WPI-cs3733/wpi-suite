@@ -363,6 +363,34 @@ public class TestEditTaskController extends ScreenshotOnFail {
 
 	}
 
+	@Test
+	public void testCloseCreateTask() {
+		// Close task opened in setup
+		fixture.button(TabView.X).click();
+		try {
+			fixture.optionPane().yesButton().click();
+		} catch (ComponentLookupException | WaitTimedOutError e) {
+		}
+		// load the Create task view
+		TabPaneController.getInstance().addCreateTaskTab();
+
+		Component c = TabPaneController.getInstance().getView()
+				.getSelectedComponent();
+		if (c instanceof EditTaskView) {
+			etv = (EditTaskView) c;
+		} else {
+			fail("oh god what's going on");
+		}
+		frame.pack();
+
+		fixture.button(TabView.X).click();
+		try { // dialog shouldn't come up if no changes made
+			fixture.optionPane();
+			fail("New task threw up popup");
+		} catch (ComponentLookupException | WaitTimedOutError e) {
+		}
+	}
+
 	@After
 	public void cleanup() {
 		fixture.cleanUp();

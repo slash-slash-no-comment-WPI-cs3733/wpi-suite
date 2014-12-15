@@ -286,11 +286,15 @@ public class StageView extends JPanel implements Transferable {
 	@Override
 	public Object getTransferData(DataFlavor flavor)
 			throws UnsupportedFlavorException {
-		if (!flavor.equals(DDTransferHandler.getStageFlavor())) {
+		if (flavor.equals(DDTransferHandler.getStageFlavor())) {
+			// return this panel as the transfer data
+			return this;
+
+		} else if (flavor.equals(DataFlavor.stringFlavor)) {
+			return controller.getExportString();
+		} else {
 			throw new UnsupportedFlavorException(flavor);
 		}
-		// return this panel as the transfer data
-		return this;
 	}
 
 	/*
@@ -298,7 +302,8 @@ public class StageView extends JPanel implements Transferable {
 	 */
 	@Override
 	public DataFlavor[] getTransferDataFlavors() {
-		final DataFlavor[] flavors = { DDTransferHandler.getStageFlavor() };
+		final DataFlavor[] flavors = { DDTransferHandler.getStageFlavor(),
+				DataFlavor.stringFlavor };
 		return flavors;
 	}
 
@@ -308,7 +313,7 @@ public class StageView extends JPanel implements Transferable {
 	 */
 	@Override
 	public boolean isDataFlavorSupported(DataFlavor flavor) {
-		return flavor.equals(DDTransferHandler.getStageFlavor());
+		return flavor.equals(DDTransferHandler.getStageFlavor())
+				|| flavor.equals(DataFlavor.stringFlavor);
 	}
-
 }

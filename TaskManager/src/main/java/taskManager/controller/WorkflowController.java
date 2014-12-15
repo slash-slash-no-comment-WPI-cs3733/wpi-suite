@@ -9,6 +9,7 @@
 package taskManager.controller;
 
 import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
@@ -29,6 +30,7 @@ import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
 import taskManager.view.TaskInfoPreviewView;
+import taskManager.view.TaskView;
 import taskManager.view.WorkflowView;
 
 /**
@@ -103,6 +105,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 *
 	 */
 	public synchronized void reloadData() {
+
 		// clear the stages previously on the view
 		this.removeChangeTitles();
 		hasNewStageView = false;
@@ -114,6 +117,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 
 		// get all the stages in this workflow
 		final List<StageModel> stages = model.getStages();
+
 		// and add them all to the view
 		for (StageModel stage : stages) {
 			// create stage view and controller.
@@ -123,7 +127,34 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 			// add stage view to workflow
 			view.addStageView(stv);
 		}
+
+		// view needs to be repainted before we can find positions of components
 		view.revalidate();
+		view.repaint();
+
+		// if this doesn't run in the EDT, it sometimes doesn't work
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				// get the mouse position relative to the workflow
+				Point p = view.getMousePosition();
+				if (p != null) {
+					Component mouseC = view.findComponentAt(p);
+					// if we're over a TaskView, call mouse entered on it.
+					while (mouseC != null) {
+						if (mouseC instanceof TaskView) {
+							// calling this on the TaskView's parent or children
+							// does not work; it has to be on the TaskView
+							// itself
+							mouseC.dispatchEvent(new MouseEvent(mouseC,
+									MouseEvent.MOUSE_ENTERED, 0, 0, 0, 0, 0,
+									false));
+							break;
+						}
+						mouseC = mouseC.getParent();
+					}
+				}
+			}
+		});
 	}
 
 	/**

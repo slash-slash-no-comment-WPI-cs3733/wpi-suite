@@ -47,5 +47,4 @@ public class TabPaneView extends JTabbedPane {
 
 		this.addTab("Workflow", new ImageIcon(), scroll, "Workflow");
 	}
-
 }

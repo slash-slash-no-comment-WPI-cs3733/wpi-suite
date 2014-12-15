@@ -56,7 +56,7 @@ public class TestReportsController {
 		finished = new StageModel("Finished");
 		rm = new ReportsController(new ReportsView(Mode.VELOCITY));
 		TaskModel tm1 = new TaskModel("Task", new StageModel("Start"));
-		tm1.setEstimatedEffort(5);
+		tm1.setActualEffort(5);
 		u1 = new User("User 1", "User 1", null, 42);
 		tm1.addAssigned(u1);
 		finished.addTask(tm1);

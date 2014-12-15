@@ -13,6 +13,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -318,6 +320,41 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 	 */
 	public void setThisChangeTitleOut(Boolean thisChangeTitleOut) {
 		this.thisChangeTitleOut = thisChangeTitleOut;
+	}
+
+	/**
+	 * Generate string for table export (Excel format)
+	 *
+	 * @return export string
+	 */
+	public String getExportString() {
+		String fields[] = { "Name", "Description", "Due Date",
+				"Assigned Users", "Estimated Effort", "Actual Effort" };
+		List<String[]> taskStringArrays = new ArrayList<String[]>();
+		for (TaskModel tm : model.getTasks()) {
+			String values[] = { tm.getName(), tm.getDescription(),
+					new SimpleDateFormat("MM/dd/yy").format(tm.getDueDate()),
+					String.join(",", tm.getAssigned()),
+					Integer.toString(tm.getEstimatedEffort()),
+					Integer.toString(tm.getActualEffort()) };
+			taskStringArrays.add(values);
+		}
+		List<String> rows = new ArrayList<String>();
+		rows.add(model.getName());
+		for (int i = 0; i < fields.length; i++) {
+			List<String> cells = new ArrayList<String>();
+			cells.add(fields[i]);
+			for (String[] taskStringArray : taskStringArrays) {
+				String val = taskStringArray[i];
+				// remove tabs and newlines
+				val = val.replace("\t", "        ");
+				val = val.replace("\n", " ");
+				val = val.replace("\r", "");
+				cells.add(val);
+			}
+			rows.add(String.join("\t", cells));
+		}
+		return String.join("\n", rows);
 	}
 
 }
