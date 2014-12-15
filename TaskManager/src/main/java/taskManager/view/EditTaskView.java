@@ -145,8 +145,8 @@ public class EditTaskView extends JPanel {
 		this.activityC = activityC;
 		this.setOpaque(false);
 		// Contains the splitPane and button panel
-		this.setLayout(new MigLayout("wrap 1, align center", "[grow, fill]",
-				"[grow, fill][]"));
+		this.setLayout(new MigLayout("wrap 1, align center", "0[grow, fill]0",
+				"0[grow, fill][]0"));
 
 		// the Panel holding all task editing (not activity) stuff
 		window = new JPanel(new MigLayout("center align", "[][][]",

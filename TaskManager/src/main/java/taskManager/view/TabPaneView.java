@@ -39,6 +39,7 @@ public class TabPaneView extends JTabbedPane {
 		setTabPlacement(TOP);
 		setTabLayoutPolicy(SCROLL_TAB_LAYOUT);
 		setBorder(BorderFactory.createEmptyBorder(5, 3, 3, 3));
+		setFocusable(false);
 		this.setSize(new Dimension(500, 500));
 
 		// Add the scrollable workflow
@@ -52,6 +53,7 @@ public class TabPaneView extends JTabbedPane {
 				20));
 		workflowTab.setPreferredSize(new Dimension(workflowTab
 				.getPreferredSize().width, 20));
+		workflowTab.setFocusable(false);
 		this.addTab("Workflow", scroll);
 		this.setTabComponentAt(this.indexOfComponent(scroll), workflowTab);
 	}
