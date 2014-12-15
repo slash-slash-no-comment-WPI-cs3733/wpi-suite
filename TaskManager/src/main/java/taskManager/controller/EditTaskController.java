@@ -379,12 +379,12 @@ public class EditTaskController implements ActionListener {
 		// adds or removes users
 		for (String name : etv.getUsersList().getAllValues()) {
 			if (!model.getAssigned().contains(name)) {
-				model.addAssigned(findUserByName(name));
+				model.addAssigned(name);
 			}
 		}
 		for (String n : toRemove) {
 			if (model.getAssigned().contains(n)) {
-				model.removeAssigned(findUserByName(n));
+				model.removeAssigned(n);
 			}
 		}
 		model.setReq(r);

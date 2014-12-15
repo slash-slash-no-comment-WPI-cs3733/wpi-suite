@@ -418,7 +418,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		task.setDueDate(Calendar.getInstance().getTime());
 		task.setEstimatedEffort(5);
 		task.setActualEffort(7);
-		task.addAssigned(testUser);
+		task.addAssigned(testUser.getUsername());
 
 		// load the edit view
 		TaskController tc = new TaskController(new TaskView("Task", new Date(),

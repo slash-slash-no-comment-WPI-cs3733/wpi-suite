@@ -60,7 +60,7 @@ public class TestTaskModel {
 
 		task2.setDescription("Desc");
 		task2.setArchived(true);
-		task2.addAssigned(u);
+		task2.addAssigned(u.getUsername());
 		task2.setDueDate(d);
 		task2.setEstimatedEffort(5);
 		task2.setActualEffort(3);

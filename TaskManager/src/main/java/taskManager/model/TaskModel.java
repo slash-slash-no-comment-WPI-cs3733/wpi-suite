@@ -18,7 +18,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import taskManager.model.ActivityModel.ActivityModelType;
-import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
 import edu.wpi.cs.wpisuitetng.network.Network;
@@ -303,14 +302,13 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 * @param user
 	 *            new user to be added
 	 */
-	public void addAssigned(User user) {
-		final ActivityModel addUser = new ActivityModel("User "
-				+ user.getName() + " added to task", ActivityModelType.USER_ADD);
-		final String q = user.getUsername();
-		assigned.add(q);
+	public void addAssigned(String username) {
+		final ActivityModel addUser = new ActivityModel("User " + username
+				+ " added to task", ActivityModelType.USER_ADD);
+		assigned.add(username);
 		addActivity(addUser);
-		logger.log(Level.FINER, "Added user " + user.getName() + " to task "
-				+ name + ".");
+		logger.log(Level.FINER, "Added user " + username + " to task " + name
+				+ ".");
 	}
 
 	/**
@@ -319,19 +317,19 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 * @param user
 	 *            to be removed
 	 */
-	public void removeAssigned(User user) {
-		if (!assigned.contains(user.getUsername())) {
+	public void removeAssigned(String username) {
+		if (!assigned.contains(username)) {
 			logger.log(Level.WARNING,
 					"Tried to remove a user from a task they were not assigned to.");
 			throw new IndexOutOfBoundsException("User not in suggested task");
 		}
-		assigned.remove(user.getUsername());
+		assigned.remove(username);
 		final ActivityModel delUser = new ActivityModel("Removed user "
-				+ user.getName() + " from task " + name + ".",
+				+ username + " from task " + name + ".",
 				ActivityModelType.USER_ADD);
 		addActivity(delUser);
-		logger.log(Level.FINER, "Removed user " + user.getName()
-				+ " from task " + name + ".");
+		logger.log(Level.FINER, "Removed user " + username + " from task "
+				+ name + ".");
 	}
 
 	/**
@@ -355,10 +353,8 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 *
 	 * @param comment
 	 *            The comment
-	 * @param user
-	 *            The user that made the comment
 	 */
-	public void addComment(String comment, User user) {
+	public void addComment(String comment) {
 		final ActivityModel commentActivity = new ActivityModel(comment,
 				ActivityModelType.COMMENT);
 		addActivity(commentActivity);
