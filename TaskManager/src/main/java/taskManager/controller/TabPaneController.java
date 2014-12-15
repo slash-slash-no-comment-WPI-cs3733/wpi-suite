@@ -83,7 +83,7 @@ public class TabPaneController {
 		if (exists) {
 			view.setSelectedComponent(etv2);
 		} else {
-			addTab(etv.getTitleText(), etv, true, false);
+			addTab(etv.getTitleText(), etv, true);
 			view.setSelectedComponent(etv);
 		}
 	}
@@ -107,7 +107,7 @@ public class TabPaneController {
 		if (exists) {
 			view.setSelectedComponent(rtv2);
 		} else {
-			addTab("Reports", rtv, true, true);
+			addTab("Reports", rtv, true);
 			view.setSelectedComponent(rtv);
 		}
 	}
@@ -123,14 +123,11 @@ public class TabPaneController {
 	 * @param closeable
 	 *            Whether or not a tab can be closed. True adds an 'x' button to
 	 *            the tab
-	 * @param localizable
-	 *            If this title should be localized
 	 */
-	public void addTab(String title, Component component, boolean closeable,
-			boolean localizable) {
+	public void addTab(String title, Component component, boolean closeable) {
 		view.addTab(title, component);
 		view.setTabComponentAt(view.indexOfComponent(component), new TabView(
-				title, component, closeable, localizable));
+				title, component, closeable));
 	}
 
 	/**

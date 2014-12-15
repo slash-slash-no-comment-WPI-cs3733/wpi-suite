@@ -14,13 +14,6 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.dnd.DropTarget;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.Box;
@@ -28,15 +21,12 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
 import taskManager.controller.ToolbarController;
 import taskManager.draganddrop.DDTransferHandler;
-import taskManager.localization.LocaleChangeListener;
-import taskManager.localization.Localizer;
 
 /**
  * The Task Managers tab's toolbar panel.
@@ -44,7 +34,7 @@ import taskManager.localization.Localizer;
  * @author Clark Jacobsohn
  */
 @SuppressWarnings("serial")
-public class ToolbarView extends JToolBar implements LocaleChangeListener {
+public class ToolbarView extends JToolBar {
 
 	public static final String STATISTICS = "statistics";
 	public static final String REFRESH = "refresh";
@@ -68,8 +58,6 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	private JCheckBox archiveCheckBox;
 	private JCheckBox funModeCheckBox;
 	private JButton randomizeTaskAngles;
-	private JComboBox<String> languageSelector;
-	private List<String> languages;
 
 	private JLabel projectName;
 
@@ -80,7 +68,6 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	 * 
 	 * @param controller
 	 *            The ToolbarController associated with this view
-	 * @throws IOException
 	 */
 	public ToolbarView(ToolbarController controller) {
 
@@ -104,17 +91,17 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		this.setFloatable(false);
 
 		// Construct the buttons
-		createTask = new JButton();
+		createTask = new JButton("<html>Create Task</html>");
 		createTask.setName(CREATE_TASK);
 		createTask.setMaximumSize(new Dimension(160, 58));
 		createTask.addActionListener(controller);
 
-		createStage = new JButton();
+		createStage = new JButton("<html>Create Stage</html>");
 		createStage.setName(CREATE_STAGE);
 		createStage.setMaximumSize(new Dimension(160, 58));
 		createStage.addActionListener(controller);
 
-		statistics = new JButton();
+		statistics = new JButton("<html>Reports</html>");
 		statistics.setName(REPORT);
 		statistics.setMaximumSize(new Dimension(160, 58));
 		statistics.addActionListener(controller);
@@ -137,7 +124,7 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		}
 
 		// Checkbox for toggling showing archived tasks.
-		archiveCheckBox = new JCheckBox();
+		archiveCheckBox = new JCheckBox("<html>Show archived tasks</html>");
 		archiveCheckBox.setName(SHOW_ARCHIVE);
 		archiveCheckBox.addItemListener(controller);
 		archiveCheckBox.setOpaque(false);
@@ -153,7 +140,7 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		archive.setToolTipText("");
+		archive.setToolTipText("Drag here to archive task");
 		archive.setEnabled(false);
 		archive.setName(ARCHIVE);
 
@@ -161,7 +148,7 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		archive.setTransferHandler(new DDTransferHandler());
 		archive.setDropTarget(new DropTarget(archive, controller));
 
-		delete.setToolTipText("");
+		delete.setToolTipText("Drag here to delete task");
 		delete.setEnabled(false);
 		delete.setName(DELETE);
 
@@ -191,35 +178,6 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 
 		// fun mode is off by default
 		hideFunButtons();
-		languages = new ArrayList<String>();
-		// Get supported languages
-		try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths
-				.get(getClass().getResource("/taskManager/localization")
-						.toURI()))) {
-			for (Path entry : stream) {
-				String filename = entry.getFileName().toString();
-				if (filename.endsWith(".properties")) {
-					languages.add(filename.substring(0, filename.toString()
-							.length() - ".properties".length()));
-				}
-			}
-		} catch (URISyntaxException | IOException e) {
-			e.printStackTrace();
-		}
-
-		// Make language selection drop down
-		languageSelector = new JComboBox<String>();
-		for (String language : languages) {
-			Localizer.setLanguage(language);
-			languageSelector.addItem(Localizer.getString("LanguageName"));
-		}
-		Localizer.setLanguage(Localizer.defaultLanguage);
-		languageSelector.addActionListener(controller);
-		Dimension d = new Dimension(100, 30);
-		languageSelector.setSize(d);
-		languageSelector.setPreferredSize(d);
-		languageSelector.setMaximumSize(d);
-		languageSelector.setMinimumSize(d);
 
 		// Add title to the title panel
 		name.add(Box.createHorizontalStrut(10));
@@ -230,7 +188,6 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		buttons.add(createTask);
 		buttons.add(createStage);
 		buttons.add(statistics);
-		buttons.add(languageSelector);
 		buttons.add(archiveCheckBox);
 		buttons.add(Box.createHorizontalGlue());
 
@@ -255,9 +212,6 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 
 		// Add resize listener to fix title
 		this.addComponentListener(controller);
-
-		onLocaleChange();
-		Localizer.addListener(this);
 	}
 
 	@Override
@@ -381,27 +335,5 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	 */
 	public JLabel getProjectName() {
 		return projectName;
-	}
-
-	/**
-	 * @return The selected language
-	 */
-	public String getSelectedLanguage() {
-		return languages.get(languageSelector.getSelectedIndex());
-	}
-
-	@Override
-	public void onLocaleChange() {
-		createTask.setText("<html>" + Localizer.getString("CreateTask")
-				+ "</html>");
-		createStage.setText("<html>" + Localizer.getString("CreateStage")
-				+ "</html>");
-		statistics.setText("<html>" + Localizer.getString("Reports")
-				+ "</html>");
-		archiveCheckBox.setText("<html>" + Localizer.getString("ShowArchive")
-				+ "</html>");
-		archive.setToolTipText(Localizer.getString("DragArchive"));
-		delete.setToolTipText(Localizer.getString("DragDelete"));
-
 	}
 }

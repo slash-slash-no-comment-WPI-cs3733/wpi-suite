@@ -28,7 +28,6 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.border.TitledBorder;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -36,8 +35,6 @@ import org.jdesktop.swingx.JXDatePicker;
 
 import taskManager.controller.ReportsManager;
 import taskManager.controller.TaskInputController;
-import taskManager.localization.LocaleChangeListener;
-import taskManager.localization.Localizer;
 
 //TODO import taskManager.controller.ReportsController;
 
@@ -45,7 +42,7 @@ import taskManager.localization.Localizer;
  * @author Tyler Jaskoviak
  *
  */
-public class ReportsView extends JPanel implements LocaleChangeListener {
+public class ReportsView extends JPanel {
 
 	public static final String STAGE_NAME = "stage_name";
 	public static final String START_DATE = "start_date";
@@ -131,7 +128,7 @@ public class ReportsView extends JPanel implements LocaleChangeListener {
 		reportsGridBag.anchor = GridBagConstraints.FIRST_LINE_START;
 		reportsGridBag.gridx = 0;
 		reportsGridBag.gridy = 0;
-		stagePanel.setBorder(BorderFactory.createTitledBorder(""));
+		stagePanel.setBorder(BorderFactory.createTitledBorder("Stage"));
 		stagePanel.add(stages, reportsGridBag);
 		Dimension stageDimensions = getPreferredSize();
 		stageDimensions.width = 175;
@@ -140,8 +137,8 @@ public class ReportsView extends JPanel implements LocaleChangeListener {
 		stagePanel.setMinimumSize(stageDimensions);
 		stagePanel.setMaximumSize(stageDimensions);
 
-		fromLabel = new JLabel();
-		toLabel = new JLabel();
+		fromLabel = new JLabel("Start Date:");
+		toLabel = new JLabel("End Date:");
 
 		// Date
 		datePanel = new JPanel();
@@ -164,7 +161,7 @@ public class ReportsView extends JPanel implements LocaleChangeListener {
 		reportsGridBag.anchor = GridBagConstraints.WEST;
 		reportsGridBag.gridx = 0;
 		reportsGridBag.gridy = 0;
-		datePanel.setBorder(BorderFactory.createTitledBorder(""));
+		datePanel.setBorder(BorderFactory.createTitledBorder("Timeframe"));
 		datePanel.add(fromLabel, reportsGridBag);
 		reportsGridBag.gridy = 1;
 		datePanel.add(toLabel, reportsGridBag);
@@ -183,9 +180,9 @@ public class ReportsView extends JPanel implements LocaleChangeListener {
 		// WorkType
 		workTypePanel = new JPanel();
 		workTypePanel.setLayout(new GridBagLayout());
-		workFlow = new JRadioButton("");
+		workFlow = new JRadioButton("Flow");
 		workFlow.setName(WORK_FLOW);
-		workVelocity = new JRadioButton("");
+		workVelocity = new JRadioButton("Velocity");
 		workVelocity.setName(WORK_VELOCITY);
 		workTypeGroup = new ButtonGroup();
 		workTypeGroup.add(workFlow);
@@ -193,7 +190,7 @@ public class ReportsView extends JPanel implements LocaleChangeListener {
 		reportsGridBag.anchor = GridBagConstraints.FIRST_LINE_START;
 		reportsGridBag.gridx = 0;
 		reportsGridBag.gridy = 0;
-		workTypePanel.setBorder(BorderFactory.createTitledBorder(""));
+		workTypePanel.setBorder(BorderFactory.createTitledBorder("WorkType"));
 		workTypePanel.add(workFlow, reportsGridBag);
 		reportsGridBag.gridy = 1;
 		workTypePanel.add(workVelocity, reportsGridBag);
@@ -207,9 +204,9 @@ public class ReportsView extends JPanel implements LocaleChangeListener {
 		// Combined or Compared graph
 		workModePanel = new JPanel();
 		workModePanel.setLayout(new GridBagLayout());
-		combineWork = new JRadioButton("");
+		combineWork = new JRadioButton("Combine Work");
 		combineWork.setName(COLLABORATIVE);
-		compareWork = new JRadioButton("");
+		compareWork = new JRadioButton("Compare Work");
 		compareWork.setName(COMPARATIVE);
 		workflowGroup = new ButtonGroup();
 		workflowGroup.add(combineWork);
@@ -217,7 +214,8 @@ public class ReportsView extends JPanel implements LocaleChangeListener {
 		reportsGridBag.anchor = GridBagConstraints.WEST;
 		reportsGridBag.gridx = 0;
 		reportsGridBag.gridy = 0;
-		workModePanel.setBorder(BorderFactory.createTitledBorder(""));
+		workModePanel.setBorder(BorderFactory
+				.createTitledBorder("Compare/Combine"));
 		workModePanel.add(combineWork, reportsGridBag);
 		reportsGridBag.gridy = 1;
 		workModePanel.add(compareWork, reportsGridBag);
@@ -230,11 +228,11 @@ public class ReportsView extends JPanel implements LocaleChangeListener {
 
 		// Users
 		usersPanel = new JPanel();
-		allUsers = new JCheckBox();
+		allUsers = new JCheckBox("All");
 		allUsers.setName(ALL_USERS);
-		currUsersList = new ScrollList("");
+		currUsersList = new ScrollList("Users Included in Report");
 		currUsersList.setBackground(this.getBackground());
-		projectUsersList = new ScrollList("");
+		projectUsersList = new ScrollList("Users Not Included");
 		projectUsersList.setBackground(this.getBackground());
 		// Add user to list
 		addUser = new JButton(">>");
@@ -247,7 +245,8 @@ public class ReportsView extends JPanel implements LocaleChangeListener {
 		reportsGridBag.anchor = GridBagConstraints.WEST;
 		reportsGridBag.gridx = 0;
 		reportsGridBag.gridy = 0;
-		usersPanel.setBorder(BorderFactory.createTitledBorder(""));
+		usersPanel.setBorder(BorderFactory.createTitledBorder("Users"));
+		usersPanel.setBorder(BorderFactory.createTitledBorder("Users"));
 		JPanel usersListPanel = new JPanel(new MigLayout());
 		JPanel projectUsersListPanel = new JPanel(new MigLayout());
 		JPanel addRemoveButtons = new JPanel(new MigLayout());
@@ -267,7 +266,7 @@ public class ReportsView extends JPanel implements LocaleChangeListener {
 		usersPanel.setMaximumSize(usersPanelDimension);
 
 		// Generate Graph
-		generateGraph = new JButton();
+		generateGraph = new JButton("Generate");
 		generateGraph.setName(GENERATE);
 
 		window.setLayout(new GridBagLayout());
@@ -313,9 +312,6 @@ public class ReportsView extends JPanel implements LocaleChangeListener {
 		window.add(generateGraph, toolbarGrid);
 
 		this.add(window);
-
-		onLocaleChange();
-		Localizer.addListener(this);
 	}
 
 	public void setController(ReportsManager manager) {
@@ -599,29 +595,5 @@ public class ReportsView extends JPanel implements LocaleChangeListener {
 	 */
 	public ScrollList getUsersList() {
 		return currUsersList;
-	}
-
-	@Override
-	public void onLocaleChange() {
-		((TitledBorder) stagePanel.getBorder()).setTitle(Localizer
-				.getString("Stage"));
-		fromLabel.setText(Localizer.getString("StartDate") + ":");
-		toLabel.setText(Localizer.getString("EndDate") + ":");
-		((TitledBorder) datePanel.getBorder()).setTitle(Localizer
-				.getString("Timeframe"));
-		workFlow.setText(Localizer.getString("Flow"));
-		workVelocity.setText(Localizer.getString("Velocity"));
-		((TitledBorder) workTypePanel.getBorder()).setTitle(Localizer
-				.getString("WorkType"));
-		combineWork.setText(Localizer.getString("CombineWork"));
-		compareWork.setText(Localizer.getString("CompareWork"));
-		((TitledBorder) workModePanel.getBorder()).setTitle(Localizer
-				.getString("CompareCombine"));
-		allUsers.setText(Localizer.getString("All"));
-		currUsersList.setTitle(Localizer.getString("UsersReport"));
-		projectUsersList.setTitle(Localizer.getString("UsersNotReport"));
-		((TitledBorder) usersPanel.getBorder()).setTitle(Localizer
-				.getString("Users"));
-		generateGraph.setText(Localizer.getString("Generate"));
 	}
 }

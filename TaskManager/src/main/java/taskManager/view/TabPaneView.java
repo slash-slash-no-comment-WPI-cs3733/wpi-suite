@@ -17,8 +17,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import taskManager.controller.WorkflowController;
-import taskManager.localization.LocaleChangeListener;
-import taskManager.localization.Localizer;
 
 /**
  * 
@@ -29,7 +27,7 @@ import taskManager.localization.Localizer;
  * @author Clark Jacobsohn
  * @version Nov 17, 2014
  */
-public class TabPaneView extends JTabbedPane implements LocaleChangeListener {
+public class TabPaneView extends JTabbedPane {
 
 	private static final long serialVersionUID = -4912871689110151496L;
 
@@ -47,17 +45,6 @@ public class TabPaneView extends JTabbedPane implements LocaleChangeListener {
 		final JScrollPane scroll = new JScrollPane(WorkflowController
 				.getInstance().getView());
 
-		this.addTab("", new ImageIcon(), scroll, "");
-
-		onLocaleChange();
-		Localizer.addListener(this);
-	}
-
-	@Override
-	public void onLocaleChange() {
-		if (getTabCount() > 0) {
-			setTitleAt(0, Localizer.getString("Workflow"));
-			setToolTipTextAt(0, Localizer.getString("Workflow"));
-		}
+		this.addTab("Workflow", new ImageIcon(), scroll, "Workflow");
 	}
 }

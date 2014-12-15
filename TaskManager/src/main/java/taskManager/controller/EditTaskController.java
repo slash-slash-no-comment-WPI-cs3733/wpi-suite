@@ -24,7 +24,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 
 import taskManager.TaskManager;
-import taskManager.localization.Localizer;
 import taskManager.model.ActivityModel;
 import taskManager.model.ActivityModel.ActivityModelType;
 import taskManager.model.StageModel;
@@ -80,7 +79,7 @@ public class EditTaskController implements ActionListener {
 		}
 		etv.getProjectUsersList().addAllToList(projectUserNames);
 
-		TabPaneController.getInstance().addTab("CreateTask", etv, true, true);
+		TabPaneController.getInstance().addTab("Create Task", etv, true);
 
 		reloadData();
 	}
@@ -197,9 +196,8 @@ public class EditTaskController implements ActionListener {
 
 			case EditTaskView.DELETE:
 				final Integer choice = JOptionPane.showConfirmDialog(etv,
-						Localizer.getString("DeleteWarning"),
-						Localizer.getString("DeleteWarningTitle"),
-						JOptionPane.YES_NO_OPTION);
+						"Are you sure you want to delete this task?",
+						"Warning - Deleting a task", JOptionPane.YES_NO_OPTION);
 				if (choice.equals(JOptionPane.YES_OPTION)) {
 					// delete this task
 					if (model != null) {
@@ -285,8 +283,8 @@ public class EditTaskController implements ActionListener {
 				// the user is creating a new comment
 				else {
 					ActivityModel comment = new ActivityModel(
-							ActivityModelType.COMMENT,
-							etv.getCommentsFieldText());
+							etv.getCommentsFieldText(),
+							ActivityModelType.COMMENT);
 					// add the activity
 					activityC.addActivity(comment);
 					activityC.scrollActivitiesToBottom();
@@ -318,8 +316,8 @@ public class EditTaskController implements ActionListener {
 
 		final List<Requirement> reqs = RequirementModel.getInstance()
 				.getRequirements();
-
 		final List<String> reqNames = new ArrayList<String>();
+
 		for (Requirement req : reqs) {
 			reqNames.add(req.getName());
 		}

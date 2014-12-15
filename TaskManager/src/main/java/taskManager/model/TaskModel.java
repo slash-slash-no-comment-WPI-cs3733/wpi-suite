@@ -92,8 +92,9 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 		// Allow creation of null objects for database
 		if (stage != null) {
 			stage.addTask(this);
-			final ActivityModel createTask = new ActivityModel(
-					ActivityModelType.CREATION, stage.getName());
+			final ActivityModel createTask = new ActivityModel("Created task "
+					+ name + " in stage " + stage.getName() + ".",
+					ActivityModelType.CREATION);
 			activities.add(createTask);
 		}
 	}
@@ -275,8 +276,8 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 *            new user to be added
 	 */
 	public void addAssigned(User user) {
-		final ActivityModel addUser = new ActivityModel(
-				ActivityModelType.USER_ADD, user.getName());
+		final ActivityModel addUser = new ActivityModel("User "
+				+ user.getName() + " added to task", ActivityModelType.USER_ADD);
 		final String q = user.getUsername();
 		assigned.add(q);
 		addActivity(addUser);
@@ -297,8 +298,9 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 			throw new IndexOutOfBoundsException("User not in suggested task");
 		}
 		assigned.remove(user.getUsername());
-		final ActivityModel delUser = new ActivityModel(
-				ActivityModelType.USER_REMOVE, user.getName());
+		final ActivityModel delUser = new ActivityModel("Removed user "
+				+ user.getName() + " from task " + name + ".",
+				ActivityModelType.USER_ADD);
 		addActivity(delUser);
 		logger.log(Level.FINER, "Removed user " + user.getName()
 				+ " from task " + name + ".");
@@ -329,8 +331,8 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 *            The user that made the comment
 	 */
 	public void addComment(String comment, User user) {
-		final ActivityModel commentActivity = new ActivityModel(
-				ActivityModelType.COMMENT, comment);
+		final ActivityModel commentActivity = new ActivityModel(comment,
+				ActivityModelType.COMMENT);
 		addActivity(commentActivity);
 	}
 
@@ -366,9 +368,8 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 */
 	public void setArchived(boolean bool) {
 		if (bool != isArchived) {
-			ActivityModelType type = bool ? ActivityModelType.ARCHIVE
-					: ActivityModelType.UNARCHIVE;
-			final ActivityModel archive = new ActivityModel(type);
+			final ActivityModel archive = new ActivityModel((bool ? "Archived"
+					: "Unarchived") + " task", ActivityModelType.ARCHIVE);
 			addActivity(archive);
 		}
 		isArchived = bool;

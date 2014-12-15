@@ -20,7 +20,6 @@ import org.junit.Test;
 
 import taskManager.MockNetwork;
 import taskManager.TaskManager;
-import taskManager.model.ActivityModel.ActivityModelType;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
@@ -53,7 +52,8 @@ public class TestTaskModel {
 		TaskModel task2 = new TaskModel("Task2", stage2);
 		User u = new User("Name", "username", "pass", 5);
 		Date d = new Date();
-		ActivityModel a = new ActivityModel(ActivityModelType.COMMENT, "desc");
+		ActivityModel a = new ActivityModel("desc",
+				ActivityModel.ActivityModelType.COMMENT);
 		Requirement r = new Requirement();
 		r.setId(99);
 		RequirementModel.getInstance().addRequirement(r);

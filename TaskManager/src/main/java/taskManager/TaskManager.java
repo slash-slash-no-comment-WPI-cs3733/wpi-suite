@@ -15,11 +15,11 @@ import java.util.List;
 import javax.swing.ImageIcon;
 
 import taskManager.controller.EasterEggListener;
+import taskManager.controller.StageController;
 import taskManager.controller.TabPaneController;
 import taskManager.controller.ToolbarController;
 import taskManager.controller.WorkflowController;
 import taskManager.draganddrop.DDTransferHandler;
-import taskManager.localization.Localizer;
 import taskManager.model.StageModel;
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
 import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
@@ -78,8 +78,6 @@ public class TaskManager implements IJanewayModule {
 		ToolbarController.getInstance().reset();
 		TabPaneController.getInstance().reset();
 		WorkflowController.getInstance().reset();
-
-		Localizer.setLanguage(Localizer.defaultLanguage);
 	}
 
 	/**

@@ -42,8 +42,6 @@ import org.jdesktop.swingx.JXDatePicker;
 import taskManager.controller.ActivityController;
 import taskManager.controller.EditTaskController;
 import taskManager.controller.TaskInputController;
-import taskManager.localization.LocaleChangeListener;
-import taskManager.localization.Localizer;
 
 /**
  *  Edit panel for a task
@@ -57,7 +55,7 @@ import taskManager.localization.Localizer;
  * @author Clark Jacobsohn
  */
 
-public class EditTaskView extends JPanel implements LocaleChangeListener {
+public class EditTaskView extends JPanel {
 
 	public static final String STAGES = "stages";
 	public static final String REQUIREMENTS = "requirements";
@@ -73,13 +71,14 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	public static final String ACT_EFFORT = "act_effort";
 	public static final String EST_EFFORT = "est_effort";
 	public static final String DUE_DATE = "due_date";
-	public static final String NO_REQ = "None";
+	public static final String NO_REQ = "[None]";
 	public static final String REFRESH = "refresh";
 	public static final String TITLE = "title";
 	public static final String DESCRIP = "description";
-	private static final String TITLE_ERROR = "TitleEmpty";
-	private static final String DESCRIPTION_ERROR = "DescriptionEmpty";
-	private static final String EFFORT_ERROR = "EffortNotInt";
+
+	private static final String TITLE_ERROR = "Title cannot be empty";
+	private static final String DESCRIPTION_ERROR = "Description cannot be empty";
+	private static final String EFFORT_ERROR = "Must be an integer between 0 and 9999";
 
 	private static final long serialVersionUID = 1L;
 	private JButton save;
@@ -100,18 +99,6 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	private final JTextField actEffortField;
 	private JTextArea commentBox;
 	private final JPanel window;
-
-	private final JLabel titleLabel;
-	private final JLabel descriptionLabel;
-	private final JLabel dueDateLabel;
-	private final JLabel stageLabel;
-	private final JLabel estimatedEffortLabel;
-	private final JLabel actualEffortLabel;
-	private final JLabel requirementLabel;
-	private final JLabel assignedUsersLabel;
-	private final JLabel projectUsersLabel;
-	private final JLabel activitiesLabel;
-	private final JLabel commentsLabel;
 
 	private BalloonTip titleError;
 	private BalloonTip descripError;
@@ -166,28 +153,24 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 				"[grow, fill]"));
 
 		// JLabels
-		titleLabel = new JLabel();
+		JLabel titleLabel = new JLabel("Title");
 		titleLabel.setFont(bigFont);
-		descriptionLabel = new JLabel();
+		JLabel descriptionLabel = new JLabel("Description");
 		descriptionLabel.setFont(bigFont);
-		dueDateLabel = new JLabel();
+		JLabel dueDateLabel = new JLabel("Due Date");
 		dueDateLabel.setFont(bigFont);
-		stageLabel = new JLabel();
+		JLabel stageLabel = new JLabel("Stage");
 		stageLabel.setFont(bigFont);
-		estimatedEffortLabel = new JLabel();
+		JLabel estimatedEffortLabel = new JLabel("Estimated Effort");
 		estimatedEffortLabel.setFont(bigFont);
-		actualEffortLabel = new JLabel();
+		JLabel actualEffortLabel = new JLabel("Actual Effort");
 		actualEffortLabel.setFont(bigFont);
-		requirementLabel = new JLabel();
+		JLabel requirementLabel = new JLabel("Select Requirement");
 		requirementLabel.setFont(bigFont);
-		assignedUsersLabel = new JLabel();
+		JLabel assignedUsersLabel = new JLabel("Assigned Users");
 		assignedUsersLabel.setFont(bigFont);
-		projectUsersLabel = new JLabel();
+		JLabel projectUsersLabel = new JLabel("Project Users");
 		projectUsersLabel.setFont(bigFont);
-		activitiesLabel = new JLabel();
-		activitiesLabel.setFont(bigFont);
-		commentsLabel = new JLabel();
-		commentsLabel.setFont(bigFont);
 
 		// JTextFields
 		// sets all text fields editable and adds them to global variables
@@ -243,7 +226,7 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		requirements.setPrototypeDisplayValue("Select a requirement");
 		// JButtons
 		// Delete Task and close the window
-		delete = new JButton();
+		delete = new JButton("Delete");
 		delete.setName(DELETE);
 
 		// Add user to list
@@ -257,18 +240,19 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		this.setRemoveUserEnabled(false);
 
 		// add requirement
-		viewReq = new JButton();
+
+		viewReq = new JButton("View Requirement");
 		viewReq.setName(VIEW_REQ);
 
 		// saves all the data and closes the window
-		save = new JButton();
+		save = new JButton("Save");
 		save.setName(SAVE);
 		this.setSaveEnabled(false);
 
 		// closes the window without saving
-		cancel = new JButton();
+		cancel = new JButton("Cancel");
 		cancel.setName(CANCEL);
-		archive = new JCheckBox();
+		archive = new JCheckBox("Archived");
 		archive.setName(ARCHIVE);
 		archive.setOpaque(false);
 
@@ -361,16 +345,18 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 
 		BalloonTipStyle errorStyle = new RoundedBalloonStyle(5, 5,
 				Colors.INPUT_ERROR, Color.red);
-		titleError = new BalloonTip(titleField, new JLabel(), errorStyle,
-				Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST, 5, 15, false);
-		descripError = new BalloonTip(descripArea, new JLabel(), errorStyle,
-				Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST, 5, 15, false);
-		actEffortError = new BalloonTip(actEffortField, new JLabel(),
+		titleError = new BalloonTip(titleField, new JLabel(TITLE_ERROR),
 				errorStyle, Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST,
 				5, 15, false);
-		estEffortError = new BalloonTip(estEffortField, new JLabel(),
-				errorStyle, Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST,
-				5, 15, false);
+		descripError = new BalloonTip(descripArea,
+				new JLabel(DESCRIPTION_ERROR), errorStyle,
+				Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST, 5, 15, false);
+		actEffortError = new BalloonTip(actEffortField,
+				new JLabel(EFFORT_ERROR), errorStyle, Orientation.LEFT_ABOVE,
+				AttachLocation.NORTHEAST, 5, 15, false);
+		estEffortError = new BalloonTip(estEffortField,
+				new JLabel(EFFORT_ERROR), errorStyle, Orientation.LEFT_ABOVE,
+				AttachLocation.NORTHEAST, 5, 15, false);
 
 		setTitleErrorVisible(false);
 		setDescriptionErrorVisible(false);
@@ -438,10 +424,6 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 
 		commentAndBtns.add(commentScroll);
 		commentAndBtns.add(buttons);
-
-		// load strings the first time
-		onLocaleChange();
-		Localizer.addListener(this);
 
 		return commentAndBtns;
 	}
@@ -615,13 +597,13 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		final String selectedReq = getSelectedRequirement();
 
 		requirements.removeAllItems();
-		requirements.addItem(Localizer.getString(NO_REQ));
+		requirements.addItem(NO_REQ);
 		for (String name : reqNames) {
 			requirements.addItem(name);
 		}
 
 		// Select NO_REQ if the old selected item doesn't exist
-		requirements.setSelectedItem(Localizer.getString(NO_REQ));
+		requirements.setSelectedItem(NO_REQ);
 		if (!(selectedReq == null)) {
 			requirements.setSelectedItem(selectedReq);
 		}
@@ -634,7 +616,7 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	 * @return The selected requirement's name
 	 */
 	public String getSelectedRequirement() {
-		if (Localizer.getString(NO_REQ).equals(requirements.getSelectedItem())) {
+		if (NO_REQ.equals(requirements.getSelectedItem())) {
 			return null;
 		}
 		return (String) requirements.getSelectedItem();
@@ -648,7 +630,7 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	 */
 	public void setSelectedRequirement(String requirementName) {
 		if (requirementName == null) {
-			requirements.setSelectedItem(Localizer.getString(NO_REQ));
+			requirements.setSelectedItem(NO_REQ);
 		}
 		requirements.setSelectedItem(requirementName);
 
@@ -1020,34 +1002,5 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		commentBox.setText("");
 		submitComment.setEnabled(false);
 		cancelComment.setEnabled(false);
-	}
-
-	@Override
-	public void onLocaleChange() {
-		titleLabel.setText(Localizer.getString("Title"));
-		descriptionLabel.setText(Localizer.getString("Description"));
-		dueDateLabel.setText(Localizer.getString("DueDate"));
-		stageLabel.setText(Localizer.getString("Stage"));
-		estimatedEffortLabel.setText(Localizer.getString("EstimatedEffort"));
-		actualEffortLabel.setText(Localizer.getString("ActualEffort"));
-		requirementLabel.setText(Localizer.getString("SelectRequirement"));
-		assignedUsersLabel.setText(Localizer.getString("AssignedUsers"));
-		projectUsersLabel.setText(Localizer.getString("ProjectUsers"));
-		activitiesLabel.setText(Localizer.getString("Activities"));
-		commentsLabel.setText(Localizer.getString("Comment"));
-		delete.setText(Localizer.getString("Delete"));
-		submitComment.setText(Localizer.getString("SubmitComment"));
-		viewReq.setText(Localizer.getString("ViewRequirement"));
-		save.setText(Localizer.getString("Save"));
-		cancel.setText(Localizer.getString("Cancel"));
-		archive.setText(Localizer.getString("Archived"));
-		((JLabel) titleError.getContents()).setText(Localizer
-				.getString(TITLE_ERROR));
-		((JLabel) descripError.getContents()).setText(Localizer
-				.getString(DESCRIPTION_ERROR));
-		((JLabel) actEffortError.getContents()).setText(Localizer
-				.getString(EFFORT_ERROR));
-		((JLabel) estEffortError.getContents()).setText(Localizer
-				.getString(EFFORT_ERROR));
 	}
 }
