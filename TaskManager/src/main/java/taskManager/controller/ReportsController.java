@@ -56,7 +56,7 @@ import taskManager.view.ReportsView;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
- * Code extended from BarChartDemo1.java at www.jfree.org/jfreechart
+ * ReportsController controls the ReportsView and generates graphs for reports
  *
  * @author Joseph Blackman
  * @author Clark Jacobsohn
@@ -106,11 +106,13 @@ public class ReportsController implements ActionListener, ChangeListener,
 	private ZonedDateTime start;
 	private ZonedDateTime end;
 	private DefaultCategoryDataset dataset;
-	// private List<UserData> data;
 	private final WorkflowModel workflow;
 
 	/**
-	 * Constructor for ReportsManager.
+	 * Constructs a ReportsController for the given ReportsView
+	 * 
+	 * @param rtv
+	 *            The ReportsView to control
 	 */
 	public ReportsController(ReportsView rtv) {
 		workflow = WorkflowModel.getInstance();
@@ -123,7 +125,13 @@ public class ReportsController implements ActionListener, ChangeListener,
 	}
 
 	/**
-	 * Constructor for ReportsManager.
+	 * Constructs a ReportsController with the given start and end date
+	 * boundaries.
+	 * 
+	 * @param start
+	 *            The start date boundary for finding data
+	 * @param end
+	 *            The end date boundary for finding data
 	 */
 	public ReportsController(ZonedDateTime start, ZonedDateTime end) {
 		this.start = start;
@@ -132,13 +140,22 @@ public class ReportsController implements ActionListener, ChangeListener,
 	}
 
 	/**
-	 * See findVelocityData() below.
-	 *
-	 * @param users
-	 * @param start
-	 * @param end
+	 * Returns the list of ReportDatum within the given time interval from the
+	 * given completion stage to be used to generate a velocity graph. The data
+	 * is to be passed to generateVelocityDataset to prepare the data for the
+	 * graph.
+	 * 
+	 * @param _start
+	 *            The start of the time interval to filter the tasks.
+	 * @param _end
+	 *            The end of the time interval to filter the tasks.
 	 * @param averageCredit
-	 * @return The list of ReportDatum that matches the given criteria
+	 *            Whether or not to distribute the effort amongst associated
+	 *            users or to give each user the full effort for the task. True
+	 *            will do the former, false will do the latter.
+	 * @param stage
+	 *            The stage in which to process tasks.
+	 * @return The list of data that matches the criteria
 	 */
 	public List<ReportDatum> findVelocityData(ZonedDateTime _start,
 			ZonedDateTime _end, boolean averageCredit, StageModel stage) {
@@ -193,24 +210,25 @@ public class ReportsController implements ActionListener, ChangeListener,
 	}
 
 	/**
-	 * Return data to allow the calculation of "Velocity", i.e. amount of effort
-	 * completed/time. Will get data as a list of data points, unsorted. The
-	 * user should call generateVelocityDataset() next.
-	 *
-	 * @param users
-	 *            The set of usernames to get data about
-	 * @param start
-	 *            The time before which we do not care about
-	 * @param end
-	 *            The time after which we do not care about
-	 * @param averageCredit
-	 *            If true, average credit for the task across all assigned
-	 *            users.
-	 *
-	 * @param stage
-	 *            The stage to consider as the completion stage
+	 * Returns the list of ReportDatum within the given time interval from the
+	 * given completion stage to be used to generate a velocity graph. The data
+	 * is to be passed to generateVelocityDataset to prepare the data for the
+	 * graph.
 	 * 
-	 * @return The list of ReportDatum that matches the given criteria
+	 * @param users
+	 *            The list of users to find data for. Data will only be
+	 *            considered that has at least one of the users associated.
+	 * @param _start
+	 *            The start of the time interval to filter the tasks.
+	 * @param _end
+	 *            The end of the time interval to filter the tasks.
+	 * @param averageCredit
+	 *            Whether or not to distribute the effort amongst associated
+	 *            users or to give each user the full effort for the task. True
+	 *            will do the former, false will do the latter.
+	 * @param stage
+	 *            The stage in which to process tasks.
+	 * @return The list of data that matches the criteria
 	 */
 	public List<ReportDatum> findVelocityData(Set<String> users,
 			ZonedDateTime _start, ZonedDateTime _end, boolean averageCredit,
@@ -278,14 +296,20 @@ public class ReportsController implements ActionListener, ChangeListener,
 	/**
 	 * This method will format the data into separate categories, such as days,
 	 * weeks, or months. It merges them down into a dataset object, which it
-	 * saves. The user should then call createChart().
-	 *
+	 * saves. The user should then call createLineChart().
+	 * 
+	 * @param data
+	 *            The data to format into categories
+	 * @param users
+	 *            The list of users to process tasks for
 	 * @param teamData
-	 *            Whether or not the data should be grouped as a team.
-	 * @param start
-	 *            The starting instant for the data
+	 *            Whether or not to format data for the whole team or for
+	 *            individual users
 	 * @param interval
-	 *            The interval to group the data by.
+	 *            The time interval to make the categories out of.
+	 * @param useEffort
+	 *            Whether or not to use effort values or number of tasks. True
+	 *            for the former, false for the latter.
 	 */
 	public void generateVelocityDataset(List<ReportDatum> data,
 			Set<String> users, boolean teamData, Period interval,
@@ -316,7 +340,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 
 		int seriesNum = 0;
 
-		// We get this user to add some 0s to, rather than creating a ""
+		// Populate the graph with zeroes to start
 		if (teamData) {
 			for (ZonedDateTime i = start; i.compareTo(end) < 0; i = i.plus(
 					intervalDays, ChronoUnit.DAYS)) {
@@ -367,7 +391,8 @@ public class ReportsController implements ActionListener, ChangeListener,
 
 			String columnKey = intervalName + (seriesNum);
 			double value = useEffort ? datum.effort : 1;
-			// If the dataset contains the keyname, increment the effort value.
+			// If the dataset contains a value in the table, increment the
+			// effort value.
 			// Else, add the value as a new object in the dataset.
 			if (dataset.getRowKeys().contains(keyname)
 					&& dataset.getColumnKeys().contains(columnKey)) {
@@ -467,6 +492,8 @@ public class ReportsController implements ActionListener, ChangeListener,
 	 * @param type
 	 *            The type of distribution to generate data for, either STAGE or
 	 *            USER
+	 * @param stages
+	 *            The list of stages to process data from
 	 * @return The list of ReportDatum
 	 */
 	public List<ReportDatum> findDistributionData(DistributionType type,
@@ -600,16 +627,16 @@ public class ReportsController implements ActionListener, ChangeListener,
 	}
 
 	/**
-	 * Creates a line graph from the given input
+	 * Creates a line chart from the given input
 	 *
 	 * @param title
-	 *            The title of the graph
+	 *            The title of the chart
 	 * @param xlabel
 	 *            The label for the x axis
 	 * @param ylabel
 	 *            The label for the y axis
 	 * 
-	 * @return a JPanel containing the graph
+	 * @return a JPanel containing the chart
 	 */
 	public JPanel createLineChart(String title, String xlabel, String ylabel) {
 		if (dataset == null) {
@@ -679,10 +706,10 @@ public class ReportsController implements ActionListener, ChangeListener,
 		JComboBox<String> stages2 = rtv.getStages2();
 		stages.removeAllItems();
 		stages2.removeAllItems();
-		for (StageModel stage : WorkflowModel.getInstance().getStages()) {
+		for (StageModel stage : workflow.getStages()) {
 			stages.addItem(stage.getName());
 		}
-		for (StageModel stage : WorkflowModel.getInstance().getStages()) {
+		for (StageModel stage : workflow.getStages()) {
 			stages2.addItem(stage.getName());
 		}
 		// Select the 1st item if the old selected item doesn't exist
@@ -793,8 +820,6 @@ public class ReportsController implements ActionListener, ChangeListener,
 									// day/month/year
 		enddate = cal.getTime();
 
-		// TODO: Do validation for the calendars rather than showing
-		// JOptionPanes.
 		Date now = new Date();
 		if (startdate.after(now)) {
 			JOptionPane.showMessageDialog(rtv,
@@ -817,8 +842,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 		// Get the selected stage from the view and store as a
 		// StageModel.
 		String stageStr = rtv.getSelectedStage();
-		StageModel stage = WorkflowModel.getInstance()
-				.findStageByName(stageStr);
+		StageModel stage = workflow.findStageByName(stageStr);
 
 		boolean useEffort = rtv.getUseEffort();
 
@@ -862,15 +886,16 @@ public class ReportsController implements ActionListener, ChangeListener,
 	private void createDistributionReport() {
 		DistributionType type = rtv.getDistributionType();
 
+		// Generate the list of stages to use. If allStages is true, use them
+		// all. Else, use the stages selected in the dropdown
 		List<StageModel> stages;
 		boolean allStages = rtv.getUseAllStages();
 		if (allStages) {
-			stages = WorkflowModel.getInstance().getStages();
+			stages = workflow.getStages();
 		} else {
 			stages = new ArrayList<StageModel>();
 			String stageStr = rtv.getSelectedStage();
-			StageModel stage = WorkflowModel.getInstance().findStageByName(
-					stageStr);
+			StageModel stage = workflow.findStageByName(stageStr);
 			stages.add(stage);
 		}
 
@@ -896,20 +921,6 @@ public class ReportsController implements ActionListener, ChangeListener,
 			title += " by Number of Tasks";
 		}
 
-		String xLabel;
-		if (type == DistributionType.STAGE) {
-			xLabel = "Stage";
-		} else {
-			xLabel = "User";
-		}
-
-		String yLabel;
-		if (useEffort) {
-			yLabel = "Effort";
-		} else {
-			yLabel = "Tasks";
-		}
-
 		// Create the chart with the Title, Label names.
 		JPanel chart = createPieChart(title);
 
@@ -930,10 +941,6 @@ public class ReportsController implements ActionListener, ChangeListener,
 				// Remove user
 			} else if (buttonName.equals(ReportsView.REMOVE_USER)) {
 				removeUsersFromList();
-				// All users checkbox checked
-			} else if (buttonName.equals(ReportsView.ALL_USERS)) {
-				// TODO: Add functionality for adding all users to selected.
-				// Generate Reports pressed.
 			} else {
 				if (rtv.getMode() == ReportsView.Mode.VELOCITY) {
 					createVelocityReport();
@@ -947,7 +954,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		// TODO: Add all users to assigned when All is checked.
+		// Do nothing
 	}
 
 	@Override
@@ -962,7 +969,6 @@ public class ReportsController implements ActionListener, ChangeListener,
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		// TODO Auto-generated method stub
-
+		// Do nothing
 	}
 }

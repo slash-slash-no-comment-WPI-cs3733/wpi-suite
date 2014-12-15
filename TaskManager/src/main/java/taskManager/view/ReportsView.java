@@ -700,6 +700,11 @@ public class ReportsView extends JPanel implements ActionListener {
 		this.mode = mode;
 	}
 
+	/**
+	 * Returns the selected distribution type
+	 * 
+	 * @return The selected distribution type
+	 */
 	public DistributionType getDistributionType() {
 		if (select_stages.isSelected()) {
 			return DistributionType.STAGE;
@@ -708,6 +713,11 @@ public class ReportsView extends JPanel implements ActionListener {
 		}
 	}
 
+	/**
+	 * Returns the selected time unit
+	 * 
+	 * @return The selected time unit
+	 */
 	public Period getTimeUnit() {
 		switch ((String) timeSliceList.getSelectedItem()) {
 		case "Days":
@@ -721,10 +731,20 @@ public class ReportsView extends JPanel implements ActionListener {
 		}
 	}
 
+	/**
+	 * Returns whether to use effort or number of tasks for calculation
+	 * 
+	 * @return whether to use effort or number of tasks for calculation
+	 */
 	public boolean getUseEffort() {
 		return effort.isSelected();
 	}
 
+	/**
+	 * Returns whether to calculate for all stages or just one
+	 * 
+	 * @return whether to calculate for all stages or just one
+	 */
 	public boolean getUseAllStages() {
 		return select_stages.isSelected();
 	}
