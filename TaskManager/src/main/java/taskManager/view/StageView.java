@@ -275,7 +275,9 @@ public class StageView extends JPanel implements Transferable,
 		this.labelText.requestFocus();
 		this.labelText.requestFocusInWindow();
 		this.labelText.grabFocus();
-		this.labelText.selectAll();
+		if (!getController().isNewStage()) {
+			this.labelText.selectAll();
+		}
 	}
 
 	/**
@@ -302,6 +304,10 @@ public class StageView extends JPanel implements Transferable,
 		focusTextArea();
 	}
 
+	/**
+	 * 
+	 * @return true if the check button for stage title is enabled.
+	 */
 	public boolean isCheckEnabled() {
 		return check.isEnabled();
 	}
