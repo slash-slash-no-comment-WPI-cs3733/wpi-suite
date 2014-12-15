@@ -19,6 +19,7 @@ import javax.swing.JComponent;
 import javax.swing.TransferHandler;
 
 import taskManager.controller.ToolbarController;
+import taskManager.controller.WorkflowController;
 import taskManager.model.FetchWorkflowObserver;
 import taskManager.model.WorkflowModel;
 import taskManager.view.RotationView;
@@ -121,7 +122,13 @@ public class DDTransferHandler extends TransferHandler {
 		// Ignore all responses from server while drag is active
 		// TODO fix comment to make more clear ^
 		if (!FetchWorkflowObserver.ignoreAllResponses) {
+
+			// remove any taskInfo bubbles from the workflow
+			WorkflowController.getInstance().removeTaskInfos(false);
+			WorkflowController.getInstance().repaintView();
+
 			FetchWorkflowObserver.ignoreAllResponses = true;
+
 			// Create drag image
 			final Image image = new BufferedImage(comp.getWidth(),
 					comp.getHeight(), BufferedImage.TYPE_INT_ARGB);
