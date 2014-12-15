@@ -194,12 +194,17 @@ public class TaskInfoPreviewView extends JPanel {
 		dueDate.setMaximumSize(new Dimension(this.getWidth(), 20));
 		info.add(dueDate);
 
+		String estString = this.taskM.isEstimatedEffortSet() ? this.taskM
+				.getEstimatedEffort().toString() : "";
+		String actString = this.taskM.isActualEffortSet() ? this.taskM
+				.getActualEffort().toString() : "";
+
 		// The task's effort
-		JLabel estE = new JLabel("<html><b><i>Est Effort: </i></b>"
-				+ this.taskM.getEstimatedEffort() + "</html>");
+		JLabel estE = new JLabel("<html><b><i>Est Effort: </i></b>" + estString
+				+ "</html>");
 		estE.setFont(estE.getFont().deriveFont(Font.PLAIN));
-		JLabel actE = new JLabel("<html><b><i>Act Effort: </i></b>"
-				+ this.taskM.getActualEffort() + "</html>");
+		JLabel actE = new JLabel("<html><b><i>Act Effort: </i></b>" + actString
+				+ "</html>");
 		actE.setFont(actE.getFont().deriveFont(Font.PLAIN));
 		info.add(estE);
 		info.add(actE);

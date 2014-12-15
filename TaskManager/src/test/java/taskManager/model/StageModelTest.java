@@ -135,7 +135,7 @@ public class StageModelTest {
 		stage = wf.findStageByName("Stage");
 		stage2 = wf.findStageByName("Stage2");
 		task = wf.findTaskByID("Task");
-		assertEquals(task.getEstimatedEffort(), 5);
+		assertEquals(task.getEstimatedEffort(), new Integer(5));
 		task.setEstimatedEffort(10);
 		stage2.addTask(task);
 		wf = AbstractJsonableModel.fromJson(wf.toJson(), WorkflowModel.class);
@@ -145,6 +145,6 @@ public class StageModelTest {
 		task = wf.findTaskByID("Task");
 		assertNull(wf.findStageByName("Stage").findTaskByID("Task"));
 		assertNotNull(wf.findStageByName("Stage2").findTaskByID("Task"));
-		assertEquals(task.getEstimatedEffort(), 10);
+		assertEquals(task.getEstimatedEffort(), new Integer(10));
 	}
 }
