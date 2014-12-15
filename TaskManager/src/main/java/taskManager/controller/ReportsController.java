@@ -300,8 +300,6 @@ public class ReportsController implements ActionListener, ChangeListener,
 
 			// continue until we find the seriesNum and boundary.
 			// while the difference is less than a full day.
-			// TODO: change the while condition to be relative to the interval
-			// rather than just 86400 seconds for 1 day).
 			do {
 				boundary = boundary.plus(interval); // increment by interval
 													// (day/week/month).
