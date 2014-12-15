@@ -61,7 +61,41 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 		}
 
 		final ResponseModel response = iReq.getResponse();
-		final String body = response.getBody();
+		String body = response.getBody();
+		//
+		// BufferedReader in = null;
+		// try {
+		// in = ((ServletRequest) response).getReader();
+		// } catch (IOException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		// String body = null;
+		// try {
+		// body = in.readLine();
+		// } catch (IOException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+
+		// char[] temp = response.getBody().toCharArray();
+		// byte[] bytes = new byte[temp.length];
+		// for (int i = 0; i < temp.length; i++) {
+		// bytes[i] = (byte) temp[i];
+		// }
+		//
+		// // 227 129 130
+		// byte[] a = new byte[3];
+		// a[0] = (byte) 227;
+		// a[1] = (byte) 129;
+		// a[2] = (byte) 130;
+		// String body = null;
+		// try {
+		// body = new String(bytes, "UTF8");
+		// } catch (UnsupportedEncodingException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
 		System.out.println("Response:" + body);
 
 		final WorkflowModel[] workflows = AbstractJsonableModel.fromJson(body,

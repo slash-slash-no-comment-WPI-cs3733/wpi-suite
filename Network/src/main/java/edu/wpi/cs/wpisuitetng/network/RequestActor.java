@@ -108,8 +108,8 @@ public class RequestActor extends Thread {
 			}
 
 			// read response body
-			BufferedReader reader = new BufferedReader(
-					new InputStreamReader(in), 1);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					in, "UTF8"), 1);
 			String line;
 			try {
 				while ((line = reader.readLine()) != null) {

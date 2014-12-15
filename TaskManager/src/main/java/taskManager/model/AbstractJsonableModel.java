@@ -95,17 +95,15 @@ public abstract class AbstractJsonableModel<T> extends AbstractModel {
 		} catch (Exception e) {
 			// e.printStackTrace();
 			json = json.substring(2);
-			char[] temp = json.toCharArray();
-			byte[] bytes = new byte[temp.length];
-			for (int i = 0; i < temp.length; i++) {
-				bytes[i] = (byte) temp[i];
-			}
+			// char[] temp = json.toCharArray();
+			// byte[] bytes = new byte[temp.length];
+			// for (int i = 0; i < temp.length; i++) {
+			// bytes[i] = (byte) temp[i];
+			// }
 			try {
-				return parser.fromJson(new String(bytes, "UTF8"), type);
+				// return parser.fromJson(new String(bytes, "UTF8"), type);
+				return parser.fromJson(json, type);
 			} catch (JsonSyntaxException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (UnsupportedEncodingException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
