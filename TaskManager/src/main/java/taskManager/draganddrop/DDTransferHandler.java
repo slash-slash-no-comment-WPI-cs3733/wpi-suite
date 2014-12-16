@@ -124,8 +124,7 @@ public class DDTransferHandler extends TransferHandler {
 		if (!FetchWorkflowObserver.ignoreAllResponses) {
 
 			// remove any taskInfo bubbles from the workflow
-			WorkflowController.getInstance().removeTaskInfos(false);
-			WorkflowController.getInstance().repaintView();
+			WorkflowController.getInstance().removeTaskInfos(true);
 
 			FetchWorkflowObserver.ignoreAllResponses = true;
 
