@@ -192,7 +192,7 @@ public class TaskInputController implements KeyListener, ActionListener,
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		// TODO Auto-generated method stub
+		validate();
 
 	}
 

@@ -220,7 +220,6 @@ public class TaskController implements MouseListener {
 			// set the appropriate border and category colors
 			view.setCategoryColor(getCategoryColor(), true);
 			view.setBorderColor(getCategoryColor(), true);
-
 			isHovered = true;
 		}
 	}

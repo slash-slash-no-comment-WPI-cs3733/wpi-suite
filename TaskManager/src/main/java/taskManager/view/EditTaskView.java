@@ -507,14 +507,15 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		stages.addPopupMenuListener(fieldC);
 		categories.addPopupMenuListener(fieldC);
 		usersList.setController(fieldC);
+		archive.addItemListener(fieldC);
+		addUser.addActionListener(fieldC);
+		removeUser.addActionListener(fieldC);
 		projectUsersList.setController(fieldC);
 		requirements.addPopupMenuListener(fieldC);
 		dateField.addPropertyChangeListener(fieldC);
 		archive.addItemListener(fieldC);
 		commentBox.addKeyListener(fieldC);
 		fieldC.validate();
-		addUser.addActionListener(fieldC);
-		removeUser.addActionListener(fieldC);
 	}
 
 	/**
