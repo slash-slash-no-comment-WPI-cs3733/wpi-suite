@@ -34,6 +34,7 @@ public class TabPaneView extends JTabbedPane implements LocaleChangeListener {
 	private static final long serialVersionUID = -4912871689110151496L;
 
 	private final JScrollPane scroll;
+	private JLabel workflowTab;
 
 	/**
 	 * Constructs the TabPaneView and adds the WorkflowView to a scrollable pane
@@ -49,7 +50,17 @@ public class TabPaneView extends JTabbedPane implements LocaleChangeListener {
 		// Add the scrollable workflow
 		scroll = new JScrollPane(WorkflowController.getInstance().getView());
 
-		this.addTab("", scroll);
+		workflowTab = new JLabel("Workflow");
+		workflowTab.setMaximumSize(new Dimension(200, 20));
+		workflowTab.setMinimumSize(new Dimension(20, 20));
+		workflowTab.setSize(new Dimension(workflowTab.getPreferredSize().width,
+				20));
+		workflowTab.setPreferredSize(new Dimension(workflowTab
+				.getPreferredSize().width, 20));
+		workflowTab.setFocusable(false);
+		this.addTab("Workflow", scroll);
+		setTabComponentAt(this.indexOfComponent(scroll), workflowTab);
+		setToolTipTextAt(0, "Workflow");
 
 		onLocaleChange();
 		Localizer.addListener(this);
@@ -58,18 +69,7 @@ public class TabPaneView extends JTabbedPane implements LocaleChangeListener {
 	@Override
 	public void onLocaleChange() {
 		if (getTabCount() > 0) {
-
-			JLabel workflowTab = new JLabel(Localizer.getString("Workflow"));
-			workflowTab.setMaximumSize(new Dimension(200, 20));
-			workflowTab.setMinimumSize(new Dimension(20, 20));
-			workflowTab.setSize(new Dimension(
-					workflowTab.getPreferredSize().width, 20));
-			workflowTab.setPreferredSize(new Dimension(workflowTab
-					.getPreferredSize().width, 20));
-			workflowTab.setFocusable(false);
-
-			setTitleAt(0, Localizer.getString("Workflow"));
-			setTabComponentAt(this.indexOfComponent(scroll), workflowTab);
+			workflowTab.setText(Localizer.getString("Workflow"));
 			setToolTipTextAt(0, Localizer.getString("Workflow"));
 		}
 	}
