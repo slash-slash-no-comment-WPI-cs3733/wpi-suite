@@ -209,10 +209,10 @@ public class EditTaskController implements ActionListener {
 								break;
 							}
 						}
-						currentStage.getTasks().remove(model);
+						currentStage.removeTask(model);
 						etv.resetFields();
 
-						currentStage.save();
+						WorkflowModel.getInstance().save();
 					}
 
 					returnToWorkflowView();
@@ -394,7 +394,7 @@ public class EditTaskController implements ActionListener {
 		// makes all the fields blank again
 		etv.resetFields();
 
-		model.save();
+		WorkflowModel.getInstance().save();
 	}
 
 	/**
