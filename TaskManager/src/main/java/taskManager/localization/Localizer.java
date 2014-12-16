@@ -70,9 +70,10 @@ public class Localizer {
 		rb = ResourceBundle.getBundle("taskManager.localization."
 				+ currentLanguage);
 
-		UIManager.put("OptionPane.yesButtonText", rb.getString("Yes"));
-		UIManager.put("OptionPane.noButtonText", rb.getString("No"));
-		UIManager.put("OptionPane.cancelButtonText", rb.getString("Cancel"));
+		UIManager.put("OptionPane.yesButtonText", getString("Yes"));
+		UIManager.put("OptionPane.noButtonText", getString("No"));
+		UIManager.put("OptionPane.cancelButtonText", getString("Cancel"));
+		UIManager.put("JXDatePicker.linkFormat", getString("JXtoday"));
 
 		// tell all of the listeners that the locale changed
 		Iterator<WeakReference<LocaleChangeListener>> it = listeners.iterator();
