@@ -83,7 +83,6 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	 * @throws IOException
 	 */
 	public ToolbarView(ToolbarController controller) {
-
 		this.controller = controller;
 
 		// Construct and set up the buttons and title panels
@@ -212,6 +211,7 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 			Localizer.setLanguage(language);
 			languageSelector.addItem(Localizer.getString("LanguageName"));
 		}
+		languageSelector.setSelectedIndex(languages.indexOf(Localizer.defaultLanguage));
 		Localizer.setLanguage(Localizer.defaultLanguage);
 		languageSelector.addActionListener(controller);
 		Dimension d = new Dimension(100, 30);
