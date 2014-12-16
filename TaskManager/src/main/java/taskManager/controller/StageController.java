@@ -194,19 +194,6 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 
 	/**
 	 *
-	 * Changes which title is visible, the label or the textbox. If editable is
-	 * true, the textbox is visible.
-	 *
-	 * @param editable
-	 *            true to make the textbox visible, false to make the label
-	 *            visible
-	 */
-	public void switchTitle(Boolean editable) {
-		view.switchTitles(editable);
-	}
-
-	/**
-	 *
 	 * @return true if this is a new stage. false if it was loaded from the
 	 *         database
 	 */
@@ -231,7 +218,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 			WorkflowController.getInstance().removeTaskInfos(true);
 			WorkflowController.pauseInformation = true;
 			// bring up the title textbox
-			switchTitle(true);
+			view.switchTitles(true);
 		} else {
 			WorkflowController.pauseInformation = false;
 			WorkflowController.getInstance().reloadData();
