@@ -95,6 +95,7 @@ public abstract class AbstractJsonableModel<T> extends AbstractModel {
 		try {
 			return parser.fromJson(json, type);
 		} catch (JsonSyntaxException e) {
+			// if json is in unicode
 			json = json.substring(2);
 			try {
 				return parser.fromJson(json, type);

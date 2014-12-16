@@ -819,6 +819,7 @@ public class Requirement extends AbstractModel {
 		try {
 			return parser.fromJson(json, Requirement[].class);
 		} catch (JsonSyntaxException e) {
+			// if json is in unicode
 			json = json.substring(2);
 			try {
 				return parser.fromJson(json, Requirement[].class);

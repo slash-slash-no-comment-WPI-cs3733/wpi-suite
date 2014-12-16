@@ -293,6 +293,7 @@ public class Iteration extends AbstractModel {
 		try {
 			return parser.fromJson(body, Iteration[].class);
 		} catch (JsonSyntaxException e) {
+			// if body is in unicode
 			body = body.substring(2);
 			try {
 				return parser.fromJson(body, Iteration[].class);
