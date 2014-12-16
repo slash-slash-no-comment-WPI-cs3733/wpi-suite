@@ -105,7 +105,7 @@ public class WorkflowView extends JLayeredPane {
 					controller.reloadData();
 				}
 				if (((StageView) c).getController() != null) {
-					((StageView) c).getController().switchTitle(false);
+					((StageView) c).switchTitles(false);
 				}
 			}
 		}
