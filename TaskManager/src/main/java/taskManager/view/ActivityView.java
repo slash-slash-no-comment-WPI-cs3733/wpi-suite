@@ -84,10 +84,12 @@ public class ActivityView extends JPanel implements MouseListener,
 		infoPanel = new JPanel(new MigLayout("", "0[grow, fill][]", "0[]0"));
 		infoPanel.setBackground(Colors.ACTIVITY);
 		infoPanel.add(info);
+
+		edit = new JButton("Edit");
 		if (m.getType().equals(ActivityModelType.COMMENT)
 				&& TaskManager.currentUser.equals(m.getActor())) {
 			editable = true;
-			edit = new JButton("Edit");
+
 			edit.setName(EDIT);
 			edit.setFont(edit.getFont().deriveFont(Font.PLAIN));
 			edit.addActionListener(controller);
