@@ -22,7 +22,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -121,24 +120,6 @@ public class ReportsView extends JPanel implements ActionListener,
 	private JLabel endDateLabel;
 	private JXDatePicker startDate;
 	private JXDatePicker endDate;
-
-	// Flow vs Velocity
-	private JPanel workTypePanel;
-	private JRadioButton workFlow;
-	private JRadioButton workVelocity;
-	private ButtonGroup workTypeGroup;
-
-	// Work Distribution
-	private JPanel distributionPanel;
-	private JRadioButton totaledDist;
-	private JRadioButton dividedDist;
-	private ButtonGroup distributionGroup;
-
-	// Compare/Combine
-	private JPanel workModePanel;
-	private JRadioButton combineWork;
-	private JRadioButton compareWork;
-	private ButtonGroup workflowGroup;
 
 	// Users
 	private JPanel usersPanel;
@@ -254,35 +235,6 @@ public class ReportsView extends JPanel implements ActionListener,
 		timePanel.add(sliceAndStage, "h 100%, w 50%");
 		timePanel.add(datePanel, "h 100%, w 50%");
 
-		// WorkType
-		workTypePanel = new JPanel();
-		workTypePanel.setLayout(new MigLayout());
-		workFlow = new JRadioButton("Flow");
-		workFlow.setName(WORK_FLOW);
-		workVelocity = new JRadioButton("");
-		workVelocity.setName(WORK_VELOCITY);
-		workTypeGroup = new ButtonGroup();
-		workTypeGroup.add(workFlow);
-		workTypeGroup.add(workVelocity);
-		workTypePanel.setBorder(BorderFactory.createTitledBorder("WorkType"));
-		workTypePanel.add(workFlow);
-		workTypePanel.add(workVelocity);
-
-		// Combined or Compared graph
-		workModePanel = new JPanel();
-		workModePanel.setLayout(new MigLayout());
-		combineWork = new JRadioButton("Combine Work");
-		combineWork.setName(COLLABORATIVE);
-		compareWork = new JRadioButton("");
-		compareWork.setName(COMPARATIVE);
-		workflowGroup = new ButtonGroup();
-		workflowGroup.add(combineWork);
-		workflowGroup.add(compareWork);
-		workModePanel.setBorder(BorderFactory
-				.createTitledBorder("Compare/Combine"));
-
-		workModePanel.add(compareWork);
-
 		// Users for Work Velocity
 		usersPanel = new JPanel();
 		allUsers = new JCheckBox("Add all Users to report");
@@ -325,7 +277,6 @@ public class ReportsView extends JPanel implements ActionListener,
 		generateGraph.setIcon(new ImageIcon(img));
 
 		// Panel for reports generating options
-		JPanel reportOptions = new JPanel(new MigLayout());
 		JLabel selectStageLabel = new JLabel("Select Stage");
 		selectStageLabel.setFont(bigFont);
 		SelectStages.add(selectStageLabel, "wrap");
@@ -517,124 +468,6 @@ public class ReportsView extends JPanel implements ActionListener,
 	}
 
 	/**
-	 * Returns the radio button for flow workType
-	 * 
-	 * @return the workFlow as a JRadioButton
-	 */
-	public JRadioButton getWorkFlow() {
-		return workFlow;
-	}
-
-	/**
-	 * Sets the radio button for flow workType
-	 * 
-	 * @param b
-	 *            the state of the button
-	 */
-	public void setWorkFlow(Boolean b) {
-		workFlow.setSelected(b);
-	}
-
-	/**
-	 * Returns the radio button for velocity workType
-	 * 
-	 * @return the workVelocity as a JRadioButton
-	 */
-	public JRadioButton getWorkVelocity() {
-		return workVelocity;
-	}
-
-	/**
-	 * Sets the radio button for velocity workType
-	 * 
-	 * @param b
-	 *            the state of the button
-	 */
-	public void setWorkVelocity(Boolean b) {
-		workVelocity.setSelected(b);
-	}
-
-	/**
-	 * Returns the radio button for workflow distribution that gives every
-	 * member the total effort
-	 * 
-	 * @return the totaledDist as a JRadioButton
-	 */
-	public JRadioButton getTotaledDist() {
-		return totaledDist;
-	}
-
-	/**
-	 * Sets the radio button for workflow distribution that gives every member
-	 * the total effort
-	 * 
-	 * @param b
-	 *            the state to set the button
-	 */
-	public void setTotaledDist(Boolean b) {
-		totaledDist.setSelected(b);
-	}
-
-	/**
-	 * Returns the radio button for workflow distribution that divides the work
-	 * evenly among the users
-	 * 
-	 * @return the dividedDist as a JRadioButton
-	 */
-	public JRadioButton getDividedDist() {
-		return dividedDist;
-	}
-
-	/**
-	 * Sets the radio button for workflow distribution that divides the work
-	 * evenly among the users
-	 * 
-	 * @param b
-	 *            the state to set the button
-	 */
-	public void setDividedDist(Boolean b) {
-		dividedDist.setSelected(b);
-	}
-
-	/**
-	 * Returns the radio button that shows users combined work
-	 * 
-	 * @return the combined work as a JRadioButton
-	 */
-	public JRadioButton getCombineWork() {
-		return combineWork;
-	}
-
-	/**
-	 * Sets the radio button that shows users combined work
-	 * 
-	 * @param b
-	 *            the state to set the button
-	 */
-	public void setCombineWork(Boolean b) {
-		combineWork.setSelected(b);
-	}
-
-	/**
-	 * Returns the radio button that compares users' work
-	 * 
-	 * @return the compared work as a JRadioButton
-	 */
-	public JRadioButton getCompareWork() {
-		return compareWork;
-	}
-
-	/**
-	 * Sets the radio button that compares users' work
-	 * 
-	 * @param b
-	 *            the state of the button
-	 */
-	public void setCompareWork(Boolean b) {
-		compareWork.setSelected(b);
-	}
-
-	/**
 	 * Returns the check box to select all users
 	 * 
 	 * @return all users as a JCheckBox
@@ -780,14 +613,6 @@ public class ReportsView extends JPanel implements ActionListener,
 				.getString("Stage"));
 		((TitledBorder) datePanel.getBorder()).setTitle(Localizer
 				.getString("Timeframe"));
-		workFlow.setText(Localizer.getString("Flow"));
-		workVelocity.setText(Localizer.getString("Velocity"));
-		((TitledBorder) workTypePanel.getBorder()).setTitle(Localizer
-				.getString("WorkType"));
-		combineWork.setText(Localizer.getString("CombineWork"));
-		compareWork.setText(Localizer.getString("CompareWork"));
-		((TitledBorder) workModePanel.getBorder()).setTitle(Localizer
-				.getString("CompareCombine"));
 		allUsers.setText(Localizer.getString("All"));
 		currUsersList.setTitle(Localizer.getString("UsersReport"));
 		projectUsersList.setTitle(Localizer.getString("UsersNotReport"));
