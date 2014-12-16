@@ -39,8 +39,6 @@ import taskManager.controller.TaskInputController;
 import taskManager.localization.LocaleChangeListener;
 import taskManager.localization.Localizer;
 
-//TODO import taskManager.controller.ReportsController;
-
 /**
  * @author Tyler Jaskoviak
  *
@@ -277,7 +275,6 @@ public class ReportsView extends JPanel implements LocaleChangeListener {
 			img = ImageIO.read(this.getClass().getResourceAsStream(
 					"reports-icon.png"));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		generateGraph.setIcon(new ImageIcon(img));
@@ -295,8 +292,6 @@ public class ReportsView extends JPanel implements LocaleChangeListener {
 		toolbarGrid.gridy = 1;
 		window.add(datePanel, toolbarGrid);
 
-		// TODO: once the ReportsManager is updated with more functionality show
-		// the commented out components to the view.
 		toolbarGrid.gridy = 3;
 		// window.add(workTypePanel, toolbarGrid);
 
