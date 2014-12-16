@@ -250,7 +250,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 
 	}
 
-	private void checkButton() {
+	public void checkButton() {
 		if (view.isCheckEnabled()
 				&& WorkflowModel.getInstance().findStageByName(
 						view.getLabelText()) != null) {
@@ -283,7 +283,6 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 			case StageView.CHECK:
 				checkButton();
 				break;
-			// fall through
 			case StageView.X:
 				// reset the flags
 				WorkflowController.pauseInformation = false;
@@ -296,7 +295,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
+		// do nothing
 
 	}
 
@@ -344,7 +343,6 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-
+		// do nothing
 	}
 }

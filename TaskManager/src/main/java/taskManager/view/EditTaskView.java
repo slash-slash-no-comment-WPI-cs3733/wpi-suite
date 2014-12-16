@@ -12,6 +12,7 @@ package taskManager.view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.KeyboardFocusManager;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -152,7 +153,6 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	 */
 	public EditTaskView(Mode mode, ActivityController activityC) {
 
-		// TODO: User Mode to switch between create and edit views
 		// When Task added make EditTask take in a Task called currTask
 		this.mode = mode;
 		this.activityC = activityC;
@@ -201,6 +201,13 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		descripArea.setEditable(true);
 		descripArea.setLineWrap(true);
 		descripArea.setWrapStyleWord(true);
+		// Sets the traversal keys to null so that it inherits parent's
+		// behavior.
+		// Reference: http://stackoverflow.com/a/5043957
+		descripArea.setFocusTraversalKeys(
+				KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, null);
+		descripArea.setFocusTraversalKeys(
+				KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, null);
 		final JScrollPane descriptionScrollPane = new JScrollPane(descripArea);
 
 		descriptionScrollPane
@@ -229,8 +236,6 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 						.getImage()).getScaledInstance(20, 20,
 						java.awt.Image.SCALE_SMOOTH)));
 
-		// JTextArea
-		// TODO
 		// Get to add users
 		usersList = new ScrollList("");
 		usersList.setBackground(this.getBackground());
