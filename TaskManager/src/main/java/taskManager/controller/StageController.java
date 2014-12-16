@@ -213,7 +213,6 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 	public void mouseClicked(MouseEvent e) {
 		// clicked on the title
 		if (e.getSource() instanceof JLabel) {
-			System.out.println("clicked a title");
 			// Don't reload while changing a stage name is open.
 			WorkflowController.getInstance().removeChangeTitles();
 			WorkflowController.getInstance().removeTaskInfos(true);

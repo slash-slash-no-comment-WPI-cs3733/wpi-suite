@@ -275,9 +275,7 @@ public class StageView extends JPanel implements Transferable,
 		this.labelText.requestFocus();
 		this.labelText.requestFocusInWindow();
 		this.labelText.grabFocus();
-		if (!getController().isNewStage()) {
-			this.labelText.selectAll();
-		}
+		this.labelText.selectAll();
 	}
 
 	/**
