@@ -45,6 +45,12 @@ public class FilterView extends JPanel {
 
 	private static final Dimension SIZE = new Dimension(150, 90);
 
+	/**
+	 * creates a new filter view to be added to the toolbar
+	 * 
+	 * @param filter
+	 *            the controller for the new filter view
+	 */
 	public FilterView(FilterController filter) {
 		filterC = filter;
 

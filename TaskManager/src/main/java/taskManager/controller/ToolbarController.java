@@ -64,6 +64,9 @@ public class ToolbarController extends DropTargetAdapter implements
 		reset();
 	}
 
+	/**
+	 * reinitialize the toolbar view and filter controller
+	 */
 	public void reset() {
 		filterC = new FilterController();
 		view = new ToolbarView(this, filterC.getView());

@@ -78,6 +78,8 @@ public class TaskView extends JPanel implements Transferable,
 	 *            the number of users assigned to the task
 	 * @param comments
 	 *            the number of comments on the task
+	 * @param stageWidth
+	 *            the width of the stage the task is being added to
 	 */
 	public TaskView(String name, Date duedate, int users, int comments,
 			int stageWidth) {
@@ -254,6 +256,9 @@ public class TaskView extends JPanel implements Transferable,
 	 * 
 	 * @param color
 	 *            the color to set the border to
+	 * @param opaque
+	 *            true if the border is to be colored, false if it is to be
+	 *            clear
 	 */
 	public void setBorderColor(Color color, boolean opaque) {
 		if (!opaque) {

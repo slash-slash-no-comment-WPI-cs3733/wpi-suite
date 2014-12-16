@@ -74,14 +74,11 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 	 * StageModel, creates the corresponding TaskView and TaskControllers for
 	 * each, and final adds all of the TaskViews to the UI. Use this when
 	 * loading a stage from a database.
-	 *
-	 * @param view
-	 *            the corresponding StageView object
+	 * 
 	 * @param model
 	 *            the corresponding StageModel object
-	 * @param newStage
-	 *            true if this is a new stage. false if it is being loaded from
-	 *            the database
+	 * @param filter
+	 *            the filter to be applied to the stage
 	 */
 	public StageController(StageModel model, TaskFilter filter)
 			throws IllegalArgumentException {

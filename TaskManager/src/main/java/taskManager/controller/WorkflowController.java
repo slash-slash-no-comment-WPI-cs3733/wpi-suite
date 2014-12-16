@@ -112,6 +112,12 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		reloadData(currentFilter);
 	}
 
+	/**
+	 * reload the data using the given filter
+	 * 
+	 * @param filter
+	 *            the filter to be applied to workflow
+	 */
 	public synchronized void reloadData(TaskFilter filter) {
 		// clear the stages previously on the view
 		currentFilter = filter;
