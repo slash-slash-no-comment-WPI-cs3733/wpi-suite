@@ -165,7 +165,7 @@ public class EditTaskController implements ActionListener {
 		if (model.getReq() != null) {
 			etv.setSelectedRequirement(model.getReq().getName());
 		} else {
-			etv.setSelectedRequirement(null);
+			etv.setSelectedRequirement(EditTaskView.NO_REQ);
 		}
 	}
 
