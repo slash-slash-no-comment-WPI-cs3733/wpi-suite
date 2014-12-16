@@ -57,10 +57,10 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 	private final TaskModel taskM;
 	private final TaskController taskC;
 	private final TaskInfoPreviewController controller;
+	private final JButton closeButton;
 	public static final String EDIT = "edit";
 	public static final String X = "x";
 	public static final int WIDTH = 220;
-	private final JButton closeButton;
 	private JLabel archived = new JLabel();
 	private JLabel dueDate = new JLabel();
 	private final JLabel estE;
@@ -86,7 +86,7 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 			Point loc) {
 		taskM = model;
 		taskC = controller;
-		this.controller = new TaskInfoPreviewController(taskC);
+		this.controller = new TaskInfoPreviewController(taskC, this);
 
 		this.setLayout(null);
 		this.setOpaque(false);
@@ -97,7 +97,7 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 		setBoundsWithoutClipping(loc, 245, 415);
 
 		bgPane.setBackground(Colors.TASK);
-		final Border color = BorderFactory.createLineBorder(getBackground(), 3);
+		final Border color = BorderFactory.createLineBorder(Color.GRAY, 3);
 		final DropShadowBorder shadow = new DropShadowBorder();
 		shadow.setShadowColor(Color.BLACK);
 		shadow.setShowLeftShadow(true);
@@ -123,10 +123,10 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 
 		JPanel titleBar = new JPanel();
 		titleBar.setLayout(new MigLayout("wrap 2", "5[]:push[]", "[]0[center]"));
-		Dimension titleBarSize = new Dimension(this.getWidth(), 30);
+		Dimension titleBarSize = new Dimension(this.getWidth() - 15, 30);
 		titleBar.setSize(titleBarSize);
 		JLabel title = new JLabel(this.taskM.getName());
-		Dimension titleSize = new Dimension(190,
+		Dimension titleSize = new Dimension(185,
 				title.getPreferredSize().height + 10);
 
 		title.setFont(title.getFont().deriveFont(15.0f));
@@ -137,9 +137,14 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 		// Closable 'x' button
 		closeButton = new JButton();
 		closeButton.setName(X);
-		closeButton.setFont(closeButton.getFont().deriveFont((float) 8));
-		closeButton.setMargin(new Insets(0, 0, 0, 0));
+		closeButton.setFont(closeButton.getFont().deriveFont((float) 10));
+		closeButton.setMargin(new Insets(0, 2, 0, 2));
+		closeButton.setFocusPainted(false);
+		closeButton.setContentAreaFilled(false);
+		closeButton.setBorderPainted(false);
+		closeButton.setOpaque(false);
 		closeButton.addActionListener(this.controller);
+		closeButton.addMouseListener(this.controller);
 		titleBar.add(closeButton);
 		if (model.isArchived()) {
 			titleBar.setBackground(Colors.ARCHIVE_CLICKED);
@@ -324,15 +329,25 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 		return taskC;
 	}
 
+	/**
+	 * 
+	 * Set the BorderPainted boolean for the closeButton.
+	 *
+	 * @param border
+	 *            true to make the border visible, false otherwise
+	 */
+	public void setCloseBorder(boolean border) {
+		closeButton.setBorderPainted(border);
+	}
+
 	@Override
 	public void onLocaleChange() {
 		closeButton.setText(Localizer.getString("x"));
 		archived.setText("<html><font size=\"3\"><i>"
 				+ Localizer.getString("Archived") + "</i></font></html>");
 		DateFormat df = new SimpleDateFormat(Localizer.getString("DateFormat"));
-		dueDate.setText("<html><b><i>Due:</i></b> "
-				+ Localizer.getString("Due")
-				+ df.format(this.taskM.getDueDate()) + "</html>");
+		dueDate.setText("<html><b><i>" + Localizer.getString("Due")
+				+ " </b></i>" + df.format(this.taskM.getDueDate()) + "</html>");
 		String estString = this.taskM.isEstimatedEffortSet() ? this.taskM
 				.getEstimatedEffort().toString() : "";
 		String actString = this.taskM.isActualEffortSet() ? this.taskM

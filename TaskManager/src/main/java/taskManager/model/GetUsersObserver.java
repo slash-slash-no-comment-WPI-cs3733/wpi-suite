@@ -8,6 +8,9 @@
  *******************************************************************************/
 package taskManager.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import taskManager.TaskManager;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.network.models.IRequest;
@@ -29,8 +32,14 @@ public class GetUsersObserver extends GenericRequestObserver {
 		final String body = response.getBody();
 		System.out.println("Response:" + body);
 
-		TaskManager.users = AbstractJsonableModel
-				.fromJson(body, User[].class);
+		// Get all of the users and store to the TaskManager.users the
+		// corresponding usernames.
+		User[] userObjects = AbstractJsonableModel.fromJson(body, User[].class);
+		List<String> usernames = new ArrayList<String>();
+		for (User u : userObjects) {
+			usernames.add(u.getUsername());
+		}
+		TaskManager.users = usernames.toArray(new String[usernames.size()]);
 
 		// restart the connection
 		restartConnection();
