@@ -74,6 +74,8 @@ public class Localizer {
 		UIManager.put("OptionPane.noButtonText", getString("No"));
 		UIManager.put("OptionPane.cancelButtonText", getString("Cancel"));
 		UIManager.put("JXDatePicker.linkFormat", getString("JXtoday"));
+		UIManager.put("JXMonthView.daysOfTheWeek", getString("DaysOfWeek")
+				.split(" "));
 
 		// tell all of the listeners that the locale changed
 		Iterator<WeakReference<LocaleChangeListener>> it = listeners.iterator();

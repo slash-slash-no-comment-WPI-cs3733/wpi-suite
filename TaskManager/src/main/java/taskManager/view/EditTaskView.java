@@ -1048,8 +1048,8 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		archive.setText(Localizer.getString("Archived"));
 		dateField.setFormats(Localizer.getString("DateFormat"));
 		dateField.setLocale(null);
-		dateField.getMonthView().setDaysOfTheWeek(
-				Localizer.getString("DaysOfWeek").split(" "));
+		dateField.getMonthView().setLocale(null);
+		dateField.getMonthView().updateUI();
 		((JLabel) titleError.getContents()).setText(Localizer
 				.getString(TITLE_ERROR));
 		((JLabel) descripError.getContents()).setText(Localizer
