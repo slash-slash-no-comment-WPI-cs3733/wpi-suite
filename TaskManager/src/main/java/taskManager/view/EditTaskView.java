@@ -152,7 +152,6 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	 */
 	public EditTaskView(Mode mode, ActivityController activityC) {
 
-		// TODO: User Mode to switch between create and edit views
 		// When Task added make EditTask take in a Task called currTask
 		this.mode = mode;
 		this.activityC = activityC;
@@ -229,8 +228,6 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 						.getImage()).getScaledInstance(20, 20,
 						java.awt.Image.SCALE_SMOOTH)));
 
-		// JTextArea
-		// TODO
 		// Get to add users
 		usersList = new ScrollList("");
 		usersList.setBackground(this.getBackground());

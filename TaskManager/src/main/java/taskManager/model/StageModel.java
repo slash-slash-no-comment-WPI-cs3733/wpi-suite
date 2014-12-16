@@ -75,7 +75,6 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 	 */
 	public StageModel(String name, boolean removable) {
 		this(name, -1, removable);
-		// TODO better way than passing -1 for index?
 	}
 
 	/**
