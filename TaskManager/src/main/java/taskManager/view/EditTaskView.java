@@ -289,12 +289,8 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		stages.setName(STAGES);
 
 		// Combo Box for Category
-		// TODO make this take JPanels with little color labels instead of
-		// strings
 		categories = new JComboBox<String>();
 		categories.setName(CATEGORIES);
-		//
-		// window.add(titleLabel);
 
 		// This is where the 8 primary panels are defined
 		JPanel SpacerTop = new JPanel(new MigLayout());
