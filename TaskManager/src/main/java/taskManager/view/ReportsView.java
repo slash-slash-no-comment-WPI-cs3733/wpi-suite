@@ -23,6 +23,7 @@ import java.util.Date;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -76,7 +77,6 @@ public class ReportsView extends JPanel implements ActionListener,
 
 	private JPanel window;
 	private JPanel generator;
-	public JScrollPane GenScroll;
 
 	public enum Mode {
 		VELOCITY, DISTRIBUTION
@@ -159,10 +159,9 @@ public class ReportsView extends JPanel implements ActionListener,
 
 		this.mode = mode;
 
-		window = new JPanel(new MigLayout());
-		GenScroll = new JScrollPane();
+		window = new JPanel(new FlowLayout());
 		generator = new JPanel(new MigLayout());
-		this.setLayout(new FlowLayout());
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
 		// Stages or Users
 		JPanel SelectStages = new JPanel(new MigLayout());
@@ -314,7 +313,7 @@ public class ReportsView extends JPanel implements ActionListener,
 		usersPanel.add(usersListPanel, "w 100!");
 
 		// Generate Graph
-		generateGraph = new JButton();
+		generateGraph = new JButton("Generate Graph");
 		generateGraph.setName(GENERATE);
 
 		try {
@@ -347,7 +346,7 @@ public class ReportsView extends JPanel implements ActionListener,
 		generator.add(reportType, "align center, wrap");
 		generator.add(cards, "wrap");
 		generator.add(effortOrNumberofTasks, "align center, wrap");
-		generator.add(generateGraph, ("align center, gaptop 30px"));
+		generator.add(generateGraph, ("align center"));
 		CardLayout cl = (CardLayout) (cards.getLayout());
 
 		Dimension CardSize = cards.getSize();
