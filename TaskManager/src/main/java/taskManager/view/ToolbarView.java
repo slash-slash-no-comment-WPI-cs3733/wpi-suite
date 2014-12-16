@@ -220,14 +220,16 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		buttons.add(createTask);
 		buttons.add(createStage);
 		buttons.add(statistics);
-		buttons.add(new Box.Filler(new Dimension(10, 0), new Dimension(40, 0),
+		buttons.add(new Box.Filler(new Dimension(5, 0), new Dimension(30, 0),
 				new Dimension(40, 0)));
 		// adds the filter view
 		filters = f;
 		buttons.add(filters);
+		buttons.add(new Box.Filler(new Dimension(5, 0), new Dimension(30, 0),
+				new Dimension(40, 0)));
 		buttons.add(languageSelector);
 		buttons.add(Box.createHorizontalGlue());
-		targets.add(new Box.Filler(new Dimension(5, 0), new Dimension(40, 0),
+		targets.add(new Box.Filler(new Dimension(5, 0), new Dimension(30, 0),
 				new Dimension(40, 0)));
 
 		// Add targets to the target panel

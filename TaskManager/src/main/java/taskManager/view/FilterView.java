@@ -54,9 +54,10 @@ public class FilterView extends JPanel {
 	public FilterView(FilterController filter) {
 		filterC = filter;
 
+		Dimension size = new Dimension(170, 30);
 		// Construct Search bar
 		search = new JTextField();
-		search.setMaximumSize(new Dimension(160, 30));
+		search.setMaximumSize(size);
 		search.addKeyListener(filterC);
 
 		// adds a panel for this
@@ -68,7 +69,7 @@ public class FilterView extends JPanel {
 		// adds a panel for my tasks and archived check boxes
 		JPanel checks = new JPanel();
 		checks.setLayout(new GridLayout(2, 1));
-		checks.setMinimumSize(new Dimension(160, 30));
+		checks.setMinimumSize(size);
 		// Checkbox for toggling showing archived tasks.
 		archiveCheckBox = new JCheckBox("<html>Show archived tasks</html>");
 		archiveCheckBox.setOpaque(false);
@@ -108,7 +109,7 @@ public class FilterView extends JPanel {
 			catBox.addMouseListener(filterC);
 			categories.add(catBox);
 		}
-		categories.setMaximumSize(new Dimension(100, 30));
+		categories.setMaximumSize(size);
 
 		this.add(search);
 		this.add(categories);

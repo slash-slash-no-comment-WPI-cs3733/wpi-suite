@@ -197,11 +197,11 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 
 		// JTextFields
 		// sets all text fields editable and adds them to global variables
-		titleField = new JTextField(26);
+		titleField = new JTextField(40);
 		titleField.setEditable(true);
 		titleField.setName(TITLE);
 
-		descripArea = new JTextArea(14, 26);
+		descripArea = new JTextArea(10, 40);
 		descripArea.setMinimumSize(new Dimension(20, 100));
 		descripArea.setName(DESCRIP);
 		descripArea.setEditable(true);
@@ -285,13 +285,14 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		// strings
 		categories = new JComboBox<String>();
 		categories.setName(CATEGORIES);
-
-		window.add(titleLabel);
+		//
+		// window.add(titleLabel);
 
 		// This is where the 8 primary panels are defined
 		JPanel SpacerTop = new JPanel(new MigLayout());
 		JPanel SpacerBtm = new JPanel(new MigLayout());
-		JPanel BasicInfo = new JPanel(new MigLayout());
+		JPanel BasicInfo = new JPanel(new MigLayout("align center, wrap 1",
+				"[grow, fill]"));
 		JPanel Users = new JPanel(new MigLayout("align center, wrap 1",
 				"[grow, fill]"));
 		JPanel Effort = new JPanel(new MigLayout());
@@ -302,7 +303,6 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		JPanel EffortDateStage = new JPanel(new MigLayout());
 
 		// dateAndStage internal content
-		// TODO fix this, adding categories looks dumb
 		dateAndStage.add(dueDateLabel);
 		dateAndStage.add(stageLabel, "gapleft 10px, wrap");
 		dateAndStage.add(dateField);
@@ -313,16 +313,17 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		// EffortDateStage internal content
 		EffortDateStage.add(dateAndStage);
 
-		// BasicInfo Panel internal content
+		// Title and Description Panel internal content
+		JPanel TitleAndDescription = new JPanel(new MigLayout());
+		TitleAndDescription.add(titleLabel, "gapleft 5px, wrap");
+		TitleAndDescription.add(titleField, "gapleft 5px, wrap");
+
+		TitleAndDescription.add(descriptionLabel, "gapleft 5px, wrap");
+		TitleAndDescription.add(descriptionScrollPane, "gapleft 5px, wrap");
 
 		BasicInfo.setBorder(BorderFactory.createTitledBorder(""));
-		BasicInfo.add(titleLabel, "gapleft 15px, wrap");
-		BasicInfo.add(titleField, "gapleft 15px, wrap");
-
-		BasicInfo.add(descriptionLabel, "gapleft 15px, wrap");
-		BasicInfo.add(descriptionScrollPane,
-				"gapbottom 10px, gapleft 5px, wrap");
-		BasicInfo.add(EffortDateStage, "h 25%, gapleft 5px");
+		BasicInfo.add(TitleAndDescription);
+		BasicInfo.add(EffortDateStage, "gapleft 5px");
 
 		// Requirements Panel internal content
 		Requirements.add(requirementLabel, "wrap");
@@ -341,10 +342,10 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 
 		// Users Panel internal content
 		Users.setBorder(BorderFactory.createTitledBorder(""));
-		JPanel UserPanel = new JPanel(new MigLayout("align center"));
-		JPanel usersListPanel = new JPanel(new MigLayout("align center"));
-		JPanel projectUsersListPanel = new JPanel(new MigLayout("align center"));
-		JPanel addRemoveButtons = new JPanel(new MigLayout("align center"));
+		JPanel UserPanel = new JPanel();
+		JPanel usersListPanel = new JPanel(new MigLayout());
+		JPanel projectUsersListPanel = new JPanel(new MigLayout());
+		JPanel addRemoveButtons = new JPanel(new MigLayout());
 		usersListPanel.add(assignedUsersLabel, "wrap");
 
 		usersListPanel.add(usersList);
@@ -358,8 +359,8 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		UserPanel.add(addRemoveButtons);
 		UserPanel.add(usersListPanel);
 
-		Users.add(UserPanel, "h 60%, wrap");
-		Users.add(EffortAndRequirements, "h 40%, wrap");
+		Users.add(UserPanel, "gapleft 5px, wrap");
+		Users.add(EffortAndRequirements, "gapleft 5px, wrap");
 
 		// EditSaveCancel Panel internal content
 
@@ -373,7 +374,7 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 
 		window.add(SpacerTop, "dock north");
 		window.add(BasicInfo, "h 80%, w 30%");
-		window.add(Users, "h 80%, w 30%, gapleft 10px");
+		window.add(Users, "h 80%, w 30%");
 		window.add(SpacerBtm, "dock south");
 
 		BalloonTipStyle errorStyle = new RoundedBalloonStyle(5, 5,
@@ -396,7 +397,7 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 
 		// The finished panels are added to the main window panel
 		Dimension panelSize = window.getPreferredSize();
-		panelSize.height = 500; // Decide size
+		panelSize.height = 450; // Decide size
 		window.setPreferredSize(panelSize);
 
 		JScrollPane windowScroll = new JScrollPane(window);
