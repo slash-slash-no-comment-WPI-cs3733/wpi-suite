@@ -11,8 +11,10 @@ package taskManager.controller;
 import java.awt.Dimension;
 import java.time.Instant;
 import java.time.Period;
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -36,7 +38,7 @@ import edu.wpi.cs.wpisuitetng.modules.core.models.User;
  */
 public class TestReportsManager {
 
-	private Instant now;
+	private ZonedDateTime now;
 	private ReportsManager rm;
 	private FrameFixture fixture;
 	private JFrame frame;
@@ -47,11 +49,12 @@ public class TestReportsManager {
 	public void setup() {
 		TaskManager.reset();
 
-		now = Instant.now();
+		now = ZonedDateTime.ofInstant(Instant.now(), TimeZone.getDefault()
+				.toZoneId());
 		finished = new StageModel("Finished");
 		rm = new ReportsManager(new ReportsView());
 		TaskModel tm1 = new TaskModel("Task", new StageModel("Start"));
-		tm1.setEstimatedEffort(5);
+		tm1.setActualEffort(5);
 		u1 = new User("User 1", "User 1", null, 42);
 		tm1.addAssigned(u1);
 		finished.addTask(tm1);

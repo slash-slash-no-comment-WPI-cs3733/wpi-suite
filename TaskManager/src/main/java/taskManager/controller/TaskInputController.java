@@ -48,7 +48,7 @@ public class TaskInputController implements KeyListener, FocusListener,
 	 */
 	public TaskInputController(EditTaskView etv) {
 		this.etv = etv;
-		checkFields();
+		checkEditFields();
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class TaskInputController implements KeyListener, FocusListener,
 	 * 
 	 * @return true if all the fields are valid
 	 */
-	public boolean checkFields() {
+	public boolean checkEditFields() {
 
 		addUsersSelected = !etv.getProjectUsersList().isSelectionEmpty();
 		removeUsersSelected = !etv.getUsersList().isSelectionEmpty();
@@ -70,31 +70,30 @@ public class TaskInputController implements KeyListener, FocusListener,
 		// requirements for that field
 
 		// Title
-		if (etv.getTitle().getText().trim().isEmpty()) {
+		if (etv.getTitleText().trim().isEmpty()) {
 			titleValid = false;
 		}
 		// Description
-		if (etv.getDescription().getText().trim().isEmpty()) {
+		if (etv.getDescription().trim().isEmpty()) {
 			descriptionValid = false;
 		}
 		// Estimated Effort
-		if (!etv.getEstEffort().getText().isEmpty()) {
+		if (!etv.getEstEffort().isEmpty()) {
 			try {
-				if (Integer.parseInt(etv.getEstEffort().getText().trim()) <= 0
-						|| Integer
-								.parseInt(etv.getEstEffort().getText().trim()) > 9999) {
+				if (Integer.parseInt(etv.getEstEffort().trim()) <= 0
+						|| Integer.parseInt(etv.getEstEffort().trim()) > 9999) {
 					estEffortValid = false;
 				}
 			} catch (NumberFormatException e) {
 				estEffortValid = false;
 			}
 		}
-		if (!etv.getActEffort().getText().trim().isEmpty()) {
+
+		if (!etv.getActEffort().isEmpty()) {
 			// Actual Effort
 			try {
-				if (Integer.parseInt(etv.getActEffort().getText().trim()) < 0
-						|| Integer
-								.parseInt(etv.getActEffort().getText().trim()) > 9999) {
+				if (Integer.parseInt(etv.getActEffort().trim()) < 0
+						|| Integer.parseInt(etv.getActEffort().trim()) > 9999) {
 					actEffortValid = false;
 				}
 			} catch (NumberFormatException e) {
@@ -116,40 +115,27 @@ public class TaskInputController implements KeyListener, FocusListener,
 	}
 
 	/**
-	 * sets all 4 error bubbles to invisible
-	 */
-	private void setAllErrorsInvisible() {
-		etv.setActualEffortErrorVisible(false);
-		etv.setEstEffortErrorVisible(false);
-		etv.setDescriptionErrorVisible(false);
-		etv.setTitleErrorVisible(false);
-	}
-
-	/**
-	 * checks if comments are valid
-	 * 
-	 * @param commentValid
-	 *            true if comment is valid
-	 * @return commentValid
 	 *
+	 * @return true if the comment box has a valid comment in it.
 	 */
-	public boolean checkSaveComment() {
-		boolean commentValid = true;
+	public boolean checkCommentBox() {
 		if (etv.getCommentsFieldText().trim().isEmpty()) {
-			// Comments Pane
-			commentValid = false;
+			return false;
+		} else {
+			return true;
 		}
-		return commentValid;
 	}
 
 	/**
 	 * validate the inputs
 	 */
 	public void validate() {
-		etv.setSaveEnabled(this.checkFields() && isEdited());
+		etv.setSaveEnabled(this.checkEditFields() && isEdited());
 		etv.setAddUserEnabled(addUsersSelected);
 		etv.setRemoveUserEnabled(removeUsersSelected);
-		etv.setCommentSubmitEnabled(this.checkSaveComment());
+
+		etv.setSubmitCancelCommentEnabled(this.checkCommentBox());
+		etv.setViewRequirementEnabled(etv.getSelectedRequirement() != null);
 	}
 
 	/**
@@ -199,8 +185,9 @@ public class TaskInputController implements KeyListener, FocusListener,
 
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		validate();
-
+		if (evt.getPropertyName().equals("date")) {
+			validate();
+		}
 	}
 
 	@Override

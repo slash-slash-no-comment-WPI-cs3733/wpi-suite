@@ -9,12 +9,14 @@
 package taskManager.controller;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.Container;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.swing.SwingUtilities;
 
 import javax.swing.JMenuItem;
 
@@ -23,6 +25,7 @@ import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.Colors;
+import taskManager.view.StageView;
 import taskManager.view.TaskInfoPreviewView;
 import taskManager.view.TaskView;
 import taskManager.view.ToolbarView;
@@ -38,10 +41,8 @@ public class TaskController implements MouseListener, MouseMotionListener,
 
 	private final TaskView view;
 	private final TaskModel model;
-	private final Color background;
 
-	public static Boolean anyTaskInfoOut = false;
-	private Boolean thisTaskInfoOut = false;
+	private Boolean taskInfoPreviewOut = false;
 
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
@@ -63,7 +64,12 @@ public class TaskController implements MouseListener, MouseMotionListener,
 			view.setBackground(Colors.TASK);
 		}
 
-		background = view.getBackground();
+		if (model.getDueDate().before(new Date())) {
+			view.setDateColor(Color.RED);
+		} else {
+			view.setDateColor(Color.BLACK);
+		}
+
 	}
 
 	/**
@@ -107,6 +113,15 @@ public class TaskController implements MouseListener, MouseMotionListener,
 	}
 
 	/**
+	 * Get the ID of the task
+	 *
+	 * @return the task ID
+	 */
+	public String getID() {
+		return model.getID();
+	}
+
+	/**
 	 * 
 	 * Populates the EditTaskView with the information from this task.
 	 *
@@ -121,9 +136,18 @@ public class TaskController implements MouseListener, MouseMotionListener,
 	 * when a bubble is out for this task
 	 *
 	 */
-	public void setToHoverColor() {
+	public void changeToHoverColor() {
+		// don't highlight while task info is out in fun mode, because the clip
+		// bounds passed to the rotation view are sometimes not correct
+		if (ToolbarController.getInstance().getView().isFunMode()) {
+			return;
+		}
+		if (isArchived() && !taskInfoPreviewOut) {
+			view.setBackground(Colors.ARCHIVE_HOVER);
+		} else if (!taskInfoPreviewOut) {
 
-		view.setBackground(Colors.TASK_HOVER);
+			view.setBackground(Colors.TASK_HOVER);
+		}
 	}
 
 	/**
@@ -132,8 +156,14 @@ public class TaskController implements MouseListener, MouseMotionListener,
 	 *
 	 */
 	public void resetBackground() {
-		if (background != null) {
-			view.setBackground(background);
+		if (isArchived() && taskInfoPreviewOut) {
+			view.setBackground(Colors.ARCHIVE_CLICKED);
+		} else if (isArchived()) {
+			view.setBackground(Colors.ARCHIVE);
+		} else if (taskInfoPreviewOut) {
+			view.setBackground(Colors.TASK_CLICKED);
+		} else {
+			view.setBackground(Colors.TASK);
 		}
 	}
 
@@ -141,35 +171,26 @@ public class TaskController implements MouseListener, MouseMotionListener,
 	 * Called when the user clicks the view with the left mouse button.
 	 */
 	private void leftMouseClick() {
+		WorkflowController.getInstance().removeChangeTitles();
+		WorkflowController.pauseInformation = false;
 
-		// Show task bubble only if there are no stage title textboxes out AND
-		// the ignoreAllResponses flag has not been set OR
-		// another taskinfo bubble is already out
-		if ((!FetchWorkflowObserver.ignoreAllResponses || TaskController.anyTaskInfoOut)
-				&& !StageController.anyChangeTitleOut) {
-			// Don't reload (so the correct task can be highlighted while the
-			// bubble is up
-			FetchWorkflowObserver.ignoreAllResponses = true;
+		// Create the taskinfo bubble
+		final Container stageContainer = SwingUtilities.getAncestorOfClass(
+				StageView.class, view);
+		final Point stageLoc = stageContainer.getLocation();
+		final Point stagesPanelLoc = stageContainer.getParent().getLocation();
+		final Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
+				view.getLocation().y);
+		WorkflowController.getInstance().setTaskInfo(
+				new TaskInfoPreviewView(model, this, infoLoc));
 
-			// Create the taskinfo bubble
-			final Point stageLoc = view.getParent().getParent().getParent()
-					.getParent().getLocation();
-			final Point stagesPanelLoc = view.getParent().getParent()
-					.getParent().getParent().getParent().getLocation();
-			final Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
-					view.getLocation().y);
-			WorkflowController.getInstance().setTaskInfo(
-					new TaskInfoPreviewView(model, this, infoLoc));
-
-			// Set the correct flags
-			setThisTaskInfoOut(true);
-			TaskController.anyTaskInfoOut = true;
-			// make the associated task a darker color while the bubble is out
-			if (isArchived()) {
-				view.setBackground(Colors.ARCHIVE_CLICKED);
-			} else {
-				view.setBackground(Colors.TASK_CLICKED);
-			}
+		// Set the correct flags
+		taskInfoPreviewOut = true;
+		// make the associated task a darker color while the bubble is out
+		if (isArchived()) {
+			view.setBackground(Colors.ARCHIVE_CLICKED);
+		} else {
+			view.setBackground(Colors.TASK_CLICKED);
 		}
 	}
 
@@ -221,11 +242,7 @@ public class TaskController implements MouseListener, MouseMotionListener,
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		// only reset the background if there is no taskInfo bubble out for this
-		// task
-		if (!thisTaskInfoOut) {
-			resetBackground();
-		}
+		resetBackground();
 	}
 
 	@Override
@@ -284,7 +301,7 @@ public class TaskController implements MouseListener, MouseMotionListener,
 	 * @return the thisTaskInfoOut
 	 */
 	public Boolean getThisTaskInfoOut() {
-		return thisTaskInfoOut;
+		return taskInfoPreviewOut;
 	}
 
 	/**
@@ -292,6 +309,43 @@ public class TaskController implements MouseListener, MouseMotionListener,
 	 *            the thisTaskInfoOut to set
 	 */
 	public void setThisTaskInfoOut(Boolean thisTaskInfoOut) {
-		this.thisTaskInfoOut = thisTaskInfoOut;
+		this.taskInfoPreviewOut = thisTaskInfoOut;
+	}
+
+	/**
+	 * 
+	 * If the taskInfo bubble for this task was removed from view. Resets the
+	 * flag to correctly color the task.
+	 *
+	 */
+	public void taskInfoRemoved() {
+		taskInfoPreviewOut = false;
+		resetBackground();
+	}
+
+	/**
+	 * Generate string for table export (Excel format)
+	 *
+	 * @return export string
+	 */
+	public String getExportString() {
+		String fields[] = { "Name", "Description", "Due Date",
+				"Assigned Users", "Estimated Effort", "Actual Effort" };
+		String values[] = { model.getName(), model.getDescription(),
+				new SimpleDateFormat("MM/dd/yy").format(model.getDueDate()),
+				String.join(",", model.getAssigned()),
+				Integer.toString(model.getEstimatedEffort()),
+				Integer.toString(model.getActualEffort()) };
+
+		String export = "";
+		for (int i = 0; i < fields.length; i++) {
+			// remove newlines and tabs
+			values[i] = values[i].replace("\t", "        ");
+			values[i] = values[i].replace("\n", " ");
+			values[i] = values[i].replace("\r", "");
+
+			export += fields[i] + "\t" + values[i] + "\n";
+		}
+		return export;
 	}
 }

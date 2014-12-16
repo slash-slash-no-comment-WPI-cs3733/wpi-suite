@@ -19,8 +19,9 @@ import javax.swing.JComponent;
 import javax.swing.TransferHandler;
 
 import taskManager.controller.ToolbarController;
-import taskManager.model.FetchWorkflowObserver;
+import taskManager.controller.WorkflowController;
 import taskManager.model.WorkflowModel;
+import taskManager.view.RotationView;
 import taskManager.view.StageView;
 import taskManager.view.TaskView;
 
@@ -114,30 +115,31 @@ public class DDTransferHandler extends TransferHandler {
 	 */
 	@Override
 	public void exportAsDrag(JComponent comp, InputEvent e, int action) {
-
-		// this is set to false before true to clear the workflow before
-		// dragging
-		// Ignore all responses from server while drag is active
-		// TODO fix comment to make more clear ^
-		if (!FetchWorkflowObserver.ignoreAllResponses) {
-			FetchWorkflowObserver.ignoreAllResponses = true;
-			// Create drag image
-			final Image image = new BufferedImage(comp.getWidth(),
-					comp.getHeight(), BufferedImage.TYPE_INT_ARGB);
-			Graphics g = image.getGraphics();
-			g = g.create();
+		WorkflowController.getInstance().removeChangeTitles();
+		WorkflowController.getInstance().removeTaskInfos(true);
+		WorkflowController.pauseInformation = true;
+		// Create drag image
+		final Image image = new BufferedImage(comp.getWidth(),
+				comp.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		Graphics g = image.getGraphics();
+		g = g.create();
+		if (comp instanceof RotationView) {
+			// just paint the rotated task inside the rotation view
+			RotationView rotationView = (RotationView) comp;
+			rotationView.paintChildren(g);
+		} else {
 			comp.paint(g);
-			setDragImage(image);
-
-			// Create placeholder
-			DropAreaPanel.generatePlaceholder(comp.getSize());
-
-			// Set toolbar icon state
-			ToolbarController.getInstance().setIconState(comp);
-
-			// Initiate the drag
-			super.exportAsDrag(comp, e, action);
 		}
+		setDragImage(image);
+
+		// Create placeholder
+		DropAreaPanel.generatePlaceholder(comp.getSize());
+
+		// Set toolbar icon state
+		ToolbarController.getInstance().setIconState(comp);
+
+		// Initiate the drag
+		super.exportAsDrag(comp, e, action);
 	}
 
 	/**
@@ -149,7 +151,7 @@ public class DDTransferHandler extends TransferHandler {
 	@Override
 	protected void exportDone(JComponent comp, Transferable data, int action) {
 		// Resume updating from the server
-		FetchWorkflowObserver.ignoreAllResponses = false;
+		WorkflowController.pauseInformation = false;
 
 		if (!DDTransferHandler.dragSaved) {
 			// update now in case we missed anything while dragging

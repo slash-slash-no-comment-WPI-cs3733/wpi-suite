@@ -10,6 +10,7 @@ package taskManager.model;
 
 import java.lang.reflect.Array;
 import java.util.List;
+import java.util.Set;
 
 import edu.wpi.cs.wpisuitetng.Session;
 import edu.wpi.cs.wpisuitetng.database.Data;
@@ -110,11 +111,22 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 		// check if object already exists
 		final List<Model> existingModels = db.retrieve(type, "id",
 				newModel.getID(), s.getProject());
-		if (existingModels.size() < 1 || existingModels.get(0) == null) {
+		if (existingModels == null || existingModels.size() < 1
+				|| existingModels.get(0) == null) {
 			save(s, newModel); // if it doesn't exist, save it
 		} else {
 			final T existingModel = (T) existingModels.get(0);
-			existingModel.makeIdenticalTo(newModel);
+			Set<Object> toDelete = existingModel.makeIdenticalTo(newModel);
+
+			// Delete objects that are no longer needed
+			for (Object o : toDelete) {
+				// Make sure we cleanup project references to avoid deleting the
+				// project
+				if (o instanceof Model) {
+					((Model) o).setProject(null);
+				}
+				db.delete(o);
+			}
 			save(s, existingModel);
 		}
 		return newModel;

@@ -8,9 +8,13 @@
  *******************************************************************************/
 package taskManager.model;
 
+import java.text.MessageFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import taskManager.TaskManager;
+import taskManager.localization.Localizer;
 
 /**
  * Description Activities represent changes to a Task and comments users have
@@ -25,35 +29,53 @@ public class ActivityModel {
 	/**
 	 */
 	public enum ActivityModelType {
-		CREATION, MOVE, COMPLETION, USER_ADD, USER_REMOVE, COMMENT, ARCHIVE
-	};
+		CREATION, MOVE, USER_ADD, USER_REMOVE, COMMENT, ARCHIVE, UNARCHIVE
+	}
+
+	// Number of parameters each type accepts
+	private static Map<ActivityModelType, Integer> pNums;
+	static {
+		pNums = new HashMap<ActivityModelType, Integer>();
+		pNums.put(ActivityModelType.CREATION, 1);
+		pNums.put(ActivityModelType.MOVE, 2);
+		pNums.put(ActivityModelType.USER_ADD, 1);
+		pNums.put(ActivityModelType.USER_REMOVE, 1);
+		pNums.put(ActivityModelType.COMMENT, 1);
+		pNums.put(ActivityModelType.ARCHIVE, 0);
+		pNums.put(ActivityModelType.UNARCHIVE, 0);
+	}
 
 	// Actual type of this model
-	private ActivityModelType modelType;
+	private final ActivityModelType type;
+
+	// Parameters of the activity type
+	private String[] params;
 
 	// Date of creation
 	private Date dateCreated;
-
-	// Contents of activity
-	private String description;
 
 	// Name of user who took the action; null for system activities
 	private final String actor;
 
 	/**
-	 * Constructor for activities with no user actor/unknown user actor
+	 * Activity Constructor
 	 *
-	 * @param description
-	 *            The text in the activity
 	 * @param type
-	 *            The type of activity
+	 *            The type of the activity
+	 * @param args
+	 *            Parameters of the activity
+	 * 
 	 */
-	public ActivityModel(String description, ActivityModelType type) {
+	public ActivityModel(ActivityModelType type, String... args) {
+		// Check that args is the right length
+		if (args.length != pNums.get(type)) {
+			throw new IllegalArgumentException();
+		}
 		actor = TaskManager.currentUser;
-		this.description = description;
-		modelType = type;
+		this.type = type;
 		dateCreated = new Date(); // set date to time ActivityModel was
 									// instantiated
+		params = args;
 	}
 
 	/**
@@ -62,7 +84,7 @@ public class ActivityModel {
 	 * @return the activity type
 	 */
 	public ActivityModelType getType() {
-		return modelType;
+		return type;
 	}
 
 	/**
@@ -73,10 +95,47 @@ public class ActivityModel {
 	}
 
 	/**
-	 * @return the contents
+	 * Get the localized, formatted string describing the activity
+	 * 
+	 * @return the string
 	 */
 	public String getDescription() {
-		return description;
+		String format;
+		if (type == null) {
+			return "";
+		}
+		switch (type) {
+		case CREATION:
+			format = Localizer.getString("ActivityCreate");
+			break;
+		case MOVE:
+			format = Localizer.getString("ActivityMove");
+			break;
+		case USER_ADD:
+			format = Localizer.getString("ActivityUserAdd");
+			break;
+		case USER_REMOVE:
+			format = Localizer.getString("ActivityUserRemove");
+			break;
+		case COMMENT:
+			// Comments aren't localized
+			return params[0];
+		case ARCHIVE:
+			format = Localizer.getString("ActivityArchive");
+			break;
+		case UNARCHIVE:
+			format = Localizer.getString("ActivityUnarchive");
+			break;
+		default:
+			throw new IllegalStateException();
+		}
+
+		try {
+			return MessageFormat.format(format, (Object[]) params);
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return "";
+		}
 	}
 
 	/**
@@ -86,11 +145,11 @@ public class ActivityModel {
 	 *            the new description.
 	 */
 	public void setDescription(String newDescription) {
-		if (modelType != ActivityModelType.COMMENT) {
+		if (type != ActivityModelType.COMMENT) {
 			throw new UnsupportedOperationException(
 					"You cannot change the description of non-comment activities.");
 		}
-		description = newDescription;
+		params[0] = newDescription;
 	}
 
 	/**
@@ -100,4 +159,26 @@ public class ActivityModel {
 		return actor;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof ActivityModel)) {
+			return false;
+		}
+		if (!(type.equals(((ActivityModel) obj).getType()))) {
+			return false;
+		}
+		if (!(dateCreated.equals(((ActivityModel) obj).getDateCreated()))) {
+			return false;
+		}
+		if (!(getDescription().equals(((ActivityModel) obj).getDescription()))) {
+			return false;
+		}
+		// actor != null needed for tests
+		if ((actor != null)
+				&& (!(actor.equals(((ActivityModel) obj).getActor())))) {
+			return false;
+		}
+
+		return true;
+	}
 }

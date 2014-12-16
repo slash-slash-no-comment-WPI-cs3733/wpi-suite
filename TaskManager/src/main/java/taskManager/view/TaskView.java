@@ -8,15 +8,19 @@
  *******************************************************************************/
 package taskManager.view;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.MouseAdapter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -34,10 +38,13 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
 import taskManager.controller.TaskController;
+import taskManager.controller.ToolbarController;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DraggablePanelListener;
+import taskManager.localization.LocaleChangeListener;
+import taskManager.localization.Localizer;
 
 /**
  * @author Beth Martino
@@ -46,11 +53,13 @@ import taskManager.draganddrop.DraggablePanelListener;
  * @version November 18, 2014
  */
 
-public class TaskView extends JPanel implements Transferable {
+public class TaskView extends JPanel implements Transferable,
+		LocaleChangeListener {
 
 	private static final long serialVersionUID = 1L;
 
 	private TaskController controller;
+	private RotationView rotationView;
 	private ContextMenu contextMenu;
 	private JMenu moveTo;
 	private final JMenuItem addTask = new JMenuItem("Add Task");
@@ -60,6 +69,8 @@ public class TaskView extends JPanel implements Transferable {
 
 	private JLabel userNumber;
 	private JLabel commentNumber;
+	private JLabel dueLabel;
+	private Date dueDate = null;
 
 	/**
 	 * Constructor, creates a list-like view for the following information: the
@@ -77,6 +88,7 @@ public class TaskView extends JPanel implements Transferable {
 	public TaskView(String name, Date duedate, int users, int comments) {
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		this.setAlignmentX(LEFT_ALIGNMENT);
+		this.dueDate = duedate;
 
 		// creates an empty space around the data
 		JPanel spacer = new JPanel();
@@ -122,9 +134,7 @@ public class TaskView extends JPanel implements Transferable {
 		lower.setAlignmentX(LEFT_ALIGNMENT);
 		lower.setOpaque(false);
 
-		JLabel dueLabel = new JLabel("Due: " + (date.get(Calendar.MONTH) + 1)
-				+ "/" + date.get(Calendar.DATE) + "/"
-				+ (date.get(Calendar.YEAR)));
+		dueLabel = new JLabel();
 		dueLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 3));
 		lower.add(dueLabel);
 		JPanel icons = new JPanel(new FlowLayout());
@@ -194,17 +204,24 @@ public class TaskView extends JPanel implements Transferable {
 		spacer.add(lower);
 		this.add(spacer);
 
-		// -----------------------
-		// Drag and drop handling:
-		final MouseAdapter listener = new DraggablePanelListener(this);
-		addMouseListener(listener);
-		addMouseMotionListener(listener);
+		// in fun mode, create a rotation view
+		if (ToolbarController.getInstance().getView().isFunMode()) {
+			this.rotationView = new RotationView(this);
+			// the rotation view will handle drag/drop
+		} else {
+			// Drag and drop handling:
+			final MouseAdapter listener = new DraggablePanelListener(this);
+			addMouseListener(listener);
+			addMouseMotionListener(listener);
+			setTransferHandler(new DDTransferHandler());
 
-		setTransferHandler(new DDTransferHandler());
+			// setTransferHandler creates DropTarget by default; we don't want
+			// tasks to respond to drops
+			setDropTarget(null);
+		}
 
-		// setTransferHandler creates DropTarget by default; we don't want tasks
-		// to respond to drops
-		setDropTarget(null);
+		onLocaleChange();
+		Localizer.addListener(this);
 
 	}
 
@@ -259,6 +276,16 @@ public class TaskView extends JPanel implements Transferable {
 		return controller;
 	}
 
+	/**
+	 * Sets the font color of the due date used to show red overdue dates
+	 * 
+	 * @param color
+	 *            to set the date to
+	 */
+	public void setDateColor(Color color) {
+		dueLabel.setForeground(color);
+	}
+
 	// ----------------------------
 	// Drag-and-drop transferable implementation
 
@@ -269,12 +296,16 @@ public class TaskView extends JPanel implements Transferable {
 	 */
 	@Override
 	public Object getTransferData(DataFlavor flavor)
-			throws UnsupportedFlavorException {
-		if (!flavor.equals(DDTransferHandler.getTaskFlavor())) {
+			throws UnsupportedFlavorException, IOException {
+		if (flavor.equals(DDTransferHandler.getTaskFlavor())) {
+			// return this panel as the transfer data
+			return this;
+
+		} else if (flavor.equals(DataFlavor.stringFlavor)) {
+			return controller.getExportString();
+		} else {
 			throw new UnsupportedFlavorException(flavor);
 		}
-		// return this panel as the transfer data
-		return this;
 	}
 
 	/*
@@ -282,7 +313,8 @@ public class TaskView extends JPanel implements Transferable {
 	 */
 	@Override
 	public DataFlavor[] getTransferDataFlavors() {
-		final DataFlavor[] flavors = { DDTransferHandler.getTaskFlavor() };
+		DataFlavor[] flavors = { DDTransferHandler.getTaskFlavor(),
+				DataFlavor.stringFlavor };
 		return flavors;
 	}
 
@@ -292,7 +324,56 @@ public class TaskView extends JPanel implements Transferable {
 	 */
 	@Override
 	public boolean isDataFlavorSupported(DataFlavor flavor) {
-		return flavor.equals(DDTransferHandler.getTaskFlavor());
+		return flavor.equals(DDTransferHandler.getTaskFlavor())
+				|| flavor.equals(DataFlavor.stringFlavor);
+	}
+
+	/*
+	 * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+	 */
+	@Override
+	public void paintComponent(Graphics g) {
+		// in fun mode, use the rotation view to draw the task rotated
+		if (ToolbarController.getInstance().getView().isFunMode()) {
+			if (rotationView.isPainting()) {
+				super.paintComponent(g);
+			} else {
+				g.setColor(rotationView.getParent().getBackground());
+				g.fillRect(0, 0, getWidth(), getHeight());
+				rotationView.repaint();
+			}
+		} else {
+			super.paintComponent(g);
+		}
+	}
+
+	/*
+	 * @see javax.swing.JComponent#paintChildren(java.awt.Graphics)
+	 */
+	@Override
+	public void paintChildren(Graphics g) {
+		// in fun mode, use the rotation view to draw the task rotated
+		if (ToolbarController.getInstance().getView().isFunMode()) {
+			if (rotationView.isPainting()) {
+				super.paintChildren(g);
+			} else {
+				g.setColor(rotationView.getParent().getBackground());
+				g.fillRect(0, 0, getWidth(), getHeight());
+			}
+		} else {
+			super.paintChildren(g);
+		}
+	}
+
+	public JPanel getRotationPane() {
+		return rotationView;
+	}
+
+	@Override
+	public void onLocaleChange() {
+		final Calendar date = Calendar.getInstance();
+		DateFormat df = new SimpleDateFormat(Localizer.getString("DateFormat"));
+		dueLabel.setText(Localizer.getString("Due") + " " + df.format(dueDate));
 	}
 
 }

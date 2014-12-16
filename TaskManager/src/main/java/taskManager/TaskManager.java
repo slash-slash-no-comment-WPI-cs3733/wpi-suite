@@ -8,18 +8,18 @@
  *******************************************************************************/
 package taskManager;
 
+import java.awt.KeyboardFocusManager;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
 
-import taskManager.controller.StageController;
+import taskManager.controller.EasterEggListener;
 import taskManager.controller.TabPaneController;
-import taskManager.controller.TaskController;
 import taskManager.controller.ToolbarController;
 import taskManager.controller.WorkflowController;
 import taskManager.draganddrop.DDTransferHandler;
-import taskManager.model.FetchWorkflowObserver;
+import taskManager.localization.Localizer;
 import taskManager.model.StageModel;
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
 import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
@@ -60,6 +60,9 @@ public class TaskManager implements IJanewayModule {
 		new StageModel("Complete");
 
 		WorkflowController.getInstance().reloadData();
+
+		KeyboardFocusManager.getCurrentKeyboardFocusManager()
+				.addKeyEventDispatcher(new EasterEggListener());
 	}
 
 	/**
@@ -68,15 +71,15 @@ public class TaskManager implements IJanewayModule {
 	 */
 	public static void reset() {
 
-		StageController.anyChangeTitleOut = false;
-		TaskController.anyTaskInfoOut = false;
 		DDTransferHandler.dragSaved = false;
-		FetchWorkflowObserver.ignoreAllResponses = false;
+		WorkflowController.pauseInformation = false;
 
 		// Reset singletons
 		ToolbarController.getInstance().reset();
 		TabPaneController.getInstance().reset();
 		WorkflowController.getInstance().reset();
+
+		Localizer.setLanguage(Localizer.defaultLanguage);
 	}
 
 	/**
