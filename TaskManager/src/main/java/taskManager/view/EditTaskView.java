@@ -100,6 +100,8 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	private final JTextField estEffortField;
 	private final JTextField actEffortField;
 	private JTextArea commentBox;
+	// Used by the TaskInputController to know what the original comment was
+	private String commentBoxText = "";
 	private final JPanel window;
 	private final JLabel editing;
 
@@ -426,7 +428,7 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		commentBox.getInputMap().put(KeyStroke.getKeyStroke("ENTER"),
 				"doNothing");
 
-		PromptSupport.setPrompt("Add a comment", commentBox);
+		PromptSupport.setPrompt("Write a comment", commentBox);
 		PromptSupport.setFocusBehavior(PromptSupport.FocusBehavior.SHOW_PROMPT,
 				commentBox);
 
@@ -996,15 +998,25 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	}
 
 	/**
-	 * Set whether the submit and cancel buttons for the activity view are
-	 * enabled or not
+	 * Sets whether the submit button for the activity view is enabled or not
 	 * 
 	 * @param e
 	 *            true to make the submit button enabled, false to disable it
 	 */
-	public void setSubmitCancelCommentEnabled(boolean e) {
+	public void setSubmitCommentEnabled(boolean e) {
 		submitComment.setEnabled(e);
-		cancelComment.setEnabled(e);
+	}
+
+	/**
+	 * Sets whether the cancel button for the activity view is enabled or not
+	 * 
+	 * @param e
+	 *            true to make the cancel button enabled, false to disable it
+	 */
+	public void setCancelCommentEnabled(boolean e) {
+		if (!e && controller.isEditingTask()) {
+			cancelComment.setEnabled(e);
+		}
 	}
 
 	/**
@@ -1023,8 +1035,9 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	 */
 	public void startEditingComment(String text) {
 		cancelComment.setEnabled(true);
-		editing.setText("You are currently editing the highlighted activity");
+		editing.setText("Editing highlighted comment");
 		editing.setForeground(Color.RED);
+		commentBoxText = text;
 		commentBox.setText(text);
 
 		commentBox.requestFocus();
@@ -1039,9 +1052,21 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	 */
 	public void doneEditingComment() {
 		commentBox.setText("");
+		commentBoxText = "";
 		editing.setText("");
 		submitComment.setEnabled(false);
 		cancelComment.setEnabled(false);
+	}
+
+	/**
+	 * 
+	 * Returns the original text form the comment that is currently being
+	 * edited.
+	 *
+	 * @return the original comment text
+	 */
+	public String getOrigCommentText() {
+		return commentBoxText;
 	}
 
 	@Override

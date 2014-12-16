@@ -79,8 +79,6 @@ public class StageView extends JPanel implements Transferable,
 	 */
 	public StageView(String name, StageController stageC) {
 
-		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
-
 		// The tasks panel accepts task drops
 		tasks = new DropAreaPanel(DDTransferHandler.getTaskFlavor());
 
