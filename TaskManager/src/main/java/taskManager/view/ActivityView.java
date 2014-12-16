@@ -28,6 +28,8 @@ import javax.swing.border.TitledBorder;
 import net.miginfocom.swing.MigLayout;
 import taskManager.TaskManager;
 import taskManager.controller.EditTaskController;
+import taskManager.localization.LocaleChangeListener;
+import taskManager.localization.Localizer;
 import taskManager.model.ActivityModel;
 import taskManager.model.ActivityModel.ActivityModelType;
 
@@ -35,7 +37,8 @@ import taskManager.model.ActivityModel.ActivityModelType;
  * @author Samee Swartz
  *
  */
-public class ActivityView extends JPanel implements MouseListener {
+public class ActivityView extends JPanel implements MouseListener,
+		LocaleChangeListener {
 
 	private static final long serialVersionUID = 6524598229849111521L;
 	public static final String EDIT = "edit";
@@ -65,6 +68,7 @@ public class ActivityView extends JPanel implements MouseListener {
 		this.controller = controller;
 		setLayout(new MigLayout("", "0[][grow, fill]", "0[grow, fill]0"));
 		this.setBackground(Colors.ACTIVITY);
+		Localizer.addListener(this);
 		// Border
 		final Border raisedbevel = BorderFactory
 				.createEtchedBorder(EtchedBorder.LOWERED);
@@ -225,5 +229,10 @@ public class ActivityView extends JPanel implements MouseListener {
 	public void mouseExited(MouseEvent e) {
 		if (!editing)
 			edit.setFont(edit.getFont().deriveFont(Font.PLAIN));
+	}
+
+	@Override
+	public void onLocaleChange() {
+		edit.setText(Localizer.getString("Edit"));
 	}
 }

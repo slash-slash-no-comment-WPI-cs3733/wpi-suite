@@ -414,6 +414,12 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		this.add(EditSaveCancel);
 	}
 
+	/**
+	 * 
+	 * initializes the comment textbox and the buttons underneath.
+	 *
+	 * @return a JPanel containing the textbox and buttons
+	 */
 	private JPanel initCommentBoxandBtns() {
 		JPanel commentAndBtns = new JPanel(new MigLayout("wrap 1",
 				"0[grow, fill]0", "[]"));
@@ -1082,11 +1088,15 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		projectUsersLabel.setText(Localizer.getString("ProjectUsers"));
 		activitiesLabel.setText(Localizer.getString("Activities"));
 		commentsLabel.setText(Localizer.getString("Comment"));
+		PromptSupport
+				.setPrompt(Localizer.getString("WriteComment"), commentBox);
+		editing.setText(Localizer.getString("EditingComment"));
 		delete.setText(Localizer.getString("Delete"));
 		submitComment.setText(Localizer.getString("SubmitComment"));
 		viewReq.setText(Localizer.getString("ViewRequirement"));
 		save.setText(Localizer.getString("Save"));
 		cancel.setText(Localizer.getString("Cancel"));
+		cancelComment.setText(Localizer.getString("Cancel"));
 		archive.setText(Localizer.getString("Archived"));
 		((JLabel) titleError.getContents()).setText(Localizer
 				.getString(TITLE_ERROR));
