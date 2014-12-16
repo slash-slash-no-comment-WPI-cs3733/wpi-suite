@@ -53,6 +53,8 @@ import taskManager.localization.Localizer;
 public class ReportsView extends JPanel implements ActionListener,
 		LocaleChangeListener {
 
+	private static final long serialVersionUID = 9104742041224722960L;
+
 	public static final String STAGE_NAME = "stage_name";
 	public static final String STAGE_NAME2 = "stage_name2";
 	public static final String START_DATE = "start_date";
@@ -77,14 +79,14 @@ public class ReportsView extends JPanel implements ActionListener,
 	private JPanel window;
 	private JPanel generator;
 	public JScrollPane GenScroll;
+
 	public enum Mode {
 		VELOCITY, DISTRIBUTION
 	}
 
 	// create new Font
 	Font bigFont = new Font("Default", Font.BOLD, 14);
-	
-	
+
 	private Mode mode;
 
 	// Variable to Insert Images
@@ -180,6 +182,7 @@ public class ReportsView extends JPanel implements ActionListener,
 		reportTypeButtons.add(taskdistro);
 		effort.addActionListener(this);
 		numberoftasks.addActionListener(this);
+		effort.setEnabled(true);
 
 		ButtonGroup effortOrTasksButtons = new ButtonGroup();
 		effortOrTasksButtons.add(effort);
@@ -350,15 +353,13 @@ public class ReportsView extends JPanel implements ActionListener,
 		generator.add(effortOrNumberofTasks, "align center, wrap");
 		generator.add(generateGraph, ("align center, gaptop 30px"));
 		CardLayout cl = (CardLayout) (cards.getLayout());
-		
-		
+
 		Dimension CardSize = cards.getSize();
 		cards.setPreferredSize(CardSize);
-		
+
 		cl.show(cards, names[0]);
 		window.add(generator);
-		
-		
+
 		JScrollPane windowScroll = new JScrollPane(window,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
