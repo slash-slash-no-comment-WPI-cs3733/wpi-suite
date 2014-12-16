@@ -328,9 +328,8 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 		archived.setText("<html><font size=\"3\"><i>"
 				+ Localizer.getString("Archived") + "</i></font></html>");
 		DateFormat df = new SimpleDateFormat(Localizer.getString("DateFormat"));
-		dueDate.setText("<html><b><i>Due:</i></b> "
-				+ Localizer.getString("Due")
-				+ df.format(this.taskM.getDueDate()) + "</html>");
+		dueDate.setText("<html><b><i>" + Localizer.getString("Due")
+				+ " </b></i>" + df.format(this.taskM.getDueDate()) + "</html>");
 		String estString = this.taskM.isEstimatedEffortSet() ? this.taskM
 				.getEstimatedEffort().toString() : "";
 		String actString = this.taskM.isActualEffortSet() ? this.taskM
