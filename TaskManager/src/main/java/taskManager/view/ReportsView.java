@@ -180,7 +180,7 @@ public class ReportsView extends JPanel implements ActionListener,
 		reportTypeButtons.add(taskdistro);
 		effort.addActionListener(this);
 		numberoftasks.addActionListener(this);
-		effort.setEnabled(true);
+		effort.setSelected(true);
 
 		ButtonGroup effortOrTasksButtons = new ButtonGroup();
 		effortOrTasksButtons.add(effort);
