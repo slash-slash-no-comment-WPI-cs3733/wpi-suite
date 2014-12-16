@@ -157,7 +157,6 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		archive.setEnabled(false);
 		archive.setName(ARCHIVE);
 
-		// TODO: look at this
 		archive.setTransferHandler(new DDTransferHandler());
 		archive.setDropTarget(new DropTarget(archive, controller));
 

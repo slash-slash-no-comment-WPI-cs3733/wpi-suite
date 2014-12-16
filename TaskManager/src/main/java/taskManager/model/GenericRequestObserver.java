@@ -37,7 +37,6 @@ public class GenericRequestObserver implements RequestObserver {
 	 */
 	@Override
 	public void responseError(IRequest iReq) {
-		// TODO Should we display error dialog?
 		System.err.println("Response Error "
 				+ iReq.getResponse().getStatusCode() + ": "
 				+ iReq.getResponse().getStatusMessage());

@@ -228,7 +228,7 @@ public class TaskInputController implements KeyListener, MouseListener,
 
 	@Override
 	public void popupMenuCanceled(PopupMenuEvent e) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	@Override
@@ -270,7 +270,6 @@ public class TaskInputController implements KeyListener, MouseListener,
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
 
 	}
 
