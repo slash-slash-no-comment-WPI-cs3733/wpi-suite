@@ -200,8 +200,9 @@ public class ReportsController implements ActionListener, ChangeListener,
 			if (completed != null
 					&& completed.toInstant().isAfter(start.toInstant())
 					&& completed.toInstant().isBefore(end.toInstant())) {
-				data.add(new ReportDatum("Team", completed, (double) task
-						.getActualEffort()));
+				double effort = task.getActualEffort() == null ? 0 : task
+						.getActualEffort();
+				data.add(new ReportDatum("Team", completed, effort));
 			} // End if (inDateRange)
 		} // End if (TaskModel)
 
@@ -279,7 +280,8 @@ public class ReportsController implements ActionListener, ChangeListener,
 				// actual effort value from that task and add to the dataset.
 				for (String username : task.getAssigned()) {
 					if (users.contains(username)) {
-						Double effort = (double) task.getActualEffort();
+						double effort = task.getActualEffort() == null ? 0
+								: task.getActualEffort();
 						if (averageCredit) {
 							effort /= task.getAssigned().size();
 						}
@@ -406,87 +408,6 @@ public class ReportsController implements ActionListener, ChangeListener,
 	 * @param type
 	 *            The type of distribution to generate data for, either STAGE or
 	 *            USER
-	 * @param users
-	 *            The set of users used to select tasks. Only data for tasks
-	 *            with the selected users assigned will be calculated. If the
-	 *            distribution type is USER, multiple data points will be made
-	 *            for tasks with more than one matching assigned user.
-	 * @param stages
-	 *            The set of stages used to select tasks. Only data for tasks
-	 *            from the selected stages will be calculated.
-	 * @param _start
-	 *            The start time to use as a boundary for data. This date will
-	 *            be compared with the tasks' due date.
-	 * @param _end
-	 *            The end time to use as a boundary for data. This date will be
-	 *            compared with the tasks' due date.
-	 * @return The list of ReportDatum that matches the given criteria
-	 */
-	public List<ReportDatum> findDistributionData(DistributionType type,
-			Set<String> users, Set<StageModel> stages, ZonedDateTime _start,
-			ZonedDateTime _end) {
-		List<ReportDatum> data = new ArrayList<ReportDatum>();
-
-		start = _start;
-		end = _end;
-
-		// Iterate through the given stages
-		for (StageModel stage : stages) {
-			// Iterate through the tasks
-			for (TaskModel task : stage.getTasks()) {
-				// If we're making a stage distribution, check that at least one
-				// of the set of users we're looking at is assigned to it.
-				if (type == DistributionType.STAGE) {
-					boolean taskAdded = false;
-					for (String user : task.getAssigned()) {
-						if (!taskAdded && users.contains(user)) {
-							// Use the due date for the timestamp
-							ZonedDateTime dueDate = ZonedDateTime.ofInstant(
-									task.getDueDate().toInstant(), TimeZone
-											.getDefault().toZoneId());
-							// Check if it is in the time span
-							if (dueDate.compareTo(start) >= 0
-									&& dueDate.compareTo(end) <= 0) {
-								data.add(new ReportDatum(stage.getName(),
-										dueDate, (double) task
-												.getActualEffort()));
-							}
-						}
-					}
-				}
-				// If we're making a user distribution, then add a data point
-				// for each user assigned to the task if they're part of the set
-				// we're looking at.
-				else if (type == DistributionType.USER) {
-					for (String user : task.getAssigned()) {
-						if (users.contains(user)) {
-							// Use the due date for the timestamp
-							ZonedDateTime dueDate = ZonedDateTime.ofInstant(
-									task.getDueDate().toInstant(), TimeZone
-											.getDefault().toZoneId());
-							// Check if it is in the time span
-							if (dueDate.compareTo(start) >= 0
-									&& dueDate.compareTo(end) <= 0) {
-								data.add(new ReportDatum(user, dueDate,
-										(double) task.getActualEffort()));
-							}
-						}
-					}
-				}
-			}
-		}
-
-		return data;
-	}
-
-	/**
-	 * Return data to allow the calculation of "Distribution", i.e. amount of
-	 * tasks/effort per stage/user. Will get data as a list of data points,
-	 * unsorted. The user should call generateDistributionDataSet() next.
-	 * 
-	 * @param type
-	 *            The type of distribution to generate data for, either STAGE or
-	 *            USER
 	 * @param stages
 	 *            The list of stages to process data from
 	 * @return The list of ReportDatum
@@ -499,27 +420,27 @@ public class ReportsController implements ActionListener, ChangeListener,
 		for (StageModel stage : stages) {
 			// Iterate through the tasks
 			for (TaskModel task : stage.getTasks()) {
-				// If we're making a stage distribution, check that at least one
-				// of the set of users we're looking at is assigned to it.
+				// If we're making a stage distribution, add each task once.
 				if (type == DistributionType.STAGE) {
 					// Use the due date for the timestamp
 					ZonedDateTime dueDate = ZonedDateTime.ofInstant(task
 							.getDueDate().toInstant(), TimeZone.getDefault()
 							.toZoneId());
-					data.add(new ReportDatum(stage.getName(), dueDate,
-							(double) task.getActualEffort()));
+					double effort = task.getActualEffort() == null ? 0 : task
+							.getActualEffort();
+					data.add(new ReportDatum(stage.getName(), dueDate, effort));
 				}
 				// If we're making a user distribution, then add a data point
-				// for each user assigned to the task if they're part of the set
-				// we're looking at.
+				// for each user assigned to the task.
 				else if (type == DistributionType.USER) {
 					for (String user : task.getAssigned()) {
 						// Use the due date for the timestamp
 						ZonedDateTime dueDate = ZonedDateTime.ofInstant(task
 								.getDueDate().toInstant(), TimeZone
 								.getDefault().toZoneId());
-						data.add(new ReportDatum(user, dueDate, (double) task
-								.getActualEffort()));
+						double effort = task.getActualEffort() == null ? 0
+								: task.getActualEffort();
+						data.add(new ReportDatum(user, dueDate, effort));
 					}
 				}
 			}
