@@ -36,8 +36,7 @@ public class TaskController implements MouseListener {
 	private final TaskView view;
 	private final TaskModel model;
 
-	public static Boolean anyTaskInfoOut = false;
-	private Boolean thisTaskInfoOut = false;
+	private Boolean taskInfoPreviewOut = false;
 
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
@@ -134,13 +133,12 @@ public class TaskController implements MouseListener {
 	public void changeToHoverColor() {
 		// don't highlight while task info is out in fun mode, because the clip
 		// bounds passed to the rotation view are sometimes not correct
-		if (ToolbarController.getInstance().getView().isFunMode()
-				&& anyTaskInfoOut) {
+		if (ToolbarController.getInstance().getView().isFunMode()) {
 			return;
 		}
-		if (isArchived() && !thisTaskInfoOut) {
+		if (isArchived() && !taskInfoPreviewOut) {
 			view.setBackground(Colors.ARCHIVE_HOVER);
-		} else if (!thisTaskInfoOut) {
+		} else if (!taskInfoPreviewOut) {
 
 			view.setBackground(Colors.TASK_HOVER);
 		}
@@ -152,11 +150,11 @@ public class TaskController implements MouseListener {
 	 *
 	 */
 	public void resetBackground() {
-		if (isArchived() && thisTaskInfoOut) {
+		if (isArchived() && taskInfoPreviewOut) {
 			view.setBackground(Colors.ARCHIVE_CLICKED);
 		} else if (isArchived()) {
 			view.setBackground(Colors.ARCHIVE);
-		} else if (thisTaskInfoOut) {
+		} else if (taskInfoPreviewOut) {
 			view.setBackground(Colors.TASK_CLICKED);
 		} else {
 			view.setBackground(Colors.TASK);
@@ -165,6 +163,8 @@ public class TaskController implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
+		WorkflowController.getInstance().removeChangeTitles();
+		WorkflowController.pauseInformation = false;
 
 		// Create the taskinfo bubble
 		final Container stageContainer = SwingUtilities.getAncestorOfClass(
@@ -177,8 +177,7 @@ public class TaskController implements MouseListener {
 				new TaskInfoPreviewView(model, this, infoLoc));
 
 		// Set the correct flags
-		thisTaskInfoOut = true;
-		TaskController.anyTaskInfoOut = true;
+		taskInfoPreviewOut = true;
 		// make the associated task a darker color while the bubble is out
 		if (isArchived()) {
 			view.setBackground(Colors.ARCHIVE_CLICKED);
@@ -213,7 +212,7 @@ public class TaskController implements MouseListener {
 	 * @return the thisTaskInfoOut
 	 */
 	public Boolean getThisTaskInfoOut() {
-		return thisTaskInfoOut;
+		return taskInfoPreviewOut;
 	}
 
 	/**
@@ -221,7 +220,7 @@ public class TaskController implements MouseListener {
 	 *            the thisTaskInfoOut to set
 	 */
 	public void setThisTaskInfoOut(Boolean thisTaskInfoOut) {
-		this.thisTaskInfoOut = thisTaskInfoOut;
+		this.taskInfoPreviewOut = thisTaskInfoOut;
 	}
 
 	/**
@@ -231,7 +230,7 @@ public class TaskController implements MouseListener {
 	 *
 	 */
 	public void taskInfoRemoved() {
-		thisTaskInfoOut = false;
+		taskInfoPreviewOut = false;
 		resetBackground();
 	}
 
