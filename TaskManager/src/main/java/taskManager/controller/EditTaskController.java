@@ -33,7 +33,6 @@ import taskManager.model.WorkflowModel;
 import taskManager.view.ActivityView;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
-import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.RequirementManager;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
@@ -72,10 +71,9 @@ public class EditTaskController implements ActionListener {
 
 		// fills the user lists
 		final List<String> projectUserNames = new ArrayList<String>();
-		for (User u : TaskManager.users) {
-			String name = u.getUsername();
-			if (!projectUserNames.contains(name)) {
-				projectUserNames.add(name);
+		for (String u : TaskManager.users) {
+			if (!projectUserNames.contains(u)) {
+				projectUserNames.add(u);
 			}
 		}
 		etv.getProjectUsersList().addAllToList(projectUserNames);
@@ -120,11 +118,10 @@ public class EditTaskController implements ActionListener {
 
 		// populates the project users list
 		final List<String> projectUserNames = new ArrayList<String>();
-		for (User u : TaskManager.users) {
-			String name = u.getUsername();
-			if (!projectUserNames.contains(name)
-					&& !model.getAssigned().contains(name)) {
-				projectUserNames.add(name);
+		for (String u : TaskManager.users) {
+			if (!projectUserNames.contains(u)
+					&& !model.getAssigned().contains(u)) {
+				projectUserNames.add(u);
 			}
 		}
 		etv.getProjectUsersList().addAllToList(projectUserNames);
@@ -381,12 +378,12 @@ public class EditTaskController implements ActionListener {
 		// adds or removes users
 		for (String name : etv.getUsersList().getAllValues()) {
 			if (!model.getAssigned().contains(name)) {
-				model.addAssigned(findUserByName(name));
+				model.addAssigned(name);
 			}
 		}
 		for (String n : toRemove) {
 			if (model.getAssigned().contains(n)) {
-				model.removeAssigned(findUserByName(n));
+				model.removeAssigned(n);
 			}
 		}
 		model.setReq(r);
@@ -402,24 +399,6 @@ public class EditTaskController implements ActionListener {
 		// Save entire workflow whenever a task is saved
 		WorkflowModel.getInstance().save(); // TODO make this call an
 											// appropriate method
-	}
-
-	/**
-	 * returns the user object with the given name from the list of project
-	 * users
-	 * 
-	 * @param name
-	 *            the name of the user to find
-	 * @return the user with the given name
-	 */
-	private static User findUserByName(String name) {
-		for (User u : TaskManager.users) {
-			if (u.getUsername().equals(name)) {
-				return u;
-			}
-		}
-		return null;
-
 	}
 
 	/**
