@@ -417,15 +417,13 @@ class DropAreaListener implements DropTargetListener {
 			e.acceptDrop(e.getDropAction());
 
 		} else { // if not supported, try to redispatch to ancestor
-			Component ancestor = panel.getParent();
-			// find ancestor with DropTarget
-			while (ancestor != null && ancestor.getDropTarget() == null) {
-				ancestor = ancestor.getParent();
-			}
+			DropTarget target = DropTargetRedispatcher
+					.findAncestorDropTarget(panel);
+
 			// Redispatch to ancestor drop target
-			if (ancestor != null) {
-				ancestor.getDropTarget().drop(
-						DropTargetRedispatcher.convertCoords(e, ancestor));
+			if (target != null) {
+				target.drop(DropTargetRedispatcher.convertCoords(e,
+						target.getComponent()));
 			} else { // valid ancestor not found
 				e.rejectDrop();
 			}
@@ -473,16 +471,13 @@ class DropAreaListener implements DropTargetListener {
 			panel.drawPlaceholder(e.getLocation());
 
 		} else { // if not supported, try to redispatch to ancestor
-			Component ancestor = panel.getParent();
-			// find ancestor with DropTarget
-			while (ancestor != null && ancestor.getDropTarget() == null) {
-				ancestor = ancestor.getParent();
-			}
+			DropTarget target = DropTargetRedispatcher
+					.findAncestorDropTarget(panel);
+
 			// Redispatch to ancestor drop target
-			if (ancestor != null) {
-				ancestor.getDropTarget();
-				ancestor.getDropTarget().dragOver(
-						DropTargetRedispatcher.convertCoords(e, ancestor));
+			if (target != null) {
+				target.dragOver(DropTargetRedispatcher.convertCoords(e,
+						target.getComponent()));
 			} else { // valid ancestor not found
 				e.rejectDrag();
 			}
