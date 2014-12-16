@@ -16,6 +16,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.controller.UpdateRequirementController;
@@ -23,7 +24,6 @@ import edu.wpi.cs.wpisuitetng.modules.requirementmanager.iterationcontroller.Upd
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.characteristics.IterationDate;
-import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.characteristics.RequirementStatus;
 
 /**
  * An iteration in a project. Requirements can be assigned to an iteration.
@@ -41,7 +41,7 @@ public class Iteration extends AbstractModel {
 
 	/** the estimated amount of effort to complete the iteration */
 	private int estimate;
-		
+
 	/** start and end date associated with the iteration */
 	private IterationDate start;
 	private IterationDate end;
@@ -63,9 +63,9 @@ public class Iteration extends AbstractModel {
 	 * @param name
 	 *            The name of the iteration
 	 * @param start
-	 * 			  The start of the iteration
+	 *            The start of the iteration
 	 * @param end
-	 * 			  The end of the iteration
+	 *            The end of the iteration
 	 */
 	public Iteration(int id, String name, Date start, Date end) {
 		this.id = id;
@@ -76,11 +76,14 @@ public class Iteration extends AbstractModel {
 		this.start = new IterationDate(start);
 		this.end = new IterationDate(end);
 	}
-	
+
 	/**
 	 * Constructor for Iteration.
-	 * @param id int
-	 * @param name String
+	 * 
+	 * @param id
+	 *            int
+	 * @param name
+	 *            String
 	 */
 	public Iteration(int id, String name) {
 		this.id = id;
@@ -91,11 +94,14 @@ public class Iteration extends AbstractModel {
 		this.start = null;
 		this.end = null;
 	}
-	
+
 	/**
 	 * Sets the date interval for the iteration
-	 * @param start start date
-	 * @param end end date
+	 * 
+	 * @param start
+	 *            start date
+	 * @param end
+	 *            end date
 	 */
 	public void setDateInterval(Date start, Date end) {
 		this.start = new IterationDate(start);
@@ -105,8 +111,9 @@ public class Iteration extends AbstractModel {
 	/**
 	 * Getter for the id
 	 * 
-	
-	 * @return the id */
+	 * 
+	 * @return the id
+	 */
 	public int getId() {
 		return id;
 	}
@@ -124,8 +131,9 @@ public class Iteration extends AbstractModel {
 	/**
 	 * getter for the name
 	 * 
-	
-	 * @return the name */
+	 * 
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
 	}
@@ -137,17 +145,17 @@ public class Iteration extends AbstractModel {
 	 *            the name to set
 	 */
 	public void setName(String name) {
-		if(!(this.name.equals("Backlog") || this.name.equals("")))
-		{
-			List<Requirement> forIter = RequirementModel.getInstance().getRequirementsForIteration(this.name);
-		
-			for(Requirement req : forIter)
-			{
+		if (!(this.name.equals("Backlog") || this.name.equals(""))) {
+			List<Requirement> forIter = RequirementModel.getInstance()
+					.getRequirementsForIteration(this.name);
+
+			for (Requirement req : forIter) {
 				req.setIteration(name);
-				UpdateRequirementController.getInstance().updateRequirement(req);
+				UpdateRequirementController.getInstance()
+						.updateRequirement(req);
 			}
 		}
-		
+
 		this.name = name;
 		if (name.trim().length() == 0)
 			this.name = "Backlog";
@@ -157,49 +165,53 @@ public class Iteration extends AbstractModel {
 	/**
 	 * Getter for the estimate
 	 * 
-	
-	 * @return the estimate */
+	 * 
+	 * @return the estimate
+	 */
 	public int getEstimate() {
-		return RequirementModel.getInstance().getRequirementEstimateForIteration(this);
+		return RequirementModel.getInstance()
+				.getRequirementEstimateForIteration(this);
 	}
-	
+
 	/**
 	 * Getter for the requirements
 	 * 
-	 * Getter for the requirements 
-	
-	 * @return list of requirements */
+	 * Getter for the requirements
+	 * 
+	 * @return list of requirements
+	 */
 	public List<Requirement> getRequirements() {
 		return RequirementModel.getInstance().getRequirementsForIteration(name);
 	}
-	
+
 	/**
 	 * Gets a list model containing the iteration's requirements
 	 * 
-	
-	 * @return list model of requirements */
+	 * 
+	 * @return list model of requirements
+	 */
 	public ListModel<Requirement> getRequirementModel() {
 		DefaultListModel<Requirement> reqModel = new DefaultListModel<Requirement>();
 		List<Requirement> requirements = this.getRequirements();
-		
-		for(Requirement req : requirements)
-		{
+
+		for (Requirement req : requirements) {
 			reqModel.addElement(req);
 		}
-		
+
 		return reqModel;
 	}
-	
 
 	/**
-	
-	 * @return the start of the iteration */
+	 * 
+	 * @return the start of the iteration
+	 */
 	public IterationDate getStart() {
 		return start;
 	}
 
 	/**
-	 * @param start the start of the iteration
+	 * @param start
+	 *            the start of the iteration
 	 */
 	public void setStart(IterationDate start) {
 		this.start = start;
@@ -207,14 +219,16 @@ public class Iteration extends AbstractModel {
 	}
 
 	/**
-	
-	 * @return the end of the iteration */
+	 * 
+	 * @return the end of the iteration
+	 */
 	public IterationDate getEnd() {
 		return end;
 	}
 
 	/**
-	 * @param end the end of the iteration
+	 * @param end
+	 *            the end of the iteration
 	 */
 	public void setEnd(IterationDate end) {
 		this.end = end;
@@ -224,10 +238,12 @@ public class Iteration extends AbstractModel {
 	/**
 	 * represents iteration as a string which is currently just the name
 	 * 
-	
-	
-	
-	 * @return the name * @see edu.wpi.cs.wpisuitetng.modules.Model#toString() * @see edu.wpi.cs.wpisuitetng.modules.Model#toString() * @see edu.wpi.cs.wpisuitetng.modules.Model#toString()
+	 * 
+	 * 
+	 * 
+	 * @return the name * @see edu.wpi.cs.wpisuitetng.modules.Model#toString() * @see
+	 *         edu.wpi.cs.wpisuitetng.modules.Model#toString() * @see
+	 *         edu.wpi.cs.wpisuitetng.modules.Model#toString()
 	 */
 	// should this be extended for the other fields?
 	public String toString() {
@@ -239,8 +255,9 @@ public class Iteration extends AbstractModel {
 	 * 
 	 * @param that
 	 *            iteration to compare to
-	
-	 * @return boolean for equality */
+	 * 
+	 * @return boolean for equality
+	 */
 	// should this also be extended for the other fields?
 	public boolean equals(Iteration that) {
 		if (this.name.equals(that.getName()))
@@ -264,35 +281,48 @@ public class Iteration extends AbstractModel {
 	}
 
 	/**
-	 * Returns an array of Iterations parsed from the given JSON-encoded
-	 * string.
+	 * Returns an array of Iterations parsed from the given JSON-encoded string.
 	 * 
-	 * @param body	string containing a JSON-encoded array of Iteration
-	
-	 * @return an array of Requirement deserialized from the given JSON string */
+	 * @param body
+	 *            string containing a JSON-encoded array of Iteration
+	 * 
+	 * @return an array of Requirement deserialized from the given JSON string
+	 */
 	public static Iteration[] fromJsonArray(String body) {
 		final Gson parser = new Gson();
-		return parser.fromJson(body, Iteration[].class);
+		try {
+			return parser.fromJson(body, Iteration[].class);
+		} catch (JsonSyntaxException e) {
+			body = body.substring(2);
+			try {
+				return parser.fromJson(body, Iteration[].class);
+			} catch (JsonSyntaxException e1) {
+				e1.printStackTrace();
+			}
+		}
+		return null;
 	}
 
 	/**
 	 * Method toJSON.
-	
-	
-	 * @return String * @see edu.wpi.cs.wpisuitetng.modules.Model#toJSON() * @see edu.wpi.cs.wpisuitetng.modules.Model#toJSON()
+	 * 
+	 * 
+	 * @return String * @see edu.wpi.cs.wpisuitetng.modules.Model#toJSON() * @see
+	 *         edu.wpi.cs.wpisuitetng.modules.Model#toJSON()
 	 */
 	public String toJson() {
 		return new Gson().toJson(this, Iteration.class);
 	}
 
 	/**
-	 * Returns an instance of Iteration constructed using the given
-	 * Iteration encoded as a JSON string.
+	 * Returns an instance of Iteration constructed using the given Iteration
+	 * encoded as a JSON string.
 	 * 
-	 * @param body the
-	 *            JSON-encoded Iteration to deserialize
-	
-	 * @return the Iteration contained in the given JSON */
+	 * @param body
+	 *            the JSON-encoded Iteration to deserialize
+	 * 
+	 * @return the Iteration contained in the given JSON
+	 */
 	public static Iteration fromJson(String body) {
 		final Gson parser = new Gson();
 		Iteration test = parser.fromJson(body, Iteration.class);
@@ -302,10 +332,14 @@ public class Iteration extends AbstractModel {
 
 	/**
 	 * Method identify.
-	 * @param o Object
-	
-	
-	 * @return Boolean * @see edu.wpi.cs.wpisuitetng.modules.Model#identify(Object) * @see edu.wpi.cs.wpisuitetng.modules.Model#identify(Object)
+	 * 
+	 * @param o
+	 *            Object
+	 * 
+	 * 
+	 * @return Boolean * @see
+	 *         edu.wpi.cs.wpisuitetng.modules.Model#identify(Object) * @see
+	 *         edu.wpi.cs.wpisuitetng.modules.Model#identify(Object)
 	 */
 	@Override
 	public Boolean identify(Object o) {
@@ -314,6 +348,7 @@ public class Iteration extends AbstractModel {
 
 	/**
 	 * Method save.
+	 * 
 	 * @see edu.wpi.cs.wpisuitetng.modules.Model#save()
 	 */
 	@Override
@@ -323,6 +358,7 @@ public class Iteration extends AbstractModel {
 
 	/**
 	 * Method delete.
+	 * 
 	 * @see edu.wpi.cs.wpisuitetng.modules.Model#delete()
 	 */
 	@Override

@@ -94,7 +94,7 @@ public abstract class AbstractJsonableModel<T> extends AbstractModel {
 		final Gson parser = new Gson();
 		try {
 			return parser.fromJson(json, type);
-		} catch (Exception e) {
+		} catch (JsonSyntaxException e) {
 			json = json.substring(2);
 			try {
 				return parser.fromJson(json, type);
