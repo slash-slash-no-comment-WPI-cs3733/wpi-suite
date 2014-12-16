@@ -14,13 +14,14 @@
 
 package edu.wpi.cs.wpisuitetng.network;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.net.MalformedURLException;
 
-import org.junit.*;
+import org.junit.Test;
 
-import edu.wpi.cs.wpisuitetng.network.Request;
 import edu.wpi.cs.wpisuitetng.network.configuration.NetworkConfiguration;
 import edu.wpi.cs.wpisuitetng.network.dummyserver.DummyServer;
 import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
@@ -37,7 +38,7 @@ public class TestRequest {
 		@Override
 		public void responseSuccess(IRequest iReq) {
 			synchronized (this) {
-				notifyAll(  );
+				notifyAll();
 			}
 		}
 
@@ -53,28 +54,35 @@ public class TestRequest {
 
 		}
 	}
-	
+
 	private static int port = 38512;
 
-	private NetworkConfiguration config = new NetworkConfiguration("http://localhost:" + port);
-	private NetworkConfiguration configMalformed = new NetworkConfiguration("Not Correct");
-	
+	private NetworkConfiguration config = new NetworkConfiguration(
+			"http://localhost:" + port);
+	private NetworkConfiguration configMalformed = new NetworkConfiguration(
+			"Not Correct");
 
 	/**
-	 * Test that a NullPointerException is thrown when a null networkConfiguration is passed to the Request constructor.
-	 * @throws MalformedURLException 
+	 * Test that a NullPointerException is thrown when a null
+	 * networkConfiguration is passed to the Request constructor.
+	 * 
+	 * @throws MalformedURLException
 	 */
 	@Test(expected = NullPointerException.class)
-	public void testRequestConstructorNullPointerException() throws MalformedURLException {
+	public void testRequestConstructorNullPointerException()
+			throws MalformedURLException {
 		new Request(null, null, null);
 	}
 
 	/**
-	 * Test that a NullPointerException is thrown when a null requestMethod is passed to the Request#setRequestMethod.
-	 * @throws MalformedURLException 
+	 * Test that a NullPointerException is thrown when a null requestMethod is
+	 * passed to the Request#setRequestMethod.
+	 * 
+	 * @throws MalformedURLException
 	 */
 	@Test(expected = NullPointerException.class)
-	public void testRequestSetRequestMethodNullPointerException() throws MalformedURLException {
+	public void testRequestSetRequestMethodNullPointerException()
+			throws MalformedURLException {
 		new Request(config, null, null);
 	}
 
@@ -82,19 +90,21 @@ public class TestRequest {
 	 * Test that a RuntimeException is thrown when a malformed URL is provided
 	 */
 	@Test(expected = RuntimeException.class)
-	public void testMalformedURLExceptionOnConstructor() throws MalformedURLException{
+	public void testMalformedURLExceptionOnConstructor()
+			throws MalformedURLException {
 		Request r = new Request(configMalformed, null, HttpMethod.POST);
 	}
-	
+
 	/**
-	 * Test that a NullPointerException is thrown when a null body is passed to the Request#setRequestBody.
+	 * Test that a NullPointerException is thrown when a null body is passed to
+	 * the Request#setRequestBody.
 	 */
 	@Test(expected = NullPointerException.class)
 	public void testRequestSetRequestBodyNullPointerException() {
 		Request r = new Request(config, null, HttpMethod.POST);
 		r.setBody(null);
 	}
-	
+
 	/**
 	 * Test adding Header to the Request
 	 */
@@ -106,7 +116,7 @@ public class TestRequest {
 		r.addHeader("key", "value");
 		assertEquals(r.getHeaders().size(), 1);
 	}
-	
+
 	/**
 	 * Test the addHeader method for an IllegalStateException.
 	 */
@@ -116,7 +126,7 @@ public class TestRequest {
 		r.running = true;
 		r.addHeader("key", "value");
 	}
-	
+
 	/**
 	 * Test adding query data to the Request
 	 */
@@ -128,7 +138,7 @@ public class TestRequest {
 		r.addQueryData("key", "value");
 		assertEquals(r.getHeaders().size(), 1);
 	}
-	
+
 	/**
 	 * Test the addQueryData method for an IllegalStateException.
 	 */
@@ -138,9 +148,10 @@ public class TestRequest {
 		r.running = true;
 		r.addQueryData("key", "value");
 	}
-	
+
 	/**
-	 * Test the setAsynchronous and clearAsynchronous methods for an IllegalStateException.
+	 * Test the setAsynchronous and clearAsynchronous methods for an
+	 * IllegalStateException.
 	 */
 	@Test
 	public void testSetClearAsynchronous() {
@@ -151,7 +162,7 @@ public class TestRequest {
 		r.setAsynchronous();
 		assertTrue(r.isAsynchronous());
 	}
-	
+
 	/**
 	 * Test the clearAsynchronous method for an IllegalStateException.
 	 */
@@ -161,7 +172,7 @@ public class TestRequest {
 		r.running = true;
 		r.clearAsynchronous();
 	}
-	
+
 	/**
 	 * Test the setAsynchronous method for an IllegalStateException.
 	 */
@@ -171,7 +182,7 @@ public class TestRequest {
 		r.running = true;
 		r.setAsynchronous();
 	}
-	
+
 	/**
 	 * Test setting connectTimeout when running is false
 	 */
@@ -182,7 +193,7 @@ public class TestRequest {
 		r.setConnectTimeout(1000);
 		assertEquals(1000, r.connectTimeout);
 	}
-	
+
 	/**
 	 * Test the setConnectTimeout method for an IllegalStateException.
 	 */
@@ -192,7 +203,7 @@ public class TestRequest {
 		r.running = true;
 		r.setConnectTimeout(1000);
 	}
-	
+
 	/**
 	 * Test setting readTimeout when running is false
 	 */
@@ -203,7 +214,7 @@ public class TestRequest {
 		r.setReadTimeout(1000);
 		assertEquals(1000, r.getReadTimeout());
 	}
-	
+
 	/**
 	 * Test the setReadTimeout method for an IllegalStateException.
 	 */
@@ -213,7 +224,7 @@ public class TestRequest {
 		r.running = true;
 		r.setReadTimeout(1000);
 	}
-	
+
 	/**
 	 * Test the setBody method for an IllegalStateException.
 	 */
@@ -223,7 +234,7 @@ public class TestRequest {
 		r.running = true;
 		r.setBody("");
 	}
-	
+
 	/**
 	 * Test the setHttpMethod method for an IllegalStateException.
 	 */
@@ -233,7 +244,7 @@ public class TestRequest {
 		r.running = true;
 		r.setHttpMethod(HttpMethod.GET);
 	}
-	
+
 	/**
 	 * Test the setResponse method for an IllegalStateException.
 	 */
@@ -261,11 +272,17 @@ public class TestRequest {
 			server.start();
 
 			// Make a new POST Request.
-			Request manualRequest = new Request(config, null, HttpMethod.POST);	// construct the Request
+			Request manualRequest = new Request(config, null, HttpMethod.POST); // construct
+																				// the
+																				// Request
 
 			// Configure the request
-			manualRequest.setBody(body);	// set the request body to send to the server
-			manualRequest.addObserver(requestObserver);	// Add the requestObserver to the request's set of Observers
+			manualRequest.setBody(body); // set the request body to send to the
+											// server
+			manualRequest.addObserver(requestObserver); // Add the
+														// requestObserver to
+														// the request's set of
+														// Observers
 
 			// Send the request!
 			manualRequest.send();
@@ -273,23 +290,28 @@ public class TestRequest {
 				requestObserver.wait(2000);
 			}
 
-			//assertEquals(true, (body+"\n").equals(manualRequest.getResponse().getBody()));
+			// assertEquals(true,
+			// (body+"\n").equals(manualRequest.getResponse().getBody()));
 			assertEquals(200, manualRequest.getResponse().getStatusCode());
-			assertEquals(true, "OK".equalsIgnoreCase(manualRequest.getResponse().getStatusMessage()));
-			
-			assertTrue(body.equals(server.getLastReceived().getBody()));
-			assertEquals(manualRequest.getHttpMethod(), server.getLastReceived().getHttpMethod());
-			
+			assertEquals(true, "OK".equalsIgnoreCase(manualRequest
+					.getResponse().getStatusMessage()));
+
+			assertTrue(body.equals(server.getLastReceived().getBody()
+					.substring(2)));
+			assertEquals(manualRequest.getHttpMethod(), server
+					.getLastReceived().getHttpMethod());
+
 			server.stop();
-		} //TODO switch to https
+		} // TODO switch to https
 		catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
-	 * Test to ensure that the response body can be read when a status code of 400 or above is received.
+	 * Test to ensure that the response body can be read when a status code of
+	 * 400 or above is received.
 	 */
 	@Test
 	public void testRequestResponseCode400Plus() {
@@ -300,13 +322,17 @@ public class TestRequest {
 
 		// Construct and configure a canned response for the server to return
 		ResponseModel cannedResponse = new ResponseModel();
-		cannedResponse.setStatusCode(400);	// status code: 400
-		cannedResponse.setBody(body);	// body: "Some error"
+		cannedResponse.setStatusCode(400); // status code: 400
+		cannedResponse.setBody(body); // body: "Some error"
 
 		// Make a new POST Request.
-		Request manualRequest = new Request(config, null, HttpMethod.POST);	 // construct the Request
-		manualRequest.setBody(body);	// set the request body to send to the server
-		manualRequest.clearAsynchronous();	// make this request synchronously so that the test is blocked
+		Request manualRequest = new Request(config, null, HttpMethod.POST); // construct
+																			// the
+																			// Request
+		manualRequest.setBody(body); // set the request body to send to the
+										// server
+		manualRequest.clearAsynchronous(); // make this request synchronously so
+											// that the test is blocked
 
 		// set the canned response and start the server
 		server.setResponse(cannedResponse);
@@ -315,56 +341,70 @@ public class TestRequest {
 		// Send the request!
 		manualRequest.send();
 
-		assertTrue(manualRequest.getResponse().getBody().contains(body));	// check that the message in the body was read
+		assertTrue(manualRequest.getResponse().getBody().contains(body)); // check
+																			// that
+																			// the
+																			// message
+																			// in
+																			// the
+																			// body
+																			// was
+																			// read
 		assertEquals(400, manualRequest.getResponse().getStatusCode());
 
-		assertTrue(body.equals(server.getLastReceived().getBody()));
-		assertEquals(manualRequest.getHttpMethod(), server.getLastReceived().getHttpMethod());
+		assertTrue(body.equals(server.getLastReceived().getBody().substring(2)));
+		assertEquals(manualRequest.getHttpMethod(), server.getLastReceived()
+				.getHttpMethod());
 
 		server.stop();
 	}
-	
+
 	/**
 	 * Test the notifyObserversResponseError function for IllegalStateException
 	 */
 	@Test(expected = IllegalStateException.class)
-	public void testNotifyObserversResponseErrorIllegalStateException() throws IllegalStateException{
+	public void testNotifyObserversResponseErrorIllegalStateException()
+			throws IllegalStateException {
 		Request r = new Request(config, null, HttpMethod.GET);
 		r.running = true;
 		r.notifyObserversResponseError();
 	}
-	
+
 	/**
 	 * Test the notifyObserversFail function for IllegalStateException
 	 */
 	@Test(expected = IllegalStateException.class)
-	public void testNotifyObserversFailIllegalStateException() throws IllegalStateException{
+	public void testNotifyObserversFailIllegalStateException()
+			throws IllegalStateException {
 		Request r = new Request(config, null, HttpMethod.GET);
 		r.running = true;
 		Exception e = new Exception();
 		r.notifyObserversFail(e);
 	}
-	
+
 	/**
-	 * Test the notifyObserversResponseSuccess function for IllegalStateException
+	 * Test the notifyObserversResponseSuccess function for
+	 * IllegalStateException
 	 */
 	@Test(expected = IllegalStateException.class)
-	public void testNotifyObserversResponseSuccessIllegalStateException() throws IllegalStateException{
+	public void testNotifyObserversResponseSuccessIllegalStateException()
+			throws IllegalStateException {
 		Request r = new Request(config, null, HttpMethod.GET);
 		r.running = true;
 		r.notifyObserversResponseSuccess();
 	}
-	
+
 	/**
 	 * Test the addObserver function for IllegalStateException
 	 */
 	@Test(expected = IllegalStateException.class)
-	public void testaddObserverIllegalStateException() throws IllegalStateException{
+	public void testaddObserverIllegalStateException()
+			throws IllegalStateException {
 		Request r = new Request(config, null, HttpMethod.GET);
 		r.running = true;
 		r.addObserver(new MockObserver());
 	}
-	
+
 	/**
 	 * Test observer count in countObservers
 	 */
@@ -376,7 +416,7 @@ public class TestRequest {
 		r.addObserver(obs1);
 		r.addObserver(obs2);
 		assertEquals(2, r.countObservers());
-		
+
 	}
-	
+
 }

@@ -199,19 +199,6 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 
 	/**
 	 *
-	 * Changes which title is visible, the label or the textbox. If editable is
-	 * true, the textbox is visible.
-	 *
-	 * @param editable
-	 *            true to make the textbox visible, false to make the label
-	 *            visible
-	 */
-	public void switchTitle(Boolean editable) {
-		view.switchTitles(editable);
-	}
-
-	/**
-	 *
 	 * @return true if this is a new stage. false if it was loaded from the
 	 *         database
 	 */
@@ -236,7 +223,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 			WorkflowController.getInstance().removeTaskInfos(true);
 			WorkflowController.pauseInformation = true;
 			// bring up the title textbox
-			switchTitle(true);
+			view.switchTitles(true);
 		} else {
 			WorkflowController.pauseInformation = false;
 			WorkflowController.getInstance().reloadData();
@@ -268,7 +255,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 
 	}
 
-	private void checkButton() {
+	public void checkButton() {
 		if (view.isCheckEnabled()
 				&& WorkflowModel.getInstance().findStageByName(
 						view.getLabelText()) != null) {
@@ -301,7 +288,6 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 			case StageView.CHECK:
 				checkButton();
 				break;
-			// fall through
 			case StageView.X:
 				// reset the flags
 				WorkflowController.pauseInformation = false;
@@ -314,7 +300,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
+		// do nothing
 
 	}
 
@@ -362,7 +348,6 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-
+		// do nothing
 	}
 }

@@ -199,8 +199,8 @@ public class TaskController implements MouseListener {
 						getCategoryColor()));
 
 		// Set the correct flags
-
 		taskInfoPreviewOut = true;
+		isHovered = false;
 
 		// set the correct background color
 		if (!isArchived()) {
@@ -209,12 +209,11 @@ public class TaskController implements MouseListener {
 			} else {
 				view.setBackground(Colors.TASK_CLICKED);
 			}
-
-			// set the appropriate border and category colors
-			view.setCategoryColor(getCategoryColor(), true);
-			view.setBorderColor(getCategoryColor(), true);
-			isHovered = true;
 		}
+		// set the appropriate border and category colors
+		view.setCategoryColor(getCategoryColor(), true);
+		view.setBorderColor(getCategoryColor(), true);
+
 	}
 
 	@Override

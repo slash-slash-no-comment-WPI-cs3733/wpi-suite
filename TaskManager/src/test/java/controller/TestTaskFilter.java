@@ -64,8 +64,8 @@ public class TestTaskFilter {
 		User u = new User("name", "username", "pass", 99);
 		User u2 = new User("name2", "username2", "pass", 100);
 		User u3 = new User("name3", "username3", "pass", 101);
-		tm.addAssigned(u);
-		tm.addAssigned(u2);
+		tm.addAssigned(u.getUsername());
+		tm.addAssigned(u2.getUsername());
 
 		HashSet<String> fUsers = new HashSet<String>();
 		fUsers.add(u2.getUsername());
@@ -74,7 +74,7 @@ public class TestTaskFilter {
 		f.setUsers(fUsers);
 
 		assertTrue(f.check(tm));
-		tm.removeAssigned(u2);
+		tm.removeAssigned(u2.getUsername());
 		assertFalse(f.check(tm));
 		f.setUser(u.getUsername());
 		assertTrue(f.check(tm));

@@ -147,7 +147,6 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		archive.setEnabled(false);
 		archive.setName(ARCHIVE);
 
-		// TODO: look at this
 		archive.setTransferHandler(new DDTransferHandler());
 		archive.setDropTarget(new DropTarget(archive, controller));
 
@@ -203,6 +202,8 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 			Localizer.setLanguage(language);
 			languageSelector.addItem(Localizer.getString("LanguageName"));
 		}
+		languageSelector.setSelectedIndex(languages
+				.indexOf(Localizer.defaultLanguage));
 		Localizer.setLanguage(Localizer.defaultLanguage);
 		languageSelector.addActionListener(controller);
 		Dimension d = new Dimension(100, 30);

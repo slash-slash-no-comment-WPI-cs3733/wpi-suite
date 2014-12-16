@@ -29,6 +29,9 @@ public class Colors {
 	public static final Color ACTIVITY_EDIT = Color.LIGHT_GRAY;
 	public static final Color ACTIVITY_COMMENT = Color.CYAN;
 	public static final Color ARCHIVE_HOVER = Color.decode("#E6B000");
+	public static final Color ERROR_BUBBLE = Color.decode("#FCFCFC");
+	public static final Color ERROR = Color.decode("#FFDDDD");
+
 	// The default grey color of a JLabel
 	public static final Color STUPID_GRAY = Color.decode("#EAEAEA");
 
@@ -40,4 +43,5 @@ public class Colors {
 
 	public static final String[] CATEGORY_NAMES = new String[] {
 			"Select category", "red", "green", "blue", "yellow", "purple" };
+
 }

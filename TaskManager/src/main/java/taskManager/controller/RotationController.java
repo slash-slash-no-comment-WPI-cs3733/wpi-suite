@@ -155,7 +155,6 @@ public class RotationController implements MouseListener, MouseMotionListener {
 		try {
 			tp = transform.inverseTransform(p, null);
 		} catch (NoninvertibleTransformException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		return tp;

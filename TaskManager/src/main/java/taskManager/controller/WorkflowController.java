@@ -143,9 +143,9 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 			view.addStageView(stv);
 		}
 
-		// view needs to be repainted before we can find positions of components
+		// view needs to be revalidated before we can find positions of
+		// components
 		view.revalidate();
-		view.repaint();
 
 		// if this doesn't run in the EDT, it sometimes doesn't work
 		SwingUtilities.invokeLater(new Runnable() {
@@ -153,6 +153,10 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 				// get the mouse position relative to the workflow
 				Point p = view.getMousePosition();
 				if (p != null) {
+					// validate the view now if it hasn't happened already
+					if (!view.isValid()) {
+						view.validate();
+					}
 					Component mouseC = view.findComponentAt(p);
 					// if we're over a TaskView, call mouse entered on it.
 					while (mouseC != null) {
@@ -196,7 +200,6 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		if (!hasNewStageView) {
 			hasNewStageView = true;
 			final StageView newStageV = new StageController().getView();
-			newStageV.getController().switchTitle(true);
 
 			PromptSupport.setPrompt(Localizer.getString("NewStageName"),
 					newStageV.getLabelField());
@@ -205,6 +208,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 					newStageV.getLabelField());
 
 			view.addStageView(newStageV);
+			newStageV.switchTitles(true);
 			removeTaskInfos(false);
 
 			view.revalidate();

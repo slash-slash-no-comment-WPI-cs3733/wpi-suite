@@ -33,6 +33,8 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.Border;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.jdesktop.swingx.border.DropShadowBorder;
 
 import taskManager.controller.StageController;
@@ -79,7 +81,7 @@ public class StageView extends JPanel implements Transferable,
 	 */
 	public StageView(String name, StageController stageC) {
 
-		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+		this.setLayout(new MigLayout("wrap 1", "[grow, fill]"));
 
 		// The tasks panel accepts task drops
 		tasks = new DropAreaPanel(DDTransferHandler.getTaskFlavor());
@@ -90,7 +92,7 @@ public class StageView extends JPanel implements Transferable,
 		this.setPreferredSize(new Dimension(STAGE_WIDTH, 450));
 
 		// organizes the tasks in a vertical list
-		tasks.setLayout(new BoxLayout(tasks, BoxLayout.Y_AXIS));
+		tasks.setLayout(new MigLayout("wrap 1", "0[grow, fill]0", "0[]0"));
 
 		// creates the label for the name of the stage and adds it to the block
 		label = new JPanel();
@@ -147,6 +149,7 @@ public class StageView extends JPanel implements Transferable,
 		stage = new JScrollPane(tasks,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		stage.getVerticalScrollBar().setUnitIncrement(12);
 
 		label.setBackground(Colors.STAGE);
 		final Border color = BorderFactory.createLineBorder(
@@ -299,6 +302,10 @@ public class StageView extends JPanel implements Transferable,
 		focusTextArea();
 	}
 
+	/**
+	 * 
+	 * @return true if the check button for stage title is enabled.
+	 */
 	public boolean isCheckEnabled() {
 		return check.isEnabled();
 	}

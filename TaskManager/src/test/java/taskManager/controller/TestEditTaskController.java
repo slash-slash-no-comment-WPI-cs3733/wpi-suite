@@ -45,7 +45,6 @@ import taskManager.view.EditTaskView;
 import taskManager.view.TabView;
 import taskManager.view.TaskView;
 import edu.wpi.cs.wpisuitetng.exceptions.NotFoundException;
-import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
 import edu.wpi.cs.wpisuitetng.network.Network;
@@ -62,9 +61,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 
 	private final String[] stageNames = { "New", "Scheduled", "In Progress",
 			"Complete" };
-	private final User testUser = new User("testUser", "testUser", "password",
-			1234);
-
+	private final String testUser = "testUser";
 	private FrameFixture fixture;
 	private JFrame frame;
 
@@ -249,10 +246,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	@Test
 	public void testAddUsers() {
 		// create users
-		TaskManager.users = new User[] { testUser,
-				new User("name1", "name1", "password", 4321),
-				new User("name2", "name2", "password", 5678),
-				new User("name3", "name3", "password", 9876) };
+		TaskManager.users = new String[] { testUser, "name1", "name2", "name3" };
 		TaskModel task = createAndLoadTask();
 
 		// select users to add
@@ -275,9 +269,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	@Test
 	public void testRemoveUsers() {
 		// create users
-		TaskManager.users = new User[] { testUser,
-				new User("name2", "name2", "password", 5678),
-				new User("name3", "name3", "password", 9876) };
+		TaskManager.users = new String[] { testUser, "name2", "name3" };
 
 		TaskModel task = createAndLoadTask();
 
