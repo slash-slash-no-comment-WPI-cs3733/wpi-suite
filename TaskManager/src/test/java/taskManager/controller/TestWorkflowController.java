@@ -96,6 +96,7 @@ public class TestWorkflowController extends ScreenshotOnFail {
 
 		// make sure it re-highlights after a reload
 		WorkflowController.getInstance().reloadData();
+		WorkflowController.getInstance().repaintView();
 		fixture.robot.waitForIdle();
 		taskFixture = fixture.panel("test");
 		assertEquals(taskFixture.target.getBackground(), Colors.TASK_HOVER);

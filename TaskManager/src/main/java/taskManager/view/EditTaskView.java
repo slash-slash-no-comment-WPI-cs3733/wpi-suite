@@ -1039,5 +1039,14 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 				.getString(EFFORT_ERROR));
 		((JLabel) estEffortError.getContents()).setText(Localizer
 				.getString(EFFORT_ERROR));
+
+		// reload the requirements box
+		if (controller != null) {
+			String r = getSelectedRequirement();
+			String s = getSelectedStage();
+			controller.reloadData();
+			setSelectedRequirement(r);
+			setSelectedStage(s);
+		}
 	}
 }
