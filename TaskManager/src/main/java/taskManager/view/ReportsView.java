@@ -10,7 +10,9 @@
 package taskManager.view;
 
 import java.awt.CardLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,6 +31,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
 
 import net.miginfocom.swing.MigLayout;
@@ -73,11 +76,15 @@ public class ReportsView extends JPanel implements ActionListener,
 
 	private JPanel window;
 	private JPanel generator;
-
+	public JScrollPane GenScroll;
 	public enum Mode {
 		VELOCITY, DISTRIBUTION
 	}
 
+	// create new Font
+	Font bigFont = new Font("Default", Font.BOLD, 14);
+	
+	
 	private Mode mode;
 
 	// Variable to Insert Images
@@ -153,6 +160,7 @@ public class ReportsView extends JPanel implements ActionListener,
 		this.mode = mode;
 
 		window = new JPanel(new MigLayout());
+		GenScroll = new JScrollPane();
 		generator = new JPanel(new MigLayout());
 		this.setLayout(new FlowLayout());
 
@@ -163,6 +171,7 @@ public class ReportsView extends JPanel implements ActionListener,
 
 		JPanel reportType = new JPanel(new MigLayout());
 		JLabel reportTypeLabel = new JLabel("Choose report type");
+		reportTypeLabel.setFont(bigFont);
 		workvel.addActionListener(this);
 		workvel.setSelected(true);
 		taskdistro.addActionListener(this);
@@ -176,8 +185,9 @@ public class ReportsView extends JPanel implements ActionListener,
 		effortOrTasksButtons.add(effort);
 		effortOrTasksButtons.add(numberoftasks);
 		select_stages.addActionListener(this);
+		select_stages.setFont(bigFont);
 		effortOrNumberofTasks = new JPanel(new MigLayout());
-		reportType.add(reportTypeLabel, "wrap");
+		reportType.add(reportTypeLabel, "align center, wrap");
 		reportType.add(workvel);
 		reportType.add(taskdistro);
 		effortOrNumberofTasks.add(effort);
@@ -199,7 +209,8 @@ public class ReportsView extends JPanel implements ActionListener,
 
 		timeSliceList = new JComboBox<String>(slices);
 		timeSliceList.setPrototypeDisplayValue("Time slices");
-		stagePanel.add(new JLabel("Stage"), "align left");
+		JLabel stagePanelLabel = new JLabel("Stage:");
+		stagePanel.add(stagePanelLabel, "align left");
 		stagePanel.add(stages, "align left");
 		stagePanel2.add(stages2);
 
@@ -224,17 +235,17 @@ public class ReportsView extends JPanel implements ActionListener,
 						.getImage()).getScaledInstance(20, 20,
 						java.awt.Image.SCALE_SMOOTH)));
 
-		datePanel.add(startDateLabel, "gapbottom 13px");
-		datePanel.add(startDate, "wrap, gapbottom 13px");
+		datePanel.add(startDateLabel, "gapbottom 14px, gaptop 4px");
+		datePanel.add(startDate, "wrap, gapbottom 14px, gaptop 4px");
 		datePanel.add(endDateLabel);
 		datePanel.add(endDate);
 
-		timeSliceLabel = new JLabel("Units");
+		timeSliceLabel = new JLabel("Units:");
 
 		// Time
 		timePanel = new JPanel(new MigLayout());
 		timeSlice = new JPanel(new MigLayout());
-		timeSlice.add(timeSliceLabel, "gapright 5px");
+		timeSlice.add(timeSliceLabel);
 		timeSlice.add(timeSliceList);
 		JPanel sliceAndStage = new JPanel(new MigLayout());
 		sliceAndStage.add(timeSlice, "wrap");
@@ -275,6 +286,7 @@ public class ReportsView extends JPanel implements ActionListener,
 		// Users for Work Velocity
 		usersPanel = new JPanel();
 		allUsers = new JCheckBox("Add all Users to report");
+		allUsers.setFont(bigFont);
 		allUsers.setName(ALL_USERS);
 		currUsersList = new ScrollList("");
 		currUsersList.setBackground(this.getBackground());
@@ -316,15 +328,16 @@ public class ReportsView extends JPanel implements ActionListener,
 		// One Column
 		// Panel for reports generating options
 		JPanel reportOptions = new JPanel(new MigLayout());
-
-		SelectStages.add(new JLabel("Select Stage"), "wrap");
-		SelectStages.add(stagePanel2, "wrap");
-		SelectStages.add(select_stages, "gaptop 15px");
+		JLabel selectStageLabel = new JLabel("Select Stage");
+		selectStageLabel.setFont(bigFont);
+		SelectStages.add(selectStageLabel, "wrap");
+		SelectStages.add(stagePanel2, "wrap, gapright 10px");
+		SelectStages.add(select_stages, "gaptop 15px, gapleft 5px");
 
 		JPanel Distro = new JPanel(new MigLayout());
 
-		Distro.add(SelectStages);
-		TaskDistribution.add(Distro, "gapleft 70px");
+		Distro.add(SelectStages, "align center");
+		TaskDistribution.add(Distro, "gapleft 140");
 		WorkVelocity.add(allUsers, "wrap, gapleft 20px");
 		WorkVelocity.add(usersPanel, "wrap, w 100%");
 		WorkVelocity.add(timePanel, "w 100%");
@@ -334,12 +347,24 @@ public class ReportsView extends JPanel implements ActionListener,
 		cards.add(TaskDistribution, names[1]);
 		generator.add(reportType, "align center, wrap");
 		generator.add(cards, "wrap");
-		generator.add(effortOrNumberofTasks, "wrap");
-		generator.add(generateGraph, "dock south, gapbottom 20px");
+		generator.add(effortOrNumberofTasks, "align center, wrap");
+		generator.add(generateGraph, ("align center, gaptop 30px"));
 		CardLayout cl = (CardLayout) (cards.getLayout());
+		
+		
+		Dimension CardSize = cards.getSize();
+		cards.setPreferredSize(CardSize);
+		
 		cl.show(cards, names[0]);
-		window.add(generator, "dock west");
-		this.add(window);
+		window.add(generator);
+		
+		
+		JScrollPane windowScroll = new JScrollPane(window,
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		windowScroll.getVerticalScrollBar().setUnitIncrement(12);
+		windowScroll.getHorizontalScrollBar().setUnitIncrement(12);
+		this.add(windowScroll);
 	}
 
 	public void actionPerformed(ActionEvent e) {
