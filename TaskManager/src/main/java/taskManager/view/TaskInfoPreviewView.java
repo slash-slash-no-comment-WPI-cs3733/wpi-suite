@@ -260,9 +260,11 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 
 		// This panel contains the edit button
 		final JPanel buttonPanel = new JPanel();
-		edit = new JButton("Edit");
+		edit = new JButton(Localizer.getString("Edit"));
 		edit.setName(EDIT);
-		edit.setMargin(new Insets(5, 77, 5, 77));
+		edit.setPreferredSize(new Dimension(205, 35));
+		// edit.setMargin(new Insets(5, 30, 5, 30));
+		// edit.setMargin(new Insets(5, 77, 5, 77));
 		edit.addActionListener(this.controller);
 		// Add the pencil image to the edit button
 		try {
