@@ -44,8 +44,6 @@ import taskManager.controller.TaskInputController;
 import taskManager.localization.LocaleChangeListener;
 import taskManager.localization.Localizer;
 
-//TODO import taskManager.controller.ReportsController;
-
 /**
  * @author Tyler Jaskoviak
  * @author Thane Hunt
@@ -323,12 +321,10 @@ public class ReportsView extends JPanel implements ActionListener,
 			img = ImageIO.read(this.getClass().getResourceAsStream(
 					"reports-icon.png"));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		generateGraph.setIcon(new ImageIcon(img));
 
-		// One Column
 		// Panel for reports generating options
 		JPanel reportOptions = new JPanel(new MigLayout());
 		JLabel selectStageLabel = new JLabel("Select Stage");

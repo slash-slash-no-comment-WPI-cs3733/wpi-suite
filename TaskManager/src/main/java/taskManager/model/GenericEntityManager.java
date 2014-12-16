@@ -160,7 +160,6 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 	 */
 	@Override
 	public String advancedGet(Session s, String[] args) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -171,8 +170,7 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 	 */
 	@Override
 	public void deleteAll(Session s) {
-		// TODO Auto-generated method stub
-
+		// not used
 	}
 
 	/*
@@ -180,7 +178,7 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 	 */
 	@Override
 	public int Count() {
-		// TODO Auto-generated method stub
+		// not used
 		return 0;
 	}
 
@@ -190,7 +188,7 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 	 */
 	@Override
 	public String advancedPut(Session s, String[] args, String content) {
-		// TODO Auto-generated method stub
+		// not used
 		return null;
 	}
 
@@ -201,7 +199,7 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 	 */
 	@Override
 	public String advancedPost(Session s, String string, String content) {
-		// TODO Auto-generated method stub
+		// not used
 		return null;
 	}
 

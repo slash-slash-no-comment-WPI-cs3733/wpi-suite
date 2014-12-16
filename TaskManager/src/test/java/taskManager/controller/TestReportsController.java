@@ -58,7 +58,7 @@ public class TestReportsController {
 		TaskModel tm1 = new TaskModel("Task", new StageModel("Start"));
 		tm1.setActualEffort(5);
 		u1 = new User("User 1", "User 1", null, 42);
-		tm1.addAssigned(u1);
+		tm1.addAssigned(u1.getUsername());
 		finished.addTask(tm1);
 		frame = new JFrame();
 		fixture = new FrameFixture(frame);

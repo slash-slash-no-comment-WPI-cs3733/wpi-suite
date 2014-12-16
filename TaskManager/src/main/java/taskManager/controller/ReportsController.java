@@ -53,7 +53,6 @@ import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.ReportsView;
-import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
  * ReportsController controls the ReportsView and generates graphs for reports
@@ -720,10 +719,9 @@ public class ReportsController implements ActionListener, ChangeListener,
 	 */
 	private void reloadUsers() {
 		ArrayList<String> projectUserNames = new ArrayList<String>();
-		for (User u : TaskManager.users) {
-			String name = u.getUsername();
-			if (!projectUserNames.contains(name)) {
-				projectUserNames.add(name);
+		for (String user : TaskManager.users) {
+			if (!projectUserNames.contains(user)) {
+				projectUserNames.add(user);
 			}
 		}
 		// Default to have all users selected.
