@@ -53,7 +53,7 @@ public String createModelScript(String title, String path, String[] args, int le
 	scriptText += "var request = new XMLHttpRequest();\n" +
 			"request.onreadystatechange = function() {\n" +
 				"if(request.readyState == 4 && request.status > 0) {\n" +
-					"document.getElementById(\""+title+"textArea\").value = request.responseText;\n" +
+					"document.getElementById(\""+title+"textArea\").value = request.responseText.substring(2);\n" +
 				"}\n" +
 			"};\n";
 	scriptText += "if(action == 'create'){ \n"+
