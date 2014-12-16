@@ -24,6 +24,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 
 import taskManager.TaskManager;
+import taskManager.localization.Localizer;
 import taskManager.model.ActivityModel;
 import taskManager.model.ActivityModel.ActivityModelType;
 import taskManager.model.StageModel;
@@ -32,7 +33,6 @@ import taskManager.model.WorkflowModel;
 import taskManager.view.ActivityView;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
-import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.RequirementManager;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
@@ -71,15 +71,14 @@ public class EditTaskController implements ActionListener {
 
 		// fills the user lists
 		final List<String> projectUserNames = new ArrayList<String>();
-		for (User u : TaskManager.users) {
-			String name = u.getUsername();
-			if (!projectUserNames.contains(name)) {
-				projectUserNames.add(name);
+		for (String u : TaskManager.users) {
+			if (!projectUserNames.contains(u)) {
+				projectUserNames.add(u);
 			}
 		}
 		etv.getProjectUsersList().addAllToList(projectUserNames);
 
-		TabPaneController.getInstance().addTab("Create Task", etv, true);
+		TabPaneController.getInstance().addTab("CreateTask", etv, true, true);
 
 		reloadData();
 	}
@@ -119,11 +118,10 @@ public class EditTaskController implements ActionListener {
 
 		// populates the project users list
 		final List<String> projectUserNames = new ArrayList<String>();
-		for (User u : TaskManager.users) {
-			String name = u.getUsername();
-			if (!projectUserNames.contains(name)
-					&& !model.getAssigned().contains(name)) {
-				projectUserNames.add(name);
+		for (String u : TaskManager.users) {
+			if (!projectUserNames.contains(u)
+					&& !model.getAssigned().contains(u)) {
+				projectUserNames.add(u);
 			}
 		}
 		etv.getProjectUsersList().addAllToList(projectUserNames);
@@ -196,8 +194,9 @@ public class EditTaskController implements ActionListener {
 
 			case EditTaskView.DELETE:
 				final Integer choice = JOptionPane.showConfirmDialog(etv,
-						"Are you sure you want to delete this task?",
-						"Warning - Deleting a task", JOptionPane.YES_NO_OPTION);
+						Localizer.getString("DeleteWarning"),
+						Localizer.getString("DeleteWarningTitle"),
+						JOptionPane.YES_NO_OPTION);
 				if (choice.equals(JOptionPane.YES_OPTION)) {
 					// delete this task
 					if (model != null) {
@@ -283,8 +282,8 @@ public class EditTaskController implements ActionListener {
 				// the user is creating a new comment
 				else {
 					ActivityModel comment = new ActivityModel(
-							etv.getCommentsFieldText(),
-							ActivityModelType.COMMENT);
+							ActivityModelType.COMMENT,
+							etv.getCommentsFieldText());
 					// add the activity
 					activityC.addActivity(comment);
 					activityC.scrollActivitiesToBottom();
@@ -316,8 +315,8 @@ public class EditTaskController implements ActionListener {
 
 		final List<Requirement> reqs = RequirementModel.getInstance()
 				.getRequirements();
-		final List<String> reqNames = new ArrayList<String>();
 
+		final List<String> reqNames = new ArrayList<String>();
 		for (Requirement req : reqs) {
 			reqNames.add(req.getName());
 		}
@@ -360,14 +359,14 @@ public class EditTaskController implements ActionListener {
 		try {
 			model.setEstimatedEffort(Integer.parseInt(etv.getEstEffort()));
 		} catch (java.lang.NumberFormatException e2) {
-			// Set to false since this value is not set.
-			model.setHasEstimatedEffort(false);
+			// Set to null.
+			model.setEstimatedEffort(null);
 		}
 
 		try {
 			model.setActualEffort(Integer.parseInt(etv.getActEffort()));
 		} catch (java.lang.NumberFormatException e2) {
-			model.setHasActualEffort(false);
+			model.setActualEffort(null);
 		}
 
 		// sets the due date from the calendar
@@ -379,12 +378,12 @@ public class EditTaskController implements ActionListener {
 		// adds or removes users
 		for (String name : etv.getUsersList().getAllValues()) {
 			if (!model.getAssigned().contains(name)) {
-				model.addAssigned(findUserByName(name));
+				model.addAssigned(name);
 			}
 		}
 		for (String n : toRemove) {
 			if (model.getAssigned().contains(n)) {
-				model.removeAssigned(findUserByName(n));
+				model.removeAssigned(n);
 			}
 		}
 		model.setReq(r);
@@ -400,24 +399,6 @@ public class EditTaskController implements ActionListener {
 		// Save entire workflow whenever a task is saved
 		WorkflowModel.getInstance().save(); // TODO make this call an
 											// appropriate method
-	}
-
-	/**
-	 * returns the user object with the given name from the list of project
-	 * users
-	 * 
-	 * @param name
-	 *            the name of the user to find
-	 * @return the user with the given name
-	 */
-	private static User findUserByName(String name) {
-		for (User u : TaskManager.users) {
-			if (u.getUsername().equals(name)) {
-				return u;
-			}
-		}
-		return null;
-
 	}
 
 	/**
@@ -607,7 +588,7 @@ public class EditTaskController implements ActionListener {
 	 */
 	private boolean checkEstEffort(TaskModel task) {
 		boolean edited = false;
-		if (task.getEstimatedEffort() == 0) {
+		if (!task.isEstimatedEffortSet()) {
 			if (etv.getEstEffort().isEmpty()) {
 				edited = false;
 			} else {
@@ -639,7 +620,7 @@ public class EditTaskController implements ActionListener {
 	 */
 	private boolean checkActEffort(TaskModel task) {
 		boolean edited = false;
-		if (task.getActualEffort() == 0) {
+		if (!task.isActualEffortSet()) {
 			if (etv.getActEffort().isEmpty()) {
 				edited = false;
 			} else {

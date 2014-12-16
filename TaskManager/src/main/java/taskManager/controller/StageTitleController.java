@@ -53,15 +53,16 @@ public class StageTitleController implements KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyChar() == KeyEvent.VK_ENTER) {
-			if (checkTitle()) {
-				stageV.getController().addStage();
-			}
-		}
+		// Do nothing.
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
+		if (e.getKeyChar() == KeyEvent.VK_ENTER) {
+			if (checkTitle()) {
+				stageV.getController().checkButton();
+			}
+		}
 		validate();
 	}
 

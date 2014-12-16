@@ -20,6 +20,7 @@ import org.junit.Test;
 
 import taskManager.MockNetwork;
 import taskManager.TaskManager;
+import taskManager.model.ActivityModel.ActivityModelType;
 import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
@@ -52,15 +53,14 @@ public class TestTaskModel {
 		TaskModel task2 = new TaskModel("Task2", stage2);
 		User u = new User("Name", "username", "pass", 5);
 		Date d = new Date();
-		ActivityModel a = new ActivityModel("desc",
-				ActivityModel.ActivityModelType.COMMENT);
+		ActivityModel a = new ActivityModel(ActivityModelType.COMMENT, "desc");
 		Requirement r = new Requirement();
 		r.setId(99);
 		RequirementModel.getInstance().addRequirement(r);
 
 		task2.setDescription("Desc");
 		task2.setArchived(true);
-		task2.addAssigned(u);
+		task2.addAssigned(u.getUsername());
 		task2.setDueDate(d);
 		task2.setEstimatedEffort(5);
 		task2.setActualEffort(3);
@@ -72,8 +72,8 @@ public class TestTaskModel {
 		assertTrue(task2.isArchived());
 		assertTrue(task2.getAssigned().contains(u.getUsername()));
 		assertEquals(d, task2.getDueDate());
-		assertEquals(5, task2.getEstimatedEffort());
-		assertEquals(3, task2.getActualEffort());
+		assertEquals(new Integer(5), task2.getEstimatedEffort());
+		assertEquals(new Integer(3), task2.getActualEffort());
 		assertTrue(task2.getActivities().contains(a));
 		assertEquals(r, task2.getReq());
 		assertEquals(stage2, task2.getStage());
@@ -90,7 +90,7 @@ public class TestTaskModel {
 		assertFalse(task.isEstimatedEffortSet());
 		task.setEstimatedEffort(20);
 		assertTrue(task.isEstimatedEffortSet());
-		assertEquals(20, task.getEstimatedEffort());
+		assertEquals(new Integer(20), task.getEstimatedEffort());
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -103,6 +103,6 @@ public class TestTaskModel {
 		assertFalse(task.isActualEffortSet());
 		task.setActualEffort(20);
 		assertTrue(task.isActualEffortSet());
-		assertEquals(20, task.getActualEffort());
+		assertEquals(new Integer(20), task.getActualEffort());
 	}
 }

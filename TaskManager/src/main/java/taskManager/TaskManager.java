@@ -16,17 +16,14 @@ import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 
 import taskManager.controller.EasterEggListener;
-import taskManager.controller.StageController;
 import taskManager.controller.TabPaneController;
-import taskManager.controller.TaskController;
 import taskManager.controller.ToolbarController;
 import taskManager.controller.WorkflowController;
 import taskManager.draganddrop.DDTransferHandler;
-import taskManager.model.FetchWorkflowObserver;
+import taskManager.localization.Localizer;
 import taskManager.model.StageModel;
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
 import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
-import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
  * The JanewayModule for the task manager
@@ -42,7 +39,7 @@ public class TaskManager implements IJanewayModule {
 
 	private final List<JanewayTabModel> tabs;
 
-	public static User[] users = {};
+	public static String[] users = {};
 	public static String currentUser = null; // the username of the current user
 
 	/**
@@ -77,15 +74,15 @@ public class TaskManager implements IJanewayModule {
 	 */
 	public static void reset() {
 
-		StageController.anyChangeTitleOut = false;
-		TaskController.anyTaskInfoOut = false;
 		DDTransferHandler.dragSaved = false;
-		FetchWorkflowObserver.ignoreAllResponses = false;
+		WorkflowController.pauseInformation = false;
 
 		// Reset singletons
 		ToolbarController.getInstance().reset();
 		TabPaneController.getInstance().reset();
 		WorkflowController.getInstance().reset();
+
+		Localizer.setLanguage(Localizer.defaultLanguage);
 	}
 
 	/**
