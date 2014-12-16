@@ -32,7 +32,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
-import javax.swing.border.TitledBorder;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -70,9 +69,10 @@ public class ReportsView extends JPanel implements ActionListener,
 	public static final String USERS = "Users";
 	public static final String NUMBER_OF_TASKS = "number_of_tasks";
 
-	public String names[] = { "Work Velocity", "Task Distribution",
-			"Distribution Stages" };
-	public String slices[] = { "Days", "Weeks" };
+	public String names[] = { Localizer.getString("Velocity"),
+			Localizer.getString("Distribution") };
+	public String slices[] = { Localizer.getString("Days"),
+			Localizer.getString("Weeks") };
 
 	private JPanel window;
 	private JPanel generator;
@@ -82,34 +82,38 @@ public class ReportsView extends JPanel implements ActionListener,
 	}
 
 	// create new Font
-	Font bigFont = new Font("Default", Font.BOLD, 14);
+	private Font bigFont = new Font("Default", Font.BOLD, 14);
 
 	private Mode mode;
 
+	private JLabel reportTypeLabel;
+
 	// Variable to Insert Images
-	Image img;
+	private Image img;
 	// Effort or number of tasks panel
 	private JPanel effortOrNumberofTasks;
 
 	// Stage picker
 	private JPanel stagePanel;
+	private JLabel stagePanelLabel;
 	private JComboBox<String> stages;
 	private JPanel stagePanel2;
 	private JComboBox<String> stages2;
 	private JComboBox<String> timeSliceList;
 
-	JPanel TaskDistribution = new JPanel();
-	JPanel WorkVelocity = new JPanel(new MigLayout());
-	JPanel usersHolder = new JPanel();
-	JPanel usersHolderDistro = new JPanel();
-	JPanel SelectStages = new JPanel();
+	private JPanel TaskDistribution = new JPanel();
+	private JPanel WorkVelocity = new JPanel(new MigLayout());
+	private JPanel usersHolder = new JPanel();
+	private JPanel usersHolderDistro = new JPanel();
+	private JPanel SelectStages = new JPanel();
+
 	// Card-changing panel
-	JPanel cards;
-	JRadioButton workvel = new JRadioButton(names[0]);
-	JRadioButton taskdistro = new JRadioButton(names[1]);
-	JRadioButton effort = new JRadioButton("Effort");
-	JRadioButton numberoftasks = new JRadioButton("Number of Tasks");
-	JCheckBox select_stages = new JCheckBox("All Stages");
+	private JPanel cards;
+	private JRadioButton workvel = new JRadioButton(names[0]);
+	private JRadioButton taskdistro = new JRadioButton(names[1]);
+	private JRadioButton effort = new JRadioButton("Effort");
+	private JRadioButton numberoftasks = new JRadioButton("Number of Tasks");
+	private JCheckBox select_stages = new JCheckBox("All Stages");
 
 	// Date Picker
 	private JPanel timePanel;
@@ -134,8 +138,6 @@ public class ReportsView extends JPanel implements ActionListener,
 	// Generate Graph Button
 	private JButton generateGraph;
 
-	private ReportsController controller;
-
 	public ReportsView(Mode mode) {
 
 		this.mode = mode;
@@ -150,7 +152,7 @@ public class ReportsView extends JPanel implements ActionListener,
 		// Report Type Pane
 
 		JPanel reportType = new JPanel(new MigLayout());
-		JLabel reportTypeLabel = new JLabel("Choose report type");
+		reportTypeLabel = new JLabel(Localizer.getString("ChooseReportType"));
 		reportTypeLabel.setFont(bigFont);
 		workvel.addActionListener(this);
 		workvel.setSelected(true);
@@ -189,14 +191,14 @@ public class ReportsView extends JPanel implements ActionListener,
 		stages2.setName(STAGE_NAME2);
 
 		timeSliceList = new JComboBox<String>(slices);
-		timeSliceList.setPrototypeDisplayValue("Time slices");
-		JLabel stagePanelLabel = new JLabel("Stage:");
+		timeSliceList.setPrototypeDisplayValue(Localizer.getString("Units"));
+		stagePanelLabel = new JLabel(Localizer.getString("Stage"));
 		stagePanel.add(stagePanelLabel, "align left");
 		stagePanel.add(stages, "align left");
 		stagePanel2.add(stages2);
 
-		startDateLabel = new JLabel("Start Date:");
-		endDateLabel = new JLabel("End Date:");
+		startDateLabel = new JLabel(Localizer.getString("StartDate"));
+		endDateLabel = new JLabel(Localizer.getString("EndDate"));
 
 		// Date
 		datePanel = new JPanel(new MigLayout());
@@ -221,7 +223,7 @@ public class ReportsView extends JPanel implements ActionListener,
 		datePanel.add(endDateLabel);
 		datePanel.add(endDate);
 
-		timeSliceLabel = new JLabel("Units:");
+		timeSliceLabel = new JLabel(Localizer.getString("Units"));
 
 		// Time
 		timePanel = new JPanel(new MigLayout());
@@ -237,7 +239,7 @@ public class ReportsView extends JPanel implements ActionListener,
 
 		// Users for Work Velocity
 		usersPanel = new JPanel();
-		allUsers = new JCheckBox("Add all Users to report");
+		allUsers = new JCheckBox(Localizer.getString("AllUsers"));
 		allUsers.setFont(bigFont);
 		allUsers.setName(ALL_USERS);
 		currUsersList = new ScrollList("");
@@ -265,7 +267,7 @@ public class ReportsView extends JPanel implements ActionListener,
 		usersPanel.add(usersListPanel, "w 100!");
 
 		// Generate Graph
-		generateGraph = new JButton("Generate Graph");
+		generateGraph = new JButton(Localizer.getString("Generate"));
 		generateGraph.setName(GENERATE);
 
 		try {
@@ -312,6 +314,8 @@ public class ReportsView extends JPanel implements ActionListener,
 		windowScroll.getVerticalScrollBar().setUnitIncrement(12);
 		windowScroll.getHorizontalScrollBar().setUnitIncrement(12);
 		this.add(windowScroll);
+
+		Localizer.addListener(this);
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -330,17 +334,15 @@ public class ReportsView extends JPanel implements ActionListener,
 		}
 
 		onLocaleChange();
-		Localizer.addListener(this);
 	}
 
-	public void setController(ReportsController manager) {
-		controller = manager;
-		addUser.addActionListener(manager);
-		removeUser.addActionListener(manager);
-		allUsers.addChangeListener(manager);
-		currUsersList.setController(manager);
-		projectUsersList.setController(manager);
-		generateGraph.addActionListener(manager);
+	public void setController(ReportsController controller) {
+		addUser.addActionListener(controller);
+		removeUser.addActionListener(controller);
+		allUsers.addChangeListener(controller);
+		currUsersList.setController(controller);
+		projectUsersList.setController(controller);
+		generateGraph.addActionListener(controller);
 	}
 
 	/**
@@ -579,12 +581,12 @@ public class ReportsView extends JPanel implements ActionListener,
 	 * @return The selected time unit
 	 */
 	public Period getTimeUnit() {
-		switch ((String) timeSliceList.getSelectedItem()) {
-		case "Days":
+		String selected = (String) timeSliceList.getSelectedItem();
+		if (selected.equals(Localizer.getString("Days"))) {
 			return Period.ofDays(1);
-		case "Weeks":
+		} else if (selected.equals(Localizer.getString("Weeks"))) {
 			return Period.ofWeeks(1);
-		default:
+		} else {
 			return Period.ofDays(1);
 		}
 	}
@@ -609,15 +611,19 @@ public class ReportsView extends JPanel implements ActionListener,
 
 	@Override
 	public void onLocaleChange() {
-		((TitledBorder) stagePanel.getBorder()).setTitle(Localizer
-				.getString("Stage"));
-		((TitledBorder) datePanel.getBorder()).setTitle(Localizer
-				.getString("Timeframe"));
-		allUsers.setText(Localizer.getString("All"));
+		allUsers.setText(Localizer.getString("AllUsers"));
 		currUsersList.setTitle(Localizer.getString("UsersReport"));
 		projectUsersList.setTitle(Localizer.getString("UsersNotReport"));
-		((TitledBorder) usersPanel.getBorder()).setTitle(Localizer
-				.getString("Users"));
 		generateGraph.setText(Localizer.getString("Generate"));
+		names[0] = Localizer.getString("Velocity");
+		names[1] = Localizer.getString("Distribution");
+		slices[0] = Localizer.getString("Days");
+		slices[1] = Localizer.getString("Weeks");
+		timeSliceLabel.setText(Localizer.getString("Units"));
+		stagePanelLabel.setText(Localizer.getString("Stage"));
+		timeSliceList.setPrototypeDisplayValue(Localizer.getString("Units"));
+		startDateLabel.setText(Localizer.getString("StartDate"));
+		endDateLabel.setText(Localizer.getString("EndDate"));
+		reportTypeLabel.setText(Localizer.getString("ChooseReportType"));
 	}
 }
