@@ -318,17 +318,14 @@ public class EditTaskController implements ActionListener {
 			}
 		}
 		etv.setStages(stageNames);
-		if (!(selectedStage == null)) {
+		if (selectedStage != null) {
 			etv.setSelectedStage(selectedStage);
 		}
 
 		final List<Requirement> reqs = RequirementModel.getInstance()
 				.getRequirements();
-		String selectedReq = null;
-		// don't get the currently selected requirement if there isn't one
-		if (etv.getSelectedRequirement() != null) {
-			selectedReq = etv.getSelectedRequirement();
-		}
+		String selectedReq = etv.getSelectedRequirement();
+
 		final List<String> reqNames = new ArrayList<String>();
 		if (reqs != null) {
 			for (Requirement req : reqs) {
@@ -336,7 +333,7 @@ public class EditTaskController implements ActionListener {
 			}
 		}
 		etv.setRequirements(reqNames);
-		if (!(selectedReq == null)) {
+		if (selectedReq != null) {
 			etv.setSelectedRequirement(selectedReq);
 		}
 
