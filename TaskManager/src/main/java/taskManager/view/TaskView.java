@@ -361,6 +361,13 @@ public class TaskView extends JPanel implements Transferable,
 		if (ToolbarController.getInstance().getView().isFunMode()) {
 			if (rotationView.isPainting()) {
 				super.paintComponent(g);
+				if (controller.isArchived()) {
+					if (controller.isHovered()) {
+						g.drawImage(ARCHIVE_HOVER, 0, 0, this);
+					} else {
+						g.drawImage(ARCHIVE_BG, 0, 0, this);
+					}
+				}
 			} else {
 				g.setColor(rotationView.getParent().getBackground());
 				g.fillRect(0, 0, getWidth(), getHeight());

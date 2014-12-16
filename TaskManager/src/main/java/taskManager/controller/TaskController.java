@@ -54,8 +54,6 @@ public class TaskController implements MouseListener {
 		this.view = view;
 		this.model = model;
 
-		// Set the background to orange if the task is archived.
-
 		view.setBackground(Colors.TASK);
 
 		if (model.getDueDate().before(new Date())) {
@@ -140,11 +138,6 @@ public class TaskController implements MouseListener {
 	 *
 	 */
 	public void changeToHoverColor() {
-		// don't highlight while task info is out in fun mode, because the clip
-		// bounds passed to the rotation view are sometimes not correct
-		if (ToolbarController.getInstance().getView().isFunMode()) {
-			return;
-		}
 		if (!getThisTaskInfoOut()) {
 			view.setBackground(Colors.TASK_HOVER);
 			view.setBorderColor(view.getBackground(), false);
