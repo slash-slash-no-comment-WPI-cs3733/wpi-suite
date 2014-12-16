@@ -308,7 +308,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
+		// do nothing
 
 	}
 
@@ -356,7 +356,6 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-
+		// do nothing
 	}
 }

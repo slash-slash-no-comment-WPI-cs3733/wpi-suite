@@ -212,9 +212,7 @@ public class EditTaskController implements ActionListener {
 						currentStage.getTasks().remove(model);
 						etv.resetFields();
 
-						// Save entire workflow whenever a task is deleted
-						WorkflowModel.getInstance().save();
-						// TODO don't save entire workflow
+						currentStage.save();
 					}
 
 					returnToWorkflowView();
@@ -396,9 +394,7 @@ public class EditTaskController implements ActionListener {
 		// makes all the fields blank again
 		etv.resetFields();
 
-		// Save entire workflow whenever a task is saved
-		WorkflowModel.getInstance().save(); // TODO make this call an
-											// appropriate method
+		model.save();
 	}
 
 	/**

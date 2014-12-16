@@ -8,6 +8,8 @@
  *******************************************************************************/
 package taskManager.controller;
 
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -30,8 +32,9 @@ import taskManager.view.EditTaskView;
  *
  */
 
-public class TaskInputController implements KeyListener, PopupMenuListener,
-		ListSelectionListener, PropertyChangeListener, ItemListener {
+public class TaskInputController implements KeyListener, FocusListener,
+		PopupMenuListener, ListSelectionListener, PropertyChangeListener,
+		ItemListener {
 
 	private final EditTaskView etv;
 	private boolean addUsersSelected = false;
@@ -171,7 +174,7 @@ public class TaskInputController implements KeyListener, PopupMenuListener,
 
 	@Override
 	public void popupMenuCanceled(PopupMenuEvent e) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	@Override
@@ -191,4 +194,17 @@ public class TaskInputController implements KeyListener, PopupMenuListener,
 	public void itemStateChanged(ItemEvent e) {
 		validate();
 	}
+
+	@Override
+	public void focusGained(FocusEvent arg0) {
+		// do nothing
+
+	}
+
+	@Override
+	public void focusLost(FocusEvent e) {
+		// do nothing
+
+	}
+
 }

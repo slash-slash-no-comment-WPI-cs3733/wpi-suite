@@ -87,7 +87,6 @@ public class TaskView extends JPanel implements Transferable,
 		spacer.setAlignmentX(LEFT_ALIGNMENT);
 
 		// sets the border
-		// TODO sort this out
 		final Border raisedbevel = BorderFactory
 				.createEtchedBorder(EtchedBorder.LOWERED);
 		final TitledBorder title = BorderFactory
