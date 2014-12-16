@@ -123,10 +123,10 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 
 		JPanel titleBar = new JPanel();
 		titleBar.setLayout(new MigLayout("wrap 2", "5[]:push[]", "[]0[center]"));
-		Dimension titleBarSize = new Dimension(this.getWidth(), 30);
+		Dimension titleBarSize = new Dimension(this.getWidth() - 15, 30);
 		titleBar.setSize(titleBarSize);
 		JLabel title = new JLabel(this.taskM.getName());
-		Dimension titleSize = new Dimension(190,
+		Dimension titleSize = new Dimension(185,
 				title.getPreferredSize().height + 10);
 
 		title.setFont(title.getFont().deriveFont(15.0f));
