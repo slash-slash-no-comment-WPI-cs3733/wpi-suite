@@ -14,7 +14,9 @@
 package edu.wpi.cs.wpisuitetng;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,7 +74,10 @@ public class WPILoginServlet extends HttpServlet {
 		if (ssid != null) {
 			try {
 				// find the project ID
-				BufferedReader putBody = request.getReader();
+				BufferedReader putBody = new BufferedReader(
+						new InputStreamReader(request.getInputStream(), "UTF8"));
+				putBody.read();
+				putBody.read();
 				String projectName = putBody.readLine();
 
 				// swap out the Sessions and add the project.
@@ -94,8 +99,9 @@ public class WPILoginServlet extends HttpServlet {
 					String s = ManagerLayer.getInstance().read(
 							"taskmanager/workflow/defaultWorkflow".split("/"),
 							cookies.toArray(cookies2));
-					PrintWriter out = response.getWriter();
-					out.println(s);
+					DataOutputStream out = new DataOutputStream(
+							response.getOutputStream());
+					out.writeUTF(s);
 					out.close();
 				} catch (WPISuiteException e) {
 					System.out.println("No workflow found for project \""
@@ -152,8 +158,9 @@ public class WPILoginServlet extends HttpServlet {
 
 			// write the string to the body
 			try {
-				PrintWriter contentWriter = response.getWriter();
-				contentWriter.write(contentBody);
+				DataOutputStream contentWriter = new DataOutputStream(
+						response.getOutputStream());
+				contentWriter.writeUTF(contentBody);
 				contentWriter.flush();
 				contentWriter.close();
 			} catch (IOException writerException) {
@@ -168,8 +175,9 @@ public class WPILoginServlet extends HttpServlet {
 
 			// write the string to the body
 			try {
-				PrintWriter contentWriter = response.getWriter();
-				contentWriter.write(contentBody);
+				DataOutputStream contentWriter = new DataOutputStream(
+						response.getOutputStream());
+				contentWriter.writeUTF(contentBody);
 				contentWriter.flush();
 				contentWriter.close();
 			} catch (IOException writerException) {
