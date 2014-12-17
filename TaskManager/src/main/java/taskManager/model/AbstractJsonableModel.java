@@ -23,7 +23,7 @@ import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
  * @author Sam Khalandovsky
  * @version Nov 10, 2014
  */
-public abstract class AbstractTaskManagerModel<T> extends AbstractModel {
+public abstract class AbstractJsonableModel<T> extends AbstractModel {
 
 	// Subclasses should make sure this stays unique
 	private String id;
@@ -35,11 +35,11 @@ public abstract class AbstractTaskManagerModel<T> extends AbstractModel {
 	 *
 	 * @param id
 	 */
-	protected AbstractTaskManagerModel(String id) {
+	protected AbstractJsonableModel(String id) {
 		this.id = id;
 	}
 
-	protected AbstractTaskManagerModel() {
+	protected AbstractJsonableModel() {
 		this(null);
 	}
 
@@ -127,7 +127,7 @@ public abstract class AbstractTaskManagerModel<T> extends AbstractModel {
 	public Boolean identify(Object o) {
 		Boolean identical = false;
 		if (o.getClass().equals(this.getClass())) {
-			identical = id.equals(((AbstractTaskManagerModel) o).getID());
+			identical = id.equals(((AbstractJsonableModel) o).getID());
 		}
 		if (o instanceof String) {
 			identical = id.equals((String) o);

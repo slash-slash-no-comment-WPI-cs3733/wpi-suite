@@ -26,7 +26,7 @@ import edu.wpi.cs.wpisuitetng.modules.Model;
  * @author Sam Khalandovsky
  * @version Nov 10, 2014
  */
-public class GenericEntityManager<T extends AbstractTaskManagerModel<T>>
+public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 		implements EntityManager<T> {
 	// The database
 	private final Data db;
@@ -55,7 +55,7 @@ public class GenericEntityManager<T extends AbstractTaskManagerModel<T>>
 	 */
 	@Override
 	public T makeEntity(Session s, String content) {
-		final T newModel = AbstractTaskManagerModel.fromJson(content, type);
+		final T newModel = AbstractJsonableModel.fromJson(content, type);
 		db.save(newModel, s.getProject());
 
 		return newModel;
@@ -106,7 +106,7 @@ public class GenericEntityManager<T extends AbstractTaskManagerModel<T>>
 	@Override
 	public T update(Session s, String content) throws WPISuiteException {
 		// deserialize
-		final T newModel = AbstractTaskManagerModel.fromJson(content, type);
+		final T newModel = AbstractJsonableModel.fromJson(content, type);
 
 		// check if object already exists
 		final List<Model> existingModels = db.retrieve(type, "id",

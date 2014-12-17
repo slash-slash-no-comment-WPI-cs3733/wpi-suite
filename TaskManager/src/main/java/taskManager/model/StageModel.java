@@ -33,7 +33,7 @@ import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
  * @version Nov 6, 2014
  */
 
-public class StageModel extends AbstractTaskManagerModel<StageModel> {
+public class StageModel extends AbstractJsonableModel<StageModel> {
 
 	// Generic logger
 	private static final Logger logger = Logger.getLogger(StageModel.class
@@ -311,8 +311,7 @@ public class StageModel extends AbstractTaskManagerModel<StageModel> {
 
 	/*
 	 * @see
-	 * taskManager.model.AbstractTaskManagerModel#makeIdenticalTo(java.lang.
-	 * Object)
+	 * taskManager.model.AbstractJsonableModel#makeIdenticalTo(java.lang.Object)
 	 */
 	@Override
 	public Set<Object> makeIdenticalTo(StageModel stage) {

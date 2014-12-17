@@ -34,7 +34,7 @@ public class GetUsersObserver extends GenericRequestObserver {
 
 		// Get all of the users and store to the TaskManager.users the
 		// corresponding usernames.
-		User[] userObjects = AbstractTaskManagerModel.fromJson(body, User[].class);
+		User[] userObjects = AbstractJsonableModel.fromJson(body, User[].class);
 		List<String> usernames = new ArrayList<String>();
 		for (User u : userObjects) {
 			usernames.add(u.getUsername());

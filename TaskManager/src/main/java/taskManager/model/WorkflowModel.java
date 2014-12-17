@@ -29,7 +29,7 @@ import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
  * @author Ezra Davis
  * @version Nov 6, 2014
  */
-public class WorkflowModel extends AbstractTaskManagerModel<WorkflowModel> {
+public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	// List of stages in the workflow.
 	List<StageModel> stageList;
 
@@ -258,8 +258,7 @@ public class WorkflowModel extends AbstractTaskManagerModel<WorkflowModel> {
 
 	/*
 	 * @see
-	 * taskManager.model.AbstractTaskManagerModel#makeIdenticalTo(java.lang.
-	 * Object)
+	 * taskManager.model.AbstractJsonableModel#makeIdenticalTo(java.lang.Object)
 	 */
 	public Set<Object> makeIdenticalTo(WorkflowModel workflow) {
 		setID(workflow.getID());

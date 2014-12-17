@@ -113,10 +113,10 @@ public class WorkflowModelTest {
 			revorder = s.toJson() + revorder;
 		}
 		assertEquals("Stages did not move properly", inorder, revorder);
-		WorkflowModel wmcpy = AbstractTaskManagerModel.fromJson(wm.toJson(),
+		WorkflowModel wmcpy = AbstractJsonableModel.fromJson(wm.toJson(),
 				WorkflowModel.class);
 		verifyWorkflow(wm, wmcpy);
-		StageModel sm4cpy = AbstractTaskManagerModel.fromJson(sm4.toJson(),
+		StageModel sm4cpy = AbstractJsonableModel.fromJson(sm4.toJson(),
 				StageModel.class);
 		verifyStage(sm4, sm4cpy);
 	}
