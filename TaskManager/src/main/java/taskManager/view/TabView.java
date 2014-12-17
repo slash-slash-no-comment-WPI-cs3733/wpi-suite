@@ -129,7 +129,7 @@ public class TabView extends JPanel implements ActionListener, MouseListener,
 				final EditTaskController etc = ((EditTaskView) component)
 						.getController();
 				// If there are edits, show confirmation dialog.
-				if (etc.isEdited()) {
+				if (etc.isEdited() || etc.isWritingComment()) {
 					final Integer choice = JOptionPane.showConfirmDialog(
 							tabPaneC.getView(),
 							Localizer.getString("UnsavedWarning"),

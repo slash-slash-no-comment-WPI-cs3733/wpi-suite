@@ -505,10 +505,6 @@ public class EditTaskController implements ActionListener {
 	public boolean isEdited() {
 		boolean edited = false;
 
-		if (!etv.getCommentsFieldText().isEmpty()) {
-			return true;
-		}
-
 		// Compare the task info with the filled in info.
 		if (model == null) { // If we're creating a task
 			if (!(etv.getTitleText().isEmpty()
@@ -540,7 +536,7 @@ public class EditTaskController implements ActionListener {
 			edited = true;
 		}
 
-		// Stage.
+		// Category.
 		else if (checkCategories()) {
 			edited = true;
 		}
@@ -759,6 +755,16 @@ public class EditTaskController implements ActionListener {
 	 */
 	public boolean isEditingComment() {
 		return activityC.getEditedTask() != null;
+	}
+
+	/**
+	 * 
+	 * Returns whether there is text in the comment textbox or not.
+	 *
+	 * @return true if there is text in the comment textbox, false otherwise
+	 */
+	public boolean isWritingComment() {
+		return (isEditingComment() || (!etv.getCommentsFieldText().equals("")));
 	}
 
 	/**
