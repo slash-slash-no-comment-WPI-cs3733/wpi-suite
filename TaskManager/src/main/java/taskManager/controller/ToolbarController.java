@@ -253,9 +253,20 @@ public class ToolbarController extends DropTargetAdapter implements
 				switch (name) {
 				case ToolbarView.DELETE:
 					if (target.isEnabled()) {
-						taskV.getController().deleteTask(); // remove from model
-						taskV.getParent().remove(taskV); // remove from view
-						// Reload and save workflow.
+						Integer choice = JOptionPane.showConfirmDialog(
+								TabPaneController.getInstance().getView(),
+								"Are you sure you want to delete this task?",
+								"Warning - Deleting a task",
+								JOptionPane.YES_NO_OPTION);
+						if (choice.equals(JOptionPane.YES_OPTION)) {
+							// delete this task
+							taskV.getController().deleteTask(); // remove from
+																// model
+							taskV.getParent().remove(taskV); // remove from view
+
+							TabPaneController.getInstance()
+									.removeEditTaskTabByID(taskV.getViewID());
+						}
 						WorkflowController.getInstance().reloadData();
 						WorkflowController.getInstance().repaintView();
 						WorkflowModel.getInstance().save();

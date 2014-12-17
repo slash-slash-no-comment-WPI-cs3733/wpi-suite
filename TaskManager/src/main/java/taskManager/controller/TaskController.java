@@ -119,7 +119,8 @@ public class TaskController implements MouseListener {
 	 *
 	 */
 	public void editTask() {
-		new EditTaskController(model).getView().focusOnTitleField();
+		EditTaskController c = new EditTaskController(model);
+		c.getView().focusOnTitleField();
 	}
 
 	/**

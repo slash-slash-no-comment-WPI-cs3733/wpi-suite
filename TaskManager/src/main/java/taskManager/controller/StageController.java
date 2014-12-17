@@ -106,7 +106,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 					// makes a new view for each task
 					TaskView tkv = new TaskView(task.getName(),
 							task.getDueDate(), task.getAssigned().size(),
-							comments, StageView.STAGE_WIDTH);
+							comments, task.getID(), StageView.STAGE_WIDTH);
 					tkv.setController(new TaskController(tkv, task));
 					for (int i = 0; i < TaskCategory.values().length; i++) {
 						if (TaskCategory.values()[i].equals(task.getCategory())) {
@@ -293,6 +293,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 				WorkflowController.pauseInformation = false;
 				// reload which will remove the textbox
 				WorkflowController.getInstance().reloadData();
+				WorkflowController.getInstance().repaintView();
 				break;
 			}
 		}
