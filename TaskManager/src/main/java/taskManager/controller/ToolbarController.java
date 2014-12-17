@@ -137,6 +137,10 @@ public class ToolbarController extends DropTargetAdapter implements
 		otherChildrenWidth -= view.getProjectName().getWidth();
 		int goalWidth = toolbarWidth - otherChildrenWidth;
 
+		if (goalWidth <= 30) {
+			return "";
+		}
+
 		// Because of the word wrap, if there there is an overflow there will be
 		// some section with no whitespace that causes the overflow, so find it
 		// and hyphenate it
@@ -151,7 +155,7 @@ public class ToolbarController extends DropTargetAdapter implements
 			int stringWidth = SwingUtilities.computeStringWidth(
 					view.getProjectName().getFontMetrics(
 							view.getProjectName().getFont()), s);
-			if (stringWidth > goalWidth) {
+			if (stringWidth > goalWidth && s.length() > 1) {
 				String hyphenatedStart = s + "-";
 				String hyphenatedEnd = "";
 				// Reduce the width of the string with hyphenation until it
