@@ -106,7 +106,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 					// makes a new view for each task
 					TaskView tkv = new TaskView(task.getName(),
 							task.getDueDate(), task.getAssigned().size(),
-							comments, StageView.STAGE_WIDTH);
+							comments, task.getID(), StageView.STAGE_WIDTH);
 					tkv.setController(new TaskController(tkv, task));
 					for (int i = 0; i < TaskCategory.values().length; i++) {
 						if (TaskCategory.values()[i].equals(task.getCategory())) {
@@ -293,6 +293,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 				WorkflowController.pauseInformation = false;
 				// reload which will remove the textbox
 				WorkflowController.getInstance().reloadData();
+				WorkflowController.getInstance().repaintView();
 				break;
 			}
 		}
@@ -321,11 +322,15 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 				"Assigned Users", "Estimated Effort", "Actual Effort" };
 		List<String[]> taskStringArrays = new ArrayList<String[]>();
 		for (TaskModel tm : model.getTasks()) {
-			String values[] = { tm.getName(), tm.getDescription(),
+			String values[] = {
+					tm.getName(),
+					tm.getDescription(),
 					new SimpleDateFormat("MM/dd/yy").format(tm.getDueDate()),
 					String.join(",", tm.getAssigned()),
-					Integer.toString(tm.getEstimatedEffort()),
-					Integer.toString(tm.getActualEffort()) };
+					tm.isEstimatedEffortSet() ? Integer.toString(tm
+							.getEstimatedEffort()) : "None",
+					tm.isActualEffortSet() ? Integer.toString(tm
+							.getActualEffort()) : "None" };
 			taskStringArrays.add(values);
 		}
 		List<String> rows = new ArrayList<String>();

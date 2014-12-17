@@ -11,6 +11,9 @@ package taskManager.controller;
 
 import java.awt.Component;
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 import taskManager.view.EditTaskView;
 import taskManager.view.ReportsView;
 import taskManager.view.TabPaneView;
@@ -24,7 +27,7 @@ import taskManager.view.WorkflowView;
  * @author Clark Jacobsohn
  * @version Nov 17, 2014
  */
-public class TabPaneController {
+public class TabPaneController implements ChangeListener {
 
 	// singleton TabPaneView
 	private TabPaneView view;
@@ -147,6 +150,23 @@ public class TabPaneController {
 	}
 
 	/**
+	 * remove a tab of the given id, if it's open
+	 * 
+	 * @param id
+	 *            the id of the tab you want to remove
+	 */
+	public void removeEditTaskTabByID(String id) {
+		for (Component t : view.getComponents()) {
+			if (t instanceof EditTaskView) {
+				EditTaskView tab = (EditTaskView) t;
+				if (tab.getViewID().equals(id)) {
+					TabPaneController.getInstance().removeTabByComponent(tab);
+				}
+			}
+		}
+	}
+
+	/**
 	 * Returns the associated TabPaneView
 	 * 
 	 * @return The associated TabPaneView
@@ -166,4 +186,13 @@ public class TabPaneController {
 		}
 		return instance;
 	}
+
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		if (this.view.getSelectedComponent() instanceof EditTaskView) {
+			EditTaskView etv = (EditTaskView) this.view.getSelectedComponent();
+			etv.getController().reloadData();
+		}
+	}
+
 }

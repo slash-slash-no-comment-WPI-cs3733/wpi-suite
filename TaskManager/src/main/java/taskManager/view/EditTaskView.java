@@ -62,6 +62,8 @@ import taskManager.localization.Localizer;
 
 public class EditTaskView extends JPanel implements LocaleChangeListener {
 
+	private String taskID;
+
 	public static final String STAGES = "stages";
 	public static final String REQUIREMENTS = "requirements";
 	public static final String CANCEL = "cancel";
@@ -159,11 +161,12 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	 * @param activityC
 	 *            The ActivityController for this EditTaskView's task
 	 */
-	public EditTaskView(Mode mode, ActivityController activityC) {
-
+	public EditTaskView(Mode mode, ActivityController activityC, String taskID) {
+		// TODO: User Mode to switch between create and edit views
 		// When Task added make EditTask take in a Task called currTask
-		// TODO change this to an indicator that its an edit task view
-		this.setName("edit task view");
+		if (mode.equals(Mode.EDIT)) {
+			this.taskID = taskID;
+		}
 		this.mode = mode;
 		this.activityC = activityC;
 		this.setOpaque(false);
@@ -489,6 +492,27 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	}
 
 	/**
+	 * Sets the name of the task, only if the mode is create
+	 * 
+	 * @param id
+	 *            the id to set the view to
+	 */
+	public void setViewID(String id) {
+		if (mode.equals(Mode.CREATE)) {
+			this.taskID = id;
+		}
+	}
+
+	/**
+	 * returns the taskID associated with this view
+	 * 
+	 * @return the task ID associated with this view
+	 */
+	public String getViewID() {
+		return this.taskID;
+	}
+
+	/**
 	 * 
 	 * Sets the focus to the title field.
 	 *
@@ -565,17 +589,6 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	 */
 	public TaskInputController getFieldController() {
 		return fieldC;
-	}
-
-	/**
-	 * 
-	 * Sets the archive button's text
-	 *
-	 * @param text
-	 *            The text to set it to
-	 */
-	public void setArchiveButtonText(String text) {
-		archive.setText(text);
 	}
 
 	/**
@@ -1220,6 +1233,7 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		cancel.setText(Localizer.getString("Cancel"));
 		cancelComment.setText(Localizer.getString("Cancel"));
 		archive.setText(Localizer.getString("Archived"));
+		dateField.setFormats(Localizer.getString("DateFormat"));
 		((JLabel) titleError.getContents()).setText(Localizer
 				.getString(TITLE_ERROR));
 		((JLabel) descripError.getContents()).setText(Localizer
