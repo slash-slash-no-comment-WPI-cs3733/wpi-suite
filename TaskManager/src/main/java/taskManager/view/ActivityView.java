@@ -116,7 +116,7 @@ public class ActivityView extends JPanel implements MouseListener,
 		text.add(message);
 
 		JPanel color = new JPanel();
-		color.setMinimumSize(new Dimension(20, 4));
+		color.setMinimumSize(new Dimension(8, 8));
 		if (activityM.getType().equals(ActivityModelType.COMMENT)) {
 			color.setBackground(Colors.ACTIVITY_COMMENT);
 		} else {
