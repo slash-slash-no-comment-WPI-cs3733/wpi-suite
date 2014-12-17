@@ -788,10 +788,6 @@ public class ReportsController implements ActionListener, ChangeListener,
 		// Create the chart with the Title, Label names.
 		JPanel chart = createLineChart(title, xLabel, yLabel);
 
-		// // Open a new tab with the given chart.
-		// TabPaneController.getInstance()
-		// .addTab("Line Graph", chart, true, false);
-		// TabPaneController.getInstance().getView().setSelectedComponent(chart);
 		this.rtv.setGraphPanel(chart);
 	}
 
@@ -839,10 +835,6 @@ public class ReportsController implements ActionListener, ChangeListener,
 		// Create the chart with the Title, Label names.
 		JPanel chart = createPieChart(title);
 
-		// // Open a new tab with the given chart.
-		// TabPaneController.getInstance().addTab("Pie Chart", chart, true,
-		// false);
-		// TabPaneController.getInstance().getView().setSelectedComponent(chart);
 		this.rtv.setGraphPanel(chart);
 	}
 

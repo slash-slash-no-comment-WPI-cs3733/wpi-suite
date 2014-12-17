@@ -250,4 +250,21 @@ public class ScrollList extends JPanel {
 		title.setText(s);
 	}
 
+	/**
+	 * sets the size of the scroll list
+	 * 
+	 * @param size
+	 *            the size to set the scroll list to
+	 */
+	public void setScrollListSize(Dimension size) {
+		this.setPreferredSize(size);
+		this.setSize(size);
+		this.setMinimumSize(size);
+		this.setMaximumSize(size);
+		listScroller.setMinimumSize(size);
+		listScroller.setMaximumSize(size);
+		listScroller.setPreferredSize(size);
+		listScroller.setSize(size);
+	}
+
 }

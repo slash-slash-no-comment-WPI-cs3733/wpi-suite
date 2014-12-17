@@ -103,7 +103,7 @@ public class ReportsView extends JPanel implements ActionListener,
 	private JComboBox<String> timeSliceList;
 
 	private final JPanel graph;
-	JScrollPane windowScroll;
+	JPanel options;
 	private JSplitPane splitPane;
 
 	private JPanel TaskDistribution = new JPanel();
@@ -152,12 +152,12 @@ public class ReportsView extends JPanel implements ActionListener,
 				"0[grow, fill][]0"));
 
 		graph = new JPanel();
-		// JPanel EditSaveCancel = new JPanel(new MigLayout("center"));
-		// EditSaveCancel.setOpaque(false);
-		// JPanel SpacerTop = new JPanel(new MigLayout());
-		// JPanel SpacerBtm = new JPanel(new MigLayout());
-
+		JPanel generateButton = new JPanel(new FlowLayout());
+		generateButton.setOpaque(false);
+		options = new JPanel();
+		options.setLayout(new BoxLayout(options, BoxLayout.Y_AXIS));
 		window = new JPanel(new FlowLayout());
+		window.setMinimumSize(new Dimension(160, 325));
 		generator = new JPanel(new MigLayout());
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -165,7 +165,6 @@ public class ReportsView extends JPanel implements ActionListener,
 		JPanel SelectStages = new JPanel(new MigLayout());
 
 		// Report Type Pane
-
 		JPanel reportType = new JPanel(new MigLayout());
 		reportTypeLabel = new JLabel(Localizer.getString("ChooseReportType"));
 		reportTypeLabel.setFont(bigFont);
@@ -176,7 +175,9 @@ public class ReportsView extends JPanel implements ActionListener,
 		reportTypeButtons.add(workvel);
 		reportTypeButtons.add(taskdistro);
 		effort.addActionListener(this);
+		effort.setOpaque(false);
 		numberoftasks.addActionListener(this);
+		numberoftasks.setOpaque(false);
 		effort.setSelected(true);
 
 		ButtonGroup effortOrTasksButtons = new ButtonGroup();
@@ -190,11 +191,12 @@ public class ReportsView extends JPanel implements ActionListener,
 		reportType.add(taskdistro);
 		effortOrNumberofTasks.add(effort);
 		effortOrNumberofTasks.add(numberoftasks);
+		effortOrNumberofTasks.setOpaque(false);
 
 		JPanel WorkVelocity = new JPanel(new MigLayout());
 		JPanel TaskDistribution = new JPanel(new MigLayout());
 
-		// Create two differnent stage views for each view
+		// Create two different stage views for each view
 		stagePanel = new JPanel();
 		stagePanel2 = new JPanel();
 		stagePanel.setLayout(new MigLayout());
@@ -259,8 +261,10 @@ public class ReportsView extends JPanel implements ActionListener,
 		allUsers.setName(ALL_USERS);
 		currUsersList = new ScrollList("");
 		currUsersList.setBackground(this.getBackground());
+		currUsersList.setScrollListSize(new Dimension(100, 120));
 		projectUsersList = new ScrollList("");
 		projectUsersList.setBackground(this.getBackground());
+		projectUsersList.setScrollListSize(new Dimension(100, 120));
 		// Add user to list
 		addUser = new JButton(">>");
 		addUser.setName(ADD_USER);
@@ -313,8 +317,6 @@ public class ReportsView extends JPanel implements ActionListener,
 		cards.add(TaskDistribution, names[1]);
 		generator.add(reportType, "align center, wrap");
 		generator.add(cards, "wrap");
-		generator.add(effortOrNumberofTasks, "align center, wrap");
-		generator.add(generateGraph, ("align center"));
 		CardLayout cl = (CardLayout) (cards.getLayout());
 
 		Dimension CardSize = cards.getSize();
@@ -322,15 +324,21 @@ public class ReportsView extends JPanel implements ActionListener,
 
 		cl.show(cards, names[0]);
 		window.add(generator);
-
-		windowScroll = new JScrollPane(window,
+		JScrollPane windowScroll = new JScrollPane(window,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		windowScroll.getVerticalScrollBar().setUnitIncrement(12);
 		windowScroll.getHorizontalScrollBar().setUnitIncrement(12);
 
-		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
-				windowScroll, graph);
+		// adds the scroll and the generate button
+		generateButton.add(effortOrNumberofTasks);
+		generateButton.add(generateGraph);
+		options.add(windowScroll);
+		options.add(generateButton);
+		options.setBackground(Colors.STAGE);
+
+		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, options,
+				graph);
 		splitPane.setDividerLocation(500);
 		splitPane.setDividerSize(10);
 
@@ -339,6 +347,7 @@ public class ReportsView extends JPanel implements ActionListener,
 		this.add(splitPane);
 
 		Localizer.addListener(this);
+		onLocaleChange();
 	}
 
 	/**
@@ -346,8 +355,8 @@ public class ReportsView extends JPanel implements ActionListener,
 	 */
 	public void setGraphPanel(JPanel graph) {
 		this.removeAll();
-		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
-				windowScroll, graph);
+		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true, options,
+				graph);
 		this.add(splitPane);
 		this.repaint();
 	}

@@ -99,20 +99,8 @@ public class TabPaneController implements ChangeListener {
 	 *            the reports view to add.
 	 */
 	public void addReportsTab(ReportsView rtv) {
-		// boolean exists = false;
-		// ReportsView rtv2 = null;
-		// for (Component c : view.getComponents()) {
-		// if (c instanceof ReportsView) {
-		// rtv2 = (ReportsView) c;
-		// exists = true;
-		// }
-		// }
-		// if (exists) {
-		// view.setSelectedComponent(rtv2);
-		// } else {
 		addTab("Reports", rtv, true, true);
 		view.setSelectedComponent(rtv);
-		// }
 	}
 
 	/**
