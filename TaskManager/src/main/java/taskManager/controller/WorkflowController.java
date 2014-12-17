@@ -25,6 +25,7 @@ import org.jdesktop.swingx.prompt.PromptSupport;
 
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DropAreaSaveListener;
+import taskManager.localization.Localizer;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.StageView;
@@ -45,6 +46,8 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	private WorkflowView view;
 	private WorkflowModel model;
 	private boolean hasNewStageView;
+
+	private TaskFilter currentFilter;
 
 	private static WorkflowController instance;
 	public static boolean pauseInformation;
@@ -70,6 +73,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		model.reset();
 
 		hasNewStageView = false;
+		currentFilter = new TaskFilter();
 
 		reloadData();
 
@@ -105,11 +109,22 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 *
 	 */
 	public synchronized void reloadData() {
+		reloadData(currentFilter);
+	}
 
+	/**
+	 * reload the data using the given filter
+	 * 
+	 * @param filter
+	 *            the filter to be applied to workflow
+	 */
+	public synchronized void reloadData(TaskFilter filter) {
 		// clear the stages previously on the view
+		currentFilter = filter;
 		this.removeChangeTitles();
 		this.removeTaskInfos(false);
 		hasNewStageView = false;
+
 		for (Component c : view.getComponents()) {
 			if (!(c instanceof TaskInfoPreviewView)) {
 				view.remove(c);
@@ -128,9 +143,9 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 			view.addStageView(stv);
 		}
 
-		// view needs to be repainted before we can find positions of components
+		// view needs to be revalidated before we can find positions of
+		// components
 		view.revalidate();
-		view.repaint();
 
 		// if this doesn't run in the EDT, it sometimes doesn't work
 		SwingUtilities.invokeLater(new Runnable() {
@@ -138,6 +153,10 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 				// get the mouse position relative to the workflow
 				Point p = view.getMousePosition();
 				if (p != null) {
+					// validate the view now if it hasn't happened already
+					if (!view.isValid()) {
+						view.validate();
+					}
 					Component mouseC = view.findComponentAt(p);
 					// if we're over a TaskView, call mouse entered on it.
 					while (mouseC != null) {
@@ -181,20 +200,39 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		if (!hasNewStageView) {
 			hasNewStageView = true;
 			final StageView newStageV = new StageController().getView();
-			newStageV.getController().switchTitle(true);
 
-			PromptSupport
-					.setPrompt("New Stage Name", newStageV.getLabelField());
+			PromptSupport.setPrompt(Localizer.getString("NewStageName"),
+					newStageV.getLabelField());
 			PromptSupport.setFocusBehavior(
 					PromptSupport.FocusBehavior.SHOW_PROMPT,
 					newStageV.getLabelField());
 
 			view.addStageView(newStageV);
+			newStageV.switchTitles(true);
 			removeTaskInfos(false);
 
 			view.revalidate();
 			view.repaint();
 		}
+	}
+
+	/**
+	 * saves the the filter that is currently being applied
+	 * 
+	 * @param filter
+	 *            the filter to be applied
+	 */
+	public void setCurrentFilter(TaskFilter filter) {
+		this.currentFilter = filter;
+	}
+
+	/**
+	 * gets the currently applied task filter
+	 * 
+	 * @return gets the currently applied filter
+	 */
+	public TaskFilter getCurrentFilter() {
+		return this.currentFilter;
 	}
 
 	/**

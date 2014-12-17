@@ -14,6 +14,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +26,13 @@ import javax.swing.JPanel;
 
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DropAreaSaveListener;
+import taskManager.localization.Localizer;
 import taskManager.model.ActivityModel;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
+import taskManager.model.TaskModel.TaskCategory;
 import taskManager.model.WorkflowModel;
+import taskManager.view.Colors;
 import taskManager.view.RotationView;
 import taskManager.view.StageView;
 import taskManager.view.TaskView;
@@ -61,21 +65,23 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 		this.newStage = true;
 	}
 
+	public StageController(StageModel model) {
+		this(model, WorkflowController.getInstance().getCurrentFilter());
+	}
+
 	/**
 	 * Constructor for the StageController gets all the tasks from the
 	 * StageModel, creates the corresponding TaskView and TaskControllers for
 	 * each, and final adds all of the TaskViews to the UI. Use this when
 	 * loading a stage from a database.
-	 *
-	 * @param view
-	 *            the corresponding StageView object
+	 * 
 	 * @param model
 	 *            the corresponding StageModel object
-	 * @param newStage
-	 *            true if this is a new stage. false if it is being loaded from
-	 *            the database
+	 * @param filter
+	 *            the filter to be applied to the stage
 	 */
-	public StageController(StageModel model) throws IllegalArgumentException {
+	public StageController(StageModel model, TaskFilter filter)
+			throws IllegalArgumentException {
 		if (model == null) {
 			throw new IllegalArgumentException("Model cannot be null");
 		}
@@ -83,18 +89,13 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 		this.view = new StageView(model.getName(), this);
 		this.newStage = false;
 
-		// Get state of archive shown check box.
-		final boolean showArchive = ToolbarController.getInstance().getView()
-				.isArchiveShown();
-
 		// Add the tasks.
 		if (model != null) {
 			final List<TaskModel> tasks = this.model.getTasks();
 			for (TaskModel task : tasks) {
-				// Add only if task is not archived or when task is archived and
-				// archive shown is set to true.
-				if (!task.isArchived() || showArchive) {
-					// create stage view and controller.
+				// Only add task if it passes the filter
+				if (filter.check(task)) {
+					// create task view and controller.
 					int comments = 0;
 					for (ActivityModel a : task.getActivities()) {
 						if (a.getType() == ActivityModel.ActivityModelType.COMMENT) {
@@ -102,10 +103,16 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 						}
 					}
 
+					// makes a new view for each task
 					TaskView tkv = new TaskView(task.getName(),
 							task.getDueDate(), task.getAssigned().size(),
-							comments, task.getID());
+							comments, task.getID(), StageView.STAGE_WIDTH);
 					tkv.setController(new TaskController(tkv, task));
+					for (int i = 0; i < TaskCategory.values().length; i++) {
+						if (TaskCategory.values()[i].equals(task.getCategory())) {
+							tkv.setCategoryColor(Colors.CAT_COLORS[i], true);
+						}
+					}
 
 					// if we're in fun mode, put the rotation view in the stage
 					// view
@@ -138,14 +145,14 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 		}
 		final TaskController tc = ((TaskView) panel).getController();
 
-		// if archived tasks are hidden, change index to account for the hidden
+		// if tasks are hidden, change index to account for the hidden
 		// tasks
-		if (!ToolbarController.getInstance().getView().isArchiveShown()) {
-			final List<TaskModel> taskList = model.getTasks();
-			for (int i = 0; i < index; i++) {
-				if (taskList.get(i).isArchived()) {
-					index++;
-				}
+		final List<TaskModel> taskList = model.getTasks();
+		for (int i = 0; i < index; i++) {
+			if (!WorkflowController.getInstance().getCurrentFilter()
+					.check(taskList.get(i))) {
+				index++;
+
 			}
 		}
 
@@ -192,19 +199,6 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 
 	/**
 	 *
-	 * Changes which title is visible, the label or the textbox. If editable is
-	 * true, the textbox is visible.
-	 *
-	 * @param editable
-	 *            true to make the textbox visible, false to make the label
-	 *            visible
-	 */
-	public void switchTitle(Boolean editable) {
-		view.switchTitles(editable);
-	}
-
-	/**
-	 *
 	 * @return true if this is a new stage. false if it was loaded from the
 	 *         database
 	 */
@@ -229,7 +223,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 			WorkflowController.getInstance().removeTaskInfos(true);
 			WorkflowController.pauseInformation = true;
 			// bring up the title textbox
-			switchTitle(true);
+			view.switchTitles(true);
 		} else {
 			WorkflowController.pauseInformation = false;
 			WorkflowController.getInstance().reloadData();
@@ -261,14 +255,14 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 
 	}
 
-	private void checkButton() {
+	public void checkButton() {
 		if (view.isCheckEnabled()
 				&& WorkflowModel.getInstance().findStageByName(
 						view.getLabelText()) != null) {
 			JOptionPane.showConfirmDialog(view,
-					"Another stage already has the name " + view.getLabelText()
-							+ ". Please choose another name.",
-					"Warning - Duplicate stage names",
+					MessageFormat.format(Localizer.getString("DuplicateStage"),
+							view.getLabelText()), Localizer
+							.getString("DuplicateWarning"),
 					JOptionPane.CLOSED_OPTION);
 		} else if (view.isCheckEnabled()) {
 			if (model == null) {
@@ -294,12 +288,12 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 			case StageView.CHECK:
 				checkButton();
 				break;
-			// fall through
 			case StageView.X:
 				// reset the flags
 				WorkflowController.pauseInformation = false;
 				// reload which will remove the textbox
 				WorkflowController.getInstance().reloadData();
+				WorkflowController.getInstance().repaintView();
 				break;
 			}
 		}
@@ -307,7 +301,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
+		// do nothing
 
 	}
 
@@ -355,7 +349,6 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-
+		// do nothing
 	}
 }

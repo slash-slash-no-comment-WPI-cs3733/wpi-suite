@@ -20,7 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
 
-import taskManager.controller.ReportsManager;
+import taskManager.controller.ReportsController;
 import taskManager.controller.TaskInputController;
 
 /**
@@ -36,6 +36,7 @@ public class ScrollList extends JPanel {
 	private final DefaultListModel<String> lm;
 	private final JScrollPane listScroller;
 	private final JList<String> jl;
+	private final JLabel title;
 
 	/**
 	 * Constructor for a scroll list
@@ -45,13 +46,15 @@ public class ScrollList extends JPanel {
 	 */
 	public ScrollList(String t) {
 		setLayout(new BorderLayout());
-		this.setMinimumSize(new Dimension(140, 290));
-		this.setMaximumSize(new Dimension(140, 290));
-		this.setPreferredSize(new Dimension(140, 290));
-		this.setSize(new Dimension(140, 290));
+		Dimension size = new Dimension(140, 201);
+		this.setMinimumSize(size);
+		this.setMaximumSize(size);
+		this.setPreferredSize(size);
+		this.setSize(size);
 		lm = new DefaultListModel<String>();
 		jl = new JList<String>(lm);
 		jl.setVisibleRowCount(3);
+		jl.setFocusable(false);
 		listScroller = new JScrollPane(jl);
 		listScroller.setMinimumSize(new Dimension(200, 175));
 		listScroller.setMaximumSize(new Dimension(200, 175));
@@ -62,7 +65,7 @@ public class ScrollList extends JPanel {
 		listScroller
 				.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 
-		final JLabel title = new JLabel(t);
+		title = new JLabel(t);
 		this.add(title, BorderLayout.NORTH);
 		this.setBackground(Colors.TASK);
 		this.add(listScroller, BorderLayout.CENTER);
@@ -238,9 +241,13 @@ public class ScrollList extends JPanel {
 	 * @param listener
 	 *            the listener to be added to the list
 	 */
-	public void setController(ReportsManager listener) {
+	public void setController(ReportsController listener) {
 		jl.addListSelectionListener(listener);
 		jl.addPropertyChangeListener(listener);
+	}
+
+	public void setTitle(String s) {
+		title.setText(s);
 	}
 
 }

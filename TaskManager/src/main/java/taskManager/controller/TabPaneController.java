@@ -86,7 +86,7 @@ public class TabPaneController implements ChangeListener {
 		if (exists) {
 			view.setSelectedComponent(etv2);
 		} else {
-			addTab(etv.getTitleText(), etv, true);
+			addTab(etv.getTitleText(), etv, true, false);
 			view.setSelectedComponent(etv);
 		}
 	}
@@ -110,7 +110,7 @@ public class TabPaneController implements ChangeListener {
 		if (exists) {
 			view.setSelectedComponent(rtv2);
 		} else {
-			addTab("Reports", rtv, true);
+			addTab("Reports", rtv, true, true);
 			view.setSelectedComponent(rtv);
 		}
 	}
@@ -126,11 +126,14 @@ public class TabPaneController implements ChangeListener {
 	 * @param closeable
 	 *            Whether or not a tab can be closed. True adds an 'x' button to
 	 *            the tab
+	 * @param localizable
+	 *            If this title should be localized
 	 */
-	public void addTab(String title, Component component, boolean closeable) {
+	public void addTab(String title, Component component, boolean closeable,
+			boolean localizable) {
 		view.addTab(title, component);
 		view.setTabComponentAt(view.indexOfComponent(component), new TabView(
-				title, component, closeable));
+				title, component, closeable, localizable));
 	}
 
 	/**

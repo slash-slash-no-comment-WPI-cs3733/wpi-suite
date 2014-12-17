@@ -24,15 +24,17 @@ import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 
 import taskManager.TaskManager;
+import taskManager.localization.Localizer;
 import taskManager.model.ActivityModel;
 import taskManager.model.ActivityModel.ActivityModelType;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
+import taskManager.model.TaskModel.TaskCategory;
 import taskManager.model.WorkflowModel;
 import taskManager.view.ActivityView;
+import taskManager.view.Colors;
 import taskManager.view.EditTaskView;
 import taskManager.view.EditTaskView.Mode;
-import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.RequirementManager;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
@@ -63,6 +65,10 @@ public class EditTaskController implements ActionListener {
 		etv.setController(this);
 		etv.setFieldController(new TaskInputController(etv));
 
+		etv.setCategories(Colors.CATEGORY_NAMES);
+		// set the drop down to say "select category"
+		etv.setSelectedCategory(Colors.CATEGORY_NAMES[0]);
+
 		// Disable save button when creating a task.
 		etv.setSaveEnabled(false);
 
@@ -71,15 +77,14 @@ public class EditTaskController implements ActionListener {
 
 		// fills the user lists
 		final List<String> projectUserNames = new ArrayList<String>();
-		for (User u : TaskManager.users) {
-			String name = u.getUsername();
-			if (!projectUserNames.contains(name)) {
-				projectUserNames.add(name);
+		for (String u : TaskManager.users) {
+			if (!projectUserNames.contains(u)) {
+				projectUserNames.add(u);
 			}
 		}
 		etv.getProjectUsersList().addAllToList(projectUserNames);
 
-		TabPaneController.getInstance().addTab("Create Task", etv, true);
+		TabPaneController.getInstance().addTab("CreateTask", etv, true, true);
 
 		reloadData();
 	}
@@ -115,15 +120,12 @@ public class EditTaskController implements ActionListener {
 
 		TabPaneController.getInstance().addEditTaskTab(etv);
 
-		etv.setSelectedStage(model.getStage().getName());
-
 		// populates the project users list
 		final List<String> projectUserNames = new ArrayList<String>();
-		for (User u : TaskManager.users) {
-			String name = u.getUsername();
-			if (!projectUserNames.contains(name)
-					&& !model.getAssigned().contains(name)) {
-				projectUserNames.add(name);
+		for (String u : TaskManager.users) {
+			if (!projectUserNames.contains(u)
+					&& !model.getAssigned().contains(u)) {
+				projectUserNames.add(u);
 			}
 		}
 		etv.getProjectUsersList().addAllToList(projectUserNames);
@@ -140,13 +142,6 @@ public class EditTaskController implements ActionListener {
 		// Disable save button until user starts making edits.
 		etv.setSaveEnabled(false);
 
-		// set the requirement dropdown
-		if (model.getReq() != null) {
-			etv.setSelectedRequirement(model.getReq().getName());
-		} else {
-			etv.setSelectedRequirement(null);
-		}
-
 		// makes the archive button clickable
 		etv.enableArchive();
 
@@ -154,8 +149,24 @@ public class EditTaskController implements ActionListener {
 
 		etv.setDeleteEnabled(model.isArchived());
 
+		etv.setCategories(Colors.CATEGORY_NAMES);
+		// set the category in the drop down to "select category"
+		etv.setSelectedCategory(Colors.CATEGORY_NAMES[0]);
+		int i = 0;
+		for (TaskCategory c : TaskCategory.values()) {
+			if (c.equals(model.getCategory())) {
+				etv.setSelectedCategory(Colors.CATEGORY_NAMES[i]);
+			}
+			i++;
+		}
 		this.reloadData();
-
+		etv.setSelectedStage(model.getStage().getName());
+		// set the requirement dropdown
+		if (model.getReq() != null) {
+			etv.setSelectedRequirement(model.getReq().getName());
+		} else {
+			etv.setSelectedRequirement(EditTaskView.NO_REQ);
+		}
 	}
 
 	@Override
@@ -167,7 +178,6 @@ public class EditTaskController implements ActionListener {
 			switch (name) {
 
 			case EditTaskView.SAVE:
-
 				if (etv.getFieldController().checkEditFields()) {
 					// if editing
 					if (isEditingTask()) {
@@ -189,16 +199,17 @@ public class EditTaskController implements ActionListener {
 						}
 						save();
 					}
-
 				} else {
 					etv.setSaveEnabled(false);
 				}
+
 				break;
 
 			case EditTaskView.DELETE:
 				final Integer choice = JOptionPane.showConfirmDialog(etv,
-						"Are you sure you want to delete this task?",
-						"Warning - Deleting a task", JOptionPane.YES_NO_OPTION);
+						Localizer.getString("DeleteWarning"),
+						Localizer.getString("DeleteWarningTitle"),
+						JOptionPane.YES_NO_OPTION);
 				if (choice.equals(JOptionPane.YES_OPTION)) {
 					// delete this task
 					if (model != null) {
@@ -211,12 +222,10 @@ public class EditTaskController implements ActionListener {
 								break;
 							}
 						}
-						currentStage.getTasks().remove(model);
+						currentStage.removeTask(model);
 						etv.resetFields();
 
-						// Save entire workflow whenever a task is deleted
 						WorkflowModel.getInstance().save();
-						// TODO don't save entire workflow
 					}
 
 					returnToWorkflowView();
@@ -284,8 +293,8 @@ public class EditTaskController implements ActionListener {
 				// the user is creating a new comment
 				else {
 					ActivityModel comment = new ActivityModel(
-							etv.getCommentsFieldText(),
-							ActivityModelType.COMMENT);
+							ActivityModelType.COMMENT,
+							etv.getCommentsFieldText());
 					// add the activity
 					activityC.addActivity(comment);
 					activityC.scrollActivitiesToBottom();
@@ -318,7 +327,7 @@ public class EditTaskController implements ActionListener {
 			}
 		}
 		etv.setStages(stageNames);
-		if (!(selectedStage == null)) {
+		if (selectedStage != null) {
 			etv.setSelectedStage(selectedStage);
 		}
 
@@ -344,6 +353,7 @@ public class EditTaskController implements ActionListener {
 			etv.checkArchive(model.isArchived());
 		}
 
+		etv.getFieldController().validate();
 	}
 
 	/**
@@ -378,18 +388,24 @@ public class EditTaskController implements ActionListener {
 		final Requirement r = RequirementModel.getInstance()
 				.getRequirementByName(etv.getSelectedRequirement());
 
+		for (int i = 0; i < TaskCategory.values().length; i++) {
+			if (etv.getSelectedCategory().equals(Colors.CATEGORY_NAMES[i])) {
+				model.setCategory(TaskCategory.values()[i]);
+			}
+		}
+
 		// Try to set the effort values.
 		try {
 			model.setEstimatedEffort(Integer.parseInt(etv.getEstEffort()));
 		} catch (java.lang.NumberFormatException e2) {
-			// Set to false since this value is not set.
-			model.setHasEstimatedEffort(false);
+			// Set to null.
+			model.setEstimatedEffort(null);
 		}
 
 		try {
 			model.setActualEffort(Integer.parseInt(etv.getActEffort()));
 		} catch (java.lang.NumberFormatException e2) {
-			model.setHasActualEffort(false);
+			model.setActualEffort(null);
 		}
 
 		// sets the due date from the calendar
@@ -401,12 +417,12 @@ public class EditTaskController implements ActionListener {
 		// adds or removes users
 		for (String name : etv.getUsersList().getAllValues()) {
 			if (!model.getAssigned().contains(name)) {
-				model.addAssigned(findUserByName(name));
+				model.addAssigned(name);
 			}
 		}
 		for (String n : toRemove) {
 			if (model.getAssigned().contains(n)) {
-				model.removeAssigned(findUserByName(n));
+				model.removeAssigned(n);
 			}
 		}
 		model.setReq(r);
@@ -419,27 +435,7 @@ public class EditTaskController implements ActionListener {
 		// makes all the fields blank again
 		etv.resetFields();
 
-		// Save entire workflow whenever a task is saved
-		WorkflowModel.getInstance().save(); // TODO make this call an
-											// appropriate method
-	}
-
-	/**
-	 * returns the user object with the given name from the list of project
-	 * users
-	 * 
-	 * @param name
-	 *            the name of the user to find
-	 * @return the user with the given name
-	 */
-	private static User findUserByName(String name) {
-		for (User u : TaskManager.users) {
-			if (u.getUsername().equals(name)) {
-				return u;
-			}
-		}
-		return null;
-
+		WorkflowModel.getInstance().save();
 	}
 
 	/**
@@ -538,6 +534,11 @@ public class EditTaskController implements ActionListener {
 		else if (!model.getStage().getName().equals(etv.getSelectedStage())) {
 			edited = true;
 		}
+
+		// Stage.
+		else if (checkCategories()) {
+			edited = true;
+		}
 		// Users.
 		else if (checkUsers(model)) {
 			edited = true;
@@ -591,6 +592,30 @@ public class EditTaskController implements ActionListener {
 	}
 
 	/**
+	 * returns whether or not the name assigned to the category of the task
+	 * model matches the name selected in the view
+	 * 
+	 * @return true if they match, false if they don't
+	 */
+	public boolean checkCategories() {
+		boolean hasChange = false;
+		String modelCatName = null;
+		for (int i = 0; i < TaskCategory.values().length; i++) {
+			if (TaskCategory.values()[i].equals(model.getCategory())) {
+				modelCatName = Colors.CATEGORY_NAMES[i];
+			}
+		}
+		if (modelCatName != null) {
+			if (etv.getSelectedCategory() != null) {
+				if (!etv.getSelectedCategory().equals(modelCatName)) {
+					hasChange = true;
+				}
+			}
+		}
+		return hasChange;
+	}
+
+	/**
 	 * 
 	 * Checks whether the users in the view and the users stored in the task are
 	 * the same.
@@ -609,10 +634,11 @@ public class EditTaskController implements ActionListener {
 		}
 		final Set<String> usersAssigned = new HashSet<String>();
 		usersAssigned.addAll(etv.getUsersList().getAllValues());
+
 		if (!usersAssigned.equals(taskAssigned)) {
 			edited = true;
 		}
-		if (usersAssigned.size() == 0 && taskAssigned == null) {
+		if ((usersAssigned.size() == 0) && (taskAssigned == null)) {
 			edited = false;
 		}
 		return edited;
@@ -629,7 +655,7 @@ public class EditTaskController implements ActionListener {
 	 */
 	private boolean checkEstEffort(TaskModel task) {
 		boolean edited = false;
-		if (task.getEstimatedEffort() == 0) {
+		if (!task.isEstimatedEffortSet()) {
 			if (etv.getEstEffort().isEmpty()) {
 				edited = false;
 			} else {
@@ -661,7 +687,7 @@ public class EditTaskController implements ActionListener {
 	 */
 	private boolean checkActEffort(TaskModel task) {
 		boolean edited = false;
-		if (task.getActualEffort() == 0) {
+		if (!task.isActualEffortSet()) {
 			if (etv.getActEffort().isEmpty()) {
 				edited = false;
 			} else {

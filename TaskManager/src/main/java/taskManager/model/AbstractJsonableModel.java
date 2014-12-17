@@ -8,9 +8,11 @@
  *******************************************************************************/
 package taskManager.model;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Set;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import edu.wpi.cs.wpisuitetng.modules.AbstractModel;
 
@@ -90,7 +92,17 @@ public abstract class AbstractJsonableModel<T> extends AbstractModel {
 	 */
 	public static <T> T fromJson(String json, Class<T> type) {
 		final Gson parser = new Gson();
-		return parser.fromJson(json, type);
+		try {
+			return parser.fromJson(json, type);
+		} catch (Exception e) {
+			json = json.substring(2);
+			try {
+				return parser.fromJson(json, type);
+			} catch (JsonSyntaxException e1) {
+				e1.printStackTrace();
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -98,7 +110,13 @@ public abstract class AbstractJsonableModel<T> extends AbstractModel {
 	 */
 	@Override
 	public String toJson() {
-		return new Gson().toJson(this, this.getClass());
+		try {
+			return new String(new Gson().toJson(this, this.getClass())
+					.getBytes("UTF8"), "UTF8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return "";
+		}
 	}
 
 	/*

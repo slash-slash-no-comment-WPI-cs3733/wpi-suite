@@ -12,11 +12,13 @@ package taskManager.view;
 import java.awt.Dimension;
 
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import taskManager.controller.WorkflowController;
+import taskManager.localization.LocaleChangeListener;
+import taskManager.localization.Localizer;
 
 /**
  * 
@@ -27,9 +29,12 @@ import taskManager.controller.WorkflowController;
  * @author Clark Jacobsohn
  * @version Nov 17, 2014
  */
-public class TabPaneView extends JTabbedPane {
+public class TabPaneView extends JTabbedPane implements LocaleChangeListener {
 
 	private static final long serialVersionUID = -4912871689110151496L;
+
+	private final JScrollPane scroll;
+	private JLabel workflowTab;
 
 	/**
 	 * Constructs the TabPaneView and adds the WorkflowView to a scrollable pane
@@ -39,12 +44,33 @@ public class TabPaneView extends JTabbedPane {
 		setTabPlacement(TOP);
 		setTabLayoutPolicy(SCROLL_TAB_LAYOUT);
 		setBorder(BorderFactory.createEmptyBorder(5, 3, 3, 3));
+		setFocusable(false);
 		this.setSize(new Dimension(500, 500));
 
 		// Add the scrollable workflow
-		final JScrollPane scroll = new JScrollPane(WorkflowController
-				.getInstance().getView());
+		scroll = new JScrollPane(WorkflowController.getInstance().getView());
 
-		this.addTab("Workflow", new ImageIcon(), scroll, "Workflow");
+		workflowTab = new JLabel("Workflow");
+		workflowTab.setMaximumSize(new Dimension(200, 20));
+		workflowTab.setMinimumSize(new Dimension(20, 20));
+		workflowTab.setSize(new Dimension(workflowTab.getPreferredSize().width,
+				20));
+		workflowTab.setPreferredSize(new Dimension(workflowTab
+				.getPreferredSize().width, 20));
+		workflowTab.setFocusable(false);
+		this.addTab("Workflow", scroll);
+		setTabComponentAt(this.indexOfComponent(scroll), workflowTab);
+		setToolTipTextAt(0, "Workflow");
+
+		onLocaleChange();
+		Localizer.addListener(this);
+	}
+
+	@Override
+	public void onLocaleChange() {
+		if (getTabCount() > 0) {
+			workflowTab.setText(Localizer.getString("Workflow"));
+			setToolTipTextAt(0, Localizer.getString("Workflow"));
+		}
 	}
 }

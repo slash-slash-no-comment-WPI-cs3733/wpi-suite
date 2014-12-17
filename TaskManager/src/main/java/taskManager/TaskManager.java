@@ -13,17 +13,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.ImageIcon;
+import javax.swing.UIManager;
 
 import taskManager.controller.EasterEggListener;
-import taskManager.controller.StageController;
 import taskManager.controller.TabPaneController;
 import taskManager.controller.ToolbarController;
 import taskManager.controller.WorkflowController;
 import taskManager.draganddrop.DDTransferHandler;
+import taskManager.localization.Localizer;
 import taskManager.model.StageModel;
 import edu.wpi.cs.wpisuitetng.janeway.modules.IJanewayModule;
 import edu.wpi.cs.wpisuitetng.janeway.modules.JanewayTabModel;
-import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
  * The JanewayModule for the task manager
@@ -39,7 +39,7 @@ public class TaskManager implements IJanewayModule {
 
 	private final List<JanewayTabModel> tabs;
 
-	public static User[] users = {};
+	public static String[] users = {};
 	public static String currentUser = null; // the username of the current user
 
 	/**
@@ -53,6 +53,9 @@ public class TaskManager implements IJanewayModule {
 				TabPaneController.getInstance().getView());
 		tabs.add(tab);
 
+		// By default the buttons select the default so instead set it to follow
+		// the button that has focus.
+		UIManager.put("Button.defaultButtonFollowsFocus", Boolean.TRUE);
 		// Add default stages
 		new StageModel("New");
 		new StageModel("Scheduled");
@@ -78,7 +81,7 @@ public class TaskManager implements IJanewayModule {
 		ToolbarController.getInstance().reset();
 		WorkflowController.getInstance().reset();
 		TabPaneController.getInstance().reset();
-
+		Localizer.setLanguage(Localizer.defaultLanguage);
 	}
 
 	/**

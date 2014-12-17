@@ -41,12 +41,15 @@ import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DraggablePanelListener;
 import taskManager.draganddrop.DropAreaPanel;
 import taskManager.draganddrop.DropTargetRedispatcher;
+import taskManager.localization.LocaleChangeListener;
+import taskManager.localization.Localizer;
 
 /**
  * @author Beth Martino
  * @version November 9, 2014
  */
-public class StageView extends JPanel implements Transferable {
+public class StageView extends JPanel implements Transferable,
+		LocaleChangeListener {
 
 	private static final long serialVersionUID = 1L;
 	private StageController controller;
@@ -65,7 +68,7 @@ public class StageView extends JPanel implements Transferable {
 	private final JButton cancel;
 	private final DropAreaPanel tasks;
 	private final JScrollPane stage;
-	public static final int STAGE_WIDTH = 225;
+	public static final int STAGE_WIDTH = 240;
 
 	/**
 	 * 
@@ -76,7 +79,7 @@ public class StageView extends JPanel implements Transferable {
 	 */
 	public StageView(String name, StageController stageC) {
 
-		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
 		this.setName(name);
 
@@ -85,7 +88,6 @@ public class StageView extends JPanel implements Transferable {
 
 		// stage view is a panel that contains the title and the scroll pane
 		// w/tasks
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setPreferredSize(new Dimension(STAGE_WIDTH, 450));
 
 		// organizes the tasks in a vertical list
@@ -126,7 +128,7 @@ public class StageView extends JPanel implements Transferable {
 		check.setFont(check.getFont().deriveFont((float) 12));
 		check.setMargin(new Insets(0, 0, 0, 0));
 		// 'x' button
-		cancel = new JButton("\u2716");
+		cancel = new JButton();
 		cancel.setName(X);
 		cancel.setFont(cancel.getFont().deriveFont((float) 12));
 		cancel.setMargin(new Insets(0, 0, 0, 0));
@@ -146,6 +148,7 @@ public class StageView extends JPanel implements Transferable {
 		stage = new JScrollPane(tasks,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		stage.getVerticalScrollBar().setUnitIncrement(12);
 
 		label.setBackground(Colors.STAGE);
 		final Border color = BorderFactory.createLineBorder(
@@ -186,9 +189,11 @@ public class StageView extends JPanel implements Transferable {
 		// Make scrollpane redispatch drag events down to DropAreaPanel to avoid
 		// scrollbar flicker
 		stage.setDropTarget(new DropTarget(stage, new DropTargetRedispatcher(
-				tasks, DDTransferHandler.getTaskFlavor())));
+				this, tasks, DDTransferHandler.getTaskFlavor())));
 
 		setController(stageC);
+		onLocaleChange();
+		Localizer.addListener(this);
 	}
 
 	/**
@@ -296,6 +301,10 @@ public class StageView extends JPanel implements Transferable {
 		focusTextArea();
 	}
 
+	/**
+	 * 
+	 * @return true if the check button for stage title is enabled.
+	 */
 	public boolean isCheckEnabled() {
 		return check.isEnabled();
 	}
@@ -340,5 +349,10 @@ public class StageView extends JPanel implements Transferable {
 	public boolean isDataFlavorSupported(DataFlavor flavor) {
 		return flavor.equals(DDTransferHandler.getStageFlavor())
 				|| flavor.equals(DataFlavor.stringFlavor);
+	}
+
+	@Override
+	public void onLocaleChange() {
+		cancel.setText(Localizer.getString("x"));
 	}
 }

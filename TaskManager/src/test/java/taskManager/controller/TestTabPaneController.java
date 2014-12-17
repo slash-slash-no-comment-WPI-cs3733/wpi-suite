@@ -30,6 +30,7 @@ import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.EditTaskView;
+import taskManager.view.FilterView;
 import taskManager.view.TaskInfoPreviewView;
 import taskManager.view.ToolbarView;
 
@@ -176,7 +177,7 @@ public class TestTabPaneController {
 		fixture.robot.waitForIdle();
 
 		// show archived tasks
-		fixture.checkBox(ToolbarView.SHOW_ARCHIVE).click();
+		fixture.checkBox(FilterView.SHOW_ARCHIVE).click();
 
 		// delete the task
 		fixture.robot.settings().delayBetweenEvents(10);

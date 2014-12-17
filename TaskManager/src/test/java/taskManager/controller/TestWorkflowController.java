@@ -21,8 +21,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import taskManager.TaskManager;
 import taskManager.ScreenshotOnFail;
+import taskManager.TaskManager;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
@@ -96,6 +96,7 @@ public class TestWorkflowController extends ScreenshotOnFail {
 
 		// make sure it re-highlights after a reload
 		WorkflowController.getInstance().reloadData();
+		WorkflowController.getInstance().repaintView();
 		fixture.robot.waitForIdle();
 		taskFixture = fixture.panel("test");
 		assertEquals(taskFixture.target.getBackground(), Colors.TASK_HOVER);

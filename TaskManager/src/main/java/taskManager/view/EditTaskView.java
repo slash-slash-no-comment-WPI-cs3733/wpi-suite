@@ -12,6 +12,8 @@ package taskManager.view;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.KeyboardFocusManager;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -42,6 +44,8 @@ import org.jdesktop.swingx.JXDatePicker;
 import taskManager.controller.ActivityController;
 import taskManager.controller.EditTaskController;
 import taskManager.controller.TaskInputController;
+import taskManager.localization.LocaleChangeListener;
+import taskManager.localization.Localizer;
 
 /**
  *  Edit panel for a task
@@ -55,7 +59,7 @@ import taskManager.controller.TaskInputController;
  * @author Clark Jacobsohn
  */
 
-public class EditTaskView extends JPanel {
+public class EditTaskView extends JPanel implements LocaleChangeListener {
 
 	private String taskID;
 
@@ -73,14 +77,15 @@ public class EditTaskView extends JPanel {
 	public static final String ACT_EFFORT = "act_effort";
 	public static final String EST_EFFORT = "est_effort";
 	public static final String DUE_DATE = "due_date";
-	public static final String NO_REQ = "[None]";
+	public static final String NO_REQ = "None";
 	public static final String REFRESH = "refresh";
 	public static final String TITLE = "title";
 	public static final String DESCRIP = "description";
+	public static final String CATEGORIES = "categories";
 
-	private static final String TITLE_ERROR = "Title cannot be empty";
-	private static final String DESCRIPTION_ERROR = "Description cannot be empty";
-	private static final String EFFORT_ERROR = "Must be an integer between 0 and 9999";
+	private static final String TITLE_ERROR = "TitleEmpty";
+	private static final String DESCRIPTION_ERROR = "DescriptionEmpty";
+	private static final String EFFORT_ERROR = "EffortNotInt";
 
 	private static final long serialVersionUID = 1L;
 	private JButton save;
@@ -102,6 +107,18 @@ public class EditTaskView extends JPanel {
 	private JTextArea commentBox;
 	private final JPanel window;
 
+	private final JLabel titleLabel;
+	private final JLabel descriptionLabel;
+	private final JLabel dueDateLabel;
+	private final JLabel stageLabel;
+	private final JLabel estimatedEffortLabel;
+	private final JLabel actualEffortLabel;
+	private final JLabel requirementLabel;
+	private final JLabel assignedUsersLabel;
+	private final JLabel projectUsersLabel;
+	private final JLabel activitiesLabel;
+	private final JLabel commentsLabel;
+
 	private BalloonTip titleError;
 	private BalloonTip descripError;
 	private BalloonTip actEffortError;
@@ -120,6 +137,7 @@ public class EditTaskView extends JPanel {
 
 	private final JComboBox<String> stages;
 	private final JComboBox<String> requirements;
+	private final JComboBox<String> categories;
 
 	private EditTaskController controller;
 	private ActivityController activityC;
@@ -149,45 +167,58 @@ public class EditTaskView extends JPanel {
 		this.activityC = activityC;
 		this.setOpaque(false);
 		// Contains the splitPane and button panel
-		this.setLayout(new MigLayout("wrap 1, align center", "[grow, fill]",
-				"[grow, fill][]"));
+		this.setLayout(new MigLayout("wrap 1, align center", "0[grow, fill]0",
+				"0[grow, fill][]0"));
 
 		// the Panel holding all task editing (not activity) stuff
 		window = new JPanel(new MigLayout("center align", "[][][]",
 				"[grow, fill]"));
 
 		// JLabels
-		JLabel titleLabel = new JLabel("Title");
+		titleLabel = new JLabel();
 		titleLabel.setFont(bigFont);
-		JLabel descriptionLabel = new JLabel("Description");
+		descriptionLabel = new JLabel();
 		descriptionLabel.setFont(bigFont);
-		JLabel dueDateLabel = new JLabel("Due Date");
+		dueDateLabel = new JLabel();
 		dueDateLabel.setFont(bigFont);
-		JLabel stageLabel = new JLabel("Stage");
+		stageLabel = new JLabel();
 		stageLabel.setFont(bigFont);
-		JLabel estimatedEffortLabel = new JLabel("Estimated Effort");
+		JLabel categoryLabel = new JLabel("Category");
+		categoryLabel.setFont(bigFont);
+		estimatedEffortLabel = new JLabel();
 		estimatedEffortLabel.setFont(bigFont);
-		JLabel actualEffortLabel = new JLabel("Actual Effort");
+		actualEffortLabel = new JLabel();
 		actualEffortLabel.setFont(bigFont);
-		JLabel requirementLabel = new JLabel("Select Requirement");
+		requirementLabel = new JLabel();
 		requirementLabel.setFont(bigFont);
-		JLabel assignedUsersLabel = new JLabel("Assigned Users");
+		assignedUsersLabel = new JLabel();
 		assignedUsersLabel.setFont(bigFont);
-		JLabel projectUsersLabel = new JLabel("Project Users");
+		projectUsersLabel = new JLabel();
 		projectUsersLabel.setFont(bigFont);
+		activitiesLabel = new JLabel();
+		activitiesLabel.setFont(bigFont);
+		commentsLabel = new JLabel();
+		commentsLabel.setFont(bigFont);
 
 		// JTextFields
 		// sets all text fields editable and adds them to global variables
-		titleField = new JTextField(26);
+		titleField = new JTextField(40);
 		titleField.setEditable(true);
 		titleField.setName(TITLE);
 
-		descripArea = new JTextArea(14, 26);
+		descripArea = new JTextArea(10, 40);
 		descripArea.setMinimumSize(new Dimension(20, 100));
 		descripArea.setName(DESCRIP);
 		descripArea.setEditable(true);
 		descripArea.setLineWrap(true);
 		descripArea.setWrapStyleWord(true);
+		// Sets the traversal keys to null so that it inherits parent's
+		// behavior.
+		// Reference: http://stackoverflow.com/a/5043957
+		descripArea.setFocusTraversalKeys(
+				KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, null);
+		descripArea.setFocusTraversalKeys(
+				KeyboardFocusManager.BACKWARD_TRAVERSAL_KEYS, null);
 		final JScrollPane descriptionScrollPane = new JScrollPane(descripArea);
 
 		descriptionScrollPane
@@ -216,9 +247,6 @@ public class EditTaskView extends JPanel {
 						.getImage()).getScaledInstance(20, 20,
 						java.awt.Image.SCALE_SMOOTH)));
 
-		// JTextArea
-		// TODO
-		// Get to add users
 		usersList = new ScrollList("");
 		usersList.setBackground(this.getBackground());
 		projectUsersList = new ScrollList("");
@@ -230,7 +258,7 @@ public class EditTaskView extends JPanel {
 		requirements.setPrototypeDisplayValue("Select a requirement");
 		// JButtons
 		// Delete Task and close the window
-		delete = new JButton("Delete");
+		delete = new JButton();
 		delete.setName(DELETE);
 
 		// Add user to list
@@ -244,19 +272,18 @@ public class EditTaskView extends JPanel {
 		this.setRemoveUserEnabled(false);
 
 		// add requirement
-
-		viewReq = new JButton("View Requirement");
+		viewReq = new JButton();
 		viewReq.setName(VIEW_REQ);
 
 		// saves all the data and closes the window
-		save = new JButton("Save");
+		save = new JButton();
 		save.setName(SAVE);
 		this.setSaveEnabled(false);
 
 		// closes the window without saving
-		cancel = new JButton("Cancel");
+		cancel = new JButton();
 		cancel.setName(CANCEL);
-		archive = new JCheckBox("Archived");
+		archive = new JCheckBox();
 		archive.setName(ARCHIVE);
 		archive.setOpaque(false);
 
@@ -264,10 +291,15 @@ public class EditTaskView extends JPanel {
 		stages = new JComboBox<String>();
 		stages.setName(STAGES);
 
+		// Combo Box for Category
+		categories = new JComboBox<String>();
+		categories.setName(CATEGORIES);
+
 		// This is where the 8 primary panels are defined
 		JPanel SpacerTop = new JPanel(new MigLayout());
 		JPanel SpacerBtm = new JPanel(new MigLayout());
-		JPanel BasicInfo = new JPanel(new MigLayout());
+		JPanel BasicInfo = new JPanel(new MigLayout("align center, wrap 1",
+				"[grow, fill]"));
 		JPanel Users = new JPanel(new MigLayout("align center, wrap 1",
 				"[grow, fill]"));
 		JPanel Effort = new JPanel(new MigLayout());
@@ -277,45 +309,50 @@ public class EditTaskView extends JPanel {
 		JPanel dateAndStage = new JPanel(new MigLayout());
 		JPanel EffortDateStage = new JPanel(new MigLayout());
 
-		// Effort Panel internal content
-		Effort.add(estimatedEffortLabel, "wrap");
-		Effort.add(estEffortField, "wrap");
-		Effort.add(actualEffortLabel, "wrap, gaptop 10px");
-		Effort.add(actEffortField);
-
 		// dateAndStage internal content
-		dateAndStage.add(dueDateLabel, "wrap");
-		dateAndStage.add(dateField, "wrap");
-		dateAndStage.add(stageLabel, "gaptop 10px, wrap");
-		dateAndStage.add(stages);
+		dateAndStage.add(dueDateLabel);
+		dateAndStage.add(stageLabel, "gapleft 10px, wrap");
+		dateAndStage.add(dateField);
+		dateAndStage.add(stages, "gapleft 10px,wrap");
+		dateAndStage.add(categoryLabel, "gaptop 10px, wrap");
+		dateAndStage.add(categories);
 
 		// EffortDateStage internal content
 		EffortDateStage.add(dateAndStage);
-		EffortDateStage.add(Effort);
 
-		// BasicInfo Panel internal content
+		// Title and Description Panel internal content
+		JPanel TitleAndDescription = new JPanel(new MigLayout());
+		TitleAndDescription.add(titleLabel, "gapleft 5px, wrap");
+		TitleAndDescription.add(titleField, "gapleft 5px, wrap");
+
+		TitleAndDescription.add(descriptionLabel, "gapleft 5px, wrap");
+		TitleAndDescription.add(descriptionScrollPane, "gapleft 5px, wrap");
 
 		BasicInfo.setBorder(BorderFactory.createTitledBorder(""));
-		BasicInfo.add(titleLabel, "gapleft 15px, wrap");
-		BasicInfo.add(titleField, "gapleft 15px, wrap");
-
-		BasicInfo.add(descriptionLabel, "gapleft 15px, wrap");
-		BasicInfo.add(descriptionScrollPane,
-				"gapbottom 20px, gapleft 15px, wrap");
-		BasicInfo.add(EffortDateStage, "h 25%, gapleft 5px, gaptop 20px");
+		BasicInfo.add(TitleAndDescription);
+		BasicInfo.add(EffortDateStage, "gapleft 5px");
 
 		// Requirements Panel internal content
 		Requirements.add(requirementLabel, "wrap");
 		Requirements.add(requirements, "gapright 10px");
 		Requirements.add(viewReq);
 
-		// Users Panel internal content
+		// Effort Panel internal content
+		Effort.add(estimatedEffortLabel);
+		Effort.add(actualEffortLabel, "wrap,  gapleft 10px");
+		Effort.add(estEffortField);
+		Effort.add(actEffortField, "wrap, gapleft 10px");
 
+		JPanel EffortAndRequirements = new JPanel(new MigLayout());
+		EffortAndRequirements.add(Effort, "wrap");
+		EffortAndRequirements.add(Requirements);
+
+		// Users Panel internal content
 		Users.setBorder(BorderFactory.createTitledBorder(""));
-		JPanel UserPanel = new JPanel(new MigLayout("align center"));
-		JPanel usersListPanel = new JPanel(new MigLayout("align center"));
-		JPanel projectUsersListPanel = new JPanel(new MigLayout("align center"));
-		JPanel addRemoveButtons = new JPanel(new MigLayout("align center"));
+		JPanel UserPanel = new JPanel();
+		JPanel usersListPanel = new JPanel(new MigLayout());
+		JPanel projectUsersListPanel = new JPanel(new MigLayout());
+		JPanel addRemoveButtons = new JPanel(new MigLayout());
 		usersListPanel.add(assignedUsersLabel, "wrap");
 
 		usersListPanel.add(usersList);
@@ -329,8 +366,8 @@ public class EditTaskView extends JPanel {
 		UserPanel.add(addRemoveButtons);
 		UserPanel.add(usersListPanel);
 
-		Users.add(UserPanel, "h 60%");
-		Users.add(Requirements, "h 40%");
+		Users.add(UserPanel, "gapleft 5px, wrap");
+		Users.add(EffortAndRequirements, "gapleft 5px, wrap");
 
 		// EditSaveCancel Panel internal content
 
@@ -344,23 +381,21 @@ public class EditTaskView extends JPanel {
 
 		window.add(SpacerTop, "dock north");
 		window.add(BasicInfo, "h 80%, w 30%");
-		window.add(Users, "h 80%, w 30%, gapleft 10px");
+		window.add(Users, "h 80%, w 30%");
 		window.add(SpacerBtm, "dock south");
 
 		BalloonTipStyle errorStyle = new RoundedBalloonStyle(5, 5,
-				Colors.INPUT_ERROR, Color.red);
-		titleError = new BalloonTip(titleField, new JLabel(TITLE_ERROR),
+				Colors.ERROR_BUBBLE, Color.RED);
+		titleError = new BalloonTip(titleField, new JLabel(), errorStyle,
+				Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST, 5, 15, false);
+		descripError = new BalloonTip(descripArea, new JLabel(), errorStyle,
+				Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST, 5, 15, false);
+		actEffortError = new BalloonTip(actEffortField, new JLabel(),
 				errorStyle, Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST,
 				5, 15, false);
-		descripError = new BalloonTip(descripArea,
-				new JLabel(DESCRIPTION_ERROR), errorStyle,
-				Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST, 5, 15, false);
-		actEffortError = new BalloonTip(actEffortField,
-				new JLabel(EFFORT_ERROR), errorStyle, Orientation.LEFT_ABOVE,
-				AttachLocation.NORTHEAST, 5, 15, false);
-		estEffortError = new BalloonTip(estEffortField,
-				new JLabel(EFFORT_ERROR), errorStyle, Orientation.LEFT_ABOVE,
-				AttachLocation.NORTHEAST, 5, 15, false);
+		estEffortError = new BalloonTip(estEffortField, new JLabel(),
+				errorStyle, Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST,
+				5, 15, false);
 
 		setTitleErrorVisible(false);
 		setDescriptionErrorVisible(false);
@@ -369,7 +404,7 @@ public class EditTaskView extends JPanel {
 
 		// The finished panels are added to the main window panel
 		Dimension panelSize = window.getPreferredSize();
-		panelSize.height = 500; // Decide size
+		panelSize.height = 450; // Decide size
 		window.setPreferredSize(panelSize);
 
 		JScrollPane windowScroll = new JScrollPane(window);
@@ -429,6 +464,10 @@ public class EditTaskView extends JPanel {
 		commentAndBtns.add(commentScroll);
 		commentAndBtns.add(buttons);
 
+		// load strings the first time
+		onLocaleChange();
+		Localizer.addListener(this);
+
 		return commentAndBtns;
 	}
 
@@ -459,7 +498,7 @@ public class EditTaskView extends JPanel {
 	 *
 	 */
 	public void focusOnTitleField() {
-		titleField.requestFocus();
+		titleField.requestFocusInWindow();
 	}
 
 	/**
@@ -488,17 +527,37 @@ public class EditTaskView extends JPanel {
 	 *            the controller to be attached to this view
 	 */
 	public void setFieldController(TaskInputController controller) {
+		// validate when ANYTHING happens
 		fieldC = controller;
 		titleField.addKeyListener(fieldC);
 		descripArea.addKeyListener(fieldC);
 		estEffortField.addKeyListener(fieldC);
 		actEffortField.addKeyListener(fieldC);
 		stages.addPopupMenuListener(fieldC);
+		categories.addPopupMenuListener(fieldC);
 		usersList.setController(fieldC);
+		archive.addItemListener(fieldC);
+		addUser.addActionListener(fieldC);
+		removeUser.addActionListener(fieldC);
 		projectUsersList.setController(fieldC);
 		requirements.addPopupMenuListener(fieldC);
 		dateField.addPropertyChangeListener(fieldC);
 		archive.addItemListener(fieldC);
+		this.addMouseListener(fieldC);
+		window.addMouseListener(fieldC);
+		titleField.addMouseListener(fieldC);
+		descripArea.addMouseListener(fieldC);
+		actEffortField.addMouseListener(fieldC);
+		estEffortField.addMouseListener(fieldC);
+		viewReq.addMouseListener(fieldC);
+		requirements.addMouseListener(fieldC);
+		stages.addMouseListener(fieldC);
+		projectUsersList.addMouseListener(fieldC);
+		usersList.addMouseListener(fieldC);
+		addUser.addMouseListener(fieldC);
+		removeUser.addMouseListener(fieldC);
+		submitComment.addMouseListener(fieldC);
+		dateField.addMouseListener(fieldC);
 		commentBox.addKeyListener(fieldC);
 		fieldC.validate();
 	}
@@ -543,12 +602,31 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
+	 * return if the title field is the focus owner
+	 * 
+	 * @return
+	 */
+	public boolean titleHasFocus() {
+		return titleField.isFocusOwner();
+	}
+
+	/**
 	 * Gets the description field
 	 * 
 	 * @return the description field
 	 */
 	public String getDescription() {
 		return descripArea.getText();
+	}
+
+	/**
+	 * return if the description field is the focus owner
+	 * 
+	 * @return true if the description has focus, false if it doesnt
+	 */
+	public boolean descriptionHasFocus() {
+		return descripArea.isFocusOwner();
+
 	}
 
 	/**
@@ -570,12 +648,31 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
+	 * returns whether or not the estimated effort field has focus
+	 * 
+	 * @return true if the estimated effort field has focus, false if it
+	 *         doensn't
+	 */
+	public boolean estEffortHasFocus() {
+		return estEffortField.isFocusOwner();
+	}
+
+	/**
 	 * Gets the actual effort field
 	 * 
 	 * @return the actual effort field
 	 */
 	public String getActEffort() {
 		return actEffortField.getText();
+	}
+
+	/**
+	 * returns whether or not the actual effort field has focus
+	 * 
+	 * @return true if the actual effort field has focus, false if it doensn't
+	 */
+	public boolean actEffortHasFocus() {
+		return actEffortField.isFocusOwner();
 	}
 
 	/**
@@ -611,16 +708,61 @@ public class EditTaskView extends JPanel {
 		final String selectedReq = getSelectedRequirement();
 
 		requirements.removeAllItems();
-		requirements.addItem(NO_REQ);
+		requirements.addItem(Localizer.getString(NO_REQ));
 		for (String name : reqNames) {
 			requirements.addItem(name);
 		}
 
 		// Select NO_REQ if the old selected item doesn't exist
-		requirements.setSelectedItem(NO_REQ);
+		requirements.setSelectedItem(Localizer.getString(NO_REQ));
 		if (!(selectedReq == null)) {
 			requirements.setSelectedItem(selectedReq);
 		}
+	}
+
+	/**
+	 * gets the dropdown box in the view that contains all the categories
+	 * 
+	 * @return the categories dropdown box
+	 */
+	public ArrayList<String> getCategories() {
+		ArrayList<String> cats = new ArrayList<String>();
+		for (int i = 0; i < categories.getItemCount(); i++) {
+			cats.add(categories.getItemAt(i));
+		}
+		return cats;
+	}
+
+	/**
+	 * Adds the given set of strings to the categories drop down
+	 * 
+	 * @param cats
+	 *            the set of strings to be added to the drop down
+	 */
+	public void setCategories(String[] cats) {
+		categories.removeAllItems();
+		for (String s : cats) {
+			categories.addItem(s);
+		}
+	}
+
+	/**
+	 * sets the index of the categories dropdown to the given category name
+	 * 
+	 * @param cat
+	 *            the name of the category you want to set the menu to
+	 */
+	public void setSelectedCategory(String cat) {
+		categories.setSelectedItem(cat);
+	}
+
+	/**
+	 * gets the string selected in the category drop down
+	 * 
+	 * @return the name of the category selected in the dropdown
+	 */
+	public String getSelectedCategory() {
+		return (String) categories.getSelectedItem();
 	}
 
 	/**
@@ -630,7 +772,7 @@ public class EditTaskView extends JPanel {
 	 * @return The selected requirement's name
 	 */
 	public String getSelectedRequirement() {
-		if (NO_REQ.equals(requirements.getSelectedItem())) {
+		if (Localizer.getString(NO_REQ).equals(requirements.getSelectedItem())) {
 			return null;
 		}
 		return (String) requirements.getSelectedItem();
@@ -644,7 +786,7 @@ public class EditTaskView extends JPanel {
 	 */
 	public void setSelectedRequirement(String requirementName) {
 		if (requirementName == null) {
-			requirements.setSelectedItem(NO_REQ);
+			requirements.setSelectedItem(Localizer.getString(NO_REQ));
 		}
 		requirements.setSelectedItem(requirementName);
 
@@ -758,22 +900,16 @@ public class EditTaskView extends JPanel {
 	 * Sets the title field border red
 	 * 
 	 * @param red
-	 *            turns the red border on and off
+	 *            turns the red background on and off
 	 */
 
 	public void setTitleFieldRed(boolean red) {
 		if (red) {
-			titleField.setBorder(BorderFactory.createLineBorder(Color.red));
+			titleField.setBackground(Colors.ERROR);
 		} else {
-			titleField.setBorder(BorderFactory.createLineBorder(Color.black));
+			titleField.setBackground(Color.WHITE);
 		}
 	}
-
-	/**
-	 * Sets the title field border red
-	 * 
-	 * @param boolean turns the red border on and off
-	 */
 
 	/**
 	 * Sets the description error visible or invisible
@@ -788,26 +924,19 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * Sets the description field border red
+	 * Sets the description field red
 	 * 
 	 * @param red
-	 *            turns the red border on and off
+	 *            turns the red background on and off
 	 */
 
 	public void setDescriptionFieldRed(boolean red) {
 		if (red) {
-			descripArea.setBorder(BorderFactory.createLineBorder(Color.red));
+			descripArea.setBackground(Colors.ERROR);
 		} else {
-			descripArea
-					.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+			descripArea.setBackground(Color.WHITE);
 		}
 	}
-
-	/**
-	 * Sets the description field border red
-	 * 
-	 * @param boolean turns the red border on and off
-	 */
 
 	/**
 	 * Sets the estimated effort error visible or invisible
@@ -821,33 +950,31 @@ public class EditTaskView extends JPanel {
 	}
 
 	/**
-	 * Sets the estimated effort field border red
+	 * Sets the estimated effort red
 	 * 
 	 * @param red
-	 *            turns the red border on and off
+	 *            turns the red background on and off
 	 */
 
 	public void setEstEffortFieldRed(boolean red) {
 		if (red) {
-			estEffortField.setBorder(BorderFactory.createLineBorder(Color.red));
+			estEffortField.setBackground(Colors.ERROR);
 		} else {
-			estEffortField
-					.setBorder(BorderFactory.createLineBorder(Color.gray));
+			estEffortField.setBackground(Color.WHITE);
 		}
 	}
 
 	/**
-	 * Sets the actual effort field border red
+	 * Sets the actual effort red
 	 * 
-	 * @red boolean turns the red border on and off
+	 * @red boolean turns the red background on and off
 	 */
 
 	public void setActEffortFieldRed(boolean red) {
 		if (red) {
-			actEffortField.setBorder(BorderFactory.createLineBorder(Color.red));
+			actEffortField.setBackground(Colors.ERROR);
 		} else {
-			actEffortField
-					.setBorder(BorderFactory.createLineBorder(Color.gray));
+			actEffortField.setBackground(Color.WHITE);
 		}
 	}
 
@@ -916,6 +1043,16 @@ public class EditTaskView extends JPanel {
 	 */
 	public void setSaveEnabled(boolean e) {
 		save.setEnabled(e);
+	}
+
+	/**
+	 * enables or disables the comment submit button
+	 * 
+	 * @param e
+	 *            true is enabled false is disabled
+	 */
+	public void setCommentSubmitEnabled(boolean e) {
+		submitComment.setEnabled(e);
 	}
 
 	/**
@@ -1016,5 +1153,43 @@ public class EditTaskView extends JPanel {
 		commentBox.setText("");
 		submitComment.setEnabled(false);
 		cancelComment.setEnabled(false);
+	}
+
+	@Override
+	public void onLocaleChange() {
+		titleLabel.setText(Localizer.getString("Title"));
+		descriptionLabel.setText(Localizer.getString("Description"));
+		dueDateLabel.setText(Localizer.getString("DueDate"));
+		stageLabel.setText(Localizer.getString("Stage"));
+		estimatedEffortLabel.setText(Localizer.getString("EstimatedEffort"));
+		actualEffortLabel.setText(Localizer.getString("ActualEffort"));
+		requirementLabel.setText(Localizer.getString("SelectRequirement"));
+		assignedUsersLabel.setText(Localizer.getString("AssignedUsers"));
+		projectUsersLabel.setText(Localizer.getString("ProjectUsers"));
+		activitiesLabel.setText(Localizer.getString("Activities"));
+		commentsLabel.setText(Localizer.getString("Comment"));
+		delete.setText(Localizer.getString("Delete"));
+		submitComment.setText(Localizer.getString("SubmitComment"));
+		viewReq.setText(Localizer.getString("ViewRequirement"));
+		save.setText(Localizer.getString("Save"));
+		cancel.setText(Localizer.getString("Cancel"));
+		archive.setText(Localizer.getString("Archived"));
+		((JLabel) titleError.getContents()).setText(Localizer
+				.getString(TITLE_ERROR));
+		((JLabel) descripError.getContents()).setText(Localizer
+				.getString(DESCRIPTION_ERROR));
+		((JLabel) actEffortError.getContents()).setText(Localizer
+				.getString(EFFORT_ERROR));
+		((JLabel) estEffortError.getContents()).setText(Localizer
+				.getString(EFFORT_ERROR));
+
+		// reload the requirements box
+		if (controller != null) {
+			String r = getSelectedRequirement();
+			String s = getSelectedStage();
+			controller.reloadData();
+			setSelectedRequirement(r);
+			setSelectedStage(s);
+		}
 	}
 }

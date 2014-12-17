@@ -37,6 +37,7 @@ import org.junit.Test;
 import taskManager.MockNetwork;
 import taskManager.ScreenshotOnFail;
 import taskManager.TaskManager;
+import taskManager.localization.Localizer;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
@@ -44,7 +45,6 @@ import taskManager.view.EditTaskView;
 import taskManager.view.TabView;
 import taskManager.view.TaskView;
 import edu.wpi.cs.wpisuitetng.exceptions.NotFoundException;
-import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.RequirementModel;
 import edu.wpi.cs.wpisuitetng.network.Network;
@@ -61,9 +61,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 
 	private final String[] stageNames = { "New", "Scheduled", "In Progress",
 			"Complete" };
-	private final User testUser = new User("testUser", "testUser", "password",
-			1234);
-
+	private final String testUser = "testUser";
 	private FrameFixture fixture;
 	private JFrame frame;
 
@@ -168,7 +166,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		TaskModel newTask = stage.findTaskByName("newT").get(0);
 		assertEquals(newTask.getDescription(), "newD");
 		assertEquals(newTask.getDueDate(), d);
-		assertEquals(newTask.getEstimatedEffort(), 4);
+		assertEquals(newTask.getEstimatedEffort(), new Integer(4));
 	}
 
 	@Test
@@ -192,7 +190,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		fixture.textBox(EditTaskView.ACT_EFFORT).deleteText().enterText("4");
 		fixture.button(EditTaskView.SAVE).click();
 
-		assertEquals(4, task.getActualEffort());
+		assertEquals(new Integer(4), task.getActualEffort());
 
 	}
 
@@ -208,7 +206,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 
 		// make sure it has no requirement yet
 		fixture.comboBox(EditTaskView.REQUIREMENTS).requireSelection(
-				EditTaskView.NO_REQ);
+				Localizer.getString(EditTaskView.NO_REQ));
 
 		// add a requirement to the task
 		fixture.comboBox(EditTaskView.REQUIREMENTS).selectItem(req.getName());
@@ -236,7 +234,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 
 		// load the edit view
 		TaskController tc = new TaskController(new TaskView("Task", new Date(),
-				0, 0, task.getID()), task);
+				0, 0, task.getID(), 235), task);
 		tc.editTask();
 
 		// make sure the requirement displays properly
@@ -248,10 +246,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	@Test
 	public void testAddUsers() {
 		// create users
-		TaskManager.users = new User[] { testUser,
-				new User("name1", "name1", "password", 4321),
-				new User("name2", "name2", "password", 5678),
-				new User("name3", "name3", "password", 9876) };
+		TaskManager.users = new String[] { testUser, "name1", "name2", "name3" };
 		TaskModel task = createAndLoadTask();
 
 		// select users to add
@@ -274,9 +269,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 	@Test
 	public void testRemoveUsers() {
 		// create users
-		TaskManager.users = new User[] { testUser,
-				new User("name2", "name2", "password", 5678),
-				new User("name3", "name3", "password", 9876) };
+		TaskManager.users = new String[] { testUser, "name2", "name3" };
 
 		TaskModel task = createAndLoadTask();
 
@@ -304,7 +297,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		assertTrue(task.isArchived());
 
 		TaskController tc = new TaskController(new TaskView("Task", new Date(),
-				0, 0, task.getID()), task);
+				0, 0, task.getID(), 245), task);
 		tc.editTask();
 
 		fixture.checkBox(EditTaskView.ARCHIVE).uncheck();
@@ -423,7 +416,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 
 		// load the edit view
 		TaskController tc = new TaskController(new TaskView("Task", new Date(),
-				0, 0, task.getID()), task);
+				0, 0, task.getID(), 240), task);
 		tc.editTask();
 		Component c = TabPaneController.getInstance().getView()
 				.getSelectedComponent();
