@@ -13,6 +13,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BoxLayout;
 import javax.swing.JCheckBox;
@@ -40,13 +41,13 @@ public class FilterView extends JPanel {
 	public static final String MY_TASKS = "myTasks";
 	public static final String SEARCH = "search";
 
-	private FilterController filterC;
+	private final FilterController filterC;
 
-	private JCheckBox archiveCheckBox;
-	private JCheckBox myTasksCheckBox;
-	private JPanel categories;
-	private ArrayList<JLabel> labels;
-	private JTextField search;
+	private final JCheckBox archiveCheckBox;
+	private final JCheckBox myTasksCheckBox;
+	private final JPanel categories;
+	private final List<JLabel> labels;
+	private final JTextField search;
 
 	private static final Dimension SIZE = new Dimension(150, 90);
 
@@ -59,7 +60,7 @@ public class FilterView extends JPanel {
 	public FilterView(FilterController filter) {
 		filterC = filter;
 
-		Dimension size = new Dimension(170, 30);
+		final Dimension size = new Dimension(170, 30);
 		// Construct Search bar
 		search = new JTextField();
 		search.setMaximumSize(size);
@@ -76,7 +77,7 @@ public class FilterView extends JPanel {
 		this.setOpaque(false);
 
 		// adds a panel for my tasks and archived check boxes
-		JPanel checks = new JPanel();
+		final JPanel checks = new JPanel();
 		checks.setLayout(new GridLayout(2, 1));
 		checks.setMinimumSize(size);
 		// Checkbox for toggling showing archived tasks.
@@ -100,7 +101,7 @@ public class FilterView extends JPanel {
 		categories.setOpaque(false);
 		labels = new ArrayList<JLabel>();
 		// make all of the category boxes, don't include the "no category"
-		Dimension catBoxSize = new Dimension(20, 20);
+		final Dimension catBoxSize = new Dimension(20, 20);
 		for (int i = 1; i < TaskCategory.values().length; i++) {
 			JPanel catBox = new JPanel();
 			catBox.setSize(catBoxSize);
@@ -152,7 +153,7 @@ public class FilterView extends JPanel {
 	 * @return the category menu component
 	 */
 	public JPanel getCategories() {
-		return this.categories;
+		return categories;
 	}
 
 	/**
@@ -184,11 +185,7 @@ public class FilterView extends JPanel {
 			if (name.equals(getCategories().getComponents()[i].getName())) {
 				JPanel catBox = (JPanel) getCategories().getComponents()[i];
 				JLabel label = (JLabel) catBox.getComponent(0);
-				if (label.getText().equals(CHECK)) {
-					return true;
-				} else {
-					return false;
-				}
+				return label.getText().equals(CHECK);
 			}
 		}
 		return false;
@@ -224,7 +221,7 @@ public class FilterView extends JPanel {
 	 * @return the "show archive tasks" checkbox component
 	 */
 	public JCheckBox getArchiveCheckBox() {
-		return this.archiveCheckBox;
+		return archiveCheckBox;
 	}
 
 	/**
@@ -233,7 +230,7 @@ public class FilterView extends JPanel {
 	 * @return the "show my tasks" checkbox component
 	 */
 	public JCheckBox getMyTasksCheckBox() {
-		return this.myTasksCheckBox;
+		return myTasksCheckBox;
 	}
 
 	/**
@@ -242,7 +239,7 @@ public class FilterView extends JPanel {
 	 * @return the controller attached to this view
 	 */
 	public FilterController getController() {
-		return this.filterC;
+		return filterC;
 	}
 
 	/**

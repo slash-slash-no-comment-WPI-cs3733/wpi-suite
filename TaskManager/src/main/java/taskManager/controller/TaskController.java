@@ -119,7 +119,7 @@ public class TaskController implements MouseListener {
 	 *
 	 */
 	public void editTask() {
-		EditTaskController c = new EditTaskController(model);
+		final EditTaskController c = new EditTaskController(model);
 		c.getView().focusOnTitleField();
 	}
 
@@ -129,7 +129,7 @@ public class TaskController implements MouseListener {
 	 * @return true if the task is being hovered over, false if it is not
 	 */
 	public boolean isHovered() {
-		return this.isHovered;
+		return isHovered;
 	}
 
 	/**
@@ -249,7 +249,7 @@ public class TaskController implements MouseListener {
 	 *            the thisTaskInfoOut to set
 	 */
 	public void setThisTaskInfoOut(Boolean thisTaskInfoOut) {
-		this.taskInfoPreviewOut = thisTaskInfoOut;
+		taskInfoPreviewOut = thisTaskInfoOut;
 	}
 
 	/**
@@ -269,9 +269,9 @@ public class TaskController implements MouseListener {
 	 * @return export string
 	 */
 	public String getExportString() {
-		String fields[] = { "Name", "Description", "Due Date",
+		final String fields[] = { "Name", "Description", "Due Date",
 				"Assigned Users", "Estimated Effort", "Actual Effort" };
-		String values[] = {
+		final String values[] = {
 				model.getName(),
 				model.getDescription(),
 				new SimpleDateFormat("MM/dd/yy").format(model.getDueDate()),

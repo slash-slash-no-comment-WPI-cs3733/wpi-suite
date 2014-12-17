@@ -158,9 +158,6 @@ public class TaskInputController implements KeyListener, MouseListener,
 	/**
 	 * checks if comments are valid
 	 * 
-	 * @param commentValid
-	 *            true if comment is valid
-	 * @return commentValid
 	 *
 	 * @return true if the comment box has a valid comment in it.
 	 */

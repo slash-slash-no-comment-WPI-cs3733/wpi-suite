@@ -26,9 +26,9 @@ public class ActivityController {
 
 	public static final String SUBMIT = "submit";
 
-	private TaskModel taskM;
+	private final TaskModel taskM;
 	private List<ActivityModel> activities;
-	private ActivityPanel activityTabs;
+	private final ActivityPanel activityTabs;
 
 	/**
 	 * Constructs an ActivityController for a given task
@@ -37,7 +37,8 @@ public class ActivityController {
 	 *            The task whose activities are being controlled. If this is
 	 *            null, then activities are being tracked for a new task.
 	 * 
-	 * @etc The controller used for the edit buttons on ActivityView's
+	 * @param etc
+	 *            The controller used for the edit buttons on ActivityView's
 	 */
 	public ActivityController(TaskModel taskM, EditTaskController etc) {
 		this.taskM = taskM;
@@ -47,7 +48,7 @@ public class ActivityController {
 			// If the task is null, make a list for the new task's activities
 			activities = new ArrayList<ActivityModel>();
 		}
-		this.activityTabs = new ActivityPanel(activities, etc);
+		activityTabs = new ActivityPanel(activities, etc);
 	}
 
 	/**

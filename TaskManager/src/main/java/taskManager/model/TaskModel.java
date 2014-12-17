@@ -102,7 +102,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 			activities.add(createTask);
 		}
 
-		this.category = TaskCategory.NO_CATEGORY;
+		category = TaskCategory.NO_CATEGORY;
 	}
 
 	/**
@@ -293,7 +293,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	/**
 	 * Adds user to assigned list
 	 *
-	 * @param user
+	 * @param username
 	 *            new user to be added
 	 */
 	public void addAssigned(String username) {
@@ -308,7 +308,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	/**
 	 * Removes assigned user if user exists in assigned
 	 *
-	 * @param user
+	 * @param username
 	 *            to be removed
 	 */
 	public void removeAssigned(String username) {
@@ -385,7 +385,7 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 	 */
 	public void setArchived(boolean bool) {
 		if (bool != isArchived) {
-			ActivityModelType type = bool ? ActivityModelType.ARCHIVE
+			final ActivityModelType type = bool ? ActivityModelType.ARCHIVE
 					: ActivityModelType.UNARCHIVE;
 			final ActivityModel archive = new ActivityModel(type);
 			addActivity(archive);

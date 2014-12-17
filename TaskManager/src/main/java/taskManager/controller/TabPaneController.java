@@ -177,8 +177,8 @@ public class TabPaneController implements ChangeListener {
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		if (this.view.getSelectedComponent() instanceof EditTaskView) {
-			EditTaskView etv = (EditTaskView) this.view.getSelectedComponent();
+		if (view.getSelectedComponent() instanceof EditTaskView) {
+			final EditTaskView etv = (EditTaskView) view.getSelectedComponent();
 			etv.getController().reloadData();
 		}
 	}

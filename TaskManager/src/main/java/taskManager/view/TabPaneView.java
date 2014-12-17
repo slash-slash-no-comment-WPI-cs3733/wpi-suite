@@ -34,7 +34,7 @@ public class TabPaneView extends JTabbedPane implements LocaleChangeListener {
 	private static final long serialVersionUID = -4912871689110151496L;
 
 	private final JScrollPane scroll;
-	private JLabel workflowTab;
+	private final JLabel workflowTab;
 
 	/**
 	 * Constructs the TabPaneView and adds the WorkflowView to a scrollable pane

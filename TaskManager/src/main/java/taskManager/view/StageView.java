@@ -76,6 +76,8 @@ public class StageView extends JPanel implements Transferable,
 	 *
 	 * @param name
 	 *            The title of the stage being drawn
+	 * @param stageC
+	 *            the controller for this stage
 	 */
 	public StageView(String name, StageController stageC) {
 
@@ -271,10 +273,10 @@ public class StageView extends JPanel implements Transferable,
 	 * Sets the focus to the text area
 	 */
 	public void focusTextArea() {
-		this.labelText.requestFocus();
-		this.labelText.requestFocusInWindow();
-		this.labelText.grabFocus();
-		this.labelText.selectAll();
+		labelText.requestFocus();
+		labelText.requestFocusInWindow();
+		labelText.grabFocus();
+		labelText.selectAll();
 	}
 
 	/**

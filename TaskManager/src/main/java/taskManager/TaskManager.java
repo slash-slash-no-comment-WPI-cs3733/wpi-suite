@@ -100,7 +100,7 @@ public class TaskManager implements IJanewayModule {
 		return tabs;
 	}
 
-	/*
+	/**
 	 * If we're on OS X
 	 * 
 	 * @return If we're using a mac.

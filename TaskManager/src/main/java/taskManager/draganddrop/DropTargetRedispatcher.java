@@ -62,7 +62,7 @@ public class DropTargetRedispatcher implements DropTargetListener {
 	@Override
 	public void dragEnter(DropTargetDragEvent dtde) {
 		try {
-			DropTarget dt = getDropTarget(dtde);
+			final DropTarget dt = getDropTarget(dtde);
 			dt.dragEnter(convertCoords(dtde, dt.getComponent()));
 		} catch (NullPointerException e) {
 			dtde.rejectDrag();
@@ -77,7 +77,7 @@ public class DropTargetRedispatcher implements DropTargetListener {
 	@Override
 	public void dragOver(DropTargetDragEvent dtde) {
 		try {
-			DropTarget dt = getDropTarget(dtde);
+			final DropTarget dt = getDropTarget(dtde);
 			dt.dragOver(convertCoords(dtde, dt.getComponent()));
 		} catch (NullPointerException e) {
 			dtde.rejectDrag();
@@ -91,7 +91,7 @@ public class DropTargetRedispatcher implements DropTargetListener {
 	@Override
 	public void dropActionChanged(DropTargetDragEvent dtde) {
 		try {
-			DropTarget dt = getDropTarget(dtde);
+			final DropTarget dt = getDropTarget(dtde);
 			dt.dropActionChanged(convertCoords(dtde, dt.getComponent()));
 		} catch (NullPointerException e) {
 			dtde.rejectDrag();
@@ -114,7 +114,7 @@ public class DropTargetRedispatcher implements DropTargetListener {
 	@Override
 	public void drop(DropTargetDropEvent dtde) {
 		try {
-			DropTarget dt = getDropTarget(dtde);
+			final DropTarget dt = getDropTarget(dtde);
 			dt.drop(convertCoords(dtde, dt.getComponent()));
 		} catch (NullPointerException e) {
 			dtde.rejectDrop();

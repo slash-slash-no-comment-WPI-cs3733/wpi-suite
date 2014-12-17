@@ -40,11 +40,11 @@ public class Localizer {
 	// the list of views listening for local changes
 	// use weak references to allow views to be garbage collected without
 	// needing to unregister as a listener
-	private static List<WeakReference<LocaleChangeListener>> listeners = new ArrayList<WeakReference<LocaleChangeListener>>();
+	private static final List<WeakReference<LocaleChangeListener>> listeners = new ArrayList<WeakReference<LocaleChangeListener>>();
 
 	/**
-	 * @param the
-	 *            key for the string you want
+	 * @param key
+	 *            the key for the string you want
 	 * @return a localized version of the string
 	 */
 	public static String getString(String key) {
@@ -78,7 +78,8 @@ public class Localizer {
 				.split(" "));
 
 		// tell all of the listeners that the locale changed
-		Iterator<WeakReference<LocaleChangeListener>> it = listeners.iterator();
+		final Iterator<WeakReference<LocaleChangeListener>> it = listeners
+				.iterator();
 		while (it.hasNext()) {
 			LocaleChangeListener listener = it.next().get();
 			if (listener == null) {

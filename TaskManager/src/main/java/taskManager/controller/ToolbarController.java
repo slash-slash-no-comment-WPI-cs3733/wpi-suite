@@ -55,7 +55,7 @@ public class ToolbarController extends DropTargetAdapter implements
 	private ToolbarView view;
 	private FilterController filterC;
 
-	private static ToolbarController instance;
+	private static ToolbarController instance = null;
 
 	/**
 	 * Hide Singleton constructor
@@ -100,7 +100,7 @@ public class ToolbarController extends DropTargetAdapter implements
 	 * @return filter controller
 	 */
 	public FilterController getFilterController() {
-		return this.filterC;
+		return filterC;
 	};
 
 	/**
@@ -121,7 +121,7 @@ public class ToolbarController extends DropTargetAdapter implements
 	 * @return The project name, hyphenated if necessary
 	 */
 	private String hyphenateProjectName(String name) {
-		int toolbarWidth = view.getWidth();
+		final int toolbarWidth = view.getWidth();
 		// If the toolbar width is zero, the toolbar is not visible, so do not
 		// attempt to hyphenate
 		if (toolbarWidth == 0) {
@@ -135,16 +135,16 @@ public class ToolbarController extends DropTargetAdapter implements
 			otherChildrenWidth += c.getWidth();
 		}
 		otherChildrenWidth -= view.getProjectName().getWidth();
-		int goalWidth = toolbarWidth - otherChildrenWidth;
+		final int goalWidth = toolbarWidth - otherChildrenWidth;
 
 		// Because of the word wrap, if there there is an overflow there will be
 		// some section with no whitespace that causes the overflow, so find it
 		// and hyphenate it
-		List<String> chunks = new ArrayList<String>();
+		final List<String> chunks = new ArrayList<String>();
 		for (String s : name.split(" ")) {
 			chunks.add(s);
 		}
-		List<String> newChunks = new ArrayList<String>();
+		final List<String> newChunks = new ArrayList<String>();
 		// For each string, hyphenate it if it exceeds the goal width
 		while (!chunks.isEmpty()) {
 			String s = chunks.remove(0);
@@ -202,7 +202,7 @@ public class ToolbarController extends DropTargetAdapter implements
 				WorkflowController.getInstance().addStageToView();
 				break;
 			case ToolbarView.REPORT:
-				ReportsView rtv = new ReportsView(Mode.VELOCITY);
+				final ReportsView rtv = new ReportsView(Mode.VELOCITY);
 				rtv.setController(new ReportsController(rtv));
 				TabPaneController.getInstance().addReportsTab(rtv);
 				break;
@@ -258,7 +258,7 @@ public class ToolbarController extends DropTargetAdapter implements
 				switch (name) {
 				case ToolbarView.DELETE:
 					if (target.isEnabled()) {
-						Integer choice = JOptionPane.showConfirmDialog(
+						final Integer choice = JOptionPane.showConfirmDialog(
 								TabPaneController.getInstance().getView(),
 								"Are you sure you want to delete this task?",
 								"Warning - Deleting a task",
@@ -347,7 +347,8 @@ public class ToolbarController extends DropTargetAdapter implements
 	 */
 	@Override
 	public void dragOver(DropTargetDragEvent dtde) {
-		String name = dtde.getDropTargetContext().getComponent().getName();
+		final String name = dtde.getDropTargetContext().getComponent()
+				.getName();
 
 		if (view.isIconEnabled(name)) {
 			dtde.acceptDrag(dtde.getDropAction());
@@ -368,8 +369,6 @@ public class ToolbarController extends DropTargetAdapter implements
 	/**
 	 * Set toolbar icons during drag action
 	 *
-	 * @param flavor
-	 *            DataFlavor of drag
 	 * @param comp
 	 *            component being dragged
 	 */
@@ -380,7 +379,8 @@ public class ToolbarController extends DropTargetAdapter implements
 		}
 
 		if (comp instanceof TaskView) {
-			boolean isArchived = ((TaskView) comp).getController().isArchived();
+			final boolean isArchived = ((TaskView) comp).getController()
+					.isArchived();
 			if (isArchived) {
 				view.setArchiveIcon(ToolbarView.UNARCHIVE);
 			} else {

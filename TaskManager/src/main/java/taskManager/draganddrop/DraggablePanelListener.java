@@ -41,7 +41,7 @@ public class DraggablePanelListener extends MouseAdapter {
 	@Override
 	public void mousePressed(MouseEvent e) {
 		System.out.println("Panel pressed");
-		Point p = e.getPoint();
+		final Point p = e.getPoint();
 		if (TaskManager.isOnMac()) {
 			// Macs appear to define the coordinates differently.
 			p.x = -p.x;

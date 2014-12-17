@@ -14,5 +14,10 @@ package taskManager.localization;
  * @author Jon Sorrells
  */
 public interface LocaleChangeListener {
-	public void onLocaleChange();
+	/**
+	 * The method is called when the user changes the selected languate Views
+	 * should update any visible strings to be the new language
+	 *
+	 */
+	void onLocaleChange();
 }
