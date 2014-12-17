@@ -159,6 +159,8 @@ public class TaskInputController implements KeyListener, MouseListener,
 	public boolean checkCommentBox() {
 		if (etv.getCommentsFieldText().trim().isEmpty()) {
 			return false;
+		} else if (etv.getOrigCommentText().equals(etv.getCommentsFieldText())) {
+			return false;
 		} else {
 			return true;
 		}
@@ -190,7 +192,8 @@ public class TaskInputController implements KeyListener, MouseListener,
 		etv.setAddUserEnabled(addUsersSelected);
 		etv.setRemoveUserEnabled(removeUsersSelected);
 
-		etv.setSubmitCancelCommentEnabled(this.checkCommentBox());
+		etv.setSubmitCommentEnabled(this.checkCommentBox());
+		etv.setCancelCommentEnabled(this.checkCommentBox());
 		etv.setViewRequirementEnabled(etv.getSelectedRequirement() != null);
 	}
 

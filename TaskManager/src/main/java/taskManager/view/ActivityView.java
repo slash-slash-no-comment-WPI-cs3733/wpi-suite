@@ -13,6 +13,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Insets;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.text.DateFormat;
 
 import javax.swing.BorderFactory;
@@ -26,6 +28,8 @@ import javax.swing.border.TitledBorder;
 import net.miginfocom.swing.MigLayout;
 import taskManager.TaskManager;
 import taskManager.controller.EditTaskController;
+import taskManager.localization.LocaleChangeListener;
+import taskManager.localization.Localizer;
 import taskManager.model.ActivityModel;
 import taskManager.model.ActivityModel.ActivityModelType;
 
@@ -33,13 +37,17 @@ import taskManager.model.ActivityModel.ActivityModelType;
  * @author Samee Swartz
  *
  */
-public class ActivityView extends JPanel {
+public class ActivityView extends JPanel implements MouseListener,
+		LocaleChangeListener {
 
 	private static final long serialVersionUID = 6524598229849111521L;
 	public static final String EDIT = "edit";
 
 	private JButton edit;
+	// if this activity can be edited
 	private boolean editable = false;
+	// if this activity is currently being edited
+	private boolean editing = false;
 
 	private ActivityModel activityM;
 	private EditTaskController controller;
@@ -58,14 +66,14 @@ public class ActivityView extends JPanel {
 	public ActivityView(ActivityModel m, EditTaskController controller) {
 		this.activityM = m;
 		this.controller = controller;
-		setLayout(new MigLayout("", "[][grow, fill]", "0[grow, fill]0"));
+		setLayout(new MigLayout("", "0[][grow, fill]", "0[grow, fill]0"));
 		this.setBackground(Colors.ACTIVITY);
+		Localizer.addListener(this);
 		// Border
 		final Border raisedbevel = BorderFactory
 				.createEtchedBorder(EtchedBorder.LOWERED);
 		final TitledBorder title = BorderFactory
 				.createTitledBorder(raisedbevel);
-		// title.setTitlePosition(TitledBorder.LEFT);
 		this.setBorder(title);
 
 		JLabel info = new JLabel(DateFormat.getDateTimeInstance(
@@ -76,13 +84,17 @@ public class ActivityView extends JPanel {
 		infoPanel = new JPanel(new MigLayout("", "0[grow, fill][]", "0[]0"));
 		infoPanel.setBackground(Colors.ACTIVITY);
 		infoPanel.add(info);
+
+		edit = new JButton(Localizer.getString("Edit"));
 		if (m.getType().equals(ActivityModelType.COMMENT)
 				&& TaskManager.currentUser.equals(m.getActor())) {
 			editable = true;
-			edit = new JButton("Edit");
+
 			edit.setName(EDIT);
-			edit.setEnabled(true);
+			edit.setFont(edit.getFont().deriveFont(Font.PLAIN));
 			edit.addActionListener(controller);
+			edit.addMouseListener(this);
+			// for making it not look like a button
 			edit.setFocusPainted(false);
 			edit.setMargin(new Insets(0, 0, 0, 0));
 			edit.setContentAreaFilled(false);
@@ -102,14 +114,13 @@ public class ActivityView extends JPanel {
 		text.add(infoPanel);
 		text.add(message);
 
-		JLabel color = new JLabel();
-		color.setMinimumSize(new Dimension(20, 20));
-		color.setBackground(Color.BLUE);
-		// if (activityM.getType().equals(ActivityModelType.COMMENT)) {
-		// color.setBackground(Colors.ACTIVITY_COMMENT);
-		// } else {
-		// color.setOpaque(false);
-		// }
+		JPanel color = new JPanel();
+		color.setMinimumSize(new Dimension(20, 8));
+		if (activityM.getType().equals(ActivityModelType.COMMENT)) {
+			color.setBackground(Colors.ACTIVITY_COMMENT);
+		} else {
+			color.setBackground(Colors.ACTIVITY_OTHER);
+		}
 
 		add(color);
 		add(text);
@@ -140,6 +151,7 @@ public class ActivityView extends JPanel {
 	public ActivityView duplicate() {
 		ActivityView av = new ActivityView(activityM, controller);
 		av.setBackground(this.getBackground());
+		av.setEditing(this.editing);
 		return av;
 	}
 
@@ -166,6 +178,15 @@ public class ActivityView extends JPanel {
 		return activityM.getDescription();
 	}
 
+	public void setEditing(boolean e) {
+		editing = e;
+		if (editable && editing) {
+			edit.setFont(edit.getFont().deriveFont(Font.BOLD));
+		} else if (editable) {
+			edit.setFont(edit.getFont().deriveFont(Font.PLAIN));
+		}
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof ActivityView)) {
@@ -180,11 +201,41 @@ public class ActivityView extends JPanel {
 
 	@Override
 	public void setBackground(Color bg) {
-		Color oldBg = getBackground();
 		super.setBackground(bg);
 		if (infoPanel != null) {
 			infoPanel.setBackground(bg);
 			text.setBackground(bg);
 		}
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// Do nothing
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// Do nothing
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// Do nothing
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		edit.setFont(edit.getFont().deriveFont(Font.BOLD));
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		if (!editing)
+			edit.setFont(edit.getFont().deriveFont(Font.PLAIN));
+	}
+
+	@Override
+	public void onLocaleChange() {
+		edit.setText(Localizer.getString("Edit"));
 	}
 }

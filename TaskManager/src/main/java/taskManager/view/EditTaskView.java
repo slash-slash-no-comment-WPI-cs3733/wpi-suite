@@ -40,6 +40,7 @@ import net.java.balloontip.styles.RoundedBalloonStyle;
 import net.miginfocom.swing.MigLayout;
 
 import org.jdesktop.swingx.JXDatePicker;
+import org.jdesktop.swingx.prompt.PromptSupport;
 
 import taskManager.controller.ActivityController;
 import taskManager.controller.EditTaskController;
@@ -105,7 +106,10 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	private final JTextField estEffortField;
 	private final JTextField actEffortField;
 	private JTextArea commentBox;
+	// Used by the TaskInputController to know what the original comment was
+	private String commentBoxText = "";
 	private final JPanel window;
+	private final JLabel editing;
 
 	private final JLabel titleLabel;
 	private final JLabel descriptionLabel;
@@ -411,11 +415,17 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		windowScroll.getVerticalScrollBar().setUnitIncrement(12);
 		windowScroll.getHorizontalScrollBar().setUnitIncrement(12);
 
+		// label to notify a user if they are editing a task
+		editing = new JLabel("", null, JLabel.CENTER);
+		editing.setMinimumSize(new JLabel("Editing highlighted comment")
+				.getPreferredSize());
+
 		// The activities and comments tabs
 		JPanel tabs = new JPanel(new MigLayout("wrap 1", "[grow, fill]",
-				"[grow, fill][]"));
+				"[grow, fill][][center]"));
 		tabs.add(activityC.getActivitiesPanel());
 		tabs.add(initCommentBoxandBtns());
+		tabs.add(editing);
 		tabs.setBorder(BorderFactory.createLineBorder(Color.GRAY));
 
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
@@ -429,9 +439,15 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		this.add(EditSaveCancel);
 	}
 
+	/**
+	 * 
+	 * initializes the comment textbox and the buttons underneath.
+	 *
+	 * @return a JPanel containing the textbox and buttons
+	 */
 	private JPanel initCommentBoxandBtns() {
 		JPanel commentAndBtns = new JPanel(new MigLayout("wrap 1",
-				"[grow, fill]", "[]"));
+				"0[grow, fill]0", "[]"));
 
 		commentBox = new JTextArea();
 		commentBox.setRows(5);
@@ -442,6 +458,10 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 				.put(KeyStroke.getKeyStroke("TAB"), "doNothing");
 		commentBox.getInputMap().put(KeyStroke.getKeyStroke("ENTER"),
 				"doNothing");
+
+		PromptSupport.setPrompt("Write a comment", commentBox);
+		PromptSupport.setFocusBehavior(PromptSupport.FocusBehavior.SHOW_PROMPT,
+				commentBox);
 
 		JScrollPane commentScroll = new JScrollPane(commentBox,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
@@ -1117,15 +1137,25 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	}
 
 	/**
-	 * Set whether the submit and cancel buttons for the activity view are
-	 * enabled or not
+	 * Sets whether the submit button for the activity view is enabled or not
 	 * 
 	 * @param e
 	 *            true to make the submit button enabled, false to disable it
 	 */
-	public void setSubmitCancelCommentEnabled(boolean e) {
+	public void setSubmitCommentEnabled(boolean e) {
 		submitComment.setEnabled(e);
-		cancelComment.setEnabled(e);
+	}
+
+	/**
+	 * Sets whether the cancel button for the activity view is enabled or not
+	 * 
+	 * @param e
+	 *            true to make the cancel button enabled, false to disable it
+	 */
+	public void setCancelCommentEnabled(boolean e) {
+		if (!e && !controller.isEditingComment() || e) {
+			cancelComment.setEnabled(e);
+		}
 	}
 
 	/**
@@ -1138,21 +1168,44 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	}
 
 	/**
-	 * Sets the text in the comment JTextArea.
+	 * Sets up the comment box, edit label, and buttons for when a comment is
+	 * being edited.
 	 * 
 	 */
-	public void setCommentsFieldText(String text) {
-		commentBox.setText(text);
+	public void startEditingComment(String text) {
 		cancelComment.setEnabled(true);
+		editing.setText(Localizer.getString("EditingComment"));
+		editing.setForeground(Color.RED);
+		commentBoxText = text;
+		commentBox.setText(text);
+
+		commentBox.requestFocus();
+		commentBox.requestFocusInWindow();
+		commentBox.grabFocus();
+		commentBox.setCaretPosition(commentBox.getSelectionEnd());
 	}
 
 	/**
-	 * Clears the text in the comments field.
+	 * Sets the comment box, edit label, and buttons for when a comment is done
+	 * being edited.
 	 */
-	public void clearText() {
+	public void doneEditingComment() {
 		commentBox.setText("");
+		commentBoxText = "";
+		editing.setText("");
 		submitComment.setEnabled(false);
 		cancelComment.setEnabled(false);
+	}
+
+	/**
+	 * 
+	 * Returns the original text form the comment that is currently being
+	 * edited.
+	 *
+	 * @return the original comment text
+	 */
+	public String getOrigCommentText() {
+		return commentBoxText;
 	}
 
 	@Override
@@ -1168,11 +1221,17 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		projectUsersLabel.setText(Localizer.getString("ProjectUsers"));
 		activitiesLabel.setText(Localizer.getString("Activities"));
 		commentsLabel.setText(Localizer.getString("Comment"));
+		PromptSupport
+				.setPrompt(Localizer.getString("WriteComment"), commentBox);
+		if (!editing.getText().equals("")) {
+			editing.setText(Localizer.getString("EditingComment"));
+		}
 		delete.setText(Localizer.getString("Delete"));
 		submitComment.setText(Localizer.getString("SubmitComment"));
 		viewReq.setText(Localizer.getString("ViewRequirement"));
 		save.setText(Localizer.getString("Save"));
 		cancel.setText(Localizer.getString("Cancel"));
+		cancelComment.setText(Localizer.getString("Cancel"));
 		archive.setText(Localizer.getString("Archived"));
 		((JLabel) titleError.getContents()).setText(Localizer
 				.getString(TITLE_ERROR));
