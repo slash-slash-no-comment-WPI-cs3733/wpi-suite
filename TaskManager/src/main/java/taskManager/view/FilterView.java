@@ -24,6 +24,8 @@ import javax.swing.JTextField;
 import org.jdesktop.swingx.prompt.PromptSupport;
 
 import taskManager.controller.FilterController;
+import taskManager.localization.LocaleChangeListener;
+import taskManager.localization.Localizer;
 import taskManager.model.TaskModel.TaskCategory;
 
 /**
@@ -32,7 +34,7 @@ import taskManager.model.TaskModel.TaskCategory;
  * @author Beth Martino
  *
  */
-public class FilterView extends JPanel {
+public class FilterView extends JPanel implements LocaleChangeListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -126,6 +128,9 @@ public class FilterView extends JPanel {
 		this.add(search);
 		this.add(categories);
 		this.add(checks);
+
+		onLocaleChange();
+		Localizer.addListener(this);
 
 	}
 
@@ -249,6 +254,15 @@ public class FilterView extends JPanel {
 	 */
 	public String getSearchString() {
 		return search.getText();
+	}
+
+	@Override
+	public void onLocaleChange() {
+		PromptSupport.setPrompt(Localizer.getString("Searchtasks"), search);
+		archiveCheckBox.setText("<html>"
+				+ Localizer.getString("Showarchivedtasks") + "</html>");
+		myTasksCheckBox.setText("<html>"
+				+ Localizer.getString("Showonlymytasks") + "</html>");
 	}
 
 }
