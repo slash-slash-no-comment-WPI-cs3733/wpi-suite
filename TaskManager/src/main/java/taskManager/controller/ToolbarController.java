@@ -332,6 +332,7 @@ public class ToolbarController extends DropTargetAdapter implements
 					view.showFunButtons();
 				} else {
 					view.hideFunButtons();
+					Localizer.setLanguage(Localizer.defaultLanguage);
 				}
 			}
 		}

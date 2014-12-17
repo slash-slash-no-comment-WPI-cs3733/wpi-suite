@@ -183,13 +183,6 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		randomizeTaskAngles.setMaximumSize(new Dimension(160, 58));
 		randomizeTaskAngles.addActionListener(controller);
 
-		funThings.add(Box.createHorizontalGlue());
-		funThings.add(randomizeTaskAngles);
-		funThings.add(funModeCheckBox);
-		funThings.add(Box.createHorizontalGlue());
-
-		// fun mode is off by default
-		hideFunButtons();
 		languages = new ArrayList<String>();
 		// Get supported languages
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths
@@ -220,6 +213,15 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		languageSelector.setMaximumSize(d);
 		languageSelector.setMinimumSize(d);
 
+		funThings.add(Box.createHorizontalGlue());
+		funThings.add(randomizeTaskAngles);
+		funThings.add(languageSelector);
+		funThings.add(funModeCheckBox);
+		funThings.add(Box.createHorizontalGlue());
+
+		// fun mode is off by default
+		hideFunButtons();
+
 		// Add title to the title panel
 		name.add(Box.createHorizontalStrut(10));
 		name.add(projectName);
@@ -229,7 +231,7 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		buttons.add(createTask);
 		buttons.add(createStage);
 		buttons.add(statistics);
-		buttons.add(languageSelector);
+		// buttons.add(languageSelector);
 		buttons.add(archiveCheckBox);
 		buttons.add(Box.createHorizontalGlue());
 
@@ -339,6 +341,9 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		randomizeTaskAngles.setEnabled(false);
 		randomizeTaskAngles.setVisible(false);
 		funModeCheckBox.setVisible(false);
+		languageSelector.setVisible(false);
+		languageSelector.setSelectedItem(Localizer.defaultLanguage);
+		languageSelector.setEnabled(false);
 	}
 
 	/**
@@ -349,6 +354,8 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		randomizeTaskAngles.setEnabled(true);
 		randomizeTaskAngles.setVisible(true);
 		funModeCheckBox.setVisible(true);
+		languageSelector.setVisible(true);
+		languageSelector.setEnabled(true);
 	}
 
 	/**
