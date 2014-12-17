@@ -140,7 +140,8 @@ public class ToolbarController extends DropTargetAdapter implements
 				// fits
 				while (SwingUtilities.computeStringWidth(view.getProjectName()
 						.getFontMetrics(view.getProjectName().getFont()),
-						hyphenatedStart) > goalWidth) {
+						hyphenatedStart) > goalWidth
+						&& hyphenatedStart.length() >= 2) {
 					hyphenatedEnd += hyphenatedStart.charAt(hyphenatedStart
 							.length() - 2);
 					hyphenatedStart = hyphenatedStart.substring(0,
