@@ -65,14 +65,14 @@ public class ActivityPanel extends JTabbedPane {
 		JScrollPane activityScroll = new JScrollPane(activities,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		// Scrolls to the bottom of the window where the most recent things are.
+		// Make scroll faster
 		activityScroll.getVerticalScrollBar().setUnitIncrement(12);
 
 		// Comments
 		JScrollPane commentsScroll = new JScrollPane(comments,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		// Scrolls to the bottom of the window where the most recent things are.
+		// Make scroll faster
 		commentsScroll.getVerticalScrollBar().setUnitIncrement(12);
 
 		scrollActivitiesToBottom();

@@ -154,12 +154,14 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	public EditTaskView(Mode mode, ActivityController activityC) {
 
 		// When Task added make EditTask take in a Task called currTask
+		// TODO change this to an indicator that its an edit task view
+		this.setName("edit task view");
 		this.mode = mode;
 		this.activityC = activityC;
 		this.setOpaque(false);
 		// Contains the splitPane and button panel
-		this.setLayout(new MigLayout("wrap 1, align center", "[grow, fill]",
-				"[grow, fill][]"));
+		this.setLayout(new MigLayout("wrap 1, align center", "0[grow, fill]0",
+				"0[grow, fill][]0"));
 
 		// the Panel holding all task editing (not activity) stuff
 		window = new JPanel(new MigLayout("center align", "[][][]",
@@ -365,7 +367,7 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		window.add(SpacerBtm, "dock south");
 
 		BalloonTipStyle errorStyle = new RoundedBalloonStyle(5, 5,
-				Colors.INPUT_ERROR, Color.red);
+				Colors.ERROR_BUBBLE, Color.RED);
 		titleError = new BalloonTip(titleField, new JLabel(), errorStyle,
 				Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST, 5, 15, false);
 		descripError = new BalloonTip(descripArea, new JLabel(), errorStyle,
@@ -457,7 +459,7 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	 *
 	 */
 	public void focusOnTitleField() {
-		titleField.requestFocus();
+		titleField.requestFocusInWindow();
 	}
 
 	/**
@@ -497,6 +499,21 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		requirements.addPopupMenuListener(fieldC);
 		dateField.addPropertyChangeListener(fieldC);
 		archive.addItemListener(fieldC);
+		this.addMouseListener(fieldC);
+		window.addMouseListener(fieldC);
+		titleField.addMouseListener(fieldC);
+		descripArea.addMouseListener(fieldC);
+		actEffortField.addMouseListener(fieldC);
+		estEffortField.addMouseListener(fieldC);
+		viewReq.addMouseListener(fieldC);
+		requirements.addMouseListener(fieldC);
+		stages.addMouseListener(fieldC);
+		projectUsersList.addMouseListener(fieldC);
+		usersList.addMouseListener(fieldC);
+		addUser.addMouseListener(fieldC);
+		removeUser.addMouseListener(fieldC);
+		submitComment.addMouseListener(fieldC);
+		dateField.addMouseListener(fieldC);
 		commentBox.addKeyListener(fieldC);
 		fieldC.validate();
 	}
@@ -552,12 +569,31 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	}
 
 	/**
+	 * return if the title field is the focus owner
+	 * 
+	 * @return
+	 */
+	public boolean titleHasFocus() {
+		return titleField.isFocusOwner();
+	}
+
+	/**
 	 * Gets the description field
 	 * 
 	 * @return the description field
 	 */
 	public String getDescription() {
 		return descripArea.getText();
+	}
+
+	/**
+	 * return if the description field is the focus owner
+	 * 
+	 * @return true if the description has focus, false if it doesnt
+	 */
+	public boolean descriptionHasFocus() {
+		return descripArea.isFocusOwner();
+
 	}
 
 	/**
@@ -579,12 +615,31 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	}
 
 	/**
+	 * returns whether or not the estimated effort field has focus
+	 * 
+	 * @return true if the estimated effort field has focus, false if it
+	 *         doensn't
+	 */
+	public boolean estEffortHasFocus() {
+		return estEffortField.isFocusOwner();
+	}
+
+	/**
 	 * Gets the actual effort field
 	 * 
 	 * @return the actual effort field
 	 */
 	public String getActEffort() {
 		return actEffortField.getText();
+	}
+
+	/**
+	 * returns whether or not the actual effort field has focus
+	 * 
+	 * @return true if the actual effort field has focus, false if it doensn't
+	 */
+	public boolean actEffortHasFocus() {
+		return actEffortField.isFocusOwner();
 	}
 
 	/**
@@ -767,22 +822,16 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	 * Sets the title field border red
 	 * 
 	 * @param red
-	 *            turns the red border on and off
+	 *            turns the red background on and off
 	 */
 
 	public void setTitleFieldRed(boolean red) {
 		if (red) {
-			titleField.setBorder(BorderFactory.createLineBorder(Color.red));
+			titleField.setBackground(Colors.ERROR);
 		} else {
-			titleField.setBorder(BorderFactory.createLineBorder(Color.black));
+			titleField.setBackground(Color.WHITE);
 		}
 	}
-
-	/**
-	 * Sets the title field border red
-	 * 
-	 * @param boolean turns the red border on and off
-	 */
 
 	/**
 	 * Sets the description error visible or invisible
@@ -797,26 +846,19 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	}
 
 	/**
-	 * Sets the description field border red
+	 * Sets the description field red
 	 * 
 	 * @param red
-	 *            turns the red border on and off
+	 *            turns the red background on and off
 	 */
 
 	public void setDescriptionFieldRed(boolean red) {
 		if (red) {
-			descripArea.setBorder(BorderFactory.createLineBorder(Color.red));
+			descripArea.setBackground(Colors.ERROR);
 		} else {
-			descripArea
-					.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
+			descripArea.setBackground(Color.WHITE);
 		}
 	}
-
-	/**
-	 * Sets the description field border red
-	 * 
-	 * @param boolean turns the red border on and off
-	 */
 
 	/**
 	 * Sets the estimated effort error visible or invisible
@@ -830,33 +872,31 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	}
 
 	/**
-	 * Sets the estimated effort field border red
+	 * Sets the estimated effort red
 	 * 
 	 * @param red
-	 *            turns the red border on and off
+	 *            turns the red background on and off
 	 */
 
 	public void setEstEffortFieldRed(boolean red) {
 		if (red) {
-			estEffortField.setBorder(BorderFactory.createLineBorder(Color.red));
+			estEffortField.setBackground(Colors.ERROR);
 		} else {
-			estEffortField
-					.setBorder(BorderFactory.createLineBorder(Color.gray));
+			estEffortField.setBackground(Color.WHITE);
 		}
 	}
 
 	/**
-	 * Sets the actual effort field border red
+	 * Sets the actual effort red
 	 * 
-	 * @red boolean turns the red border on and off
+	 * @red boolean turns the red background on and off
 	 */
 
 	public void setActEffortFieldRed(boolean red) {
 		if (red) {
-			actEffortField.setBorder(BorderFactory.createLineBorder(Color.red));
+			actEffortField.setBackground(Colors.ERROR);
 		} else {
-			actEffortField
-					.setBorder(BorderFactory.createLineBorder(Color.gray));
+			actEffortField.setBackground(Color.WHITE);
 		}
 	}
 
@@ -925,6 +965,16 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	 */
 	public void setSaveEnabled(boolean e) {
 		save.setEnabled(e);
+	}
+
+	/**
+	 * enables or disables the comment submit button
+	 * 
+	 * @param e
+	 *            true is enabled false is disabled
+	 */
+	public void setCommentSubmitEnabled(boolean e) {
+		submitComment.setEnabled(e);
 	}
 
 	/**
@@ -1054,5 +1104,14 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 				.getString(EFFORT_ERROR));
 		((JLabel) estEffortError.getContents()).setText(Localizer
 				.getString(EFFORT_ERROR));
+
+		// reload the requirements box
+		if (controller != null) {
+			String r = getSelectedRequirement();
+			String s = getSelectedStage();
+			controller.reloadData();
+			setSelectedRequirement(r);
+			setSelectedStage(s);
+		}
 	}
 }
