@@ -34,7 +34,7 @@ import edu.wpi.cs.wpisuitetng.network.models.HttpMethod;
  * @version Nov 6, 2014
  */
 
-public class TaskModel extends AbstractJsonableModel<TaskModel> {
+public class TaskModel extends AbstractTaskManagerModel<TaskModel> {
 
 	public enum TaskCategory {
 		NO_CATEGORY, RED, GREEN, BLUE, YELLOW, PURPLE
@@ -395,7 +395,8 @@ public class TaskModel extends AbstractJsonableModel<TaskModel> {
 
 	/*
 	 * @see
-	 * taskManager.model.AbstractJsonableModel#makeIdenticalTo(java.lang.Object)
+	 * taskManager.model.AbstractTaskManagerModel#makeIdenticalTo(java.lang.
+	 * Object)
 	 */
 	@Override
 	public Set<Object> makeIdenticalTo(TaskModel task) {

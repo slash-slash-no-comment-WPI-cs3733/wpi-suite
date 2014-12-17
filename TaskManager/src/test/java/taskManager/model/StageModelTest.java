@@ -107,22 +107,22 @@ public class StageModelTest {
 	@Test
 	public void testTasklistSynchronizationAddition() {
 		TaskModel task1 = new TaskModel("Task", stage);
-		wf = AbstractJsonableModel.fromJson(wf.toJson(), WorkflowModel.class);
+		wf = AbstractTaskManagerModel.fromJson(wf.toJson(), WorkflowModel.class);
 		wf.rebuildAllRefs();
 		stage = wf.findStageByName("Stage");
 		TaskModel task2 = new TaskModel("Task2", stage);
-		wf = AbstractJsonableModel.fromJson(wf.toJson(), WorkflowModel.class);
+		wf = AbstractTaskManagerModel.fromJson(wf.toJson(), WorkflowModel.class);
 		assertNotNull(wf.findStageByName("Stage").findTaskByID("Task2"));
 	}
 
 	@Test
 	public void testTasklistSynchronizationDeletion() {
 		TaskModel task = new TaskModel("Task", stage);
-		wf = AbstractJsonableModel.fromJson(wf.toJson(), WorkflowModel.class);
+		wf = AbstractTaskManagerModel.fromJson(wf.toJson(), WorkflowModel.class);
 		stage = wf.findStageByName("Stage");
 		task = wf.findTaskByID("Task");
 		stage.removeTask(task);
-		wf = AbstractJsonableModel.fromJson(wf.toJson(), WorkflowModel.class);
+		wf = AbstractTaskManagerModel.fromJson(wf.toJson(), WorkflowModel.class);
 		assertNull(wf.findStageByName("Stage").findTaskByID("Task"));
 	}
 
@@ -130,7 +130,7 @@ public class StageModelTest {
 	public void testTasklistSynchronizationMove() {
 		TaskModel task = new TaskModel("Task", stage);
 		task.setEstimatedEffort(5);
-		wf = AbstractJsonableModel.fromJson(wf.toJson(), WorkflowModel.class);
+		wf = AbstractTaskManagerModel.fromJson(wf.toJson(), WorkflowModel.class);
 		wf.rebuildAllRefs();
 		stage = wf.findStageByName("Stage");
 		stage2 = wf.findStageByName("Stage2");
@@ -138,7 +138,7 @@ public class StageModelTest {
 		assertEquals(task.getEstimatedEffort(), new Integer(5));
 		task.setEstimatedEffort(10);
 		stage2.addTask(task);
-		wf = AbstractJsonableModel.fromJson(wf.toJson(), WorkflowModel.class);
+		wf = AbstractTaskManagerModel.fromJson(wf.toJson(), WorkflowModel.class);
 		wf.rebuildAllRefs();
 		stage = wf.findStageByName("Stage");
 		stage2 = wf.findStageByName("Stage2");
