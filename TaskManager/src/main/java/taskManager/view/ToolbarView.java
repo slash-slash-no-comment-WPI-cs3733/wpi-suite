@@ -168,13 +168,13 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		projectName.setFont(new Font("TextField.font", Font.BOLD, 20));
 
 		// construct the fun things panel
-		leaveFunMode = new JButton("<html>Leave Fun Mode</html>");
+		leaveFunMode = new JButton();
 		leaveFunMode.setName(FUN_MODE);
 		leaveFunMode.addActionListener(controller);
 		leaveFunMode.setOpaque(false);
-		leaveFunMode.setToolTipText("Fun things are fun");
+		leaveFunMode.setToolTipText("");
 
-		randomizeTaskAngles = new JButton("<html>Randomize Task Angles</html>");
+		randomizeTaskAngles = new JButton();
 		randomizeTaskAngles.setName(TASK_ANGLES);
 		randomizeTaskAngles.setMaximumSize(new Dimension(160, 58));
 		randomizeTaskAngles.addActionListener(controller);
@@ -421,6 +421,10 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 				+ "</html>");
 		archive.setToolTipText(Localizer.getString("DragArchive"));
 		delete.setToolTipText(Localizer.getString("DragDelete"));
-
+		leaveFunMode.setText("<html>" + Localizer.getString("GoToBoringMode")
+				+ "</html>");
+		leaveFunMode.setToolTipText(Localizer.getString("FunTip"));
+		randomizeTaskAngles.setText("<html>"
+				+ Localizer.getString("RandomAngles") + "</html>");
 	}
 }
