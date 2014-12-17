@@ -37,6 +37,7 @@ import taskManager.localization.Localizer;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.ReportsView;
+import taskManager.view.ReportsView.Mode;
 import taskManager.view.RotationView;
 import taskManager.view.StageView;
 import taskManager.view.TaskView;
@@ -197,8 +198,8 @@ public class ToolbarController extends DropTargetAdapter implements
 				WorkflowController.getInstance().addStageToView();
 				break;
 			case ToolbarView.REPORT:
-				ReportsView rtv = new ReportsView();
-				rtv.setController(new ReportsManager(rtv));
+				ReportsView rtv = new ReportsView(Mode.VELOCITY);
+				rtv.setController(new ReportsController(rtv));
 				TabPaneController.getInstance().addReportsTab(rtv);
 				break;
 			case ToolbarView.TASK_ANGLES:
