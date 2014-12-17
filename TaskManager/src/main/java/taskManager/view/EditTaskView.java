@@ -1140,7 +1140,6 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	 *            true to make the cancel button enabled, false to disable it
 	 */
 	public void setCancelCommentEnabled(boolean e) {
-		System.out.println(controller.isEditingTask());
 		if (!e && !controller.isEditingComment() || e) {
 			cancelComment.setEnabled(e);
 		}
