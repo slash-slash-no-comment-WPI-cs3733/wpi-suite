@@ -44,6 +44,7 @@ public class TaskInputController implements KeyListener, MouseListener,
 
 	private boolean titleValid;
 	private boolean descriptionValid;
+	private boolean dateValid;
 	private boolean actEffortValid;
 	private boolean estEffortValid;
 
@@ -73,6 +74,7 @@ public class TaskInputController implements KeyListener, MouseListener,
 
 		titleValid = true;
 		descriptionValid = true;
+		dateValid = true;
 		estEffortValid = true;
 		actEffortValid = true;
 		// checks each required field and determines if it meets the
@@ -85,6 +87,11 @@ public class TaskInputController implements KeyListener, MouseListener,
 		// Description
 		if (etv.getDescription().trim().isEmpty()) {
 			descriptionValid = false;
+		}
+		// Date
+		if (etv.getJXDatePicker().getEditor().getText().isEmpty()
+				|| !etv.getJXDatePicker().isEditValid()) {
+			dateValid = false;
 		}
 		// Estimated Effort
 		if (!etv.getEstEffort().isEmpty()) {
@@ -111,11 +118,12 @@ public class TaskInputController implements KeyListener, MouseListener,
 		}
 
 		etv.setTitleFieldRed(!titleValid);
+		etv.setDateFieldRed(!dateValid);
 		etv.setDescriptionFieldRed(!descriptionValid);
 		etv.setEstEffortFieldRed(!estEffortValid);
 		etv.setActEffortFieldRed(!actEffortValid);
 
-		return titleValid && descriptionValid && estEffortValid
+		return titleValid && descriptionValid && dateValid && estEffortValid
 				&& actEffortValid;
 	}
 

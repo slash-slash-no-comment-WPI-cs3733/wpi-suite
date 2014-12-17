@@ -14,7 +14,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.KeyboardFocusManager;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -240,7 +239,7 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		// adds calendar
 		dateField = new JXDatePicker();
 		dateField.setName(DUE_DATE);
-		dateField.setDate(Calendar.getInstance().getTime());
+		dateField.setDate(null);
 
 		// Icon is from:
 		// http://www.iconarchive.com/show/oxygen-icons-by-oxygen-icons.org/Actions-view-calendar-day-icon.html
@@ -864,6 +863,16 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	}
 
 	/**
+	 * 
+	 * Returns the date picker
+	 *
+	 * @return the date picker
+	 */
+	public JXDatePicker getJXDatePicker() {
+		return dateField;
+	}
+
+	/**
 	 * Sets the estimated effort to the value i
 	 * 
 	 * @param i
@@ -959,6 +968,21 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	}
 
 	/**
+	 * Sets the date field red
+	 * 
+	 * @param red
+	 *            turns the red background on and off
+	 */
+
+	public void setDateFieldRed(boolean red) {
+		if (red) {
+			dateField.getEditor().setBackground(Colors.ERROR);
+		} else {
+			dateField.getEditor().setBackground(Color.WHITE);
+		}
+	}
+
+	/**
 	 * Sets the estimated effort error visible or invisible
 	 * 
 	 * @param v
@@ -1048,9 +1072,9 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 
 		titleField.setText("");
 		descripArea.setText("");
+		dateField.setDate(null);
 		estEffortField.setText("");
 		actEffortField.setText("");
-		dateField.setDate(Calendar.getInstance().getTime());
 		usersList.removeAllValues();
 		projectUsersList.removeAllValues();
 	}
