@@ -85,7 +85,7 @@ public class ActivityView extends JPanel implements MouseListener,
 		infoPanel.setBackground(Colors.ACTIVITY);
 		infoPanel.add(info);
 
-		edit = new JButton("Edit");
+		edit = new JButton(Localizer.getString("Edit"));
 		if (m.getType().equals(ActivityModelType.COMMENT)
 				&& TaskManager.currentUser.equals(m.getActor())) {
 			editable = true;
