@@ -309,7 +309,6 @@ public class ReportsView extends JPanel implements ActionListener,
 		SelectStages.add(selectStageLabel, "wrap");
 		SelectStages.add(select_stages, "wrap");
 		stageText = new JLabel(Localizer.getString("StageDistribution"));
-		// stageText.setFont(stageText.getFont().deriveFont(14));
 		SelectStages.add(stageText);
 		SelectStages.add(stagePanel2);
 
@@ -671,7 +670,7 @@ public class ReportsView extends JPanel implements ActionListener,
 
 	/**
 	 * 
-	 * Returns whether to the allUsers checkbox is pressed.
+	 * Returns whether the allUsers checkbox is pressed.
 	 *
 	 * @return true if the checkbox is enabled, false otherwise
 	 */
