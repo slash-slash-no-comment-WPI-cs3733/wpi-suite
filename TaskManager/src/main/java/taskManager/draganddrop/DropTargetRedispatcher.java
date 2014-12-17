@@ -36,6 +36,8 @@ public class DropTargetRedispatcher implements DropTargetListener {
 	/**
 	 * Constructor with target
 	 *
+	 * @param source
+	 *            Component to which this listener is attached
 	 * @param target
 	 *            Component to which events will be dispatched
 	 * @param flavor
@@ -123,7 +125,8 @@ public class DropTargetRedispatcher implements DropTargetListener {
 	 * Get target dropTarget if supported, ancestor otherwise
 	 *
 	 * @param dtde
-	 * @return Drop Target
+	 *            event for checking whether flavor is supported
+	 * @return correct drop target for redispatching
 	 */
 	private DropTarget getDropTarget(DropTargetDragEvent dtde) {
 		if (dtde.getTransferable().isDataFlavorSupported(flavor)) {
@@ -137,7 +140,8 @@ public class DropTargetRedispatcher implements DropTargetListener {
 	 * Get target dropTarget if supported, ancestor otherwise
 	 *
 	 * @param dtde
-	 * @return Drop Target
+	 *            event for checking whether flavor is supported
+	 * @return correct drop target for redispatching
 	 */
 	private DropTarget getDropTarget(DropTargetDropEvent dtde) {
 		if (dtde.getTransferable().isDataFlavorSupported(flavor)) {
