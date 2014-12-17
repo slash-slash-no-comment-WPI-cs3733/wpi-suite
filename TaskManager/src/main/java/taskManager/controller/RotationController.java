@@ -179,9 +179,13 @@ public class RotationController implements MouseListener, MouseMotionListener {
 	@Override
 	public void mouseMoved(MouseEvent arg0) {
 		if (checkBounds(arg0)) {
-			listener.mouseEntered(arg0);
+			if (!listener.isHovered()) {
+				listener.mouseEntered(arg0);
+			}
 		} else {
-			listener.mouseExited(arg0);
+			if (listener.isHovered()) {
+				listener.mouseExited(arg0);
+			}
 		}
 	}
 
