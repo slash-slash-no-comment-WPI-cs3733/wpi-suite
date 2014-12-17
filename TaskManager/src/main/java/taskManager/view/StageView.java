@@ -187,7 +187,7 @@ public class StageView extends JPanel implements Transferable,
 		// Make scrollpane redispatch drag events down to DropAreaPanel to avoid
 		// scrollbar flicker
 		stage.setDropTarget(new DropTarget(stage, new DropTargetRedispatcher(
-				tasks, DDTransferHandler.getTaskFlavor())));
+				this, tasks, DDTransferHandler.getTaskFlavor())));
 
 		setController(stageC);
 		onLocaleChange();
