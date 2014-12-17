@@ -241,7 +241,6 @@ public class ReportsView extends JPanel implements ActionListener,
 
 		// Users for Work Velocity
 		usersPanel = new JPanel();
-		// allUsers = new JCheckBox(Localizer.getString("AllUsers"));
 		allUsers = new JCheckBox();
 		allUsers.setFont(bigFont);
 		allUsers.setName(ALL_USERS);
@@ -270,7 +269,6 @@ public class ReportsView extends JPanel implements ActionListener,
 		usersPanel.add(usersListPanel, "w 100!");
 
 		// Generate Graph
-		// generateGraph = new JButton(Localizer.getString("Generate"));
 		generateGraph = new JButton();
 		generateGraph.setName(GENERATE);
 
@@ -283,7 +281,6 @@ public class ReportsView extends JPanel implements ActionListener,
 		generateGraph.setIcon(new ImageIcon(img));
 
 		// Panel for reports generating options
-		// JLabel selectStageLabel = new JLabel("Select Stage");
 		selectStageLabel = new JLabel();
 		selectStageLabel.setFont(bigFont);
 		SelectStages.add(selectStageLabel, "wrap");
@@ -299,8 +296,6 @@ public class ReportsView extends JPanel implements ActionListener,
 		WorkVelocity.add(timePanel, "w 100%");
 
 		cards = new JPanel(new CardLayout());
-		// cards.add(WorkVelocity, names[0]);
-		// cards.add(TaskDistribution, names[1]);
 		cards.add(WorkVelocity);
 		cards.add(TaskDistribution);
 		generator.add(reportType, "align center, wrap");
@@ -312,8 +307,7 @@ public class ReportsView extends JPanel implements ActionListener,
 		Dimension CardSize = cards.getSize();
 		cards.setPreferredSize(CardSize);
 
-		// cl.show(cards, names[0]);
-		cl.show(cards, "");
+		cl.show(cards, names[0]);
 		window.add(generator);
 
 		JScrollPane windowScroll = new JScrollPane(window,
@@ -635,11 +629,20 @@ public class ReportsView extends JPanel implements ActionListener,
 		workvel.setText(names[0]);
 		taskdistro.setText(names[1]);
 		effort.setText(Localizer.getString("Effort"));
-		numberoftasks.setText(Localizer.getString("Number of Tasks"));
-		select_stages.setText(Localizer.getString("All Stages"));
+		numberoftasks.setText(Localizer.getString("NumberOfTasks"));
+		select_stages.setText(Localizer.getString("AllStages"));
 		reportTypeLabel.setText(Localizer.getString("ChooseReportType"));
+		timeSliceList.removeAllItems();
 		for (String s : slices) {
 			timeSliceList.addItem(s);
 		}
+		startDate.setFormats(Localizer.getString("DateFormat"));
+		startDate.setLocale(null);
+		startDate.getMonthView().setLocale(null);
+		startDate.getMonthView().updateUI();
+		endDate.setFormats(Localizer.getString("DateFormat"));
+		endDate.setLocale(null);
+		endDate.getMonthView().setLocale(null);
+		endDate.getMonthView().updateUI();
 	}
 }
