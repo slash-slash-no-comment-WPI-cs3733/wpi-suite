@@ -35,6 +35,7 @@ public class RotationController implements MouseListener, MouseMotionListener {
 	private TaskController listener = null;
 	private MouseAdapter dragListener = null;
 	private static Map<String, Double> taskAngles = new HashMap<String, Double>();
+	private boolean pressedInside = false;
 
 	/**
 	 * Construct a new rotation controller
@@ -96,12 +97,15 @@ public class RotationController implements MouseListener, MouseMotionListener {
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		if (checkBounds(arg0)) {
+			pressedInside = true;
 			if (listener != null) {
 				listener.mousePressed(arg0);
 			}
 			if (dragListener != null) {
 				dragListener.mousePressed(arg0);
 			}
+		} else {
+			pressedInside = false;
 		}
 	}
 
@@ -167,7 +171,7 @@ public class RotationController implements MouseListener, MouseMotionListener {
 	 */
 	@Override
 	public void mouseDragged(MouseEvent arg0) {
-		if (dragListener != null && checkBounds(arg0)) {
+		if (dragListener != null && pressedInside && checkBounds(arg0)) {
 			dragListener.mouseDragged(arg0);
 		}
 	}
