@@ -208,9 +208,11 @@ public class ToolbarController extends DropTargetAdapter implements
 			case ToolbarView.TASK_ANGLES:
 				RotationController.resetAngles();
 				WorkflowController.getInstance().reloadData();
+				break;
 			case ToolbarView.FUN_MODE:
 				view.setFunMode(false);
 				WorkflowController.getInstance().reloadData();
+				break;
 			}
 		} else if (button instanceof JComboBox) {
 			Localizer.setLanguage(view.getSelectedLanguage());
