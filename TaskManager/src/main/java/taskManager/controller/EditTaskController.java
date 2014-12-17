@@ -575,6 +575,9 @@ public class EditTaskController implements ActionListener {
 	 * @return true if there are edits
 	 */
 	public Boolean checkDate(TaskModel task) {
+		if (etv.getDate() == null) {
+			return false;
+		}
 		// if the task had a due date, check if it changed
 		final Date dueDate;
 		if (task != null) {
