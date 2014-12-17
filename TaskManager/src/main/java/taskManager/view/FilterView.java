@@ -34,6 +34,8 @@ public class FilterView extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	private final String CHECK = "\u2713";
+	public static final String SHOW_ARCHIVE = "showArchive";
+	public static final String MY_TASKS = "myTasks";
 
 	private FilterController filterC;
 
@@ -75,10 +77,12 @@ public class FilterView extends JPanel {
 		archiveCheckBox.setOpaque(false);
 		archiveCheckBox.addItemListener(filterC);
 		archiveCheckBox.setMinimumSize(checks.getMinimumSize());
+		archiveCheckBox.setName(SHOW_ARCHIVE);
 		myTasksCheckBox = new JCheckBox("<html>Show only my tasks</html>");
 		myTasksCheckBox.setOpaque(false);
 		myTasksCheckBox.addItemListener(filterC);
 		myTasksCheckBox.setMinimumSize(checks.getMinimumSize());
+		myTasksCheckBox.setName(MY_TASKS);
 		checks.add(archiveCheckBox);
 		checks.add(myTasksCheckBox);
 		checks.setOpaque(false);

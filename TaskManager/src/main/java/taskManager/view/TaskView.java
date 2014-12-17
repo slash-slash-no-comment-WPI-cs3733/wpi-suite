@@ -66,6 +66,8 @@ public class TaskView extends JPanel implements Transferable,
 	private Image ARCHIVE_HOVER;
 	private Date dueDate = null;
 
+	private final String taskID;
+
 	/**
 	 * Constructor, creates a list-like view for the following information: the
 	 * name of the task, the due date and the estimated effort
@@ -82,7 +84,11 @@ public class TaskView extends JPanel implements Transferable,
 	 *            the width of the stage the task is being added to
 	 */
 	public TaskView(String name, Date duedate, int users, int comments,
-			int stageWidth) {
+			String taskID, int stageWidth) {
+		// associates the task ID with the view
+		this.taskID = taskID;
+		this.setName(name);
+
 		// read the hover background picture files
 		try {
 			ARCHIVE_BG = ImageIO.read(this.getClass().getResourceAsStream(
@@ -229,9 +235,13 @@ public class TaskView extends JPanel implements Transferable,
 
 	}
 
-	@Override
-	public String getName() {
-		return super.getName();
+	/**
+	 * gets the task ID associated with this task view
+	 * 
+	 * @return the task ID associated with this view
+	 */
+	public String getViewID() {
+		return this.taskID;
 	}
 
 	/**

@@ -57,10 +57,11 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 	private final TaskModel taskM;
 	private final TaskController taskC;
 	private final TaskInfoPreviewController controller;
-	private JPanel titleBar;
+	private final JPanel titleBar;
 	private final JButton closeButton;
 	public static final String EDIT = "edit";
 	public static final String X = "x";
+	private final JButton edit;
 	public static final int WIDTH = 220;
 	private JLabel archived = new JLabel();
 	private JLabel dueDate = new JLabel();
@@ -69,7 +70,6 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 	private ScrollList usersSome = new ScrollList("");
 	private JLabel usersNone = new JLabel();
 	private final JLabel req;
-	final JButton edit;
 
 	/**
 	 * Constructs a TaskInfoPreviewView for a task based on the given TaskModel
@@ -191,7 +191,7 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 
 		// The task's due date
 		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-		JLabel dueDate = new JLabel("<html><b><i>Due:</i></b> "
+		dueDate = new JLabel("<html><b><i>Due:</i></b> "
 				+ df.format(this.taskM.getDueDate()) + "</html>");
 
 		dueDate.setFont(dueDate.getFont().deriveFont(Font.PLAIN));
@@ -256,8 +256,8 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 		}
 
 		// This panel contains the edit button
+		edit = new JButton(EDIT);
 		final JPanel buttonPanel = new JPanel();
-		edit = new JButton(Localizer.getString("Edit"));
 		edit.setName(EDIT);
 		edit.setPreferredSize(new Dimension(205, 35));
 		// edit.setMargin(new Insets(5, 30, 5, 30));

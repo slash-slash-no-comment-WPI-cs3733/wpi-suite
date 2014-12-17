@@ -53,6 +53,7 @@ public class ActivityView extends JPanel implements MouseListener,
 	private EditTaskController controller;
 	private JPanel infoPanel;
 	private JPanel text;
+	private JLabel message;
 
 	/**
 	 * Creates an ActivityView panel, meant to display an activity with name of
@@ -85,7 +86,7 @@ public class ActivityView extends JPanel implements MouseListener,
 		infoPanel.setBackground(Colors.ACTIVITY);
 		infoPanel.add(info);
 
-		edit = new JButton("Edit");
+		edit = new JButton(Localizer.getString("Edit"));
 		if (m.getType().equals(ActivityModelType.COMMENT)
 				&& TaskManager.currentUser.equals(m.getActor())) {
 			editable = true;
@@ -106,7 +107,7 @@ public class ActivityView extends JPanel implements MouseListener,
 
 		// Content of the activity
 
-		JLabel message = new JLabel("<html>" + m.getDescription() + "</html>");
+		message = new JLabel("<html>" + m.getDescription() + "</html>");
 		message.setFont(message.getFont().deriveFont(Font.PLAIN));
 
 		text = new JPanel(new MigLayout("wrap 1", "0[grow, fill]0", "0[][]0"));
@@ -237,5 +238,6 @@ public class ActivityView extends JPanel implements MouseListener,
 	@Override
 	public void onLocaleChange() {
 		edit.setText(Localizer.getString("Edit"));
+		message.setText("<html>" + activityM.getDescription() + "</html>");
 	}
 }

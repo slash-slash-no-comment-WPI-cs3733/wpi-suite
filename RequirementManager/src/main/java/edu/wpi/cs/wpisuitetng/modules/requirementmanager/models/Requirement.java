@@ -740,7 +740,8 @@ public class Requirement extends AbstractModel {
 	 * Setter for parent extracts the ID of parentReq and assigns it to parentID
 	 * 
 	 * @param parentReq
-	 *            @throws Exception if invalid parent
+	 * @throws Exception
+	 *             if invalid parent
 	 */
 	public void setParent(Requirement parentReq) throws Exception {
 		setParentID(parentReq.getId());
@@ -817,7 +818,8 @@ public class Requirement extends AbstractModel {
 		final Gson parser = new Gson();
 		try {
 			return parser.fromJson(json, Requirement[].class);
-		} catch (Exception e) {
+		} catch (JsonSyntaxException e) {
+			// if json is in unicode
 			json = json.substring(2);
 			try {
 				return parser.fromJson(json, Requirement[].class);

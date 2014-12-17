@@ -62,7 +62,7 @@ public class EditTaskController implements ActionListener {
 	public EditTaskController() {
 		activityC = new ActivityController(null, this);
 
-		etv = new EditTaskView(Mode.CREATE, activityC);
+		etv = new EditTaskView(Mode.CREATE, activityC, null);
 		etv.setController(this);
 		etv.setFieldController(new TaskInputController(etv));
 
@@ -101,7 +101,7 @@ public class EditTaskController implements ActionListener {
 		this.model = model;
 		this.activityC = new ActivityController(model, this);
 
-		etv = new EditTaskView(Mode.EDIT, activityC);
+		etv = new EditTaskView(Mode.EDIT, activityC, model.getID());
 		etv.setName(model.getName());
 		etv.setController(this);
 		etv.setFieldController(new TaskInputController(etv));
@@ -193,6 +193,7 @@ public class EditTaskController implements ActionListener {
 
 						// creates a new task model
 						model = new TaskModel(etv.getTitleText(), desiredStage);
+						etv.setViewID(model.getID());
 						// add pending activities/comments
 						for (ActivityModel act : activityC.getActivities()) {
 							model.addActivity(act);
@@ -321,9 +322,13 @@ public class EditTaskController implements ActionListener {
 	public void reloadData() {
 
 		final List<String> stageNames = new ArrayList<String>();
-		final String selectedStage = etv.getSelectedStage();
+		String selectedStage = etv.getSelectedStage();
 		for (StageModel stage : WorkflowModel.getInstance().getStages()) {
 			stageNames.add(stage.getName());
+			// grab the stage name of the stage the model is in
+			if (model != null && model.getStage().equals(stage)) {
+				selectedStage = stage.getName();
+			}
 		}
 		etv.setStages(stageNames);
 		if (selectedStage != null) {
@@ -332,15 +337,21 @@ public class EditTaskController implements ActionListener {
 
 		final List<Requirement> reqs = RequirementModel.getInstance()
 				.getRequirements();
+		String selectedReq = etv.getSelectedRequirement();
 
 		final List<String> reqNames = new ArrayList<String>();
-		final String selectedReq = etv.getSelectedRequirement();
-		for (Requirement req : reqs) {
-			reqNames.add(req.getName());
+		if (reqs != null) {
+			for (Requirement req : reqs) {
+				reqNames.add(req.getName());
+			}
 		}
 		etv.setRequirements(reqNames);
 		if (selectedReq != null) {
 			etv.setSelectedRequirement(selectedReq);
+		}
+
+		if (model != null) {
+			etv.checkArchive(model.isArchived());
 		}
 
 		etv.getFieldController().validate();
