@@ -12,7 +12,6 @@ package taskManager.controller;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -679,6 +678,16 @@ public class EditTaskController implements ActionListener {
 	public boolean isEditingTask() {
 		// Sadly isn't equivalent to model == null;
 		return Mode.EDIT.equals(etv.getMode());
+	}
+
+	/**
+	 * 
+	 * Returns whether this controller is editing a comment.
+	 *
+	 * @return Whether we are creating (false) or editing (true) a comment
+	 */
+	public boolean isEditingComment() {
+		return activityC.getEditedTask() != null;
 	}
 
 	/**
