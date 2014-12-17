@@ -17,6 +17,8 @@ import java.util.ResourceBundle;
 
 import javax.swing.UIManager;
 
+import taskManager.view.EditTaskView;
+
 /**
  * Returns strings in the appropriate language, defaulting to english. Notifies
  * all listeners whenever the language is changed
@@ -73,7 +75,6 @@ public class Localizer {
 		UIManager.put("OptionPane.yesButtonText", rb.getString("Yes"));
 		UIManager.put("OptionPane.noButtonText", rb.getString("No"));
 		UIManager.put("OptionPane.cancelButtonText", rb.getString("Cancel"));
-
 		// tell all of the listeners that the locale changed
 		Iterator<WeakReference<LocaleChangeListener>> it = listeners.iterator();
 		while (it.hasNext()) {

@@ -10,6 +10,8 @@ package taskManager.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.JButton;
 
@@ -21,17 +23,21 @@ import taskManager.view.TaskInfoPreviewView;
  * @author Samee Swartz
  * @version Nov 21, 2014
  */
-public class TaskInfoPreviewController implements ActionListener {
+public class TaskInfoPreviewController implements ActionListener, MouseListener {
 	private final TaskController taskC;
+	private final TaskInfoPreviewView taskInfo;
 
 	/**
 	 * Constructor for the controller for the task preview view
 	 *
 	 * @param taskC
 	 *            the controller for the task
+	 * @param t
+	 *            the taskInfoPreviewView being controlled
 	 */
-	public TaskInfoPreviewController(TaskController taskC) {
+	public TaskInfoPreviewController(TaskController taskC, TaskInfoPreviewView t) {
 		this.taskC = taskC;
+		taskInfo = t;
 	}
 
 	@Override
@@ -53,5 +59,30 @@ public class TaskInfoPreviewController implements ActionListener {
 				break;
 			}
 		}
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		// Do nothing
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// Do nothing
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// Do nothing
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		taskInfo.setCloseBorder(true);
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		taskInfo.setCloseBorder(false);
 	}
 }
