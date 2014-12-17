@@ -22,6 +22,7 @@ import java.util.Set;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
 
 import taskManager.TaskManager;
 import taskManager.localization.Localizer;
@@ -278,7 +279,7 @@ public class EditTaskController implements ActionListener {
 				returnToWorkflowView();
 				break;
 			case EditTaskView.CANCEL_COMMENT:
-				etv.clearText();
+				etv.doneEditingComment();
 				activityC.setEditedTask(null);
 				break;
 			case EditTaskView.SUBMIT_COMMENT:
@@ -298,14 +299,17 @@ public class EditTaskController implements ActionListener {
 					activityC.addActivity(comment);
 					activityC.scrollActivitiesToBottom();
 				}
-				etv.clearText();
+				etv.doneEditingComment();
 				WorkflowModel.getInstance().save();
 				break;
 			case ActivityView.EDIT:
-				activityC.setEditedTask((ActivityView) ((JButton) button)
-						.getParent().getParent().getParent());
-				etv.setCommentsFieldText(((ActivityView) ((JButton) button)
-						.getParent().getParent().getParent()).getComment());
+				activityC.setEditedTask((ActivityView) SwingUtilities
+						.getAncestorOfClass(ActivityView.class,
+								(JButton) button));
+
+				etv.startEditingComment(((ActivityView) SwingUtilities
+						.getAncestorOfClass(ActivityView.class,
+								(JButton) button)).getComment());
 				break;
 			}
 		}
@@ -489,6 +493,10 @@ public class EditTaskController implements ActionListener {
 	 */
 	public boolean isEdited() {
 		boolean edited = false;
+
+		if (!etv.getCommentsFieldText().isEmpty()) {
+			return true;
+		}
 
 		// Compare the task info with the filled in info.
 		if (model == null) { // If we're creating a task
@@ -724,9 +732,19 @@ public class EditTaskController implements ActionListener {
 	 *
 	 * @return Whether we are creating (false) or editing (true) a task
 	 */
-	private boolean isEditingTask() {
+	public boolean isEditingTask() {
 		// Sadly isn't equivalent to model == null;
 		return Mode.EDIT.equals(etv.getMode());
+	}
+
+	/**
+	 * 
+	 * Returns whether this controller is editing a comment.
+	 *
+	 * @return Whether we are creating (false) or editing (true) a comment
+	 */
+	public boolean isEditingComment() {
+		return activityC.getEditedTask() != null;
 	}
 
 	/**
