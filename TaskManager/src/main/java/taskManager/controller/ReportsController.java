@@ -873,16 +873,17 @@ public class ReportsController implements ActionListener, ChangeListener,
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		// Do nothing
+		valueChanged(null);
+		rtv.updateStagesComboBox();
 	}
 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		// Used for selecting/unselecting users in the view.
 		final Boolean addUsersSelected = !rtv.getProjectUsersList()
-				.isSelectionEmpty();
-		final Boolean removeUsersSelected = !rtv.getUsersList()
-				.isSelectionEmpty();
+				.isSelectionEmpty() && !rtv.isAllUsersChecked();
+		final Boolean removeUsersSelected = !rtv.getUsersList().isSelectionEmpty()
+				&& !rtv.isAllUsersChecked();
 		rtv.setAddUserEnabled(addUsersSelected);
 		rtv.setRemoveUserEnabled(removeUsersSelected);
 	}

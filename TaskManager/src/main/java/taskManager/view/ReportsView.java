@@ -125,6 +125,7 @@ public class ReportsView extends JPanel implements ActionListener,
 	private final JLabel timeSliceLabel;
 	private final JLabel startDateLabel;
 	private final JLabel endDateLabel;
+	private final JLabel stageText;
 	private final JXDatePicker startDate;
 	private final JXDatePicker endDate;
 
@@ -169,7 +170,7 @@ public class ReportsView extends JPanel implements ActionListener,
 		final JPanel SelectStages = new JPanel(new MigLayout());
 
 		// Report Type Pane
-		final JPanel reportType = new JPanel(new MigLayout());
+		final JPanel reportType = new JPanel(new MigLayout("center"));
 		reportTypeLabel = new JLabel();
 		reportTypeLabel.setFont(bigFont);
 		workvel.addActionListener(this);
@@ -190,7 +191,7 @@ public class ReportsView extends JPanel implements ActionListener,
 		select_stages.addActionListener(this);
 		select_stages.setFont(bigFont);
 		effortOrNumberofTasks = new JPanel(new MigLayout());
-		reportType.add(reportTypeLabel, "align center, wrap");
+		reportType.add(reportTypeLabel, "wrap");
 		reportType.add(workvel);
 		reportType.add(taskdistro);
 		effortOrNumberofTasks.add(effort);
@@ -204,7 +205,7 @@ public class ReportsView extends JPanel implements ActionListener,
 		stagePanel = new JPanel();
 		stagePanel2 = new JPanel();
 		stagePanel.setLayout(new MigLayout());
-		stagePanel2.setLayout(new MigLayout());
+		stagePanel2.setLayout(new MigLayout("", "0[]0"));
 		stages = new JComboBox<String>();
 		stages.setName(STAGE_NAME);
 
@@ -306,14 +307,16 @@ public class ReportsView extends JPanel implements ActionListener,
 		selectStageLabel = new JLabel();
 		selectStageLabel.setFont(bigFont);
 		SelectStages.add(selectStageLabel, "wrap");
-		SelectStages.add(stagePanel2, "wrap, gapright 10px");
-		SelectStages.add(select_stages, "gaptop 15px, gapleft 5px");
+		SelectStages.add(select_stages, "wrap");
+		stageText = new JLabel(Localizer.getString("StageDistribution"));
+		SelectStages.add(stageText);
+		SelectStages.add(stagePanel2);
 
 		final JPanel Distro = new JPanel(new MigLayout());
 
 		Distro.add(SelectStages, "align center");
-		TaskDistribution.add(Distro, "gapleft 140");
-		WorkVelocity.add(allUsers, "wrap, gapleft 20px");
+		TaskDistribution.add(Distro);
+		WorkVelocity.add(allUsers, "wrap, align center");
 		WorkVelocity.add(usersPanel, "wrap, w 100%");
 		WorkVelocity.add(timePanel, "w 100%");
 
@@ -395,6 +398,7 @@ public class ReportsView extends JPanel implements ActionListener,
 		addUser.addActionListener(controller);
 		removeUser.addActionListener(controller);
 		allUsers.addChangeListener(controller);
+		select_stages.addChangeListener(controller);
 		currUsersList.setController(controller);
 		projectUsersList.setController(controller);
 		generateGraph.addActionListener(controller);
@@ -664,6 +668,27 @@ public class ReportsView extends JPanel implements ActionListener,
 		return select_stages.isSelected();
 	}
 
+	/**
+	 * 
+	 * Returns whether the allUsers checkbox is pressed.
+	 *
+	 * @return true if the checkbox is enabled, false otherwise
+	 */
+	public boolean isAllUsersChecked() {
+		return allUsers.isSelected();
+	}
+
+	/**
+	 * 
+	 * Sets the distribution stages comboBox's enabled based on if the select
+	 * all stage checkBox is pressed. If select all stages is pressed, disable
+	 * the comboBox.
+	 *
+	 */
+	public void updateStagesComboBox() {
+		stages2.setEnabled(!select_stages.isSelected());
+	}
+
 	@Override
 	public void onLocaleChange() {
 		names[0] = Localizer.getString("Velocity");
@@ -686,6 +711,8 @@ public class ReportsView extends JPanel implements ActionListener,
 		numberoftasks.setText(Localizer.getString("NumberOfTasks"));
 		select_stages.setText(Localizer.getString("AllStages"));
 		reportTypeLabel.setText(Localizer.getString("ChooseReportType"));
+		stageText.setText("<html><font size='4'>"
+				+ Localizer.getString("StageDistribution") + "</html>");
 		timeSliceList.removeAllItems();
 		for (String s : slices) {
 			timeSliceList.addItem(s);
