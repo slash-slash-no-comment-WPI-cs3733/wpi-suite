@@ -68,7 +68,7 @@ public class StageView extends JPanel implements Transferable,
 	private final JButton cancel;
 	private final DropAreaPanel tasks;
 	private final JScrollPane stage;
-	public static final int STAGE_WIDTH = 225;
+	public static final int STAGE_WIDTH = 240;
 
 	/**
 	 * 
@@ -80,6 +80,8 @@ public class StageView extends JPanel implements Transferable,
 	public StageView(String name, StageController stageC) {
 
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+		this.setName(name);
 
 		// The tasks panel accepts task drops
 		tasks = new DropAreaPanel(DDTransferHandler.getTaskFlavor());

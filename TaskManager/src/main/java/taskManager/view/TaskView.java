@@ -59,7 +59,14 @@ public class TaskView extends JPanel implements Transferable,
 	private JLabel userNumber;
 	private JLabel commentNumber;
 	private JLabel dueLabel;
+	private JPanel color;
+	private JPanel colorBorder;
+
+	private Image ARCHIVE_BG;
+	private Image ARCHIVE_HOVER;
 	private Date dueDate = null;
+
+	private final String taskID;
 
 	/**
 	 * Constructor, creates a list-like view for the following information: the
@@ -73,18 +80,35 @@ public class TaskView extends JPanel implements Transferable,
 	 *            the number of users assigned to the task
 	 * @param comments
 	 *            the number of comments on the task
+	 * @param stageWidth
+	 *            the width of the stage the task is being added to
 	 */
-	public TaskView(String name, Date duedate, int users, int comments) {
+	public TaskView(String name, Date duedate, int users, int comments,
+			String taskID, int stageWidth) {
+		// associates the task ID with the view
+		this.taskID = taskID;
+		this.setName(name);
+
+		// read the hover background picture files
+		try {
+			ARCHIVE_BG = ImageIO.read(this.getClass().getResourceAsStream(
+					"archived-background.png"));
+			ARCHIVE_HOVER = ImageIO.read(this.getClass().getResourceAsStream(
+					"archived-background-hover.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		this.setAlignmentX(LEFT_ALIGNMENT);
 		this.dueDate = duedate;
 
-		// creates an empty space around the data
-		JPanel spacer = new JPanel();
-		spacer.setLayout(new BoxLayout(spacer, BoxLayout.Y_AXIS));
-		spacer.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
-		spacer.setOpaque(false);
-		spacer.setAlignmentX(LEFT_ALIGNMENT);
+		// creates the border for the color
+		colorBorder = new JPanel();
+		colorBorder.setLayout(new BoxLayout(colorBorder, BoxLayout.Y_AXIS));
+		colorBorder.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+		colorBorder.setOpaque(false);
+		colorBorder.setAlignmentX(LEFT_ALIGNMENT);
 
 		// sets the border
 		final Border raisedbevel = BorderFactory
@@ -94,16 +118,12 @@ public class TaskView extends JPanel implements Transferable,
 		title.setTitlePosition(TitledBorder.LEFT);
 		this.setBorder(title);
 
-		this.setMinimumSize(new Dimension(215, 62));
-		this.setPreferredSize(new Dimension(215, 62));
-		this.setMaximumSize(new Dimension(215, 62));
-		this.setSize(new Dimension(215, 62));
+		Dimension viewSize = new Dimension(stageWidth - 17, 62);
+		this.setMinimumSize(viewSize);
+		this.setPreferredSize(viewSize);
+		this.setMaximumSize(viewSize);
+		this.setSize(viewSize);
 		this.setName(name);
-
-		// convert Date object to Calendar object to avoid using deprecated
-		// Date methods.
-		final Calendar date = Calendar.getInstance();
-		date.setTime(duedate);
 
 		// formats the lower section containing date and icons
 		JPanel lower = new JPanel();
@@ -111,8 +131,10 @@ public class TaskView extends JPanel implements Transferable,
 		lower.setAlignmentX(LEFT_ALIGNMENT);
 		lower.setOpaque(false);
 
-		dueLabel = new JLabel();
-		dueLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 3));
+		DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+		dueLabel = new JLabel("Due: " + format.format(duedate));
+		dueLabel.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 3));
+
 		lower.add(dueLabel);
 		JPanel icons = new JPanel(new FlowLayout());
 		icons.setOpaque(false);
@@ -173,13 +195,24 @@ public class TaskView extends JPanel implements Transferable,
 		nameLabel.setPreferredSize(this.getSize());
 		nameLabel.setAlignmentX(LEFT_ALIGNMENT);
 		nameLabel.setText(name);
-		nameLabel.setFont(new Font("Default", Font.BOLD, 14));
+		nameLabel.setFont(new Font("Default", Font.PLAIN, 14));
+		nameLabel.setForeground(Color.black);
 		nameLabel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 
+		// this is the panel that will display the category color
+		color = new JPanel();
+		color.setBackground(Colors.TASK);
+		Dimension colorSize = new Dimension(8, this.getHeight());
+		color.setSize(colorSize);
+		color.setPreferredSize(colorSize);
+		color.setMaximumSize(colorSize);
+		color.setMinimumSize(colorSize);
+
 		// adds the title, date and icons to the task view
-		spacer.add(nameLabel);
-		spacer.add(lower);
-		this.add(spacer);
+		colorBorder.add(nameLabel);
+		colorBorder.add(lower);
+		this.add(color);
+		this.add(colorBorder);
 
 		// in fun mode, create a rotation view
 		if (ToolbarController.getInstance().getView().isFunMode()) {
@@ -202,9 +235,13 @@ public class TaskView extends JPanel implements Transferable,
 
 	}
 
-	@Override
-	public String getName() {
-		return super.getName();
+	/**
+	 * gets the task ID associated with this task view
+	 * 
+	 * @return the task ID associated with this view
+	 */
+	public String getViewID() {
+		return this.taskID;
 	}
 
 	/**
@@ -221,6 +258,25 @@ public class TaskView extends JPanel implements Transferable,
 			addMouseListener(controller);
 		}
 
+	}
+
+	/**
+	 * sets the color of the border around the task. Also sets the opacity
+	 * 
+	 * @param color
+	 *            the color to set the border to
+	 * @param opaque
+	 *            true if the border is to be colored, false if it is to be
+	 *            clear
+	 */
+	public void setBorderColor(Color color, boolean opaque) {
+		if (!opaque) {
+			this.colorBorder.setBorder(BorderFactory.createEmptyBorder(2, 2, 2,
+					2));
+		} else {
+			this.colorBorder
+					.setBorder(BorderFactory.createLineBorder(color, 2));
+		}
 	}
 
 	@Override
@@ -240,10 +296,24 @@ public class TaskView extends JPanel implements Transferable,
 	}
 
 	/**
+	 * 
+	 * Changes the color of the category panel
+	 *
+	 * @param color
+	 *            the color to set the panel to the given color
+	 * @param opaque
+	 *            whether or not the category bar should be opaque
+	 */
+	public void setCategoryColor(Color color, boolean opaque) {
+		this.color.setOpaque(opaque);
+		this.color.setBackground(color);
+	}
+
+	/**
 	 * Sets the font color of the due date used to show red overdue dates
 	 * 
 	 * @param color
-	 *            to set the date to
+	 *            to set the date to the given color
 	 */
 	public void setDateColor(Color color) {
 		dueLabel.setForeground(color);
@@ -300,6 +370,13 @@ public class TaskView extends JPanel implements Transferable,
 		if (ToolbarController.getInstance().getView().isFunMode()) {
 			if (rotationView.isPainting()) {
 				super.paintComponent(g);
+				if (controller.isArchived()) {
+					if (controller.isHovered()) {
+						g.drawImage(ARCHIVE_HOVER, 0, 0, this);
+					} else {
+						g.drawImage(ARCHIVE_BG, 0, 0, this);
+					}
+				}
 			} else {
 				g.setColor(rotationView.getParent().getBackground());
 				g.fillRect(0, 0, getWidth(), getHeight());
@@ -307,6 +384,13 @@ public class TaskView extends JPanel implements Transferable,
 			}
 		} else {
 			super.paintComponent(g);
+			if (controller.isArchived()) {
+				if (controller.isHovered()) {
+					g.drawImage(ARCHIVE_HOVER, 0, 0, this);
+				} else {
+					g.drawImage(ARCHIVE_BG, 0, 0, this);
+				}
+			}
 		}
 	}
 

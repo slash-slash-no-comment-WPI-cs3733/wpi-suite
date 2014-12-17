@@ -8,6 +8,8 @@
  *******************************************************************************/
 package taskManager.controller;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -33,8 +35,8 @@ import taskManager.view.EditTaskView;
  */
 
 public class TaskInputController implements KeyListener, MouseListener,
-		PopupMenuListener, ListSelectionListener, PropertyChangeListener,
-		ItemListener {
+		ActionListener, PopupMenuListener, ListSelectionListener,
+		PropertyChangeListener, ItemListener {
 
 	private final EditTaskView etv;
 	private boolean addUsersSelected = false;
@@ -157,6 +159,8 @@ public class TaskInputController implements KeyListener, MouseListener,
 	public boolean checkCommentBox() {
 		if (etv.getCommentsFieldText().trim().isEmpty()) {
 			return false;
+		} else if (etv.getOrigCommentText().equals(etv.getCommentsFieldText())) {
+			return false;
 		} else {
 			return true;
 		}
@@ -188,7 +192,8 @@ public class TaskInputController implements KeyListener, MouseListener,
 		etv.setAddUserEnabled(addUsersSelected);
 		etv.setRemoveUserEnabled(removeUsersSelected);
 
-		etv.setSubmitCancelCommentEnabled(this.checkCommentBox());
+		etv.setSubmitCommentEnabled(this.checkCommentBox());
+		etv.setCancelCommentEnabled(this.checkCommentBox());
 		etv.setViewRequirementEnabled(etv.getSelectedRequirement() != null);
 	}
 
@@ -250,6 +255,11 @@ public class TaskInputController implements KeyListener, MouseListener,
 	}
 
 	@Override
+	public void actionPerformed(ActionEvent e) {
+		validate();
+	}
+
+	@Override
 	public void mouseClicked(MouseEvent e) {
 
 		validate();
@@ -262,7 +272,6 @@ public class TaskInputController implements KeyListener, MouseListener,
 
 	}
 
-	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 

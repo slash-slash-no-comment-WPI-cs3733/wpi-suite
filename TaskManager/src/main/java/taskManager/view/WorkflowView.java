@@ -13,7 +13,9 @@ import java.awt.dnd.DropTarget;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLayeredPane;
+import javax.swing.JTextField;
 
+import taskManager.controller.StageController;
 import taskManager.controller.WorkflowController;
 import taskManager.draganddrop.DDTransferHandler;
 import taskManager.draganddrop.DropAreaPanel;
@@ -31,6 +33,7 @@ public class WorkflowView extends JLayeredPane {
 	private WorkflowController controller;
 
 	private DropAreaPanel stages;
+	private JTextField search;
 
 	/**
 	 * Constructor for WorkflowView.
@@ -83,6 +86,31 @@ public class WorkflowView extends JLayeredPane {
 	public void addTaskInfo(TaskInfoPreviewView ti) {
 		controller.removeTaskInfos(true);
 		add(ti, new Integer(1));
+	}
+
+	/**
+	 * returns the requested StageView, or creates one if it does not exist
+	 * 
+	 * @param name
+	 *            the name of the stageview to be returned
+	 * @return the requested stageview
+	 */
+	public StageView getStageViewByName(String name) {
+		// goes through all of the stage views it contains until it finds
+		// the one that matches the name
+
+		if (name == null) {
+			throw new NullPointerException("name must not be null");
+		}
+		// goes through all of the stage views it contains until it finds
+		// the one that matches the name
+
+		for (Component c : stages.getComponents()) {
+			if (name.equals(c.getName())) {
+				return (StageView) c;
+			}
+		}
+		return new StageView(name, new StageController());
 	}
 
 	/*
