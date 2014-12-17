@@ -847,7 +847,8 @@ public class ReportsController implements ActionListener, ChangeListener,
 		JPanel chart = createPieChart(title);
 
 		// Open a new tab with the given chart.
-		TabPaneController.getInstance().addTab("Pie Chart", chart, true, true);
+		TabPaneController.getInstance().addTab(Localizer.getString("PieChart"),
+				chart, true, true);
 		TabPaneController.getInstance().getView().setSelectedComponent(chart);
 	}
 
