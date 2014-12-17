@@ -271,11 +271,15 @@ public class TaskController implements MouseListener {
 	public String getExportString() {
 		String fields[] = { "Name", "Description", "Due Date",
 				"Assigned Users", "Estimated Effort", "Actual Effort" };
-		String values[] = { model.getName(), model.getDescription(),
+		String values[] = {
+				model.getName(),
+				model.getDescription(),
 				new SimpleDateFormat("MM/dd/yy").format(model.getDueDate()),
 				String.join(",", model.getAssigned()),
-				Integer.toString(model.getEstimatedEffort()),
-				Integer.toString(model.getActualEffort()) };
+				model.isEstimatedEffortSet() ? Integer.toString(model
+						.getEstimatedEffort()) : "None",
+				model.isActualEffortSet() ? Integer.toString(model
+						.getActualEffort()) : "None" };
 
 		String export = "";
 		for (int i = 0; i < fields.length; i++) {

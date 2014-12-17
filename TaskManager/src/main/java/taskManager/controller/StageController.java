@@ -322,11 +322,15 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 				"Assigned Users", "Estimated Effort", "Actual Effort" };
 		List<String[]> taskStringArrays = new ArrayList<String[]>();
 		for (TaskModel tm : model.getTasks()) {
-			String values[] = { tm.getName(), tm.getDescription(),
+			String values[] = {
+					tm.getName(),
+					tm.getDescription(),
 					new SimpleDateFormat("MM/dd/yy").format(tm.getDueDate()),
 					String.join(",", tm.getAssigned()),
-					Integer.toString(tm.getEstimatedEffort()),
-					Integer.toString(tm.getActualEffort()) };
+					tm.isEstimatedEffortSet() ? Integer.toString(tm
+							.getEstimatedEffort()) : "None",
+					tm.isActualEffortSet() ? Integer.toString(tm
+							.getActualEffort()) : "None" };
 			taskStringArrays.add(values);
 		}
 		List<String> rows = new ArrayList<String>();
