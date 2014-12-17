@@ -47,6 +47,8 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	private WorkflowModel model;
 	private boolean hasNewStageView;
 
+	private TaskFilter currentFilter;
+
 	private static WorkflowController instance;
 	public static boolean pauseInformation;
 
@@ -71,6 +73,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		model.reset();
 
 		hasNewStageView = false;
+		currentFilter = new TaskFilter();
 
 		reloadData();
 
@@ -106,11 +109,22 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 *
 	 */
 	public synchronized void reloadData() {
+		reloadData(currentFilter);
+	}
 
+	/**
+	 * reload the data using the given filter
+	 * 
+	 * @param filter
+	 *            the filter to be applied to workflow
+	 */
+	public synchronized void reloadData(TaskFilter filter) {
 		// clear the stages previously on the view
+		currentFilter = filter;
 		this.removeChangeTitles();
 		this.removeTaskInfos(false);
 		hasNewStageView = false;
+
 		for (Component c : view.getComponents()) {
 			if (!(c instanceof TaskInfoPreviewView)) {
 				view.remove(c);
@@ -200,6 +214,25 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 			view.revalidate();
 			view.repaint();
 		}
+	}
+
+	/**
+	 * saves the the filter that is currently being applied
+	 * 
+	 * @param filter
+	 *            the filter to be applied
+	 */
+	public void setCurrentFilter(TaskFilter filter) {
+		this.currentFilter = filter;
+	}
+
+	/**
+	 * gets the currently applied task filter
+	 * 
+	 * @return gets the currently applied filter
+	 */
+	public TaskFilter getCurrentFilter() {
+		return this.currentFilter;
 	}
 
 	/**
