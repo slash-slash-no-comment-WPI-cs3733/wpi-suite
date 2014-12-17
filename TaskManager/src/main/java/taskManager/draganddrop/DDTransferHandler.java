@@ -125,7 +125,7 @@ public class DDTransferHandler extends TransferHandler {
 		g = g.create();
 		if (comp instanceof RotationView) {
 			// just paint the rotated task inside the rotation view
-			RotationView rotationView = (RotationView) comp;
+			final RotationView rotationView = (RotationView) comp;
 			rotationView.paintChildren(g);
 		} else {
 			comp.paint(g);
@@ -134,7 +134,7 @@ public class DDTransferHandler extends TransferHandler {
 
 		// Create placeholder, rotated for rotationviews
 		if (comp instanceof RotationView) {
-			RotationView rot = (RotationView) comp;
+			final RotationView rot = (RotationView) comp;
 			DropAreaPanel.generatePlaceholder(rot.createPlaceholder());
 		} else {
 			DropAreaPanel.generatePlaceholder(comp.getSize());

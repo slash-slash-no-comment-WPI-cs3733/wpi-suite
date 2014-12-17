@@ -46,7 +46,7 @@ public class ScrollList extends JPanel {
 	 */
 	public ScrollList(String t) {
 		setLayout(new BorderLayout());
-		Dimension size = new Dimension(140, 201);
+		final Dimension size = new Dimension(140, 201);
 		this.setMinimumSize(size);
 		this.setMaximumSize(size);
 		this.setPreferredSize(size);
@@ -246,6 +246,12 @@ public class ScrollList extends JPanel {
 		jl.addPropertyChangeListener(listener);
 	}
 
+	/**
+	 * Sets the title of the scroll list
+	 *
+	 * @param s
+	 *            The title to set
+	 */
 	public void setTitle(String s) {
 		title.setText(s);
 	}

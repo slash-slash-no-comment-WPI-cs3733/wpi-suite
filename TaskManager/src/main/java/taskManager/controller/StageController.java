@@ -61,10 +61,16 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 	 *            the corresponding StageView object
 	 */
 	public StageController() {
-		this.view = new StageView("", this);
-		this.newStage = true;
+		view = new StageView("", this);
+		newStage = true;
 	}
 
+	/**
+	 * Create a stage controller for the given StageModel
+	 *
+	 * @param model
+	 *            The Stage Model
+	 */
 	public StageController(StageModel model) {
 		this(model, WorkflowController.getInstance().getCurrentFilter());
 	}
@@ -79,6 +85,8 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 	 *            the corresponding StageModel object
 	 * @param filter
 	 *            the filter to be applied to the stage
+	 * @throws IllegalArgumentException
+	 *             if model is null
 	 */
 	public StageController(StageModel model, TaskFilter filter)
 			throws IllegalArgumentException {
@@ -86,8 +94,8 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 			throw new IllegalArgumentException("Model cannot be null");
 		}
 		this.model = model;
-		this.view = new StageView(model.getName(), this);
-		this.newStage = false;
+		view = new StageView(model.getName(), this);
+		newStage = false;
 
 		// Add the tasks.
 		if (model != null) {
@@ -117,9 +125,9 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 					// if we're in fun mode, put the rotation view in the stage
 					// view
 					if (ToolbarController.getInstance().getView().isFunMode()) {
-						this.view.addTaskView(tkv.getRotationPane());
+						view.addTaskView(tkv.getRotationPane());
 					} else {
-						this.view.addTaskView(tkv);
+						view.addTaskView(tkv);
 					}
 				}
 			}
@@ -255,6 +263,10 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 
 	}
 
+	/**
+	 * Commit the name change on the stage
+	 *
+	 */
 	public void checkButton() {
 		if (view.isCheckEnabled()
 				&& WorkflowModel.getInstance().findStageByName(
@@ -318,9 +330,9 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 	 * @return export string
 	 */
 	public String getExportString() {
-		String fields[] = { "Name", "Description", "Due Date",
+		final String fields[] = { "Name", "Description", "Due Date",
 				"Assigned Users", "Estimated Effort", "Actual Effort" };
-		List<String[]> taskStringArrays = new ArrayList<String[]>();
+		final List<String[]> taskStringArrays = new ArrayList<String[]>();
 		for (TaskModel tm : model.getTasks()) {
 			// Only include visible tasks
 			if (WorkflowController.getInstance().getCurrentFilter().check(tm)) {
@@ -337,7 +349,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 				taskStringArrays.add(values);
 			}
 		}
-		List<String> rows = new ArrayList<String>();
+		final List<String> rows = new ArrayList<String>();
 		rows.add(model.getName());
 		for (int i = 0; i < fields.length; i++) {
 			List<String> cells = new ArrayList<String>();

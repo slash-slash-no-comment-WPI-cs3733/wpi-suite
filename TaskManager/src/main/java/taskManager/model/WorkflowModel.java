@@ -263,7 +263,7 @@ public class WorkflowModel extends AbstractJsonableModel<WorkflowModel> {
 	public Set<Object> makeIdenticalTo(WorkflowModel workflow) {
 		setID(workflow.getID());
 
-		Set<Object> toDelete = new HashSet<Object>(stageList);
+		final Set<Object> toDelete = new HashSet<Object>(stageList);
 		stageList = workflow.getStages();
 
 		return toDelete;

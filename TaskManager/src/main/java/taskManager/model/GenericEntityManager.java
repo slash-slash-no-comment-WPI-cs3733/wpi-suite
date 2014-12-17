@@ -116,7 +116,7 @@ public class GenericEntityManager<T extends AbstractJsonableModel<T>>
 			save(s, newModel); // if it doesn't exist, save it
 		} else {
 			final T existingModel = (T) existingModels.get(0);
-			Set<Object> toDelete = existingModel.makeIdenticalTo(newModel);
+			final Set<Object> toDelete = existingModel.makeIdenticalTo(newModel);
 
 			// Delete objects that are no longer needed
 			for (Object o : toDelete) {

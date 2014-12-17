@@ -50,9 +50,9 @@ public class RotationView extends JPanel implements Transferable {
 		this.panel = panel;
 		setName("rotation - " + panel.getName());
 		add(panel);
-		int height = (int) (Math.abs(215 * Math.sin(angle)) + Math
+		final int height = (int) (Math.abs(215 * Math.sin(angle)) + Math
 				.abs(62 * Math.cos(angle)));
-		Dimension d = new Dimension(215, height);
+		final Dimension d = new Dimension(215, height);
 		setSize(d);
 		setPreferredSize(d);
 		setMaximumSize(d);
@@ -98,7 +98,7 @@ public class RotationView extends JPanel implements Transferable {
 	public Image createPlaceholder() {
 		final Image image = new BufferedImage(this.getWidth(),
 				this.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		Graphics g = image.getGraphics();
+		final Graphics g = image.getGraphics();
 		((Graphics2D) g).translate(0, controller.calculateYTranslation());
 		((Graphics2D) g).rotate(angle, panel.getWidth() / 2,
 				panel.getHeight() / 2);
@@ -120,8 +120,8 @@ public class RotationView extends JPanel implements Transferable {
 	@Override
 	public void paintComponent(Graphics g) {
 		// figure out what height this component should be
-		int height = (int) controller.calculateHeight();
-		Dimension d = new Dimension(panel.getWidth(), height);
+		final int height = (int) controller.calculateHeight();
+		final Dimension d = new Dimension(panel.getWidth(), height);
 		setSize(d);
 		setPreferredSize(d);
 		setMaximumSize(d);

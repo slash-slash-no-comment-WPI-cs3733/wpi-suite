@@ -33,6 +33,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.ScrollPaneConstants;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -70,77 +71,83 @@ public class ReportsView extends JPanel implements ActionListener,
 	public static final String USERS = "Users";
 	public static final String NUMBER_OF_TASKS = "number_of_tasks";
 
-	public String names[] = { Localizer.getString("Velocity"),
+	private String names[] = { Localizer.getString("Velocity"),
 			Localizer.getString("Distribution") };
-	public String slices[] = { Localizer.getString("Days"),
+	private String slices[] = { Localizer.getString("Days"),
 			Localizer.getString("Weeks") };
-	public String cardNames[] = { "work", "task" };
+	private String cardNames[] = { "work", "task" };
 
-	private JPanel window;
-	private JPanel generator;
+	private final JPanel window;
+	private final JPanel generator;
 
 	public enum Mode {
 		VELOCITY, DISTRIBUTION
 	}
 
 	// create new Font
-	private Font bigFont = new Font("Default", Font.BOLD, 14);
+	private final Font bigFont = new Font("Default", Font.BOLD, 14);
 
 	private Mode mode;
 
-	private JLabel reportTypeLabel;
+	private final JLabel reportTypeLabel;
 
 	// Variable to Insert Images
 	private Image img;
 	// Effort or number of tasks panel
-	private JPanel effortOrNumberofTasks;
+	private final JPanel effortOrNumberofTasks;
 
 	// Stage picker
-	private JPanel stagePanel;
-	private JLabel stagePanelLabel;
-	private JComboBox<String> stages;
-	private JPanel stagePanel2;
-	private JComboBox<String> stages2;
-	private JComboBox<String> timeSliceList;
+	private final JPanel stagePanel;
+	private final JLabel stagePanelLabel;
+	private final JComboBox<String> stages;
+	private final JPanel stagePanel2;
+	private final JComboBox<String> stages2;
+	private final JComboBox<String> timeSliceList;
 
 	private final JPanel graph;
 	JPanel options;
 	private JSplitPane splitPane;
 
-	private JLabel selectStageLabel;
+	private final JLabel selectStageLabel;
 
 	// Card-changing panel
-	private JPanel cards;
-	private JRadioButton workvel = new JRadioButton();
-	private JRadioButton taskdistro = new JRadioButton();
-	private JRadioButton effort = new JRadioButton();
-	private JRadioButton numberoftasks = new JRadioButton();
-	private JCheckBox select_stages = new JCheckBox();
+	private final JPanel cards;
+	private final JRadioButton workvel = new JRadioButton();
+	private final JRadioButton taskdistro = new JRadioButton();
+	private final JRadioButton effort = new JRadioButton();
+	private final JRadioButton numberoftasks = new JRadioButton();
+	private final JCheckBox select_stages = new JCheckBox();
 
 	// Date Picker
-	private JPanel timePanel;
-	private JPanel datePanel;
-	private JPanel timeSlice;
-	private JLabel timeSliceLabel;
-	private JLabel startDateLabel;
-	private JLabel endDateLabel;
-	private JLabel stageText;
-	private JXDatePicker startDate;
-	private JXDatePicker endDate;
+	private final JPanel timePanel;
+	private final JPanel datePanel;
+	private final JPanel timeSlice;
+	private final JLabel timeSliceLabel;
+	private final JLabel startDateLabel;
+	private final JLabel endDateLabel;
+	private final JLabel stageText;
+	private final JXDatePicker startDate;
+	private final JXDatePicker endDate;
 
 	// Users
-	private JPanel usersPanel;
-	private JCheckBox allUsers;
-	private ScrollList currUsersList;
-	private ScrollList projectUsersList;
-	private JButton addUser;
-	private JButton removeUser;
+	private final JPanel usersPanel;
+	private final JCheckBox allUsers;
+	private final ScrollList currUsersList;
+	private final ScrollList projectUsersList;
+	private final JButton addUser;
+	private final JButton removeUser;
 
 	// Set mode
 
 	// Generate Graph Button
-	private JButton generateGraph;
+	private final JButton generateGraph;
 
+	/**
+	 * Generate a reports view in the given mode
+	 *
+	 * @param mode
+	 *            if this should be a velocity or distribution report
+	 */
 	public ReportsView(Mode mode) {
 
 		this.mode = mode;
@@ -150,7 +157,7 @@ public class ReportsView extends JPanel implements ActionListener,
 				"0[grow, fill][]0"));
 
 		graph = new JPanel();
-		JPanel generateButton = new JPanel(new FlowLayout());
+		final JPanel generateButton = new JPanel(new FlowLayout());
 		generateButton.setOpaque(false);
 		options = new JPanel();
 		options.setLayout(new BoxLayout(options, BoxLayout.Y_AXIS));
@@ -160,16 +167,16 @@ public class ReportsView extends JPanel implements ActionListener,
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
 		// Stages or Users
-		JPanel SelectStages = new JPanel(new MigLayout());
+		final JPanel SelectStages = new JPanel(new MigLayout());
 
 		// Report Type Pane
-		JPanel reportType = new JPanel(new MigLayout("center"));
+		final JPanel reportType = new JPanel(new MigLayout("center"));
 		reportTypeLabel = new JLabel();
 		reportTypeLabel.setFont(bigFont);
 		workvel.addActionListener(this);
 		workvel.setSelected(true);
 		taskdistro.addActionListener(this);
-		ButtonGroup reportTypeButtons = new ButtonGroup();
+		final ButtonGroup reportTypeButtons = new ButtonGroup();
 		reportTypeButtons.add(workvel);
 		reportTypeButtons.add(taskdistro);
 		effort.addActionListener(this);
@@ -178,7 +185,7 @@ public class ReportsView extends JPanel implements ActionListener,
 		numberoftasks.setOpaque(false);
 		effort.setSelected(true);
 
-		ButtonGroup effortOrTasksButtons = new ButtonGroup();
+		final ButtonGroup effortOrTasksButtons = new ButtonGroup();
 		effortOrTasksButtons.add(effort);
 		effortOrTasksButtons.add(numberoftasks);
 		select_stages.addActionListener(this);
@@ -191,8 +198,8 @@ public class ReportsView extends JPanel implements ActionListener,
 		effortOrNumberofTasks.add(numberoftasks);
 		effortOrNumberofTasks.setOpaque(false);
 
-		JPanel WorkVelocity = new JPanel(new MigLayout());
-		JPanel TaskDistribution = new JPanel(new MigLayout());
+		final JPanel WorkVelocity = new JPanel(new MigLayout());
+		final JPanel TaskDistribution = new JPanel(new MigLayout());
 
 		// Create two different stage views for each view
 		stagePanel = new JPanel();
@@ -245,7 +252,7 @@ public class ReportsView extends JPanel implements ActionListener,
 		timeSlice = new JPanel(new MigLayout());
 		timeSlice.add(timeSliceLabel);
 		timeSlice.add(timeSliceList);
-		JPanel sliceAndStage = new JPanel(new MigLayout());
+		final JPanel sliceAndStage = new JPanel(new MigLayout());
 		sliceAndStage.add(timeSlice, "wrap");
 		sliceAndStage.add(stagePanel, "gapright 20px");
 
@@ -271,9 +278,9 @@ public class ReportsView extends JPanel implements ActionListener,
 		removeUser = new JButton("<<");
 		removeUser.setName(REMOVE_USER);
 		this.setRemoveUserEnabled(false);
-		JPanel usersListPanel = new JPanel(new MigLayout());
-		JPanel projectUsersListPanel = new JPanel(new MigLayout());
-		JPanel addRemoveButtons = new JPanel(new MigLayout());
+		final JPanel usersListPanel = new JPanel(new MigLayout());
+		final JPanel projectUsersListPanel = new JPanel(new MigLayout());
+		final JPanel addRemoveButtons = new JPanel(new MigLayout());
 		usersListPanel.add(currUsersList);
 		projectUsersListPanel.add(projectUsersList);
 		addRemoveButtons.add(addUser, "wrap");
@@ -292,6 +299,7 @@ public class ReportsView extends JPanel implements ActionListener,
 					"reports-icon.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
+			img = null;
 		}
 		generateGraph.setIcon(new ImageIcon(img));
 
@@ -305,7 +313,7 @@ public class ReportsView extends JPanel implements ActionListener,
 		SelectStages.add(stageText);
 		SelectStages.add(stagePanel2);
 
-		JPanel Distro = new JPanel(new MigLayout());
+		final JPanel Distro = new JPanel(new MigLayout());
 
 		Distro.add(SelectStages, "align center");
 		TaskDistribution.add(Distro);
@@ -318,16 +326,16 @@ public class ReportsView extends JPanel implements ActionListener,
 		cards.add(TaskDistribution, cardNames[1]);
 		generator.add(reportType, "align center, wrap");
 		generator.add(cards, "wrap");
-		CardLayout cl = (CardLayout) (cards.getLayout());
+		final CardLayout cl = (CardLayout) (cards.getLayout());
 
-		Dimension CardSize = cards.getSize();
+		final Dimension CardSize = cards.getSize();
 		cards.setPreferredSize(CardSize);
 
 		cl.show(cards, cardNames[0]);
 		window.add(generator);
-		JScrollPane windowScroll = new JScrollPane(window,
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		final JScrollPane windowScroll = new JScrollPane(window,
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		windowScroll.getVerticalScrollBar().setUnitIncrement(12);
 		windowScroll.getHorizontalScrollBar().setUnitIncrement(12);
 
@@ -353,6 +361,9 @@ public class ReportsView extends JPanel implements ActionListener,
 
 	/**
 	 * sets the panel containing the graph
+	 * 
+	 * @param graph
+	 *            The graph to display to the user
 	 */
 	public void setGraphPanel(JPanel graph) {
 		this.removeAll();
@@ -363,7 +374,7 @@ public class ReportsView extends JPanel implements ActionListener,
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		CardLayout cl = (CardLayout) (cards.getLayout());
+		final CardLayout cl = (CardLayout) (cards.getLayout());
 
 		if (e.getSource() == workvel) {
 			cl.show(cards, cardNames[0]);
@@ -378,6 +389,12 @@ public class ReportsView extends JPanel implements ActionListener,
 		}
 	}
 
+	/**
+	 * Sets the controller for this reports view
+	 *
+	 * @param controller
+	 *            The ReportsController to set
+	 */
 	public void setController(ReportsController controller) {
 		addUser.addActionListener(controller);
 		removeUser.addActionListener(controller);
@@ -424,7 +441,7 @@ public class ReportsView extends JPanel implements ActionListener,
 	 *            the index of the stage in the workflow
 	 */
 	public void setStageDropdown(int n) {
-		String p = stages.getItemAt(n);
+		final String p = stages.getItemAt(n);
 		stages.setSelectedItem(p);
 	}
 
@@ -457,7 +474,7 @@ public class ReportsView extends JPanel implements ActionListener,
 	 *            the index of the stage in the workflow
 	 */
 	public void setStageDropdown2(int n) {
-		String p = stages2.getItemAt(n);
+		final String p = stages2.getItemAt(n);
 		stages2.setSelectedItem(p);
 	}
 
@@ -547,7 +564,7 @@ public class ReportsView extends JPanel implements ActionListener,
 	 * @return the JList of assigned usernames
 	 */
 	public ScrollList getCurrUsersList() {
-		return this.currUsersList;
+		return currUsersList;
 	}
 
 	/**
@@ -556,7 +573,7 @@ public class ReportsView extends JPanel implements ActionListener,
 	 * @return the JLst of project user names
 	 */
 	public ScrollList getProjectUsersList() {
-		return this.projectUsersList;
+		return projectUsersList;
 	}
 
 	/**
@@ -565,7 +582,7 @@ public class ReportsView extends JPanel implements ActionListener,
 	 * @param e
 	 */
 	public void setAddUserEnabled(boolean e) {
-		this.addUser.setEnabled(e);
+		addUser.setEnabled(e);
 	}
 
 	/**
@@ -574,7 +591,7 @@ public class ReportsView extends JPanel implements ActionListener,
 	 * @param e
 	 */
 	public void setRemoveUserEnabled(boolean e) {
-		this.removeUser.setEnabled(e);
+		removeUser.setEnabled(e);
 	}
 
 	/**
@@ -624,7 +641,7 @@ public class ReportsView extends JPanel implements ActionListener,
 	 * @return The selected time unit
 	 */
 	public Period getTimeUnit() {
-		String selected = (String) timeSliceList.getSelectedItem();
+		final String selected = (String) timeSliceList.getSelectedItem();
 		if (selected.equals(Localizer.getString("Days"))) {
 			return Period.ofDays(1);
 		} else if (selected.equals(Localizer.getString("Weeks"))) {

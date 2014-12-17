@@ -30,6 +30,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
 
 import net.java.balloontip.BalloonTip;
 import net.java.balloontip.BalloonTip.AttachLocation;
@@ -88,16 +89,16 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	private static final String EFFORT_ERROR = "EffortNotInt";
 
 	private static final long serialVersionUID = 1L;
-	private JButton save;
-	private JButton cancel;
-	private JButton addUser;
-	private JButton removeUser;
-	private JButton delete;
-	private JButton viewReq;
+	private final JButton save;
+	private final JButton cancel;
+	private final JButton addUser;
+	private final JButton removeUser;
+	private final JButton delete;
+	private final JButton viewReq;
 	private JButton submitComment;
 	private JButton cancelComment;
 
-	private JCheckBox archive;
+	private final JCheckBox archive;
 
 	private final JTextField titleField;
 	private final JTextArea descripArea;
@@ -122,12 +123,12 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	private final JLabel activitiesLabel;
 	private final JLabel commentsLabel;
 
-	private BalloonTip titleError;
-	private BalloonTip descripError;
-	private BalloonTip actEffortError;
-	private BalloonTip estEffortError;
+	private final BalloonTip titleError;
+	private final BalloonTip descripError;
+	private final BalloonTip actEffortError;
+	private final BalloonTip estEffortError;
 
-	private JSplitPane splitPane;
+	private final JSplitPane splitPane;
 
 	private final Mode mode;
 
@@ -143,7 +144,7 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	private final JComboBox<String> categories;
 
 	private EditTaskController controller;
-	private ActivityController activityC;
+	private final ActivityController activityC;
 	private TaskInputController fieldC;
 
 	// create new Font
@@ -159,6 +160,9 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	 * 
 	 * @param activityC
 	 *            The ActivityController for this EditTaskView's task
+	 * 
+	 * @param taskID
+	 *            the ID of the task being edited
 	 */
 	public EditTaskView(Mode mode, ActivityController activityC, String taskID) {
 		// TODO: User Mode to switch between create and edit views
@@ -186,7 +190,7 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		dueDateLabel.setFont(bigFont);
 		stageLabel = new JLabel();
 		stageLabel.setFont(bigFont);
-		JLabel categoryLabel = new JLabel("Category");
+		final JLabel categoryLabel = new JLabel("Category");
 		categoryLabel.setFont(bigFont);
 		estimatedEffortLabel = new JLabel();
 		estimatedEffortLabel.setFont(bigFont);
@@ -299,18 +303,18 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		categories.setName(CATEGORIES);
 
 		// This is where the 8 primary panels are defined
-		JPanel SpacerTop = new JPanel(new MigLayout());
-		JPanel SpacerBtm = new JPanel(new MigLayout());
-		JPanel BasicInfo = new JPanel(new MigLayout("align center, wrap 1",
+		final JPanel SpacerTop = new JPanel(new MigLayout());
+		final JPanel SpacerBtm = new JPanel(new MigLayout());
+		final JPanel BasicInfo = new JPanel(new MigLayout(
+				"align center, wrap 1", "[grow, fill]"));
+		final JPanel Users = new JPanel(new MigLayout("align center, wrap 1",
 				"[grow, fill]"));
-		JPanel Users = new JPanel(new MigLayout("align center, wrap 1",
-				"[grow, fill]"));
-		JPanel Effort = new JPanel(new MigLayout());
-		JPanel Requirements = new JPanel(new MigLayout("center"));
-		JPanel EditSaveCancel = new JPanel(new MigLayout("center"));
+		final JPanel Effort = new JPanel(new MigLayout());
+		final JPanel Requirements = new JPanel(new MigLayout("center"));
+		final JPanel EditSaveCancel = new JPanel(new MigLayout("center"));
 		EditSaveCancel.setOpaque(false);
-		JPanel dateAndStage = new JPanel(new MigLayout());
-		JPanel EffortDateStage = new JPanel(new MigLayout());
+		final JPanel dateAndStage = new JPanel(new MigLayout());
+		final JPanel EffortDateStage = new JPanel(new MigLayout());
 
 		// dateAndStage internal content
 		dateAndStage.add(dueDateLabel);
@@ -324,7 +328,7 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		EffortDateStage.add(dateAndStage);
 
 		// Title and Description Panel internal content
-		JPanel TitleAndDescription = new JPanel(new MigLayout());
+		final JPanel TitleAndDescription = new JPanel(new MigLayout());
 		TitleAndDescription.add(titleLabel, "gapleft 5px, wrap");
 		TitleAndDescription.add(titleField, "gapleft 5px, wrap");
 
@@ -346,16 +350,16 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		Effort.add(estEffortField);
 		Effort.add(actEffortField, "wrap, gapleft 10px");
 
-		JPanel EffortAndRequirements = new JPanel(new MigLayout());
+		final JPanel EffortAndRequirements = new JPanel(new MigLayout());
 		EffortAndRequirements.add(Effort, "wrap");
 		EffortAndRequirements.add(Requirements);
 
 		// Users Panel internal content
 		Users.setBorder(BorderFactory.createTitledBorder(""));
-		JPanel UserPanel = new JPanel();
-		JPanel usersListPanel = new JPanel(new MigLayout());
-		JPanel projectUsersListPanel = new JPanel(new MigLayout());
-		JPanel addRemoveButtons = new JPanel(new MigLayout());
+		final JPanel UserPanel = new JPanel();
+		final JPanel usersListPanel = new JPanel(new MigLayout());
+		final JPanel projectUsersListPanel = new JPanel(new MigLayout());
+		final JPanel addRemoveButtons = new JPanel(new MigLayout());
 		usersListPanel.add(assignedUsersLabel, "wrap");
 
 		usersListPanel.add(usersList);
@@ -387,7 +391,7 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		window.add(Users, "h 80%, w 30%");
 		window.add(SpacerBtm, "dock south");
 
-		BalloonTipStyle errorStyle = new RoundedBalloonStyle(5, 5,
+		final BalloonTipStyle errorStyle = new RoundedBalloonStyle(5, 5,
 				Colors.ERROR_BUBBLE, Color.RED);
 		titleError = new BalloonTip(titleField, new JLabel(), errorStyle,
 				Orientation.LEFT_ABOVE, AttachLocation.NORTHEAST, 5, 15, false);
@@ -406,21 +410,21 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		setEstEffortErrorVisible(false);
 
 		// The finished panels are added to the main window panel
-		Dimension panelSize = window.getPreferredSize();
+		final Dimension panelSize = window.getPreferredSize();
 		panelSize.height = 450; // Decide size
 		window.setPreferredSize(panelSize);
 
-		JScrollPane windowScroll = new JScrollPane(window);
+		final JScrollPane windowScroll = new JScrollPane(window);
 		windowScroll.getVerticalScrollBar().setUnitIncrement(12);
 		windowScroll.getHorizontalScrollBar().setUnitIncrement(12);
 
 		// label to notify a user if they are editing a task
-		editing = new JLabel("", null, JLabel.CENTER);
+		editing = new JLabel("", null, SwingConstants.CENTER);
 		editing.setMinimumSize(new JLabel("Editing highlighted comment")
 				.getPreferredSize());
 
 		// The activities and comments tabs
-		JPanel tabs = new JPanel(new MigLayout("wrap 1", "[grow, fill]",
+		final JPanel tabs = new JPanel(new MigLayout("wrap 1", "[grow, fill]",
 				"[grow, fill][][center]"));
 		tabs.add(activityC.getActivitiesPanel());
 		tabs.add(initCommentBoxandBtns());
@@ -445,7 +449,7 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	 * @return a JPanel containing the textbox and buttons
 	 */
 	private JPanel initCommentBoxandBtns() {
-		JPanel commentAndBtns = new JPanel(new MigLayout("wrap 1",
+		final JPanel commentAndBtns = new JPanel(new MigLayout("wrap 1",
 				"0[grow, fill]0", "[]"));
 
 		commentBox = new JTextArea();
@@ -462,13 +466,13 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		PromptSupport.setFocusBehavior(PromptSupport.FocusBehavior.SHOW_PROMPT,
 				commentBox);
 
-		JScrollPane commentScroll = new JScrollPane(commentBox,
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		final JScrollPane commentScroll = new JScrollPane(commentBox,
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		commentScroll.setMinimumSize(new Dimension(20, 100));
 
 		// Buttons
-		JPanel buttons = new JPanel();
+		final JPanel buttons = new JPanel();
 		buttons.setOpaque(false);
 		submitComment = new JButton("Save Comment");
 		submitComment.setName(EditTaskView.SUBMIT_COMMENT);
@@ -498,7 +502,7 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	 */
 	public void setViewID(String id) {
 		if (mode.equals(Mode.CREATE)) {
-			this.taskID = id;
+			taskID = id;
 		}
 	}
 
@@ -508,7 +512,7 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	 * @return the task ID associated with this view
 	 */
 	public String getViewID() {
-		return this.taskID;
+		return taskID;
 	}
 
 	/**
@@ -621,9 +625,8 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	}
 
 	/**
-	 * return if the title field is the focus owner
 	 * 
-	 * @return
+	 * @return if the title field is the focus owner
 	 */
 	public boolean titleHasFocus() {
 		return titleField.isFocusOwner();
@@ -744,8 +747,8 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	 * 
 	 * @return the categories dropdown box
 	 */
-	public ArrayList<String> getCategories() {
-		ArrayList<String> cats = new ArrayList<String>();
+	public List<String> getCategories() {
+		final List<String> cats = new ArrayList<String>();
 		for (int i = 0; i < categories.getItemCount(); i++) {
 			cats.add(categories.getItemAt(i));
 		}
@@ -1011,7 +1014,8 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	/**
 	 * Sets the actual effort red
 	 * 
-	 * @red boolean turns the red background on and off
+	 * @param red
+	 *            boolean turns the red background on and off
 	 */
 
 	public void setActEffortFieldRed(boolean red) {
@@ -1195,6 +1199,9 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	 * Sets up the comment box, edit label, and buttons for when a comment is
 	 * being edited.
 	 * 
+	 * @param text
+	 *            the text of the comment to be edited
+	 * 
 	 */
 	public void startEditingComment(String text) {
 		cancelComment.setEnabled(true);
@@ -1272,8 +1279,8 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 
 		// reload the requirements box
 		if (controller != null) {
-			String r = getSelectedRequirement();
-			String s = getSelectedStage();
+			final String r = getSelectedRequirement();
+			final String s = getSelectedStage();
 			controller.reloadData();
 			setSelectedRequirement(r);
 			setSelectedStage(s);

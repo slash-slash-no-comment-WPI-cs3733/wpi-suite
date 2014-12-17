@@ -318,7 +318,7 @@ public class StageModel extends AbstractJsonableModel<StageModel> {
 		setID(stage.getID());
 		name = stage.getName();
 
-		Set<Object> toDelete = new HashSet<Object>(taskList);
+		final Set<Object> toDelete = new HashSet<Object>(taskList);
 		taskList = stage.getTasks();
 
 		return toDelete;

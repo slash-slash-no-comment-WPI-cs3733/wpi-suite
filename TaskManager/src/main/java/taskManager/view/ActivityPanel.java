@@ -14,6 +14,7 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.ScrollPaneConstants;
 
 import net.miginfocom.swing.MigLayout;
 import taskManager.controller.EditTaskController;
@@ -33,9 +34,9 @@ public class ActivityPanel extends JTabbedPane implements LocaleChangeListener {
 
 	private static final long serialVersionUID = -8384336474859145673L;
 
-	private JPanel activities;
-	private JPanel comments;
-	private EditTaskController controller;
+	private final JPanel activities;
+	private final JPanel comments;
+	private final EditTaskController controller;
 	private ActivityView activityBeingEdited;
 	private List<ActivityModel> activityList;
 
@@ -64,16 +65,16 @@ public class ActivityPanel extends JTabbedPane implements LocaleChangeListener {
 		reloadActivities(activityList);
 
 		// Activities
-		JScrollPane activityScroll = new JScrollPane(activities,
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		final JScrollPane activityScroll = new JScrollPane(activities,
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		// Make scroll faster
 		activityScroll.getVerticalScrollBar().setUnitIncrement(12);
 
 		// Comments
-		JScrollPane commentsScroll = new JScrollPane(comments,
-				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		final JScrollPane commentsScroll = new JScrollPane(comments,
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		// Make scroll faster
 		commentsScroll.getVerticalScrollBar().setUnitIncrement(12);
 
@@ -119,12 +120,12 @@ public class ActivityPanel extends JTabbedPane implements LocaleChangeListener {
 	 *
 	 */
 	public void scrollActivitiesToBottom() {
-		Rectangle rectA = new Rectangle(0, (int) activities.getPreferredSize()
-				.getHeight(), 10, 10);
+		final Rectangle rectA = new Rectangle(0, (int) activities
+				.getPreferredSize().getHeight(), 10, 10);
 		activities.scrollRectToVisible(rectA);
 
-		Rectangle rectC = new Rectangle(0, (int) comments.getPreferredSize()
-				.getHeight(), 10, 10);
+		final Rectangle rectC = new Rectangle(0, (int) comments
+				.getPreferredSize().getHeight(), 10, 10);
 		comments.scrollRectToVisible(rectC);
 	}
 

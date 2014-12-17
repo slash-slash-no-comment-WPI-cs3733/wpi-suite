@@ -49,10 +49,10 @@ public class ActivityModel {
 	private final ActivityModelType type;
 
 	// Parameters of the activity type
-	private String[] params;
+	private final String[] params;
 
 	// Date of creation
-	private Date dateCreated;
+	private final Date dateCreated;
 
 	// Name of user who took the action; null for system activities
 	private final String actor;
