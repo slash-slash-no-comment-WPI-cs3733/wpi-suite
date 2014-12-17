@@ -258,11 +258,11 @@ public class FilterView extends JPanel implements LocaleChangeListener {
 
 	@Override
 	public void onLocaleChange() {
-		PromptSupport.setPrompt(Localizer.getString("Searchtasks"), search);
-		archiveCheckBox.setText("<html>"
-				+ Localizer.getString("Showarchivedtasks") + "</html>");
-		myTasksCheckBox.setText("<html>"
-				+ Localizer.getString("Showonlymytasks") + "</html>");
+		PromptSupport.setPrompt(Localizer.getString("Search"), search);
+		archiveCheckBox.setText("<html>" + Localizer.getString("ShowArchive")
+				+ "</html>");
+		myTasksCheckBox.setText("<html>" + Localizer.getString("ShowMyTasks")
+				+ "</html>");
 	}
 
 }
