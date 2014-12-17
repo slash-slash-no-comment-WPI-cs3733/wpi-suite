@@ -66,7 +66,7 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	private JLabel archive;
 	private JLabel delete;
 	private JCheckBox archiveCheckBox;
-	private JCheckBox funModeCheckBox;
+	private JButton leaveFunMode;
 	private JButton randomizeTaskAngles;
 	private JComboBox<String> languageSelector;
 	private List<String> languages;
@@ -74,6 +74,8 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	private JLabel projectName;
 
 	private ToolbarController controller;
+
+	private boolean isFunMode = false;
 
 	/**
 	 * Create a ToolbarView.
@@ -172,11 +174,11 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		projectName.setFont(new Font("TextField.font", Font.BOLD, 20));
 
 		// construct the fun things panel
-		funModeCheckBox = new JCheckBox("<html>Fun Mode</html>");
-		funModeCheckBox.setName(FUN_MODE);
-		funModeCheckBox.addItemListener(controller);
-		funModeCheckBox.setOpaque(false);
-		funModeCheckBox.setToolTipText("Fun things are fun");
+		leaveFunMode = new JButton("<html>Leave Fun Mode</html>");
+		leaveFunMode.setName(FUN_MODE);
+		leaveFunMode.addActionListener(controller);
+		leaveFunMode.setOpaque(false);
+		leaveFunMode.setToolTipText("Fun things are fun");
 
 		randomizeTaskAngles = new JButton("<html>Randomize Task Angles</html>");
 		randomizeTaskAngles.setName(TASK_ANGLES);
@@ -216,7 +218,7 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		funThings.add(Box.createHorizontalGlue());
 		funThings.add(randomizeTaskAngles);
 		funThings.add(languageSelector);
-		funThings.add(funModeCheckBox);
+		funThings.add(leaveFunMode);
 		funThings.add(Box.createHorizontalGlue());
 
 		// fun mode is off by default
@@ -320,7 +322,7 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	 * @return if the fun mode checkbox is checked
 	 */
 	public boolean isFunMode() {
-		return funModeCheckBox.isSelected();
+		return isFunMode;
 	}
 
 	/**
@@ -329,7 +331,12 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	 */
 	public void setFunMode(boolean fun) {
 		if (fun != isFunMode()) {
-			funModeCheckBox.doClick();
+			isFunMode = fun;
+			if (fun) {
+				showFunButtons();
+			} else {
+				hideFunButtons();
+			}
 		}
 	}
 
@@ -340,8 +347,9 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	public void hideFunButtons() {
 		randomizeTaskAngles.setEnabled(false);
 		randomizeTaskAngles.setVisible(false);
-		funModeCheckBox.setVisible(false);
+		leaveFunMode.setVisible(false);
 		languageSelector.setVisible(false);
+		Localizer.setLanguage(Localizer.defaultLanguage);
 		languageSelector.setSelectedItem(Localizer.defaultLanguage);
 		languageSelector.setEnabled(false);
 	}
@@ -353,7 +361,7 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	public void showFunButtons() {
 		randomizeTaskAngles.setEnabled(true);
 		randomizeTaskAngles.setVisible(true);
-		funModeCheckBox.setVisible(true);
+		leaveFunMode.setVisible(true);
 		languageSelector.setVisible(true);
 		languageSelector.setEnabled(true);
 	}
