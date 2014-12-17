@@ -873,7 +873,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		valueChanged(null);
-		// Do nothing
+		rtv.updateStagesComboBox();
 	}
 
 	@Override
