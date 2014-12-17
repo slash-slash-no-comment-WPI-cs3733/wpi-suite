@@ -17,6 +17,8 @@ import javax.swing.JTabbedPane;
 
 import net.miginfocom.swing.MigLayout;
 import taskManager.controller.EditTaskController;
+import taskManager.localization.LocaleChangeListener;
+import taskManager.localization.Localizer;
 import taskManager.model.ActivityModel;
 
 /**
@@ -27,7 +29,7 @@ import taskManager.model.ActivityModel;
  * @author Clark Jacobsohn
  * @version Dec 9, 2014
  */
-public class ActivityPanel extends JTabbedPane {
+public class ActivityPanel extends JTabbedPane implements LocaleChangeListener {
 
 	private static final long serialVersionUID = -8384336474859145673L;
 
@@ -65,19 +67,21 @@ public class ActivityPanel extends JTabbedPane {
 		JScrollPane activityScroll = new JScrollPane(activities,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		// Scrolls to the bottom of the window where the most recent things are.
+		// Make scroll faster
 		activityScroll.getVerticalScrollBar().setUnitIncrement(12);
 
 		// Comments
 		JScrollPane commentsScroll = new JScrollPane(comments,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		// Scrolls to the bottom of the window where the most recent things are.
+		// Make scroll faster
 		commentsScroll.getVerticalScrollBar().setUnitIncrement(12);
 
 		scrollActivitiesToBottom();
-		addTab("Comments", commentsScroll);
-		addTab("All Activities", activityScroll);
+		addTab("", commentsScroll);
+		addTab("", activityScroll);
+		onLocaleChange();
+		Localizer.addListener(this);
 	}
 
 	/**
@@ -96,7 +100,8 @@ public class ActivityPanel extends JTabbedPane {
 			for (ActivityModel a : activityList) {
 				ActivityView activity = new ActivityView(a, controller);
 				if (activity.equals(activityBeingEdited)) {
-					activity.setBackground(Colors.ACTIVITY_EDIT);
+					activity.setBackground(Colors.ACTIVITY_COMMENT);
+					activity.setEditing(true);
 				}
 
 				if (a.getType() == ActivityModel.ActivityModelType.COMMENT) {
@@ -141,5 +146,16 @@ public class ActivityPanel extends JTabbedPane {
 	 */
 	public ActivityView getEditedTask() {
 		return activityBeingEdited;
+	}
+
+	@Override
+	public void onLocaleChange() {
+		if (getTabCount() > 1) {
+			setTitleAt(0, Localizer.getString("Comments"));
+			setToolTipTextAt(0, Localizer.getString("Comments"));
+
+			setTitleAt(1, Localizer.getString("AllActivities"));
+			setToolTipTextAt(1, Localizer.getString("AllActivities"));
+		}
 	}
 }

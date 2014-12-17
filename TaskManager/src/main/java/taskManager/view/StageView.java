@@ -68,7 +68,7 @@ public class StageView extends JPanel implements Transferable,
 	private final JButton cancel;
 	private final DropAreaPanel tasks;
 	private final JScrollPane stage;
-	public static final int STAGE_WIDTH = 225;
+	public static final int STAGE_WIDTH = 240;
 
 	/**
 	 * 
@@ -79,14 +79,13 @@ public class StageView extends JPanel implements Transferable,
 	 */
 	public StageView(String name, StageController stageC) {
 
-		this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
 		// The tasks panel accepts task drops
 		tasks = new DropAreaPanel(DDTransferHandler.getTaskFlavor());
 
 		// stage view is a panel that contains the title and the scroll pane
 		// w/tasks
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setPreferredSize(new Dimension(STAGE_WIDTH, 450));
 
 		// organizes the tasks in a vertical list
@@ -147,6 +146,7 @@ public class StageView extends JPanel implements Transferable,
 		stage = new JScrollPane(tasks,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		stage.getVerticalScrollBar().setUnitIncrement(12);
 
 		label.setBackground(Colors.STAGE);
 		final Border color = BorderFactory.createLineBorder(
@@ -187,7 +187,7 @@ public class StageView extends JPanel implements Transferable,
 		// Make scrollpane redispatch drag events down to DropAreaPanel to avoid
 		// scrollbar flicker
 		stage.setDropTarget(new DropTarget(stage, new DropTargetRedispatcher(
-				tasks, DDTransferHandler.getTaskFlavor())));
+				this, tasks, DDTransferHandler.getTaskFlavor())));
 
 		setController(stageC);
 		onLocaleChange();
@@ -299,6 +299,10 @@ public class StageView extends JPanel implements Transferable,
 		focusTextArea();
 	}
 
+	/**
+	 * 
+	 * @return true if the check button for stage title is enabled.
+	 */
 	public boolean isCheckEnabled() {
 		return check.isEnabled();
 	}

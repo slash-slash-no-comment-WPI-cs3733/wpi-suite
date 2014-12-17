@@ -63,10 +63,12 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	private JButton createTask;
 	private JButton createStage;
 	private JButton statistics;
+	private FilterView filters;
 	private JLabel archive;
 	private JLabel delete;
 	private JCheckBox archiveCheckBox;
 	private JButton leaveFunMode;
+
 	private JButton randomizeTaskAngles;
 	private JComboBox<String> languageSelector;
 	private List<String> languages;
@@ -84,9 +86,7 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	 *            The ToolbarController associated with this view
 	 * @throws IOException
 	 */
-	public ToolbarView(ToolbarController controller) {
-
-		this.controller = controller;
+	public ToolbarView(ToolbarController controller, FilterView f) {
 
 		// Construct and set up the buttons and title panels
 		final JPanel buttons = new JPanel();
@@ -137,12 +137,6 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		// Checkbox for toggling showing archived tasks.
-		archiveCheckBox = new JCheckBox();
-		archiveCheckBox.setName(SHOW_ARCHIVE);
-		archiveCheckBox.addItemListener(controller);
-		archiveCheckBox.setOpaque(false);
 
 		// Add archive and delete drop targets
 		try {
@@ -207,6 +201,8 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 			Localizer.setLanguage(language);
 			languageSelector.addItem(Localizer.getString("LanguageName"));
 		}
+		languageSelector.setSelectedIndex(languages
+				.indexOf(Localizer.defaultLanguage));
 		Localizer.setLanguage(Localizer.defaultLanguage);
 		languageSelector.addActionListener(controller);
 		Dimension d = new Dimension(100, 30);
@@ -234,8 +230,17 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		buttons.add(createStage);
 		buttons.add(statistics);
 		// buttons.add(languageSelector);
-		buttons.add(archiveCheckBox);
+		buttons.add(new Box.Filler(new Dimension(5, 0), new Dimension(30, 0),
+				new Dimension(40, 0)));
+		// adds the filter view
+		filters = f;
+		buttons.add(filters);
+		buttons.add(new Box.Filler(new Dimension(5, 0), new Dimension(30, 0),
+				new Dimension(40, 0)));
+		buttons.add(languageSelector);
 		buttons.add(Box.createHorizontalGlue());
+		targets.add(new Box.Filler(new Dimension(5, 0), new Dimension(30, 0),
+				new Dimension(40, 0)));
 
 		// Add targets to the target panel
 		targets.add(archive);
@@ -309,13 +314,6 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	 */
 	public void setDeleteEnabled(boolean bool) {
 		delete.setEnabled(bool);
-	}
-
-	/**
-	 * @return if the show archive checkbox is checked
-	 */
-	public boolean isArchiveShown() {
-		return archiveCheckBox.isSelected();
 	}
 
 	/**
@@ -398,6 +396,15 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	}
 
 	/**
+	 * return the filters panel
+	 * 
+	 * @return the filter panel
+	 */
+	public FilterView getFilterView() {
+		return this.filters;
+	}
+
+	/**
 	 * @return The selected language
 	 */
 	public String getSelectedLanguage() {
@@ -411,8 +418,6 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		createStage.setText("<html>" + Localizer.getString("CreateStage")
 				+ "</html>");
 		statistics.setText("<html>" + Localizer.getString("Reports")
-				+ "</html>");
-		archiveCheckBox.setText("<html>" + Localizer.getString("ShowArchive")
 				+ "</html>");
 		archive.setToolTipText(Localizer.getString("DragArchive"));
 		delete.setToolTipText(Localizer.getString("DragDelete"));

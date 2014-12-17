@@ -57,10 +57,11 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 	private final TaskModel taskM;
 	private final TaskController taskC;
 	private final TaskInfoPreviewController controller;
+	private JPanel titleBar;
+	private final JButton closeButton;
 	public static final String EDIT = "edit";
 	public static final String X = "x";
 	public static final int WIDTH = 220;
-	private final JButton closeButton;
 	private JLabel archived = new JLabel();
 	private JLabel dueDate = new JLabel();
 	private final JLabel estE;
@@ -83,10 +84,10 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 	 *            The location of the associated TaskView
 	 */
 	public TaskInfoPreviewView(TaskModel model, TaskController controller,
-			Point loc) {
+			Point loc, Color titleColor) {
 		taskM = model;
 		taskC = controller;
-		this.controller = new TaskInfoPreviewController(taskC);
+		this.controller = new TaskInfoPreviewController(taskC, this);
 
 		this.setLayout(null);
 		this.setOpaque(false);
@@ -97,7 +98,7 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 		setBoundsWithoutClipping(loc, 245, 415);
 
 		bgPane.setBackground(Colors.TASK);
-		final Border color = BorderFactory.createLineBorder(getBackground(), 3);
+		final Border color = BorderFactory.createLineBorder(Color.GRAY, 3);
 		final DropShadowBorder shadow = new DropShadowBorder();
 		shadow.setShadowColor(Color.BLACK);
 		shadow.setShowLeftShadow(true);
@@ -120,32 +121,34 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 		info.setOpaque(false);
 
 		// The task's titleBar contains the title and the 'x' button
-
-		JPanel titleBar = new JPanel();
+		titleBar = new JPanel();
 		titleBar.setLayout(new MigLayout("wrap 2", "5[]:push[]", "[]0[center]"));
-		Dimension titleBarSize = new Dimension(this.getWidth(), 30);
+		Dimension titleBarSize = new Dimension(this.getWidth() - 15, 30);
 		titleBar.setSize(titleBarSize);
 		JLabel title = new JLabel(this.taskM.getName());
-		Dimension titleSize = new Dimension(190,
+		Dimension titleSize = new Dimension(185,
 				title.getPreferredSize().height + 10);
 
-		title.setFont(title.getFont().deriveFont(15.0f));
+		title.setFont(new Font("Default", Font.BOLD, 15));
+		title.setForeground(Color.white);
 		title.setPreferredSize(titleSize);
 		title.setSize(titleSize);
 		title.setMaximumSize(titleSize);
 		titleBar.add(title);
+
 		// Closable 'x' button
 		closeButton = new JButton();
 		closeButton.setName(X);
-		closeButton.setFont(closeButton.getFont().deriveFont((float) 8));
-		closeButton.setMargin(new Insets(0, 0, 0, 0));
+		closeButton.setFont(closeButton.getFont().deriveFont((float) 10));
+		closeButton.setMargin(new Insets(0, 2, 0, 2));
+		closeButton.setFocusPainted(false);
+		closeButton.setContentAreaFilled(false);
+		closeButton.setBorderPainted(false);
+		closeButton.setOpaque(false);
 		closeButton.addActionListener(this.controller);
+		closeButton.addMouseListener(this.controller);
 		titleBar.add(closeButton);
-		if (model.isArchived()) {
-			titleBar.setBackground(Colors.ARCHIVE_CLICKED);
-		} else {
-			titleBar.setBackground(Colors.TASK_CLICKED);
-		}
+		titleBar.setBackground(titleColor);
 
 		// if the task is archived, say so.
 		if (taskC.isArchived()) {
@@ -159,7 +162,6 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 		info.add(titleBar);
 
 		// The task's description
-
 		JTextArea description = new JTextArea();
 		description.setText(this.taskM.getDescription());
 
@@ -176,10 +178,6 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 		descScroll.setMinimumSize(descScrollSize);
 		descScroll.setPreferredSize(descScrollSize);
 		descScroll.setBorder(BorderFactory.createEmptyBorder());
-		// These remove the border around the JScrollPane. Might be wanted later
-		// Border border = BorderFactory.createEmptyBorder(0, 0, 0, 0);
-		// descScroll.setViewportBorder(border);
-		// descScroll.setBorder(border);
 		info.add(descScroll);
 
 		JPanel spacer = new JPanel();
@@ -192,10 +190,9 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 		info.add(spacer);
 
 		// The task's due date
-		// final Calendar calDate = Calendar.getInstance();
-		// calDate.setTime();
-		// The task's due date
-		dueDate = new JLabel();
+		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+		JLabel dueDate = new JLabel("<html><b><i>Due:</i></b> "
+				+ df.format(this.taskM.getDueDate()) + "</html>");
 
 		dueDate.setFont(dueDate.getFont().deriveFont(Font.PLAIN));
 		dueDate.setMaximumSize(new Dimension(this.getWidth(), 20));
@@ -260,9 +257,11 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 
 		// This panel contains the edit button
 		final JPanel buttonPanel = new JPanel();
-		edit = new JButton("Edit");
+		edit = new JButton(Localizer.getString("Edit"));
 		edit.setName(EDIT);
-		edit.setMargin(new Insets(5, 77, 5, 77));
+		edit.setPreferredSize(new Dimension(205, 35));
+		// edit.setMargin(new Insets(5, 30, 5, 30));
+		// edit.setMargin(new Insets(5, 77, 5, 77));
 		edit.addActionListener(this.controller);
 		// Add the pencil image to the edit button
 		try {
@@ -285,7 +284,6 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 
 		onLocaleChange();
 		Localizer.addListener(this);
-
 	}
 
 	/**
@@ -322,15 +320,25 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 		return taskC;
 	}
 
+	/**
+	 * 
+	 * Set the BorderPainted boolean for the closeButton.
+	 *
+	 * @param border
+	 *            true to make the border visible, false otherwise
+	 */
+	public void setCloseBorder(boolean border) {
+		closeButton.setBorderPainted(border);
+	}
+
 	@Override
 	public void onLocaleChange() {
 		closeButton.setText(Localizer.getString("x"));
 		archived.setText("<html><font size=\"3\"><i>"
 				+ Localizer.getString("Archived") + "</i></font></html>");
 		DateFormat df = new SimpleDateFormat(Localizer.getString("DateFormat"));
-		dueDate.setText("<html><b><i>Due:</i></b> "
-				+ Localizer.getString("Due")
-				+ df.format(this.taskM.getDueDate()) + "</html>");
+		dueDate.setText("<html><b><i>" + Localizer.getString("Due")
+				+ " </b></i>" + df.format(this.taskM.getDueDate()) + "</html>");
 		String estString = this.taskM.isEstimatedEffortSet() ? this.taskM
 				.getEstimatedEffort().toString() : "";
 		String actString = this.taskM.isActualEffortSet() ? this.taskM

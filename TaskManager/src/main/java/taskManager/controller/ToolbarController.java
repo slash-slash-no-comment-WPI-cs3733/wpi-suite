@@ -36,6 +36,7 @@ import taskManager.localization.Localizer;
 import taskManager.model.StageModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.ReportsView;
+import taskManager.view.ReportsView.Mode;
 import taskManager.view.RotationView;
 import taskManager.view.StageView;
 import taskManager.view.TaskView;
@@ -49,9 +50,10 @@ import edu.wpi.cs.wpisuitetng.janeway.config.ConfigManager;
  * @author Sam Khalandovsky
  */
 public class ToolbarController extends DropTargetAdapter implements
-		ActionListener, ItemListener, ComponentListener {
+		ActionListener, ComponentListener, ItemListener {
 
 	private ToolbarView view;
+	private FilterController filterC;
 
 	private static ToolbarController instance;
 
@@ -62,8 +64,12 @@ public class ToolbarController extends DropTargetAdapter implements
 		reset();
 	}
 
+	/**
+	 * reinitialize the toolbar view and filter controller
+	 */
 	public void reset() {
-		view = new ToolbarView(this);
+		filterC = new FilterController();
+		view = new ToolbarView(this, filterC.getView());
 	}
 
 	/**
@@ -87,6 +93,15 @@ public class ToolbarController extends DropTargetAdapter implements
 	public ToolbarView getView() {
 		return view;
 	}
+
+	/**
+	 * return the filter controller
+	 * 
+	 * @return filter controller
+	 */
+	public FilterController getFilterController() {
+		return this.filterC;
+	};
 
 	/**
 	 * Sets the visible title in the toolbar, hyphenating if necessary
@@ -125,10 +140,14 @@ public class ToolbarController extends DropTargetAdapter implements
 		// Because of the word wrap, if there there is an overflow there will be
 		// some section with no whitespace that causes the overflow, so find it
 		// and hyphenate it
-		String[] chunks = name.split(" ");
+		List<String> chunks = new ArrayList<String>();
+		for (String s : name.split(" ")) {
+			chunks.add(s);
+		}
 		List<String> newChunks = new ArrayList<String>();
 		// For each string, hyphenate it if it exceeds the goal width
-		for (String s : chunks) {
+		while (!chunks.isEmpty()) {
+			String s = chunks.remove(0);
 			int stringWidth = SwingUtilities.computeStringWidth(
 					view.getProjectName().getFontMetrics(
 							view.getProjectName().getFont()), s);
@@ -146,7 +165,7 @@ public class ToolbarController extends DropTargetAdapter implements
 							hyphenatedStart.length() - 2) + "-";
 				}
 				newChunks.add(hyphenatedStart);
-				newChunks.add(hyphenatedEnd);
+				chunks.add(0, hyphenatedEnd);
 			} else {
 				newChunks.add(s);
 			}
@@ -182,8 +201,8 @@ public class ToolbarController extends DropTargetAdapter implements
 				WorkflowController.getInstance().addStageToView();
 				break;
 			case ToolbarView.REPORT:
-				ReportsView rtv = new ReportsView();
-				rtv.setController(new ReportsManager(rtv));
+				ReportsView rtv = new ReportsView(Mode.VELOCITY);
+				rtv.setController(new ReportsController(rtv));
 				TabPaneController.getInstance().addReportsTab(rtv);
 				break;
 			case ToolbarView.TASK_ANGLES:
