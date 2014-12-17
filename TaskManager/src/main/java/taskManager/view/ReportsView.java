@@ -111,9 +111,9 @@ public class ReportsView extends JPanel implements ActionListener,
 	private JPanel cards;
 	private JRadioButton workvel = new JRadioButton(names[0]);
 	private JRadioButton taskdistro = new JRadioButton(names[1]);
-	private JRadioButton effort = new JRadioButton("Effort");
-	private JRadioButton numberoftasks = new JRadioButton("Number of Tasks");
-	private JCheckBox select_stages = new JCheckBox("All Stages");
+	private JRadioButton effort;
+	private JRadioButton numberoftasks;
+	private JCheckBox select_stages;
 
 	// Date Picker
 	private JPanel timePanel;
@@ -137,6 +137,8 @@ public class ReportsView extends JPanel implements ActionListener,
 
 	// Generate Graph Button
 	private JButton generateGraph;
+
+	private JLabel selectStageLabel;
 
 	public ReportsView(Mode mode) {
 
@@ -225,6 +227,11 @@ public class ReportsView extends JPanel implements ActionListener,
 
 		timeSliceLabel = new JLabel(Localizer.getString("Units"));
 
+		// Card panel
+		effort = new JRadioButton(Localizer.getString("Effort"));
+		numberoftasks = new JRadioButton(Localizer.getString("NumberOfTasks"));
+		select_stages = new JCheckBox(Localizer.getString("AllStages"));
+
 		// Time
 		timePanel = new JPanel(new MigLayout());
 		timeSlice = new JPanel(new MigLayout());
@@ -279,7 +286,7 @@ public class ReportsView extends JPanel implements ActionListener,
 		generateGraph.setIcon(new ImageIcon(img));
 
 		// Panel for reports generating options
-		JLabel selectStageLabel = new JLabel("Select Stage");
+		selectStageLabel = new JLabel(Localizer.getString("SelectStage"));
 		selectStageLabel.setFont(bigFont);
 		SelectStages.add(selectStageLabel, "wrap");
 		SelectStages.add(stagePanel2, "wrap, gapright 10px");
@@ -625,5 +632,9 @@ public class ReportsView extends JPanel implements ActionListener,
 		startDateLabel.setText(Localizer.getString("StartDate"));
 		endDateLabel.setText(Localizer.getString("EndDate"));
 		reportTypeLabel.setText(Localizer.getString("ChooseReportType"));
+		selectStageLabel.setText(Localizer.getString("SelectStage"));
+		effort.setText(Localizer.getString("Effort"));
+		numberoftasks.setText(Localizer.getString("NumberOfTasks"));
+		select_stages.setText(Localizer.getString("AllStages"));
 	}
 }
