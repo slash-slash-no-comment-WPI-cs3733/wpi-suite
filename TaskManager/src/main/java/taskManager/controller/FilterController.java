@@ -154,12 +154,10 @@ public class FilterController implements ItemListener, MouseListener,
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		filter();
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		filter();
 	}
 
 	@Override
