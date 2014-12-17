@@ -73,6 +73,7 @@ public class ReportsView extends JPanel implements ActionListener,
 			Localizer.getString("Distribution") };
 	public String slices[] = { Localizer.getString("Days"),
 			Localizer.getString("Weeks") };
+	public String cardNames[] = { "work", "task" };
 
 	private JPanel window;
 	private JPanel generator;
@@ -100,12 +101,6 @@ public class ReportsView extends JPanel implements ActionListener,
 	private JPanel stagePanel2;
 	private JComboBox<String> stages2;
 	private JComboBox<String> timeSliceList;
-
-	private JPanel TaskDistribution = new JPanel();
-	private JPanel WorkVelocity = new JPanel(new MigLayout());
-	private JPanel usersHolder = new JPanel();
-	private JPanel usersHolderDistro = new JPanel();
-	private JPanel SelectStages = new JPanel();
 
 	private JLabel selectStageLabel;
 
@@ -296,8 +291,8 @@ public class ReportsView extends JPanel implements ActionListener,
 		WorkVelocity.add(timePanel, "w 100%");
 
 		cards = new JPanel(new CardLayout());
-		cards.add(WorkVelocity);
-		cards.add(TaskDistribution);
+		cards.add(WorkVelocity, cardNames[0]);
+		cards.add(TaskDistribution, cardNames[1]);
 		generator.add(reportType, "align center, wrap");
 		generator.add(cards, "wrap");
 		generator.add(effortOrNumberofTasks, "align center, wrap");
@@ -307,7 +302,7 @@ public class ReportsView extends JPanel implements ActionListener,
 		Dimension CardSize = cards.getSize();
 		cards.setPreferredSize(CardSize);
 
-		cl.show(cards, names[0]);
+		cl.show(cards, cardNames[0]);
 		window.add(generator);
 
 		JScrollPane windowScroll = new JScrollPane(window,
@@ -325,13 +320,13 @@ public class ReportsView extends JPanel implements ActionListener,
 		CardLayout cl = (CardLayout) (cards.getLayout());
 
 		if (e.getSource() == workvel) {
-			cl.show(cards, Localizer.getString(names[0]));
+			cl.show(cards, cardNames[0]);
 			mode = Mode.VELOCITY;
 
 		}
 		if (e.getSource() == taskdistro) {
 
-			cl.show(cards, Localizer.getString(names[1]));
+			cl.show(cards, cardNames[1]);
 			mode = Mode.DISTRIBUTION;
 
 		}
