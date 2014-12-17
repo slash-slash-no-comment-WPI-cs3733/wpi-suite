@@ -111,6 +111,16 @@ public class DropAreaPanel extends JPanel {
 	}
 
 	/**
+	 * Generate placeholder using an image
+	 *
+	 * @param image
+	 */
+	public static void generatePlaceholder(Image image) {
+		placeholder = new JLabel(new ImageIcon(image));
+		placeholder.setAlignmentX(CENTER_ALIGNMENT);
+	}
+
+	/**
 	 *
 	 * Adds a task that's been dropped on this stage.
 	 *
