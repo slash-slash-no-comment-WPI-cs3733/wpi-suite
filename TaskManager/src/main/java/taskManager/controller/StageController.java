@@ -322,16 +322,20 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 				"Assigned Users", "Estimated Effort", "Actual Effort" };
 		List<String[]> taskStringArrays = new ArrayList<String[]>();
 		for (TaskModel tm : model.getTasks()) {
-			String values[] = {
-					tm.getName(),
-					tm.getDescription(),
-					new SimpleDateFormat("MM/dd/yy").format(tm.getDueDate()),
-					String.join(",", tm.getAssigned()),
-					tm.isEstimatedEffortSet() ? Integer.toString(tm
-							.getEstimatedEffort()) : "None",
-					tm.isActualEffortSet() ? Integer.toString(tm
-							.getActualEffort()) : "None" };
-			taskStringArrays.add(values);
+			// Only include visible tasks
+			if (WorkflowController.getInstance().getCurrentFilter().check(tm)) {
+				String values[] = {
+						tm.getName(),
+						tm.getDescription(),
+						new SimpleDateFormat("MM/dd/yy")
+								.format(tm.getDueDate()),
+						String.join(",", tm.getAssigned()),
+						tm.isEstimatedEffortSet() ? Integer.toString(tm
+								.getEstimatedEffort()) : "None",
+						tm.isActualEffortSet() ? Integer.toString(tm
+								.getActualEffort()) : "None" };
+				taskStringArrays.add(values);
+			}
 		}
 		List<String> rows = new ArrayList<String>();
 		rows.add(model.getName());

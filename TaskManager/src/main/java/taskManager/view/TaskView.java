@@ -26,6 +26,7 @@ import java.util.Date;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -118,7 +119,7 @@ public class TaskView extends JPanel implements Transferable,
 		title.setTitlePosition(TitledBorder.LEFT);
 		this.setBorder(title);
 
-		Dimension viewSize = new Dimension(stageWidth - 17, 62);
+		Dimension viewSize = new Dimension(stageWidth - 17, 64);
 		this.setMinimumSize(viewSize);
 		this.setPreferredSize(viewSize);
 		this.setMaximumSize(viewSize);
@@ -128,6 +129,7 @@ public class TaskView extends JPanel implements Transferable,
 		// formats the lower section containing date and icons
 		JPanel lower = new JPanel();
 		lower.setLayout(new BoxLayout(lower, BoxLayout.X_AXIS));
+		lower.setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
 		lower.setAlignmentX(LEFT_ALIGNMENT);
 		lower.setOpaque(false);
 
@@ -136,6 +138,7 @@ public class TaskView extends JPanel implements Transferable,
 		dueLabel.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 3));
 
 		lower.add(dueLabel);
+
 		JPanel icons = new JPanel(new FlowLayout());
 		icons.setOpaque(false);
 		JLabel userIcon = new JLabel();
@@ -194,7 +197,7 @@ public class TaskView extends JPanel implements Transferable,
 		nameLabel.setMaximumSize(this.getSize());
 		nameLabel.setPreferredSize(this.getSize());
 		nameLabel.setAlignmentX(LEFT_ALIGNMENT);
-		nameLabel.setText(name);
+		nameLabel.setText(ellipsis(name, 25));
 		nameLabel.setFont(new Font("Default", Font.PLAIN, 14));
 		nameLabel.setForeground(Color.black);
 		nameLabel.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
@@ -210,6 +213,7 @@ public class TaskView extends JPanel implements Transferable,
 
 		// adds the title, date and icons to the task view
 		colorBorder.add(nameLabel);
+		colorBorder.add(Box.createVerticalStrut(1));
 		colorBorder.add(lower);
 		this.add(color);
 		this.add(colorBorder);
@@ -414,6 +418,25 @@ public class TaskView extends JPanel implements Transferable,
 
 	public JPanel getRotationPane() {
 		return rotationView;
+	}
+
+	/**
+	 * shorten a string if it get too long and add an ellipsis
+	 * 
+	 * @param text
+	 *            the string to be shortened
+	 * @param length
+	 *            the length the string will not exceed
+	 * @return the new shortened string
+	 */
+	public static String ellipsis(final String text, int length) {
+		// The letters [iIl1] are slim enough to only count as half a character.
+		length += Math.ceil(text.replaceAll("[^iIl]", "").length() / 2.0d);
+
+		if (text.length() > length) {
+			return text.substring(0, length - 3) + "...";
+		}
+		return text;
 	}
 
 	@Override
