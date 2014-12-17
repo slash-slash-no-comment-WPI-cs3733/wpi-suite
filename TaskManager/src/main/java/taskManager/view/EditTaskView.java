@@ -392,7 +392,7 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 
 		// label to notify a user if they are editing a task
 		editing = new JLabel("", null, JLabel.CENTER);
-		editing.setMinimumSize(new JLabel("You are currently editing a comment")
+		editing.setMinimumSize(new JLabel("Editing highlighted comment")
 				.getPreferredSize());
 
 		// The activities and comments tabs
@@ -1041,7 +1041,7 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	 */
 	public void startEditingComment(String text) {
 		cancelComment.setEnabled(true);
-		editing.setText("Editing highlighted comment");
+		editing.setText(Localizer.getString("EditingComment"));
 		editing.setForeground(Color.RED);
 		commentBoxText = text;
 		commentBox.setText(text);
@@ -1090,7 +1090,9 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		commentsLabel.setText(Localizer.getString("Comment"));
 		PromptSupport
 				.setPrompt(Localizer.getString("WriteComment"), commentBox);
-		editing.setText(Localizer.getString("EditingComment"));
+		if (!editing.getText().equals("")) {
+			editing.setText(Localizer.getString("EditingComment"));
+		}
 		delete.setText(Localizer.getString("Delete"));
 		submitComment.setText(Localizer.getString("SubmitComment"));
 		viewReq.setText(Localizer.getString("ViewRequirement"));
