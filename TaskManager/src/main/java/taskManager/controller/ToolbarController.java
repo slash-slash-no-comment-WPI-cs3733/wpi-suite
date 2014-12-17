@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -209,6 +208,11 @@ public class ToolbarController extends DropTargetAdapter implements
 			case ToolbarView.TASK_ANGLES:
 				RotationController.resetAngles();
 				WorkflowController.getInstance().reloadData();
+				break;
+			case ToolbarView.FUN_MODE:
+				view.setFunMode(false);
+				WorkflowController.getInstance().reloadData();
+				break;
 			}
 		} else if (button instanceof JComboBox) {
 			Localizer.setLanguage(view.getSelectedLanguage());
@@ -354,17 +358,6 @@ public class ToolbarController extends DropTargetAdapter implements
 
 	@Override
 	public void itemStateChanged(ItemEvent e) {
-		final Object checkBox = e.getSource();
-		if (checkBox instanceof JCheckBox) {
-			switch (((JCheckBox) checkBox).getName()) {
-			case ToolbarView.FUN_MODE:
-				if (e.getStateChange() == ItemEvent.SELECTED) {
-					view.showFunButtons();
-				} else {
-					view.hideFunButtons();
-				}
-			}
-		}
 		// Reload the workflow view.
 		WorkflowController.pauseInformation = false;
 		WorkflowController.getInstance().removeTaskInfos(true);

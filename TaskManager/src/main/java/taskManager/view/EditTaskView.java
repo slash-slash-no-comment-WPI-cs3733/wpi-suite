@@ -1234,6 +1234,9 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		cancelComment.setText(Localizer.getString("Cancel"));
 		archive.setText(Localizer.getString("Archived"));
 		dateField.setFormats(Localizer.getString("DateFormat"));
+		dateField.setLocale(null);
+		dateField.getMonthView().setLocale(null);
+		dateField.getMonthView().updateUI();
 		((JLabel) titleError.getContents()).setText(Localizer
 				.getString(TITLE_ERROR));
 		((JLabel) descripError.getContents()).setText(Localizer
