@@ -42,6 +42,6 @@ public class Colors {
 			Color.decode("#FBC02D"), Color.decode("#7E57C2") };
 
 	public static final String[] CATEGORY_NAMES = new String[] {
-			"Select category", "red", "green", "blue", "yellow", "purple" };
+			"Selectcategory", "red", "green", "blue", "yellow", "purple" };
 
 }

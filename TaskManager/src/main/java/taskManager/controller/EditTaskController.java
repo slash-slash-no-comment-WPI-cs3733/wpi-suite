@@ -612,7 +612,8 @@ public class EditTaskController implements ActionListener {
 		}
 		if (modelCatName != null) {
 			if (etv.getSelectedCategory() != null) {
-				if (!etv.getSelectedCategory().equals(modelCatName)) {
+				if (!etv.getSelectedCategory().equals(
+						Localizer.getString(modelCatName))) {
 					hasChange = true;
 				}
 			}

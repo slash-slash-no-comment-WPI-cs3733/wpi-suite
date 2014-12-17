@@ -122,6 +122,7 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	private final JLabel projectUsersLabel;
 	private final JLabel activitiesLabel;
 	private final JLabel commentsLabel;
+	private final JLabel categoryLabel;
 
 	private final BalloonTip titleError;
 	private final BalloonTip descripError;
@@ -190,7 +191,7 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		dueDateLabel.setFont(bigFont);
 		stageLabel = new JLabel();
 		stageLabel.setFont(bigFont);
-		final JLabel categoryLabel = new JLabel("Category");
+		categoryLabel = new JLabel();
 		categoryLabel.setFont(bigFont);
 		estimatedEffortLabel = new JLabel();
 		estimatedEffortLabel.setFont(bigFont);
@@ -764,7 +765,7 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	public void setCategories(String[] cats) {
 		categories.removeAllItems();
 		for (String s : cats) {
-			categories.addItem(s);
+			categories.addItem(Localizer.getString(s));
 		}
 	}
 
@@ -1252,6 +1253,7 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		projectUsersLabel.setText(Localizer.getString("ProjectUsers"));
 		activitiesLabel.setText(Localizer.getString("Activities"));
 		commentsLabel.setText(Localizer.getString("Comment"));
+		categoryLabel.setText(Localizer.getString("Category"));
 		PromptSupport
 				.setPrompt(Localizer.getString("WriteComment"), commentBox);
 		if (!editing.getText().equals("")) {
@@ -1281,9 +1283,12 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		if (controller != null) {
 			final String r = getSelectedRequirement();
 			final String s = getSelectedStage();
+			final int c = categories.getSelectedIndex();
 			controller.reloadData();
+			setCategories(Colors.CATEGORY_NAMES);
 			setSelectedRequirement(r);
 			setSelectedStage(s);
+			categories.setSelectedIndex(c);
 		}
 	}
 }
