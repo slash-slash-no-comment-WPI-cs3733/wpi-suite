@@ -132,8 +132,13 @@ public class DDTransferHandler extends TransferHandler {
 		}
 		setDragImage(image);
 
-		// Create placeholder
-		DropAreaPanel.generatePlaceholder(comp.getSize());
+		// Create placeholder, rotated for rotationviews
+		if (comp instanceof RotationView) {
+			RotationView rot = (RotationView) comp;
+			DropAreaPanel.generatePlaceholder(rot.createPlaceholder());
+		} else {
+			DropAreaPanel.generatePlaceholder(comp.getSize());
+		}
 
 		// Set toolbar icon state
 		ToolbarController.getInstance().setIconState(comp);
