@@ -30,6 +30,7 @@ import taskManager.controller.WorkflowController;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
+import edu.wpi.cs.wpisuitetng.modules.requirementmanager.models.Requirement;
 
 /**
  * Tests for the task preview
@@ -42,6 +43,7 @@ public class TestTaskPreview {
 
 	private FrameFixture fixture;
 	private JFrame frame;
+	private TaskModel tm1;
 
 	@Before
 	public void setup() {
@@ -52,9 +54,11 @@ public class TestTaskPreview {
 		StageModel sm1 = new StageModel("Stage1");
 		StageModel sm2 = new StageModel("Stage2");
 
-		TaskModel tm1 = new TaskModel("Task1", sm1);
+		tm1 = new TaskModel("Task1", sm1);
 		tm1.setDueDate(new Date());
 		tm1.setDescription("Description");
+		tm1.addAssigned("User 1");
+		tm1.setReq(new Requirement());
 
 		frame = new JFrame();
 		JPanel panel = new JPanel();
@@ -77,6 +81,16 @@ public class TestTaskPreview {
 
 	@Test
 	public void testPreviewDisappear() {
+		assertFalse(panelShown(TaskInfoPreviewView.NAME));
+		fixture.panel("Task1").click();
+		assertTrue(panelShown(TaskInfoPreviewView.NAME));
+		fixture.button(ToolbarView.CREATE_STAGE).click();
+		assertFalse(panelShown(TaskInfoPreviewView.NAME));
+	}
+
+	@Test
+	public void testPreviewDisappearArchived() {
+		tm1.setArchived(true);
 		assertFalse(panelShown(TaskInfoPreviewView.NAME));
 		fixture.panel("Task1").click();
 		assertTrue(panelShown(TaskInfoPreviewView.NAME));
