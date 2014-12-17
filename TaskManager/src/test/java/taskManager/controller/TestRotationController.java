@@ -88,13 +88,15 @@ public class TestRotationController extends ScreenshotOnFail {
 		// enter fun mode
 
 		ToolbarController.getInstance().getView().setFunMode(true);
+		WorkflowController.getInstance().reloadData();
 		fixture.robot.waitForIdle();
 	}
 
 	@Test
 	public void testFunButtonVibility() {
 		// turn off fun mode
-		fixture.checkBox(ToolbarView.FUN_MODE).uncheck();
+		fixture.button(ToolbarView.FUN_MODE).click();
+		WorkflowController.getInstance().reloadData();
 		fixture.robot.waitForIdle();
 
 		// make sure fun buttons are not visible at first

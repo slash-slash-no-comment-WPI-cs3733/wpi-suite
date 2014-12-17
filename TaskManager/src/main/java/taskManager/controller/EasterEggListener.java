@@ -34,6 +34,7 @@ public class EasterEggListener implements KeyEventDispatcher {
 				if (location == code.length) {
 					location = 0;
 					ToolbarController.getInstance().getView().setFunMode(true);
+					WorkflowController.getInstance().reloadData();
 				}
 			} else {
 				location = 0;

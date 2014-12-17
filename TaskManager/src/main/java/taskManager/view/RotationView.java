@@ -8,12 +8,17 @@
  *******************************************************************************/
 package taskManager.view;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JPanel;
 
@@ -83,6 +88,30 @@ public class RotationView extends JPanel implements Transferable {
 		painting = true;
 		super.paintChildren(g);
 		painting = false;
+	}
+
+	/**
+	 * Generate placeholder for rotation view
+	 *
+	 * @return image used as placeholder
+	 */
+	public Image createPlaceholder() {
+		final Image image = new BufferedImage(this.getWidth(),
+				this.getHeight(), BufferedImage.TYPE_INT_ARGB);
+		Graphics g = image.getGraphics();
+		((Graphics2D) g).translate(0, controller.calculateYTranslation());
+		((Graphics2D) g).rotate(angle, panel.getWidth() / 2,
+				panel.getHeight() / 2);
+
+		final float dash1[] = { 2 * (6 - 1.0f), 2 * (4 + 1.0f) };
+		final BasicStroke dashed = new BasicStroke(2, BasicStroke.CAP_ROUND,
+				BasicStroke.JOIN_ROUND, 4, dash1, 0.0f);
+		g.setColor(Color.GRAY);
+		((Graphics2D) g).setStroke(dashed);
+		((Graphics2D) g).draw(new Rectangle2D.Double(0, 0, panel.getWidth(),
+				panel.getHeight()));
+
+		return image;
 	}
 
 	/*

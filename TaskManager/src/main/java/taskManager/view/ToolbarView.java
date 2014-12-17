@@ -63,10 +63,12 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	private JButton createTask;
 	private JButton createStage;
 	private JButton statistics;
+	private FilterView filters;
 	private JLabel archive;
 	private JLabel delete;
 	private JCheckBox archiveCheckBox;
-	private JCheckBox funModeCheckBox;
+	private JButton leaveFunMode;
+
 	private JButton randomizeTaskAngles;
 	private JComboBox<String> languageSelector;
 	private List<String> languages;
@@ -75,6 +77,8 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 
 	private ToolbarController controller;
 
+	private boolean isFunMode = false;
+
 	/**
 	 * Create a ToolbarView.
 	 * 
@@ -82,8 +86,7 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	 *            The ToolbarController associated with this view
 	 * @throws IOException
 	 */
-	public ToolbarView(ToolbarController controller) {
-		this.controller = controller;
+	public ToolbarView(ToolbarController controller, FilterView f) {
 
 		// Construct and set up the buttons and title panels
 		final JPanel buttons = new JPanel();
@@ -135,12 +138,6 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 			e.printStackTrace();
 		}
 
-		// Checkbox for toggling showing archived tasks.
-		archiveCheckBox = new JCheckBox();
-		archiveCheckBox.setName(SHOW_ARCHIVE);
-		archiveCheckBox.addItemListener(controller);
-		archiveCheckBox.setOpaque(false);
-
 		// Add archive and delete drop targets
 		try {
 			img = ImageIO.read(this.getClass().getResourceAsStream(
@@ -171,24 +168,17 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		projectName.setFont(new Font("TextField.font", Font.BOLD, 20));
 
 		// construct the fun things panel
-		funModeCheckBox = new JCheckBox("<html>Fun Mode</html>");
-		funModeCheckBox.setName(FUN_MODE);
-		funModeCheckBox.addItemListener(controller);
-		funModeCheckBox.setOpaque(false);
-		funModeCheckBox.setToolTipText("Fun things are fun");
+		leaveFunMode = new JButton();
+		leaveFunMode.setName(FUN_MODE);
+		leaveFunMode.addActionListener(controller);
+		leaveFunMode.setOpaque(false);
+		leaveFunMode.setToolTipText("");
 
-		randomizeTaskAngles = new JButton("<html>Randomize Task Angles</html>");
+		randomizeTaskAngles = new JButton();
 		randomizeTaskAngles.setName(TASK_ANGLES);
 		randomizeTaskAngles.setMaximumSize(new Dimension(160, 58));
 		randomizeTaskAngles.addActionListener(controller);
 
-		funThings.add(Box.createHorizontalGlue());
-		funThings.add(randomizeTaskAngles);
-		funThings.add(funModeCheckBox);
-		funThings.add(Box.createHorizontalGlue());
-
-		// fun mode is off by default
-		hideFunButtons();
 		languages = new ArrayList<String>();
 		// Get supported languages
 		try (DirectoryStream<Path> stream = Files.newDirectoryStream(Paths
@@ -211,7 +201,8 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 			Localizer.setLanguage(language);
 			languageSelector.addItem(Localizer.getString("LanguageName"));
 		}
-		languageSelector.setSelectedIndex(languages.indexOf(Localizer.defaultLanguage));
+		languageSelector.setSelectedIndex(languages
+				.indexOf(Localizer.defaultLanguage));
 		Localizer.setLanguage(Localizer.defaultLanguage);
 		languageSelector.addActionListener(controller);
 		Dimension d = new Dimension(100, 30);
@@ -219,6 +210,15 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		languageSelector.setPreferredSize(d);
 		languageSelector.setMaximumSize(d);
 		languageSelector.setMinimumSize(d);
+
+		funThings.add(Box.createHorizontalGlue());
+		funThings.add(randomizeTaskAngles);
+		funThings.add(languageSelector);
+		funThings.add(leaveFunMode);
+		funThings.add(Box.createHorizontalGlue());
+
+		// fun mode is off by default
+		hideFunButtons();
 
 		// Add title to the title panel
 		name.add(Box.createHorizontalStrut(10));
@@ -229,9 +229,18 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		buttons.add(createTask);
 		buttons.add(createStage);
 		buttons.add(statistics);
+		// buttons.add(languageSelector);
+		buttons.add(new Box.Filler(new Dimension(5, 0), new Dimension(30, 0),
+				new Dimension(40, 0)));
+		// adds the filter view
+		filters = f;
+		buttons.add(filters);
+		buttons.add(new Box.Filler(new Dimension(5, 0), new Dimension(30, 0),
+				new Dimension(40, 0)));
 		buttons.add(languageSelector);
-		buttons.add(archiveCheckBox);
 		buttons.add(Box.createHorizontalGlue());
+		targets.add(new Box.Filler(new Dimension(5, 0), new Dimension(30, 0),
+				new Dimension(40, 0)));
 
 		// Add targets to the target panel
 		targets.add(archive);
@@ -308,17 +317,10 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	}
 
 	/**
-	 * @return if the show archive checkbox is checked
-	 */
-	public boolean isArchiveShown() {
-		return archiveCheckBox.isSelected();
-	}
-
-	/**
 	 * @return if the fun mode checkbox is checked
 	 */
 	public boolean isFunMode() {
-		return funModeCheckBox.isSelected();
+		return isFunMode;
 	}
 
 	/**
@@ -327,7 +329,12 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	 */
 	public void setFunMode(boolean fun) {
 		if (fun != isFunMode()) {
-			funModeCheckBox.doClick();
+			isFunMode = fun;
+			if (fun) {
+				showFunButtons();
+			} else {
+				hideFunButtons();
+			}
 		}
 	}
 
@@ -338,7 +345,11 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	public void hideFunButtons() {
 		randomizeTaskAngles.setEnabled(false);
 		randomizeTaskAngles.setVisible(false);
-		funModeCheckBox.setVisible(false);
+		leaveFunMode.setVisible(false);
+		languageSelector.setVisible(false);
+		Localizer.setLanguage(Localizer.defaultLanguage);
+		languageSelector.setSelectedItem(Localizer.defaultLanguage);
+		languageSelector.setEnabled(false);
 	}
 
 	/**
@@ -348,7 +359,9 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	public void showFunButtons() {
 		randomizeTaskAngles.setEnabled(true);
 		randomizeTaskAngles.setVisible(true);
-		funModeCheckBox.setVisible(true);
+		leaveFunMode.setVisible(true);
+		languageSelector.setVisible(true);
+		languageSelector.setEnabled(true);
 	}
 
 	/**
@@ -383,6 +396,15 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	}
 
 	/**
+	 * return the filters panel
+	 * 
+	 * @return the filter panel
+	 */
+	public FilterView getFilterView() {
+		return this.filters;
+	}
+
+	/**
 	 * @return The selected language
 	 */
 	public String getSelectedLanguage() {
@@ -397,10 +419,12 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 				+ "</html>");
 		statistics.setText("<html>" + Localizer.getString("Reports")
 				+ "</html>");
-		archiveCheckBox.setText("<html>" + Localizer.getString("ShowArchive")
-				+ "</html>");
 		archive.setToolTipText(Localizer.getString("DragArchive"));
 		delete.setToolTipText(Localizer.getString("DragDelete"));
-
+		leaveFunMode.setText("<html>" + Localizer.getString("GoToBoringMode")
+				+ "</html>");
+		leaveFunMode.setToolTipText(Localizer.getString("FunTip"));
+		randomizeTaskAngles.setText("<html>"
+				+ Localizer.getString("RandomAngles") + "</html>");
 	}
 }

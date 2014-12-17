@@ -30,7 +30,9 @@ import taskManager.localization.Localizer;
 import taskManager.model.ActivityModel;
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
+import taskManager.model.TaskModel.TaskCategory;
 import taskManager.model.WorkflowModel;
+import taskManager.view.Colors;
 import taskManager.view.RotationView;
 import taskManager.view.StageView;
 import taskManager.view.TaskView;
@@ -63,21 +65,23 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 		this.newStage = true;
 	}
 
+	public StageController(StageModel model) {
+		this(model, WorkflowController.getInstance().getCurrentFilter());
+	}
+
 	/**
 	 * Constructor for the StageController gets all the tasks from the
 	 * StageModel, creates the corresponding TaskView and TaskControllers for
 	 * each, and final adds all of the TaskViews to the UI. Use this when
 	 * loading a stage from a database.
-	 *
-	 * @param view
-	 *            the corresponding StageView object
+	 * 
 	 * @param model
 	 *            the corresponding StageModel object
-	 * @param newStage
-	 *            true if this is a new stage. false if it is being loaded from
-	 *            the database
+	 * @param filter
+	 *            the filter to be applied to the stage
 	 */
-	public StageController(StageModel model) throws IllegalArgumentException {
+	public StageController(StageModel model, TaskFilter filter)
+			throws IllegalArgumentException {
 		if (model == null) {
 			throw new IllegalArgumentException("Model cannot be null");
 		}
@@ -85,18 +89,13 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 		this.view = new StageView(model.getName(), this);
 		this.newStage = false;
 
-		// Get state of archive shown check box.
-		final boolean showArchive = ToolbarController.getInstance().getView()
-				.isArchiveShown();
-
 		// Add the tasks.
 		if (model != null) {
 			final List<TaskModel> tasks = this.model.getTasks();
 			for (TaskModel task : tasks) {
-				// Add only if task is not archived or when task is archived and
-				// archive shown is set to true.
-				if (!task.isArchived() || showArchive) {
-					// create stage view and controller.
+				// Only add task if it passes the filter
+				if (filter.check(task)) {
+					// create task view and controller.
 					int comments = 0;
 					for (ActivityModel a : task.getActivities()) {
 						if (a.getType() == ActivityModel.ActivityModelType.COMMENT) {
@@ -104,10 +103,16 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 						}
 					}
 
+					// makes a new view for each task
 					TaskView tkv = new TaskView(task.getName(),
 							task.getDueDate(), task.getAssigned().size(),
-							comments);
+							comments, task.getID(), StageView.STAGE_WIDTH);
 					tkv.setController(new TaskController(tkv, task));
+					for (int i = 0; i < TaskCategory.values().length; i++) {
+						if (TaskCategory.values()[i].equals(task.getCategory())) {
+							tkv.setCategoryColor(Colors.CAT_COLORS[i], true);
+						}
+					}
 
 					// if we're in fun mode, put the rotation view in the stage
 					// view
@@ -140,14 +145,14 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 		}
 		final TaskController tc = ((TaskView) panel).getController();
 
-		// if archived tasks are hidden, change index to account for the hidden
+		// if tasks are hidden, change index to account for the hidden
 		// tasks
-		if (!ToolbarController.getInstance().getView().isArchiveShown()) {
-			final List<TaskModel> taskList = model.getTasks();
-			for (int i = 0; i < index; i++) {
-				if (taskList.get(i).isArchived()) {
-					index++;
-				}
+		final List<TaskModel> taskList = model.getTasks();
+		for (int i = 0; i < index; i++) {
+			if (!WorkflowController.getInstance().getCurrentFilter()
+					.check(taskList.get(i))) {
+				index++;
+
 			}
 		}
 
@@ -288,6 +293,7 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 				WorkflowController.pauseInformation = false;
 				// reload which will remove the textbox
 				WorkflowController.getInstance().reloadData();
+				WorkflowController.getInstance().repaintView();
 				break;
 			}
 		}
@@ -316,12 +322,20 @@ public class StageController implements DropAreaSaveListener, MouseListener,
 				"Assigned Users", "Estimated Effort", "Actual Effort" };
 		List<String[]> taskStringArrays = new ArrayList<String[]>();
 		for (TaskModel tm : model.getTasks()) {
-			String values[] = { tm.getName(), tm.getDescription(),
-					new SimpleDateFormat("MM/dd/yy").format(tm.getDueDate()),
-					String.join(",", tm.getAssigned()),
-					Integer.toString(tm.getEstimatedEffort()),
-					Integer.toString(tm.getActualEffort()) };
-			taskStringArrays.add(values);
+			// Only include visible tasks
+			if (WorkflowController.getInstance().getCurrentFilter().check(tm)) {
+				String values[] = {
+						tm.getName(),
+						tm.getDescription(),
+						new SimpleDateFormat("MM/dd/yy")
+								.format(tm.getDueDate()),
+						String.join(",", tm.getAssigned()),
+						tm.isEstimatedEffortSet() ? Integer.toString(tm
+								.getEstimatedEffort()) : "None",
+						tm.isActualEffortSet() ? Integer.toString(tm
+								.getActualEffort()) : "None" };
+				taskStringArrays.add(values);
+			}
 		}
 		List<String> rows = new ArrayList<String>();
 		rows.add(model.getName());

@@ -20,6 +20,7 @@ import javax.swing.SwingUtilities;
 
 import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
+import taskManager.model.TaskModel.TaskCategory;
 import taskManager.view.Colors;
 import taskManager.view.StageView;
 import taskManager.view.TaskInfoPreviewView;
@@ -38,6 +39,8 @@ public class TaskController implements MouseListener {
 
 	private Boolean taskInfoPreviewOut = false;
 
+	private boolean isHovered;
+
 	/**
 	 * Constructor for the TaskController, currently just sets the corresponding
 	 * view and model parameters.
@@ -51,12 +54,7 @@ public class TaskController implements MouseListener {
 		this.view = view;
 		this.model = model;
 
-		// Set the background to orange if the task is archived.
-		if (model.isArchived()) {
-			view.setBackground(Colors.ARCHIVE);
-		} else {
-			view.setBackground(Colors.TASK);
-		}
+		view.setBackground(Colors.TASK);
 
 		if (model.getDueDate().before(new Date())) {
 			view.setDateColor(Color.RED);
@@ -121,7 +119,17 @@ public class TaskController implements MouseListener {
 	 *
 	 */
 	public void editTask() {
-		new EditTaskController(model).getView().focusOnTitleField();
+		EditTaskController c = new EditTaskController(model);
+		c.getView().focusOnTitleField();
+	}
+
+	/**
+	 * returns whether or not the task is being hovered over
+	 * 
+	 * @return true if the task is being hovered over, false if it is not
+	 */
+	public boolean isHovered() {
+		return this.isHovered;
 	}
 
 	/**
@@ -131,17 +139,30 @@ public class TaskController implements MouseListener {
 	 *
 	 */
 	public void changeToHoverColor() {
-		// don't highlight while task info is out in fun mode, because the clip
-		// bounds passed to the rotation view are sometimes not correct
-		if (ToolbarController.getInstance().getView().isFunMode()) {
-			return;
-		}
-		if (isArchived() && !taskInfoPreviewOut) {
-			view.setBackground(Colors.ARCHIVE_HOVER);
-		} else if (!taskInfoPreviewOut) {
-
+		if (!getThisTaskInfoOut()) {
 			view.setBackground(Colors.TASK_HOVER);
+			view.setBorderColor(view.getBackground(), false);
 		}
+		isHovered = true;
+	}
+
+	/**
+	 * get the color corresponding the models category. If there is no color,
+	 * return the TASK or ARCHIVE color
+	 * 
+	 * @return the color corresponding to the category of the task
+	 */
+	public Color getCategoryColor() {
+		// if the task has no category, give the color for clicking non colored
+		// tasks
+		Color catColor = Colors.TASK_CLICKED;
+		// otherwise, grab the color of the category
+		for (int i = 0; i < TaskCategory.values().length; i++) {
+			if (TaskCategory.values()[i].equals(model.getCategory())) {
+				catColor = Colors.CAT_COLORS[i];
+			}
+		}
+		return catColor;
 	}
 
 	/**
@@ -150,15 +171,16 @@ public class TaskController implements MouseListener {
 	 *
 	 */
 	public void resetBackground() {
-		if (isArchived() && taskInfoPreviewOut) {
-			view.setBackground(Colors.ARCHIVE_CLICKED);
-		} else if (isArchived()) {
-			view.setBackground(Colors.ARCHIVE);
-		} else if (taskInfoPreviewOut) {
-			view.setBackground(Colors.TASK_CLICKED);
-		} else {
-			view.setBackground(Colors.TASK);
+		if (!getThisTaskInfoOut()) {
+			if (!isArchived()) {
+				view.setBackground(Colors.TASK);
+				view.setBorderColor(Colors.TASK, false);
+			} else {
+				view.setBorderColor(Colors.TASK_HOVER, false);
+			}
 		}
+		view.repaint();
+		isHovered = false;
 	}
 
 	@Override
@@ -174,28 +196,35 @@ public class TaskController implements MouseListener {
 		final Point infoLoc = new Point(stagesPanelLoc.x + stageLoc.x,
 				view.getLocation().y);
 		WorkflowController.getInstance().setTaskInfo(
-				new TaskInfoPreviewView(model, this, infoLoc));
+				new TaskInfoPreviewView(model, this, infoLoc,
+						getCategoryColor()));
 
 		// Set the correct flags
 		taskInfoPreviewOut = true;
-		// make the associated task a darker color while the bubble is out
-		if (isArchived()) {
-			view.setBackground(Colors.ARCHIVE_CLICKED);
-		} else {
-			view.setBackground(Colors.TASK_CLICKED);
+		isHovered = false;
+
+		// set the correct background color
+		if (!isArchived()) {
+			if ((model.getCategory() != null)) {
+				view.setBackground(Colors.TASK);
+			} else {
+				view.setBackground(Colors.TASK_CLICKED);
+			}
 		}
+		// set the appropriate border and category colors
+		view.setCategoryColor(getCategoryColor(), true);
+		view.setBorderColor(getCategoryColor(), true);
+
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// do nothing
-
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// do nothing
-
 	}
 
 	@Override
@@ -242,11 +271,15 @@ public class TaskController implements MouseListener {
 	public String getExportString() {
 		String fields[] = { "Name", "Description", "Due Date",
 				"Assigned Users", "Estimated Effort", "Actual Effort" };
-		String values[] = { model.getName(), model.getDescription(),
+		String values[] = {
+				model.getName(),
+				model.getDescription(),
 				new SimpleDateFormat("MM/dd/yy").format(model.getDueDate()),
 				String.join(",", model.getAssigned()),
-				Integer.toString(model.getEstimatedEffort()),
-				Integer.toString(model.getActualEffort()) };
+				model.isEstimatedEffortSet() ? Integer.toString(model
+						.getEstimatedEffort()) : "None",
+				model.isActualEffortSet() ? Integer.toString(model
+						.getActualEffort()) : "None" };
 
 		String export = "";
 		for (int i = 0; i < fields.length; i++) {

@@ -8,8 +8,10 @@
  *******************************************************************************/
 package taskManager.controller;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -22,6 +24,7 @@ import javax.swing.JPanel;
 import org.fest.swing.core.MouseButton;
 import org.fest.swing.fixture.FrameFixture;
 import org.fest.swing.fixture.JLabelFixture;
+import org.fest.swing.fixture.JOptionPaneFixture;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -65,7 +68,7 @@ public class TestStageController extends ScreenshotOnFail {
 		panel.add(ToolbarController.getInstance().getView());
 		panel.add(WorkflowController.getInstance().getView());
 		frame.add(panel);
-		Dimension size = new Dimension(1500, 500);
+		Dimension size = new Dimension(1200, 500);
 		frame.setSize(size);
 		frame.setPreferredSize(size);
 		WorkflowController.getInstance().reloadData();
@@ -116,6 +119,41 @@ public class TestStageController extends ScreenshotOnFail {
 
 		// make sure the stage got deleted
 		assertNull(WorkflowModel.getInstance().findStageByName("test"));
+	}
+
+	@Test
+	public void testAddDuplicateStage() {
+		fixture.button(ToolbarView.CREATE_STAGE).click();
+		fixture.textBox(StageView.TEXT_LABEL).enterText("blah");
+		fixture.button(StageView.CHECK).click();
+		fixture.robot.waitForIdle();
+
+		new JOptionPaneFixture(fixture.robot).okButton().click();
+
+		assertTrue(wfm.getStages().size() == 1);
+		assertEquals(wfm.getStages().get(0).getName(), "blah");
+	}
+
+	@Test
+	public void testRenameStage() {
+		JLabelFixture stageFixture = fixture.label(wfm.getStages().get(0)
+				.getName());
+		stageFixture.doubleClick();
+		fixture.textBox(StageView.TEXT_LABEL).enterText("more blah");
+		fixture.button(StageView.CHECK).click();
+		fixture.robot.waitForIdle();
+
+		assertTrue(wfm.getStages().size() == 1);
+		assertEquals(wfm.getStages().get(0).getName(), "more blah");
+
+		stageFixture = fixture.label(wfm.getStages().get(0).getName());
+		stageFixture.doubleClick();
+		fixture.textBox(StageView.TEXT_LABEL).enterText("un-blah");
+		fixture.button(StageView.X).click();
+		fixture.robot.waitForIdle();
+
+		assertTrue(wfm.getStages().size() == 1);
+		assertEquals(wfm.getStages().get(0).getName(), "more blah");
 	}
 
 	@After

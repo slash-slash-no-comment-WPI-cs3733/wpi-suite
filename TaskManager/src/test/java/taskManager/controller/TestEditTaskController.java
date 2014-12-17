@@ -234,7 +234,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 
 		// load the edit view
 		TaskController tc = new TaskController(new TaskView("Task", new Date(),
-				0, 0), task);
+				0, 0, task.getID(), 235), task);
 		tc.editTask();
 
 		// make sure the requirement displays properly
@@ -297,7 +297,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		assertTrue(task.isArchived());
 
 		TaskController tc = new TaskController(new TaskView("Task", new Date(),
-				0, 0), task);
+				0, 0, task.getID(), 245), task);
 		tc.editTask();
 
 		fixture.checkBox(EditTaskView.ARCHIVE).uncheck();
@@ -392,8 +392,9 @@ public class TestEditTaskController extends ScreenshotOnFail {
 		// remove tab
 		Component[] tabs = TabPaneController.getInstance().getView()
 				.getComponents();
-		TabPaneController.getInstance().removeTabByComponent(
-				tabs[tabs.length - 1]);
+		for (Component tab : tabs) {
+			TabPaneController.getInstance().removeTabByComponent(tab);
+		}
 	}
 
 	/**
@@ -415,7 +416,7 @@ public class TestEditTaskController extends ScreenshotOnFail {
 
 		// load the edit view
 		TaskController tc = new TaskController(new TaskView("Task", new Date(),
-				0, 0), task);
+				0, 0, task.getID(), 240), task);
 		tc.editTask();
 		Component c = TabPaneController.getInstance().getView()
 				.getSelectedComponent();
