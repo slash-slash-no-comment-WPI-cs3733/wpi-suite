@@ -33,6 +33,8 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.Border;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.jdesktop.swingx.border.DropShadowBorder;
 
 import taskManager.controller.StageController;
@@ -145,6 +147,7 @@ public class StageView extends JPanel implements Transferable,
 		stage = new JScrollPane(tasks,
 				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		stage.getVerticalScrollBar().setUnitIncrement(12);
 
 		label.setBackground(Colors.STAGE);
 		final Border color = BorderFactory.createLineBorder(
@@ -297,6 +300,10 @@ public class StageView extends JPanel implements Transferable,
 		focusTextArea();
 	}
 
+	/**
+	 * 
+	 * @return true if the check button for stage title is enabled.
+	 */
 	public boolean isCheckEnabled() {
 		return check.isEnabled();
 	}

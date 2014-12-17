@@ -105,6 +105,7 @@ public class ActivityView extends JPanel implements MouseListener,
 		}
 
 		// Content of the activity
+
 		JLabel message = new JLabel("<html>" + m.getDescription() + "</html>");
 		message.setFont(message.getFont().deriveFont(Font.PLAIN));
 

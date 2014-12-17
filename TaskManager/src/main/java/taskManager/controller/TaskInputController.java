@@ -177,7 +177,7 @@ public class TaskInputController implements KeyListener, FocusListener,
 
 	@Override
 	public void popupMenuCanceled(PopupMenuEvent e) {
-		// TODO Auto-generated method stub
+		// do nothing
 	}
 
 	@Override
@@ -200,13 +200,13 @@ public class TaskInputController implements KeyListener, FocusListener,
 
 	@Override
 	public void focusGained(FocusEvent arg0) {
-		// TODO Auto-generated method stub
+		// do nothing
 
 	}
 
 	@Override
 	public void focusLost(FocusEvent e) {
-		// TODO Auto-generated method stub
+		// do nothing
 
 	}
 

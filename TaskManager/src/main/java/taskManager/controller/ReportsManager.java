@@ -52,7 +52,6 @@ import taskManager.model.StageModel;
 import taskManager.model.TaskModel;
 import taskManager.model.WorkflowModel;
 import taskManager.view.ReportsView;
-import edu.wpi.cs.wpisuitetng.modules.core.models.User;
 
 /**
  * Code extended from BarChartDemo1.java at www.jfree.org/jfreechart
@@ -374,10 +373,9 @@ public class ReportsManager implements ActionListener, ChangeListener,
 	 */
 	private void reloadUsers() {
 		ArrayList<String> projectUserNames = new ArrayList<String>();
-		for (User u : TaskManager.users) {
-			String name = u.getUsername();
-			if (!projectUserNames.contains(name)) {
-				projectUserNames.add(name);
+		for (String u : TaskManager.users) {
+			if (!projectUserNames.contains(u)) {
+				projectUserNames.add(u);
 			}
 		}
 		// Default to have all users selected.

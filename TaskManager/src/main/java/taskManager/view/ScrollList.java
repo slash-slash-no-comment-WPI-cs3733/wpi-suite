@@ -53,6 +53,7 @@ public class ScrollList extends JPanel {
 		lm = new DefaultListModel<String>();
 		jl = new JList<String>(lm);
 		jl.setVisibleRowCount(3);
+		jl.setFocusable(false);
 		listScroller = new JScrollPane(jl);
 		listScroller.setMinimumSize(new Dimension(200, 175));
 		listScroller.setMaximumSize(new Dimension(200, 175));

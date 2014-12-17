@@ -82,6 +82,28 @@ public class TestEntityManager {
 	}
 
 	@Test
+	public void testSaveWorkflow() throws WPISuiteException {
+		WorkflowModel wm = WorkflowModel.getInstance();
+		StageModel sm = new StageModel("stage");
+		TaskModel tm = new TaskModel("task", sm);
+		TaskModel tm2 = new TaskModel("task2", sm);
+
+		wm.save();
+		assertEquals(
+				"stage",
+				((WorkflowModel) db.retrieve(WorkflowModel.class, "id",
+						wm.getID()).get(0)).getStages().get(0).getName());
+
+		sm.setName("stage2");
+		sm.save();
+		assertEquals(
+				"stage2",
+				((WorkflowModel) db.retrieve(WorkflowModel.class, "id",
+						wm.getID()).get(0)).getStages().get(0).getName());
+
+	}
+
+	@Test
 	public void testCleanUpdate() throws WPISuiteException {
 		StageModel sm = new StageModel("stage");
 		TaskModel tm = new TaskModel("task", sm);
