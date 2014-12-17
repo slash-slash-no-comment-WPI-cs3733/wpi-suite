@@ -59,9 +59,9 @@ public class TaskView extends JPanel implements Transferable,
 
 	private JLabel userNumber;
 	private JLabel commentNumber;
-	private JLabel dueLabel;
-	private JPanel color;
-	private JPanel colorBorder;
+	private final JLabel dueLabel;
+	private final JPanel color;
+	private final JPanel colorBorder;
 
 	private Image ARCHIVE_BG;
 	private Image ARCHIVE_HOVER;
@@ -81,6 +81,8 @@ public class TaskView extends JPanel implements Transferable,
 	 *            the number of users assigned to the task
 	 * @param comments
 	 *            the number of comments on the task
+	 * @param taskID
+	 *            the ID of the task
 	 * @param stageWidth
 	 *            the width of the stage the task is being added to
 	 */
@@ -102,7 +104,7 @@ public class TaskView extends JPanel implements Transferable,
 
 		this.setLayout(new BoxLayout(this, BoxLayout.X_AXIS));
 		this.setAlignmentX(LEFT_ALIGNMENT);
-		this.dueDate = duedate;
+		dueDate = duedate;
 
 		// creates the border for the color
 		colorBorder = new JPanel();
@@ -119,7 +121,7 @@ public class TaskView extends JPanel implements Transferable,
 		title.setTitlePosition(TitledBorder.LEFT);
 		this.setBorder(title);
 
-		Dimension viewSize = new Dimension(stageWidth - 17, 64);
+		final Dimension viewSize = new Dimension(stageWidth - 17, 64);
 		this.setMinimumSize(viewSize);
 		this.setPreferredSize(viewSize);
 		this.setMaximumSize(viewSize);
@@ -127,24 +129,24 @@ public class TaskView extends JPanel implements Transferable,
 		this.setName(name);
 
 		// formats the lower section containing date and icons
-		JPanel lower = new JPanel();
+		final JPanel lower = new JPanel();
 		lower.setLayout(new BoxLayout(lower, BoxLayout.X_AXIS));
 		lower.setBorder(BorderFactory.createEmptyBorder(2, 0, 0, 0));
 		lower.setAlignmentX(LEFT_ALIGNMENT);
 		lower.setOpaque(false);
 
-		DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+		final DateFormat format = new SimpleDateFormat("MM/dd/yyyy");
 		dueLabel = new JLabel("Due: " + format.format(duedate));
 		dueLabel.setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 3));
 
 		lower.add(dueLabel);
 
-		JPanel icons = new JPanel(new FlowLayout());
+		final JPanel icons = new JPanel(new FlowLayout());
 		icons.setOpaque(false);
-		JLabel userIcon = new JLabel();
-		JLabel commentIcon = new JLabel();
+		final JLabel userIcon = new JLabel();
+		final JLabel commentIcon = new JLabel();
 		// formats the user number
-		Integer uNum = new Integer(users);
+		final Integer uNum = new Integer(users);
 		if (users > 99) {
 			userNumber = new JLabel("99+");
 		} else {
@@ -152,7 +154,7 @@ public class TaskView extends JPanel implements Transferable,
 		}
 		userNumber.setPreferredSize(new Dimension(21, 12));
 		// formats the comment number
-		Integer cNum = new Integer(comments);
+		final Integer cNum = new Integer(comments);
 		if (comments > 99) {
 			commentNumber = new JLabel("99+");
 		} else {
@@ -191,7 +193,7 @@ public class TaskView extends JPanel implements Transferable,
 
 		// This creates a maximum text-string length before the name gets
 		// truncated in the view
-		JLabel nameLabel = new JLabel();
+		final JLabel nameLabel = new JLabel();
 		nameLabel.setText("Average Name Length plu");
 		nameLabel.setSize(this.getWidth(), 20);
 		nameLabel.setMaximumSize(this.getSize());
@@ -205,7 +207,7 @@ public class TaskView extends JPanel implements Transferable,
 		// this is the panel that will display the category color
 		color = new JPanel();
 		color.setBackground(Colors.TASK);
-		Dimension colorSize = new Dimension(8, this.getHeight());
+		final Dimension colorSize = new Dimension(8, this.getHeight());
 		color.setSize(colorSize);
 		color.setPreferredSize(colorSize);
 		color.setMaximumSize(colorSize);
@@ -220,7 +222,7 @@ public class TaskView extends JPanel implements Transferable,
 
 		// in fun mode, create a rotation view
 		if (ToolbarController.getInstance().getView().isFunMode()) {
-			this.rotationView = new RotationView(this);
+			rotationView = new RotationView(this);
 			// the rotation view will handle drag/drop
 		} else {
 			// Drag and drop handling:
@@ -245,7 +247,7 @@ public class TaskView extends JPanel implements Transferable,
 	 * @return the task ID associated with this view
 	 */
 	public String getViewID() {
-		return this.taskID;
+		return taskID;
 	}
 
 	/**
@@ -275,11 +277,9 @@ public class TaskView extends JPanel implements Transferable,
 	 */
 	public void setBorderColor(Color color, boolean opaque) {
 		if (!opaque) {
-			this.colorBorder.setBorder(BorderFactory.createEmptyBorder(2, 2, 2,
-					2));
+			colorBorder.setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
 		} else {
-			this.colorBorder
-					.setBorder(BorderFactory.createLineBorder(color, 2));
+			colorBorder.setBorder(BorderFactory.createLineBorder(color, 2));
 		}
 	}
 
@@ -333,7 +333,7 @@ public class TaskView extends JPanel implements Transferable,
 	 */
 	@Override
 	public Object getTransferData(DataFlavor flavor)
-			throws UnsupportedFlavorException, IOException {
+			throws UnsupportedFlavorException {
 		if (flavor.equals(DDTransferHandler.getTaskFlavor())) {
 			// return this panel as the transfer data
 			return this;
@@ -350,7 +350,7 @@ public class TaskView extends JPanel implements Transferable,
 	 */
 	@Override
 	public DataFlavor[] getTransferDataFlavors() {
-		DataFlavor[] flavors = { DDTransferHandler.getTaskFlavor(),
+		final DataFlavor[] flavors = { DDTransferHandler.getTaskFlavor(),
 				DataFlavor.stringFlavor };
 		return flavors;
 	}
@@ -442,7 +442,8 @@ public class TaskView extends JPanel implements Transferable,
 	@Override
 	public void onLocaleChange() {
 		final Calendar date = Calendar.getInstance();
-		DateFormat df = new SimpleDateFormat(Localizer.getString("DateFormat"));
+		final DateFormat df = new SimpleDateFormat(
+				Localizer.getString("DateFormat"));
 		dueLabel.setText(Localizer.getString("Due") + " " + df.format(dueDate));
 	}
 

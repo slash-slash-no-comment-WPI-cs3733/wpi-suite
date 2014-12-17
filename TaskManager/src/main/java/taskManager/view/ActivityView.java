@@ -43,17 +43,17 @@ public class ActivityView extends JPanel implements MouseListener,
 	private static final long serialVersionUID = 6524598229849111521L;
 	public static final String EDIT = "edit";
 
-	private JButton edit;
+	private final JButton edit;
 	// if this activity can be edited
 	private boolean editable = false;
 	// if this activity is currently being edited
 	private boolean editing = false;
 
-	private ActivityModel activityM;
-	private EditTaskController controller;
-	private JPanel infoPanel;
-	private JPanel text;
-	private JLabel message;
+	private final ActivityModel activityM;
+	private final EditTaskController controller;
+	private final JPanel infoPanel;
+	private final JPanel text;
+	private final JLabel message;
 
 	/**
 	 * Creates an ActivityView panel, meant to display an activity with name of
@@ -65,7 +65,7 @@ public class ActivityView extends JPanel implements MouseListener,
 	 *            the EditTaskController which controls the edit button
 	 */
 	public ActivityView(ActivityModel m, EditTaskController controller) {
-		this.activityM = m;
+		activityM = m;
 		this.controller = controller;
 		setLayout(new MigLayout("", "0[][grow, fill]", "0[grow, fill]0"));
 		this.setBackground(Colors.ACTIVITY);
@@ -77,7 +77,7 @@ public class ActivityView extends JPanel implements MouseListener,
 				.createTitledBorder(raisedbevel);
 		this.setBorder(title);
 
-		JLabel info = new JLabel(DateFormat.getDateTimeInstance(
+		final JLabel info = new JLabel(DateFormat.getDateTimeInstance(
 				DateFormat.MEDIUM, DateFormat.SHORT).format(m.getDateCreated())
 				+ "     " + m.getActor());
 		info.setMinimumSize(new Dimension(20, 20));
@@ -115,8 +115,9 @@ public class ActivityView extends JPanel implements MouseListener,
 		text.add(infoPanel);
 		text.add(message);
 
-		JPanel color = new JPanel();
+		final JPanel color = new JPanel();
 		color.setMinimumSize(new Dimension(8, 8));
+
 		if (activityM.getType().equals(ActivityModelType.COMMENT)) {
 			color.setBackground(Colors.ACTIVITY_COMMENT);
 		} else {
@@ -150,9 +151,9 @@ public class ActivityView extends JPanel implements MouseListener,
 	 * @return a "duplicated" ActivityView.
 	 */
 	public ActivityView duplicate() {
-		ActivityView av = new ActivityView(activityM, controller);
+		final ActivityView av = new ActivityView(activityM, controller);
 		av.setBackground(this.getBackground());
-		av.setEditing(this.editing);
+		av.setEditing(editing);
 		return av;
 	}
 
@@ -231,8 +232,9 @@ public class ActivityView extends JPanel implements MouseListener,
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		if (!editing)
+		if (!editing) {
 			edit.setFont(edit.getFont().deriveFont(Font.PLAIN));
+		}
 	}
 
 	@Override

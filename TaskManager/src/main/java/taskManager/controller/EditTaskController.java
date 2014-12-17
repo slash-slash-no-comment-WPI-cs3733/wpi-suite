@@ -53,7 +53,7 @@ public class EditTaskController implements ActionListener {
 	private final EditTaskView etv;
 	private final List<String> toRemove = new ArrayList<String>();
 	private TaskModel model;
-	private ActivityController activityC;
+	private final ActivityController activityC;
 
 	/**
 	 * Creates an EditTaskController and EditTaskView form for a *new* Task.
@@ -99,7 +99,7 @@ public class EditTaskController implements ActionListener {
 	 */
 	public EditTaskController(TaskModel model) {
 		this.model = model;
-		this.activityC = new ActivityController(model, this);
+		activityC = new ActivityController(model, this);
 
 		etv = new EditTaskView(Mode.EDIT, activityC, model.getID());
 		etv.setName(model.getName());
@@ -293,7 +293,7 @@ public class EditTaskController implements ActionListener {
 				}
 				// the user is creating a new comment
 				else {
-					ActivityModel comment = new ActivityModel(
+					final ActivityModel comment = new ActivityModel(
 							ActivityModelType.COMMENT,
 							etv.getCommentsFieldText());
 					// add the activity
@@ -337,7 +337,7 @@ public class EditTaskController implements ActionListener {
 
 		final List<Requirement> reqs = RequirementModel.getInstance()
 				.getRequirements();
-		String selectedReq = etv.getSelectedRequirement();
+		final String selectedReq = etv.getSelectedRequirement();
 
 		final List<String> reqNames = new ArrayList<String>();
 		if (reqs != null) {
@@ -516,8 +516,9 @@ public class EditTaskController implements ActionListener {
 					&& etv.getEstEffort().isEmpty()
 					&& etv.getActEffort().isEmpty()
 					&& (etv.getSelectedRequirement() == null) && !etv
-						.isArchived()))
+						.isArchived())) {
 				edited = true;
+			}
 		}
 		// Title.
 		else if (!model.getName().equals(etv.getTitleText())) {

@@ -31,7 +31,7 @@ import taskManager.view.RotationView;
  */
 public class RotationController implements MouseListener, MouseMotionListener {
 
-	private RotationView view;
+	private final RotationView view;
 	private TaskController listener = null;
 	private MouseAdapter dragListener = null;
 	private static Map<String, Double> taskAngles = new HashMap<String, Double>();
@@ -57,7 +57,7 @@ public class RotationController implements MouseListener, MouseMotionListener {
 	 */
 	public void setListener(TaskController listener) {
 		this.listener = listener;
-		Double angle = taskAngles.get(listener.getID());
+		final Double angle = taskAngles.get(listener.getID());
 		if (angle != null) {
 			view.setAngle(angle);
 		} else {
@@ -129,10 +129,10 @@ public class RotationController implements MouseListener, MouseMotionListener {
 	 * @return if the even is inside the taskview
 	 */
 	private boolean checkBounds(MouseEvent e) {
-		int panelX = view.getPanel().getWidth();
-		int panelY = view.getPanel().getHeight();
-		Point2D tp = calculatePoint(e.getPoint());
-		Rectangle panelArea = new Rectangle(panelX, panelY);
+		final int panelX = view.getPanel().getWidth();
+		final int panelY = view.getPanel().getHeight();
+		final Point2D tp = calculatePoint(e.getPoint());
+		final Rectangle panelArea = new Rectangle(panelX, panelY);
 		if (panelArea.contains(tp)) {
 			return true;
 		}
@@ -148,10 +148,10 @@ public class RotationController implements MouseListener, MouseMotionListener {
 	 * @return the point in the new coordinate system
 	 */
 	private Point2D calculatePoint(Point2D p) {
-		int panelX = view.getPanel().getWidth();
-		int panelY = view.getPanel().getHeight();
+		final int panelX = view.getPanel().getWidth();
+		final int panelY = view.getPanel().getHeight();
 
-		AffineTransform transform = new AffineTransform();
+		final AffineTransform transform = new AffineTransform();
 		transform.translate(0, calculateYTranslation());
 		transform.rotate(view.getAngle(), panelX / 2, panelY / 2);
 
@@ -201,7 +201,7 @@ public class RotationController implements MouseListener, MouseMotionListener {
 	 */
 	public double calculateYTranslation() {
 		// int panelX = view.getPanel().getWidth();
-		int panelY = view.getPanel().getHeight();
+		final int panelY = view.getPanel().getHeight();
 		return (calculateHeight() - panelY) / 2;
 	}
 
@@ -211,9 +211,9 @@ public class RotationController implements MouseListener, MouseMotionListener {
 	 * @return the height for the rotation view
 	 */
 	public double calculateHeight() {
-		int panelX = view.getPanel().getWidth();
-		int panelY = view.getPanel().getHeight();
-		double angle = view.getAngle();
+		final int panelX = view.getPanel().getWidth();
+		final int panelY = view.getPanel().getHeight();
+		final double angle = view.getAngle();
 		return (Math.abs(panelX * Math.sin(angle)) + Math.abs(panelY
 				* Math.cos(angle)));
 	}

@@ -41,7 +41,7 @@ public class FilterController implements ItemListener, MouseListener,
 	private final FilterView view;
 
 	public FilterController() {
-		this.view = new FilterView(this);
+		view = new FilterView(this);
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class FilterController implements ItemListener, MouseListener,
 	 * @return the filter view
 	 */
 	public FilterView getView() {
-		return this.view;
+		return view;
 	}
 
 	/**
@@ -59,8 +59,8 @@ public class FilterController implements ItemListener, MouseListener,
 	 * @return a list of the selected categories
 	 */
 	private Set<TaskCategory> categoriesSelected() {
-		Component[] cats = view.getCategories().getComponents();
-		Set<TaskCategory> selected = new HashSet<TaskCategory>();
+		final Component[] cats = view.getCategories().getComponents();
+		final Set<TaskCategory> selected = new HashSet<TaskCategory>();
 		for (int i = 0; i < cats.length; i++) {
 			if (cats[i] instanceof JPanel) {
 				String name = cats[i].getName();
@@ -96,7 +96,7 @@ public class FilterController implements ItemListener, MouseListener,
 	 */
 	private void filter() {
 		WorkflowController.getInstance().removeTaskInfos(true);
-		TaskFilter filter = new TaskFilter();
+		final TaskFilter filter = new TaskFilter();
 
 		if (archiveChecked()) {
 			filter.setArchive(ArchiveState.ARCHIVED, ArchiveState.NOT_ARCHIVED);

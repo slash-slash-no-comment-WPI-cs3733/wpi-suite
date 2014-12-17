@@ -86,9 +86,9 @@ public class ReportsController implements ActionListener, ChangeListener,
 			this.effort = effort;
 		}
 
-		private String category;
-		private ZonedDateTime timeStamp;
-		private Double effort;
+		private final String category;
+		private final ZonedDateTime timeStamp;
+		private final Double effort;
 
 		/**
 		 * Method compareTo.
@@ -167,7 +167,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 		if (!workflow.getStages().contains(stage)) {
 			throw new IllegalArgumentException("Invalid stage");
 		}
-		List<ReportDatum> data = new ArrayList<ReportDatum>();
+		final List<ReportDatum> data = new ArrayList<ReportDatum>();
 		// Iterate through all tasks for the specified stage.
 		for (TaskModel task : stage.getTasks()) {
 			ZonedDateTime completed = null;
@@ -242,7 +242,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 		if (!workflow.getStages().contains(stage)) {
 			throw new IllegalArgumentException("Invalid stage");
 		}
-		List<ReportDatum> data = new ArrayList<ReportDatum>();
+		final List<ReportDatum> data = new ArrayList<ReportDatum>();
 		// Iterate through all tasks for the specified stage.
 		for (TaskModel task : stage.getTasks()) {
 			ZonedDateTime completed = null;
@@ -416,7 +416,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 	 */
 	public List<ReportDatum> findDistributionData(DistributionType type,
 			List<StageModel> stages) {
-		List<ReportDatum> data = new ArrayList<ReportDatum>();
+		final List<ReportDatum> data = new ArrayList<ReportDatum>();
 
 		// Iterate through the given stages
 		for (StageModel stage : stages) {
@@ -620,8 +620,8 @@ public class ReportsController implements ActionListener, ChangeListener,
 	 *
 	 */
 	private void reloadStages() {
-		JComboBox<String> stages = rtv.getStages();
-		JComboBox<String> stages2 = rtv.getStages2();
+		final JComboBox<String> stages = rtv.getStages();
+		final JComboBox<String> stages2 = rtv.getStages2();
 		stages.removeAllItems();
 		stages2.removeAllItems();
 		for (StageModel stage : workflow.getStages()) {
@@ -641,7 +641,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 	 *
 	 */
 	private void reloadUsers() {
-		ArrayList<String> projectUserNames = new ArrayList<String>();
+		final List<String> projectUserNames = new ArrayList<String>();
 		for (String user : TaskManager.users) {
 			if (!projectUserNames.contains(user)) {
 				projectUserNames.add(user);
@@ -659,8 +659,8 @@ public class ReportsController implements ActionListener, ChangeListener,
 	 * the project user list.
 	 */
 	public void addUsersToList() {
-		int[] toAdd = rtv.getProjectUsersList().getSelectedIndices();
-		ArrayList<String> namesToAdd = new ArrayList<String>();
+		final int[] toAdd = rtv.getProjectUsersList().getSelectedIndices();
+		final List<String> namesToAdd = new ArrayList<String>();
 
 		for (int ind : toAdd) {
 			namesToAdd.add(rtv.getProjectUsersList().getValueAtIndex(ind));
@@ -687,8 +687,8 @@ public class ReportsController implements ActionListener, ChangeListener,
 	public void removeUsersFromList() {
 		// grab all of the indices of the usernames selected in
 		// assigned users and grab the associated strings
-		int[] usersToRemove = rtv.getUsersList().getSelectedIndices();
-		ArrayList<String> namesToRemove = new ArrayList<String>();
+		final int[] usersToRemove = rtv.getUsersList().getSelectedIndices();
+		final List<String> namesToRemove = new ArrayList<String>();
 		for (int ind : usersToRemove) {
 			namesToRemove.add(rtv.getUsersList().getValueAtIndex(ind));
 		}
@@ -710,7 +710,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 	private void createVelocityReport() {
 		boolean teamData = rtv.getAllUsers().isSelected();
 
-		Set<String> users = new HashSet<String>();
+		final Set<String> users = new HashSet<String>();
 		if (!teamData) {
 			// Get all of the selected users from the view and store to a
 			// set.
@@ -719,10 +719,10 @@ public class ReportsController implements ActionListener, ChangeListener,
 			}
 		}
 
-		Period interval = rtv.getTimeUnit();
+		final Period interval = rtv.getTimeUnit();
 
 		// Get the starting/ending dates from the view.
-		Calendar cal = Calendar.getInstance();
+		final Calendar cal = Calendar.getInstance();
 		cal.setTimeZone(TimeZone.getDefault());
 
 		Date startdate = rtv.getStartDate().getDate();
@@ -737,7 +737,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 									// day/month/year
 		enddate = cal.getTime();
 
-		Date now = new Date();
+		final Date now = new Date();
 		if (startdate.after(now)) {
 			JOptionPane.showMessageDialog(rtv,
 					Localizer.getString("InvalidStart"));
@@ -751,17 +751,17 @@ public class ReportsController implements ActionListener, ChangeListener,
 
 		// Set the dates as ZonedDateTimes that have timezone
 		// information.
-		ZonedDateTime startZone = ZonedDateTime.ofInstant(
+		final ZonedDateTime startZone = ZonedDateTime.ofInstant(
 				startdate.toInstant(), TimeZone.getDefault().toZoneId());
-		ZonedDateTime endZone = ZonedDateTime.ofInstant(enddate.toInstant(),
-				TimeZone.getDefault().toZoneId());
+		final ZonedDateTime endZone = ZonedDateTime.ofInstant(
+				enddate.toInstant(), TimeZone.getDefault().toZoneId());
 
 		// Get the selected stage from the view and store as a
 		// StageModel.
-		String stageStr = rtv.getSelectedStage();
-		StageModel stage = workflow.findStageByName(stageStr);
+		final String stageStr = rtv.getSelectedStage();
+		final StageModel stage = workflow.findStageByName(stageStr);
 
-		boolean useEffort = rtv.getUseEffort();
+		final boolean useEffort = rtv.getUseEffort();
 
 		// Compute velocity (amount of effort/time) and store to data,
 		// unsorted.
@@ -776,51 +776,51 @@ public class ReportsController implements ActionListener, ChangeListener,
 		// interval.
 		generateVelocityDataset(data, users, teamData, interval, useEffort);
 
-		String effort = useEffort ? Localizer.getString("Effort") : Localizer
-				.getString("Tasks");
+		final String effort = useEffort ? Localizer.getString("Effort")
+				: Localizer.getString("Tasks");
 		String period = "";
 		if (interval.equals(Period.ofDays(1))) {
 			period = Localizer.getString("Day");
 		} else if (interval.equals(Period.ofWeeks(1))) {
 			period = Localizer.getString("Week");
 		}
-		String title = MessageFormat.format(Localizer.getString("graphTitle"),
-				effort, period);
+		final String title = MessageFormat.format(
+				Localizer.getString("graphTitle"), effort, period);
 
-		String xLabel = Localizer.getString("Time");
-		String yLabel = useEffort ? Localizer.getString("Effort") : Localizer
-				.getString("Tasks");
+		final String xLabel = Localizer.getString("Time");
+		final String yLabel = useEffort ? Localizer.getString("Effort")
+				: Localizer.getString("Tasks");
 
 		// Create the chart with the Title, Label names.
-		JPanel chart = createLineChart(title, xLabel, yLabel);
+		final JPanel chart = createLineChart(title, xLabel, yLabel);
 
-		this.rtv.setGraphPanel(chart);
+		rtv.setGraphPanel(chart);
 	}
 
 	/**
 	 * Creates a distribution report and makes it visible.
 	 */
 	private void createDistributionReport() {
-		DistributionType type = rtv.getDistributionType();
+		final DistributionType type = rtv.getDistributionType();
 
 		// Generate the list of stages to use. If allStages is true, use them
 		// all. Else, use the stages selected in the dropdown
 		List<StageModel> stages;
-		boolean allStages = rtv.getUseAllStages();
+		final boolean allStages = rtv.getUseAllStages();
 		if (allStages) {
 			stages = workflow.getStages();
 		} else {
 			stages = new ArrayList<StageModel>();
-			String stageStr = rtv.getSelectedStage();
-			StageModel stage = workflow.findStageByName(stageStr);
+			final String stageStr = rtv.getSelectedStage();
+			final StageModel stage = workflow.findStageByName(stageStr);
 			stages.add(stage);
 		}
 
-		boolean useEffort = rtv.getUseEffort();
+		final boolean useEffort = rtv.getUseEffort();
 
 		// Compute velocity (amount of effort/time) and store to data,
 		// unsorted.
-		List<ReportDatum> data = findDistributionData(type, stages);
+		final List<ReportDatum> data = findDistributionData(type, stages);
 
 		// Generate the dataset required to draw the graph, with a given
 		// interval.
@@ -838,20 +838,21 @@ public class ReportsController implements ActionListener, ChangeListener,
 		} else {
 			effort = Localizer.getString("NumberOfTasks");
 		}
-		String title = MessageFormat.format(Localizer.getString("graphTitle2"),
+		final String title = MessageFormat.format(
+				Localizer.getString("graphTitle2"),
 				Localizer.getString("TaskDistribution"), graphtype, effort);
 
 		// Create the chart with the Title, Label names.
-		JPanel chart = createPieChart(title);
+		final JPanel chart = createPieChart(title);
 
-		this.rtv.setGraphPanel(chart);
+		rtv.setGraphPanel(chart);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		Object button = e.getSource();
+		final Object button = e.getSource();
 		if (button instanceof JButton) {
-			String buttonName = ((JButton) button).getName();
+			final String buttonName = ((JButton) button).getName();
 
 			// Add user to Users Selected for Reports
 			if (buttonName.equals(ReportsView.ADD_USER)) {
@@ -878,9 +879,10 @@ public class ReportsController implements ActionListener, ChangeListener,
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		// Used for selecting/unselecting users in the view.
-		Boolean addUsersSelected = !rtv.getProjectUsersList()
+		final Boolean addUsersSelected = !rtv.getProjectUsersList()
 				.isSelectionEmpty();
-		Boolean removeUsersSelected = !rtv.getUsersList().isSelectionEmpty();
+		final Boolean removeUsersSelected = !rtv.getUsersList()
+				.isSelectionEmpty();
 		rtv.setAddUserEnabled(addUsersSelected);
 		rtv.setRemoveUserEnabled(removeUsersSelected);
 	}

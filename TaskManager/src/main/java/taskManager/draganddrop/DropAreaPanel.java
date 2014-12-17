@@ -427,7 +427,7 @@ class DropAreaListener implements DropTargetListener {
 			e.acceptDrop(e.getDropAction());
 
 		} else { // if not supported, try to redispatch to ancestor
-			DropTarget target = DropTargetRedispatcher
+			final DropTarget target = DropTargetRedispatcher
 					.findAncestorDropTarget(panel);
 
 			// Redispatch to ancestor drop target
@@ -481,7 +481,7 @@ class DropAreaListener implements DropTargetListener {
 			panel.drawPlaceholder(e.getLocation());
 
 		} else { // if not supported, try to redispatch to ancestor
-			DropTarget target = DropTargetRedispatcher
+			final DropTarget target = DropTargetRedispatcher
 					.findAncestorDropTarget(panel);
 
 			// Redispatch to ancestor drop target

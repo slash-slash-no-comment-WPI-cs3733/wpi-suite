@@ -30,7 +30,7 @@ public class WorkflowView extends JLayeredPane {
 
 	private static final long serialVersionUID = 1L;
 
-	private WorkflowController controller;
+	private final WorkflowController controller;
 
 	private DropAreaPanel stages;
 	private JTextField search;
@@ -125,6 +125,10 @@ public class WorkflowView extends JLayeredPane {
 		super.setVisible(visible);
 	}
 
+	/**
+	 * Stops editing the name of any stages
+	 *
+	 */
 	public void removeChangeTitles() {
 		for (Component c : stages.getComponents()) {
 			if (c instanceof StageView) {

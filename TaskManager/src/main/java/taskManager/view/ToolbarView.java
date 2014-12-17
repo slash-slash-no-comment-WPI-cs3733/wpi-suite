@@ -60,20 +60,20 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	public static final String TASK_ANGLES = "taskAngles";
 
 	// toolbar information
-	private JButton createTask;
-	private JButton createStage;
-	private JButton statistics;
-	private FilterView filters;
+	private final JButton createTask;
+	private final JButton createStage;
+	private final JButton statistics;
+	private final FilterView filters;
 	private JLabel archive;
 	private JLabel delete;
 	private JCheckBox archiveCheckBox;
-	private JButton leaveFunMode;
+	private final JButton leaveFunMode;
 
-	private JButton randomizeTaskAngles;
-	private JComboBox<String> languageSelector;
-	private List<String> languages;
+	private final JButton randomizeTaskAngles;
+	private final JComboBox<String> languageSelector;
+	private final List<String> languages;
 
-	private JLabel projectName;
+	private final JLabel projectName;
 
 	private ToolbarController controller;
 
@@ -84,7 +84,8 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	 * 
 	 * @param controller
 	 *            The ToolbarController associated with this view
-	 * @throws IOException
+	 * @param f
+	 *            The filter view to be displayed
 	 */
 	public ToolbarView(ToolbarController controller, FilterView f) {
 
@@ -205,7 +206,7 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 				.indexOf(Localizer.defaultLanguage));
 		Localizer.setLanguage(Localizer.defaultLanguage);
 		languageSelector.addActionListener(controller);
-		Dimension d = new Dimension(100, 30);
+		final Dimension d = new Dimension(100, 30);
 		languageSelector.setSize(d);
 		languageSelector.setPreferredSize(d);
 		languageSelector.setMaximumSize(d);
@@ -283,6 +284,12 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 		projectName.setText("<html>" + name + "</html>");
 	}
 
+	/**
+	 *
+	 * @param iconName
+	 *            The name of an icon
+	 * @return if that icon is enabled
+	 */
 	public boolean isIconEnabled(String iconName) {
 		switch (iconName) {
 		case ARCHIVE:
@@ -401,7 +408,7 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 	 * @return the filter panel
 	 */
 	public FilterView getFilterView() {
-		return this.filters;
+		return filters;
 	}
 
 	/**

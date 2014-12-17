@@ -60,7 +60,7 @@ public class FetchWorkflowObserver extends GenericRequestObserver {
 		}
 
 		final ResponseModel response = iReq.getResponse();
-		String body = response.getBody();
+		final String body = response.getBody();
 
 		System.out.println("Response:" + body);
 

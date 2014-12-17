@@ -82,6 +82,8 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 	 *            The TaskController for the associated task
 	 * @param loc
 	 *            The location of the associated TaskView
+	 * @param titleColor
+	 *            The color that the title should be for this view
 	 */
 	public TaskInfoPreviewView(TaskModel model, TaskController controller,
 			Point loc, Color titleColor) {
@@ -111,8 +113,8 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 		this.setBorder(compound);
 
 		// This panel will contain all of the task information
-		JPanel info = new JPanel();
-		Dimension infoSize = new Dimension(this.getWidth(), 345);
+		final JPanel info = new JPanel();
+		final Dimension infoSize = new Dimension(this.getWidth(), 345);
 		info.setSize(infoSize);
 		info.setPreferredSize(infoSize);
 		info.setMinimumSize(infoSize);
@@ -123,10 +125,10 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 		// The task's titleBar contains the title and the 'x' button
 		titleBar = new JPanel();
 		titleBar.setLayout(new MigLayout("wrap 2", "5[]:push[]", "[]0[center]"));
-		Dimension titleBarSize = new Dimension(this.getWidth() - 15, 30);
+		final Dimension titleBarSize = new Dimension(this.getWidth() - 15, 30);
 		titleBar.setSize(titleBarSize);
-		JLabel title = new JLabel(this.taskM.getName());
-		Dimension titleSize = new Dimension(185,
+		final JLabel title = new JLabel(taskM.getName());
+		final Dimension titleSize = new Dimension(185,
 				title.getPreferredSize().height + 10);
 
 		title.setFont(new Font("Default", Font.BOLD, 15));
@@ -154,7 +156,8 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 		if (taskC.isArchived()) {
 			archived = new JLabel("", SwingConstants.CENTER);
 			archived.setFont(archived.getFont().deriveFont(Font.PLAIN));
-			Dimension archivedSize = new Dimension(this.getWidth() - 40, 5);
+			final Dimension archivedSize = new Dimension(this.getWidth() - 40,
+					5);
 			archived.setSize(archivedSize);
 			archived.setPreferredSize(archivedSize);
 			titleBar.add(archived, "span");
@@ -162,8 +165,8 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 		info.add(titleBar);
 
 		// The task's description
-		JTextArea description = new JTextArea();
-		description.setText(this.taskM.getDescription());
+		final JTextArea description = new JTextArea();
+		description.setText(taskM.getDescription());
 
 		description.setAlignmentX(CENTER_ALIGNMENT);
 		description.setEditable(false);
@@ -171,8 +174,8 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 		description.setWrapStyleWord(true);
 		description.setBackground(Colors.TASK);
 		description.setCaretPosition(0);
-		JScrollPane descScroll = new JScrollPane(description);
-		Dimension descScrollSize = new Dimension(this.getWidth() - 30, 80);
+		final JScrollPane descScroll = new JScrollPane(description);
+		final Dimension descScrollSize = new Dimension(this.getWidth() - 30, 80);
 		descScroll.setSize(descScrollSize);
 		descScroll.setMaximumSize(descScrollSize);
 		descScroll.setMinimumSize(descScrollSize);
@@ -180,8 +183,8 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 		descScroll.setBorder(BorderFactory.createEmptyBorder());
 		info.add(descScroll);
 
-		JPanel spacer = new JPanel();
-		Dimension spacerSize = new Dimension(50, 5);
+		final JPanel spacer = new JPanel();
+		final Dimension spacerSize = new Dimension(50, 5);
 		spacer.setSize(spacerSize);
 		spacer.setPreferredSize(spacerSize);
 		spacer.setMaximumSize(spacerSize);
@@ -190,17 +193,17 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 		info.add(spacer);
 
 		// The task's due date
-		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+		final DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
 		dueDate = new JLabel("<html><b><i>Due:</i></b> "
-				+ df.format(this.taskM.getDueDate()) + "</html>");
+				+ df.format(taskM.getDueDate()) + "</html>");
 
 		dueDate.setFont(dueDate.getFont().deriveFont(Font.PLAIN));
 		dueDate.setMaximumSize(new Dimension(this.getWidth(), 20));
 		info.add(dueDate);
 
-		String estString = this.taskM.isEstimatedEffortSet() ? this.taskM
+		final String estString = taskM.isEstimatedEffortSet() ? taskM
 				.getEstimatedEffort().toString() : "";
-		String actString = this.taskM.isActualEffortSet() ? this.taskM
+		final String actString = taskM.isActualEffortSet() ? taskM
 				.getActualEffort().toString() : "";
 
 		// The task's effort
@@ -211,13 +214,13 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 		info.add(estE);
 		info.add(actE);
 
-		Set<String> userList = taskM.getAssigned();
+		final Set<String> userList = taskM.getAssigned();
 		// if there are users, add a scrollList to show them. Else just print
 		// '[None]'
 		if (!userList.isEmpty()) {
 			// The task's users
 			usersSome = new ScrollList("");
-			Dimension usersSize = new Dimension(this.getWidth() - 30, 70);
+			final Dimension usersSize = new Dimension(this.getWidth() - 30, 70);
 			usersSome.setSize(usersSize);
 			usersSome.setPreferredSize(usersSize);
 			usersSome.setMaximumSize(usersSize);
@@ -237,7 +240,7 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 		}
 
 		// The task's requirement
-		if (this.taskM.getReq() == null) {
+		if (taskM.getReq() == null) {
 			req = new JLabel();
 			req.setFont(req.getFont().deriveFont(Font.PLAIN));
 			info.add(req);
@@ -247,7 +250,7 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 			info.add(req);
 			final JLabel name = new JLabel("  " + taskM.getReq());
 			name.setFont(name.getFont().deriveFont(Font.PLAIN));
-			Dimension nameSize = new Dimension(this.getWidth() - 30, 20);
+			final Dimension nameSize = new Dimension(this.getWidth() - 30, 20);
 			name.setSize(nameSize);
 			name.setMinimumSize(nameSize);
 			name.setMaximumSize(nameSize);
@@ -265,7 +268,7 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 		edit.addActionListener(this.controller);
 		// Add the pencil image to the edit button
 		try {
-			Image img = ImageIO.read(this.getClass().getResourceAsStream(
+			final Image img = ImageIO.read(this.getClass().getResourceAsStream(
 					"edit.png"));
 			edit.setIcon(new ImageIcon(img));
 		} catch (IOException e) {
@@ -336,12 +339,13 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 		closeButton.setText(Localizer.getString("x"));
 		archived.setText("<html><font size=\"3\"><i>"
 				+ Localizer.getString("Archived") + "</i></font></html>");
-		DateFormat df = new SimpleDateFormat(Localizer.getString("DateFormat"));
+		final DateFormat df = new SimpleDateFormat(
+				Localizer.getString("DateFormat"));
 		dueDate.setText("<html><b><i>" + Localizer.getString("Due")
-				+ " </b></i>" + df.format(this.taskM.getDueDate()) + "</html>");
-		String estString = this.taskM.isEstimatedEffortSet() ? this.taskM
+				+ " </b></i>" + df.format(taskM.getDueDate()) + "</html>");
+		final String estString = taskM.isEstimatedEffortSet() ? taskM
 				.getEstimatedEffort().toString() : "";
-		String actString = this.taskM.isActualEffortSet() ? this.taskM
+		final String actString = taskM.isActualEffortSet() ? taskM
 				.getActualEffort().toString() : "";
 		estE.setText("<html><b><i>" + Localizer.getString("EstEffort")
 				+ ": </i></b>" + estString + "</html>");
@@ -351,7 +355,7 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 				+ ":</i></html>");
 		usersNone.setText("<html><b><i>" + Localizer.getString("Users")
 				+ ":</i></b> " + Localizer.getString("None") + "</html>");
-		if (this.taskM.getReq() == null) {
+		if (taskM.getReq() == null) {
 			req.setText("<html><b><i>" + Localizer.getString("Requirement")
 					+ ":</i></b> " + Localizer.getString("None") + "</html>");
 		} else {

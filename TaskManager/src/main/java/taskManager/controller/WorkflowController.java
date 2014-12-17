@@ -64,8 +64,6 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 * WorkflowView, creates the corresponding StageView and StageControllers,
 	 * and adds the StageViews to the UI.
 	 * 
-	 * @param view
-	 *            the corresponding WorkflowView object
 	 */
 	public void reset() {
 		view = new WorkflowView(this);
@@ -151,7 +149,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				// get the mouse position relative to the workflow
-				Point p = view.getMousePosition();
+				final Point p = view.getMousePosition();
 				if (p != null) {
 					// validate the view now if it hasn't happened already
 					if (!view.isValid()) {
@@ -223,7 +221,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 *            the filter to be applied
 	 */
 	public void setCurrentFilter(TaskFilter filter) {
-		this.currentFilter = filter;
+		currentFilter = filter;
 	}
 
 	/**
@@ -232,7 +230,7 @@ public class WorkflowController implements DropAreaSaveListener, MouseListener {
 	 * @return gets the currently applied filter
 	 */
 	public TaskFilter getCurrentFilter() {
-		return this.currentFilter;
+		return currentFilter;
 	}
 
 	/**
