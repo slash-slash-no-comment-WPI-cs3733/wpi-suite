@@ -20,6 +20,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import org.jdesktop.swingx.prompt.PromptSupport;
+
 import taskManager.controller.FilterController;
 import taskManager.model.TaskModel.TaskCategory;
 
@@ -36,6 +38,7 @@ public class FilterView extends JPanel {
 	private final String CHECK = "\u2713";
 	public static final String SHOW_ARCHIVE = "showArchive";
 	public static final String MY_TASKS = "myTasks";
+	public static final String SEARCH = "search";
 
 	private FilterController filterC;
 
@@ -61,6 +64,10 @@ public class FilterView extends JPanel {
 		search = new JTextField();
 		search.setMaximumSize(size);
 		search.addKeyListener(filterC);
+		search.setName(SEARCH);
+		PromptSupport.setPrompt("Search tasks", search);
+		PromptSupport.setFocusBehavior(PromptSupport.FocusBehavior.SHOW_PROMPT,
+				search);
 
 		// adds a panel for this
 		this.setLayout(new GridLayout(3, 1));
