@@ -795,7 +795,7 @@ public class ReportsController implements ActionListener, ChangeListener,
 		JPanel chart = createLineChart(title, xLabel, yLabel);
 
 		// Open a new tab with the given chart.
-		TabPaneController.getInstance().addTab("Line Graph", chart, true, true);
+		TabPaneController.getInstance().addTab("LineGraph", chart, true, true);
 		TabPaneController.getInstance().getView().setSelectedComponent(chart);
 	}
 
