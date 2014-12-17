@@ -33,8 +33,6 @@ import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.Border;
 
-import net.miginfocom.swing.MigLayout;
-
 import org.jdesktop.swingx.border.DropShadowBorder;
 
 import taskManager.controller.StageController;
@@ -81,12 +79,13 @@ public class StageView extends JPanel implements Transferable,
 	 */
 	public StageView(String name, StageController stageC) {
 
+		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
 		// The tasks panel accepts task drops
 		tasks = new DropAreaPanel(DDTransferHandler.getTaskFlavor());
 
 		// stage view is a panel that contains the title and the scroll pane
 		// w/tasks
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		this.setPreferredSize(new Dimension(STAGE_WIDTH, 450));
 
 		// organizes the tasks in a vertical list

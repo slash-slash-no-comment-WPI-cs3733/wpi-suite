@@ -158,6 +158,8 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	public EditTaskView(Mode mode, ActivityController activityC) {
 
 		// When Task added make EditTask take in a Task called currTask
+		// TODO change this to an indicator that its an edit task view
+		this.setName("edit task view");
 		this.mode = mode;
 		this.activityC = activityC;
 		this.setOpaque(false);
@@ -477,7 +479,7 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	 *
 	 */
 	public void focusOnTitleField() {
-		titleField.requestFocus();
+		titleField.requestFocusInWindow();
 	}
 
 	/**
@@ -517,6 +519,21 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 		requirements.addPopupMenuListener(fieldC);
 		dateField.addPropertyChangeListener(fieldC);
 		archive.addItemListener(fieldC);
+		this.addMouseListener(fieldC);
+		window.addMouseListener(fieldC);
+		titleField.addMouseListener(fieldC);
+		descripArea.addMouseListener(fieldC);
+		actEffortField.addMouseListener(fieldC);
+		estEffortField.addMouseListener(fieldC);
+		viewReq.addMouseListener(fieldC);
+		requirements.addMouseListener(fieldC);
+		stages.addMouseListener(fieldC);
+		projectUsersList.addMouseListener(fieldC);
+		usersList.addMouseListener(fieldC);
+		addUser.addMouseListener(fieldC);
+		removeUser.addMouseListener(fieldC);
+		submitComment.addMouseListener(fieldC);
+		dateField.addMouseListener(fieldC);
 		commentBox.addKeyListener(fieldC);
 		fieldC.validate();
 	}
@@ -572,12 +589,31 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	}
 
 	/**
+	 * return if the title field is the focus owner
+	 * 
+	 * @return
+	 */
+	public boolean titleHasFocus() {
+		return titleField.isFocusOwner();
+	}
+
+	/**
 	 * Gets the description field
 	 * 
 	 * @return the description field
 	 */
 	public String getDescription() {
 		return descripArea.getText();
+	}
+
+	/**
+	 * return if the description field is the focus owner
+	 * 
+	 * @return true if the description has focus, false if it doesnt
+	 */
+	public boolean descriptionHasFocus() {
+		return descripArea.isFocusOwner();
+
 	}
 
 	/**
@@ -599,12 +635,31 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	}
 
 	/**
+	 * returns whether or not the estimated effort field has focus
+	 * 
+	 * @return true if the estimated effort field has focus, false if it
+	 *         doensn't
+	 */
+	public boolean estEffortHasFocus() {
+		return estEffortField.isFocusOwner();
+	}
+
+	/**
 	 * Gets the actual effort field
 	 * 
 	 * @return the actual effort field
 	 */
 	public String getActEffort() {
 		return actEffortField.getText();
+	}
+
+	/**
+	 * returns whether or not the actual effort field has focus
+	 * 
+	 * @return true if the actual effort field has focus, false if it doensn't
+	 */
+	public boolean actEffortHasFocus() {
+		return actEffortField.isFocusOwner();
 	}
 
 	/**
@@ -930,6 +985,16 @@ public class EditTaskView extends JPanel implements LocaleChangeListener {
 	 */
 	public void setSaveEnabled(boolean e) {
 		save.setEnabled(e);
+	}
+
+	/**
+	 * enables or disables the comment submit button
+	 * 
+	 * @param e
+	 *            true is enabled false is disabled
+	 */
+	public void setCommentSubmitEnabled(boolean e) {
+		submitComment.setEnabled(e);
 	}
 
 	/**
