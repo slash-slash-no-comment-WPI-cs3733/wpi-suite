@@ -191,7 +191,7 @@ public class TaskInfoPreviewView extends JPanel implements LocaleChangeListener 
 
 		// The task's due date
 		DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
-		JLabel dueDate = new JLabel("<html><b><i>Due:</i></b> "
+		dueDate = new JLabel("<html><b><i>Due:</i></b> "
 				+ df.format(this.taskM.getDueDate()) + "</html>");
 
 		dueDate.setFont(dueDate.getFont().deriveFont(Font.PLAIN));
