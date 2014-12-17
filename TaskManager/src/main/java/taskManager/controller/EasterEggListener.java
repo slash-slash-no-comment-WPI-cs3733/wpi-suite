@@ -26,15 +26,17 @@ public class EasterEggListener implements KeyEventDispatcher {
 
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent e) {
-		if (e.getID() == KeyEvent.KEY_PRESSED
-				&& WorkflowController.getInstance().getView().isShowing()) {
+		if (e.getID() == KeyEvent.KEY_PRESSED) {
 			final int currentKey = e.getKeyCode();
 			if (currentKey == code[location]) {
 				location++;
 				if (location == code.length) {
 					location = 0;
-					ToolbarController.getInstance().getView().setFunMode(true);
-					WorkflowController.getInstance().reloadData();
+					if (WorkflowController.getInstance().getView().isShowing()) {
+						ToolbarController.getInstance().getView()
+								.setFunMode(true);
+						WorkflowController.getInstance().reloadData();
+					}
 				}
 			} else {
 				location = 0;
