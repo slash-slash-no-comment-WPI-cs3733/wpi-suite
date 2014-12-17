@@ -647,6 +647,16 @@ public class ReportsView extends JPanel implements ActionListener,
 		return select_stages.isSelected();
 	}
 
+	/**
+	 * 
+	 * Returns whether to the allUsers checkbox is pressed.
+	 *
+	 * @return true if the checkbox is enabled, false otherwise
+	 */
+	public boolean isAllUsersChecked() {
+		return allUsers.isSelected();
+	}
+
 	@Override
 	public void onLocaleChange() {
 		names[0] = Localizer.getString("Velocity");
