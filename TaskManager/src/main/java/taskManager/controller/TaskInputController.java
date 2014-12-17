@@ -101,7 +101,7 @@ public class TaskInputController implements KeyListener, MouseListener,
 		if (!etv.getActEffort().isEmpty()) {
 			// Actual Effort
 			try {
-				if (Integer.parseInt(etv.getActEffort().trim()) < 0
+				if (Integer.parseInt(etv.getActEffort().trim()) <= 0
 						|| Integer.parseInt(etv.getActEffort().trim()) > 9999) {
 					actEffortValid = false;
 				}
