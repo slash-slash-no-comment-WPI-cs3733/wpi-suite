@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.MessageFormat;
 import java.time.Period;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -47,6 +48,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.util.TableOrder;
 
 import taskManager.TaskManager;
+import taskManager.localization.Localizer;
 import taskManager.model.ActivityModel;
 import taskManager.model.ActivityModel.ActivityModelType;
 import taskManager.model.StageModel;
@@ -326,11 +328,11 @@ public class ReportsController implements ActionListener, ChangeListener,
 
 		// Set the label name according to the specified interval.
 		if (interval.equals(Period.ofDays(1))) {
-			intervalName = "Day ";
+			intervalName = Localizer.getString("Day") + " ";
 			intervalSeconds = 24 * 60 * 60;
 			intervalDays = 1;
 		} else {
-			intervalName = "Week ";
+			intervalName = Localizer.getString("Week") + " ";
 			intervalSeconds = 7 * 24 * 60 * 60;
 			intervalDays = 7;
 		}
@@ -738,12 +740,12 @@ public class ReportsController implements ActionListener, ChangeListener,
 		Date now = new Date();
 		if (startdate.after(now)) {
 			JOptionPane.showMessageDialog(rtv,
-					"Start Date cannot be in the future.");
+					Localizer.getString("InvalidStart"));
 			return;
 		}
 		if (enddate.before(startdate)) {
 			JOptionPane.showMessageDialog(rtv,
-					"End Date must be after the Start Date.");
+					Localizer.getString("InvalidEnd"));
 			return;
 		}
 
@@ -774,23 +776,26 @@ public class ReportsController implements ActionListener, ChangeListener,
 		// interval.
 		generateVelocityDataset(data, users, teamData, interval, useEffort);
 
-		String title = "";
-		title += useEffort ? "Effort per " : "Tasks per ";
+		String effort = useEffort ? Localizer.getString("Effort") : Localizer
+				.getString("Tasks");
+		String period = "";
 		if (interval.equals(Period.ofDays(1))) {
-			title += "Day";
+			period = Localizer.getString("Day");
 		} else if (interval.equals(Period.ofWeeks(1))) {
-			title += "Week";
+			period = Localizer.getString("Week");
 		}
+		String title = MessageFormat.format(Localizer.getString("graphTitle"),
+				effort, period);
 
-		String xLabel = "Time";
-		String yLabel = useEffort ? "Effort" : "Tasks";
+		String xLabel = Localizer.getString("Time");
+		String yLabel = useEffort ? Localizer.getString("Effort") : Localizer
+				.getString("Tasks");
 
 		// Create the chart with the Title, Label names.
 		JPanel chart = createLineChart(title, xLabel, yLabel);
 
 		// Open a new tab with the given chart.
-		TabPaneController.getInstance()
-				.addTab("Line Graph", chart, true, false);
+		TabPaneController.getInstance().addTab("LineGraph", chart, true, true);
 		TabPaneController.getInstance().getView().setSelectedComponent(chart);
 	}
 
@@ -823,23 +828,26 @@ public class ReportsController implements ActionListener, ChangeListener,
 		// interval.
 		generateDistributionDataset(data, useEffort);
 
-		String title = "Task Distribution per ";
+		String graphtype = "";
+		String effort = "";
 		if (type == DistributionType.STAGE) {
-			title += "Stage";
+			graphtype = Localizer.getString("Stage");
 		} else {
-			title += "User";
+			graphtype = Localizer.getString("User");
 		}
 		if (useEffort) {
-			title += " by Effort";
+			effort = Localizer.getString("Effort");
 		} else {
-			title += " by Number of Tasks";
+			effort = Localizer.getString("NumberOfTasks");
 		}
+		String title = MessageFormat.format(Localizer.getString("graphTitle2"),
+				Localizer.getString("TaskDistribution"), graphtype, effort);
 
 		// Create the chart with the Title, Label names.
 		JPanel chart = createPieChart(title);
 
 		// Open a new tab with the given chart.
-		TabPaneController.getInstance().addTab("Pie Chart", chart, true, false);
+		TabPaneController.getInstance().addTab("Pie Chart", chart, true, true);
 		TabPaneController.getInstance().getView().setSelectedComponent(chart);
 	}
 
