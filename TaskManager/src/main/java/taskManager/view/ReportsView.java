@@ -32,6 +32,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -101,6 +102,10 @@ public class ReportsView extends JPanel implements ActionListener,
 	private JComboBox<String> stages2;
 	private JComboBox<String> timeSliceList;
 
+	private final JPanel graph;
+	JScrollPane windowScroll;
+	private JSplitPane splitPane;
+
 	private JPanel TaskDistribution = new JPanel();
 	private JPanel WorkVelocity = new JPanel(new MigLayout());
 	private JPanel usersHolder = new JPanel();
@@ -141,6 +146,16 @@ public class ReportsView extends JPanel implements ActionListener,
 	public ReportsView(Mode mode) {
 
 		this.mode = mode;
+
+		// Contains the splitPane and button panel
+		this.setLayout(new MigLayout("wrap 1, align center", "0[grow, fill]0",
+				"0[grow, fill][]0"));
+
+		graph = new JPanel();
+		// JPanel EditSaveCancel = new JPanel(new MigLayout("center"));
+		// EditSaveCancel.setOpaque(false);
+		// JPanel SpacerTop = new JPanel(new MigLayout());
+		// JPanel SpacerBtm = new JPanel(new MigLayout());
 
 		window = new JPanel(new FlowLayout());
 		generator = new JPanel(new MigLayout());
@@ -308,14 +323,33 @@ public class ReportsView extends JPanel implements ActionListener,
 		cl.show(cards, names[0]);
 		window.add(generator);
 
-		JScrollPane windowScroll = new JScrollPane(window,
+		windowScroll = new JScrollPane(window,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 		windowScroll.getVerticalScrollBar().setUnitIncrement(12);
 		windowScroll.getHorizontalScrollBar().setUnitIncrement(12);
-		this.add(windowScroll);
+
+		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
+				windowScroll, graph);
+		splitPane.setDividerLocation(500);
+		splitPane.setDividerSize(10);
+
+		splitPane.setContinuousLayout(true);
+		splitPane.setResizeWeight(.5);
+		this.add(splitPane);
 
 		Localizer.addListener(this);
+	}
+
+	/**
+	 * sets the panel containing the graph
+	 */
+	public void setGraphPanel(JPanel graph) {
+		this.removeAll();
+		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true,
+				windowScroll, graph);
+		this.add(splitPane);
+		this.repaint();
 	}
 
 	public void actionPerformed(ActionEvent e) {
