@@ -156,7 +156,8 @@ public class EditTaskController implements ActionListener {
 		int i = 0;
 		for (TaskCategory c : TaskCategory.values()) {
 			if (c.equals(model.getCategory())) {
-				etv.setSelectedCategory(Colors.CATEGORY_NAMES[i]);
+				etv.setSelectedCategory(Localizer
+						.getString(Colors.CATEGORY_NAMES[i]));
 			}
 			i++;
 		}
