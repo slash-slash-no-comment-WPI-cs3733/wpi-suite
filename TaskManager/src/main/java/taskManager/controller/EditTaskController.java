@@ -391,7 +391,8 @@ public class EditTaskController implements ActionListener {
 				.getRequirementByName(etv.getSelectedRequirement());
 
 		for (int i = 0; i < TaskCategory.values().length; i++) {
-			if (etv.getSelectedCategory().equals(Colors.CATEGORY_NAMES[i])) {
+			if (etv.getSelectedCategory().equals(
+					Localizer.getString(Colors.CATEGORY_NAMES[i]))) {
 				model.setCategory(TaskCategory.values()[i]);
 			}
 		}
