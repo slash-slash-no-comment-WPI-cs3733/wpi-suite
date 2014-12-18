@@ -14,13 +14,19 @@ import java.awt.Font;
 import java.awt.Image;
 import java.awt.dnd.DropTarget;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.DirectoryStream;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystemNotFoundException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.Box;
@@ -194,6 +200,29 @@ public class ToolbarView extends JToolBar implements LocaleChangeListener {
 			}
 		} catch (URISyntaxException | IOException e) {
 			e.printStackTrace();
+		} catch (FileSystemNotFoundException e) {
+			// filesystem was not automatically created, manually make one
+			try {
+				URI uri = getClass().getResource("/taskManager/localization")
+						.toURI();
+				Map<String, String> env = new HashMap<String, String>();
+				env.put("create", "true");
+				FileSystem filesystem = FileSystems.newFileSystem(uri, env);
+				Path folder = Paths.get(uri);
+
+				// and now get the files
+				DirectoryStream<Path> stream = Files.newDirectoryStream(folder);
+				for (Path entry : stream) {
+					String filename = entry.getFileName().toString();
+					if (filename.endsWith(".properties")) {
+						languages.add(filename.substring(0, filename.toString()
+								.length() - ".properties".length()));
+					}
+				}
+			} catch (URISyntaxException | IOException e1) {
+				e1.printStackTrace();
+			}
+
 		}
 
 		// Make language selection drop down
