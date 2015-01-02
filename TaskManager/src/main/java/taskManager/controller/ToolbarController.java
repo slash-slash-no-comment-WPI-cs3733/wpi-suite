@@ -51,9 +51,10 @@ import edu.wpi.cs.wpisuitetng.janeway.config.ConfigManager;
  * @author Sam Khalandovsky
  */
 public class ToolbarController extends DropTargetAdapter implements
-		ActionListener, ItemListener, ComponentListener {
+		ActionListener, ComponentListener, ItemListener {
 
 	private ToolbarView view;
+	private FilterController filterC;
 
 	private static ToolbarController instance;
 
@@ -64,8 +65,12 @@ public class ToolbarController extends DropTargetAdapter implements
 		reset();
 	}
 
+	/**
+	 * reinitialize the toolbar view and filter controller
+	 */
 	public void reset() {
-		view = new ToolbarView(this);
+		filterC = new FilterController();
+		view = new ToolbarView(this, filterC.getView());
 	}
 
 	/**
@@ -89,6 +94,15 @@ public class ToolbarController extends DropTargetAdapter implements
 	public ToolbarView getView() {
 		return view;
 	}
+
+	/**
+	 * return the filter controller
+	 * 
+	 * @return filter controller
+	 */
+	public FilterController getFilterController() {
+		return this.filterC;
+	};
 
 	/**
 	 * Sets the visible title in the toolbar, hyphenating if necessary

@@ -20,16 +20,28 @@ import java.awt.Color;
 public class Colors {
 
 	public static final Color TASK = Color.decode("#FCFCFC");
-	public static final Color TASK_HOVER = Color.LIGHT_GRAY;
-	public static final Color TASK_CLICKED = Color.decode("#5CF643");
-	public static final Color ARCHIVE = Color.decode("#FFCF33");
-	public static final Color ARCHIVE_CLICKED = Color.decode("#FFDB66");
+	public static final Color TASK_HOVER = Color.decode("#E0E0E0");
+	public static final Color TASK_CLICKED = Color.decode("#BDBDBD");
 	public static final Color SHADOW_COLOR = Color.BLACK;
+	public static final Color STAGE = Color.decode("#C8DDF1");
+	public static final Color INPUT_ERROR = Color.decode("#FCFCFC");
 	public static final Color ACTIVITY = Color.decode("#FCFCFC");
 	public static final Color ACTIVITY_EDIT = Color.LIGHT_GRAY;
 	public static final Color ACTIVITY_COMMENT = Color.CYAN;
 	public static final Color ARCHIVE_HOVER = Color.decode("#E6B000");
-	public static final Color STAGE = Color.decode("#C8DDF1");
 	public static final Color ERROR_BUBBLE = Color.decode("#FCFCFC");
 	public static final Color ERROR = Color.decode("#FFDDDD");
+
+	// The default grey color of a JLabel
+	public static final Color STUPID_GRAY = Color.decode("#EAEAEA");
+
+	public static final Color[] CAT_COLORS = new Color[] { // first is a
+			// "no category color"
+			Color.decode("#B6B6B6"), Color.decode("#EF5350"),
+			Color.decode("#4CAF50"), Color.decode("#2196F3"),
+			Color.decode("#FBC02D"), Color.decode("#7E57C2") };
+
+	public static final String[] CATEGORY_NAMES = new String[] {
+			"Select category", "red", "green", "blue", "yellow", "purple" };
+
 }
